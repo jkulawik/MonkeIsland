@@ -1,0 +1,120 @@
+#include "interfaces/Map_Interface.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_map.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_player.hps"
+#include "inputhandler_types.hps"
+#include "helpers/helper_imgui_options.hps"
+#include "custom/helpers/helper_menu.hps"
+
+//-----------------------------------------
+
+class cScrMap : iScrMap
+{
+
+	//-------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAIN CALLBACKS
+	/////////////////////////////////////////
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		//----DEBUG----//
+		if(cLux_ScriptDebugOn())
+		{
+			//debug stuff
+		}
+		
+		//Preload sounds
+	}
+
+	//-------------------------------------------------------
+
+	void Setup()
+	{
+	}
+	
+	void PreloadData()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{	
+		//////////////
+		// Disable pause menu and show main menu instead
+		Player_Teleport("PlayerStartArea_1");
+		CameraAnimation_Begin("CameraAnimation", "", false);
+		Sound_FadeGlobalVolume(1.f, 0.f, eSoundEntryType_All);
+		PauseMenu_Enabled(true);
+		cLux_SetGamePaused(false, true, true, true);
+		
+		cLux_GetGuiHandler().SetGameHudInputFocus(true);
+		Player_ShowCrossHairIcons(false);
+		//Music_PlayExt("A2_MenuTheme.ogg", true, 0.05f, 1.0f, 15.0f, 1.0f, eMusicPrio_BgAmb, true);
+		Music_PlayExt("mgs-menu.ogg", true, 1.0f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
+		Effect_Fade_In(5.0f);
+		Player_SetGravityEnabled(false);
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+		Player_ShowCrossHairIcons(true);
+		Music_Stop(3.0f, eMusicPrio_BgAmb);
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+		if(abPressed==false) return;
+
+		return;
+	}
+	
+	//-------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//---------------------------------------------------------
+
+	/////////////////////////////////////////
+	// MAIN MENU GUI
+	/////////////////////////////////////////
+	
+	//---------------------------------------------------------
+
+	void OnGui(float afTimeStep)
+	{
+		// Rendering done in PauseMenu script
+	}
+
+	//------------------------------------------------------
+
+	void Update(float afTimeStep)
+	{
+		Player_SetActive(false);
+	}
+	
+	bool FadeInMenu(const tString &in asEntity, int alDirection)
+	{
+		MainMenu_Show(true);
+		return true;
+	}
+}
