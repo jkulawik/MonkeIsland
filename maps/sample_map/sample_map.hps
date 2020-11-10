@@ -10,6 +10,7 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
+#include "helpers/custom/helper_props_custom.hps"
 
 //--------------------------------------------------
  
@@ -100,12 +101,12 @@ class cScrMap : iScrMap
 	
 	void OnGui(float afTimeStep)
 	{
-		cImGuiLabelData label;
+		/*cImGuiLabelData label;
 		label.mFontAlign = eFontAlign_Center;
 		label.mFont.mvSize = cVector2f(30,30);
 		
 		ImGui_SetTransCategory("SampleMap");
-		ImGui_DoLabelExt("SampleMessage", label, ImGui_NrmPos(0,0,10.0f), ImGui_NrmSize(1.0f,1.0f));
+		ImGui_DoLabelExt("SampleMessage", label, ImGui_NrmPos(0,0,10.0f), ImGui_NrmSize(1.0f,1.0f)); */
 	}
  
 	//-------------------------------------------------------
@@ -176,7 +177,8 @@ class cScrMap : iScrMap
 	 // ==============
 	 // TERMINALS
 	 // ==============
-	 //{//////////////////////////////////////
+	 //////////////////////////////////////
+	 //{
  
 		 //-------------------------------------------------------
 	 
@@ -195,7 +197,12 @@ class cScrMap : iScrMap
 		 //-------------------------------------------------------
 	 
 		 //} END Terminal *Name Of Terminal*
+		 
+		void OnGuiDWNote(const tString&in asEntityName, float afTimeStep)
+		{
+			DWNote_RenderGUI(asEntityName, afTimeStep);
+		}
 	
-	//} END TERMINALS
+	//} //END TERMINALS
  
 }
