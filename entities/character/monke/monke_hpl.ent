@@ -1,0 +1,76 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="mods/MonkeIsland/entities/character/monke/monke_hpl.fbx">
+            <SubMesh ID="0" Name="chimp_geo" CreStamp="0" ModStamp="1605045138" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="3190" Material="mods/MonkeIsland/entities/character/monke/monke.mat" Static="true" />
+        </Mesh>
+        <Bones>
+            <Bone ID="1" Name="chimp_geo" />
+            <Bone ID="2" Name="mixamorig:Hips" />
+            <Bone ID="3" Name="mixamorig:Spine" />
+            <Bone ID="4" Name="mixamorig:Spine1" />
+            <Bone ID="5" Name="mixamorig:Spine2" />
+            <Bone ID="6" Name="mixamorig:Neck" />
+            <Bone ID="7" Name="mixamorig:Head" />
+            <Bone ID="8" Name="mixamorig:HeadTop_End" />
+            <Bone ID="9" Name="mixamorig:LeftShoulder" />
+            <Bone ID="10" Name="mixamorig:LeftArm" />
+            <Bone ID="11" Name="mixamorig:LeftForeArm" />
+            <Bone ID="12" Name="mixamorig:LeftHand" />
+            <Bone ID="13" Name="mixamorig:LeftHandThumb1" />
+            <Bone ID="14" Name="mixamorig:LeftHandThumb2" />
+            <Bone ID="15" Name="mixamorig:LeftHandThumb3" />
+            <Bone ID="16" Name="mixamorig:LeftHandIndex1" />
+            <Bone ID="17" Name="mixamorig:LeftHandIndex2" />
+            <Bone ID="18" Name="mixamorig:LeftHandIndex3" />
+            <Bone ID="19" Name="mixamorig:LeftHandMiddle1" />
+            <Bone ID="20" Name="mixamorig:LeftHandMiddle2" />
+            <Bone ID="21" Name="mixamorig:LeftHandMiddle3" />
+            <Bone ID="22" Name="mixamorig:LeftHandRing1" />
+            <Bone ID="23" Name="mixamorig:LeftHandRing2" />
+            <Bone ID="24" Name="mixamorig:LeftHandRing3" />
+            <Bone ID="25" Name="mixamorig:LeftHandPinky1" />
+            <Bone ID="26" Name="mixamorig:LeftHandPinky2" />
+            <Bone ID="27" Name="mixamorig:LeftHandPinky3" />
+            <Bone ID="28" Name="mixamorig:RightShoulder" />
+            <Bone ID="29" Name="mixamorig:RightArm" />
+            <Bone ID="30" Name="mixamorig:RightForeArm" />
+            <Bone ID="31" Name="mixamorig:RightHand" />
+            <Bone ID="32" Name="mixamorig:RightHandThumb1" />
+            <Bone ID="33" Name="mixamorig:RightHandThumb2" />
+            <Bone ID="34" Name="mixamorig:RightHandThumb3" />
+            <Bone ID="35" Name="mixamorig:RightHandIndex1" />
+            <Bone ID="36" Name="mixamorig:RightHandIndex2" />
+            <Bone ID="37" Name="mixamorig:RightHandIndex3" />
+            <Bone ID="38" Name="mixamorig:RightHandMiddle1" />
+            <Bone ID="39" Name="mixamorig:RightHandMiddle2" />
+            <Bone ID="40" Name="mixamorig:RightHandMiddle3" />
+            <Bone ID="41" Name="mixamorig:RightHandRing1" />
+            <Bone ID="42" Name="mixamorig:RightHandRing2" />
+            <Bone ID="43" Name="mixamorig:RightHandRing3" />
+            <Bone ID="44" Name="mixamorig:RightHandPinky1" />
+            <Bone ID="45" Name="mixamorig:RightHandPinky2" />
+            <Bone ID="46" Name="mixamorig:RightHandPinky3" />
+            <Bone ID="47" Name="mixamorig:LeftUpLeg" />
+            <Bone ID="48" Name="mixamorig:LeftLeg" />
+            <Bone ID="49" Name="mixamorig:LeftFoot" />
+            <Bone ID="50" Name="mixamorig:LeftToeBase" />
+            <Bone ID="51" Name="mixamorig:LeftToe_End" />
+            <Bone ID="52" Name="mixamorig:RightUpLeg" />
+            <Bone ID="53" Name="mixamorig:RightLeg" />
+            <Bone ID="54" Name="mixamorig:RightFoot" />
+            <Bone ID="55" Name="mixamorig:RightToeBase" />
+            <Bone ID="56" Name="mixamorig:RightToe_End" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations>
+            <Animation Name="Jump" File="mods/MonkeIsland/entities/character/monke/animations/Jump.fbx" Layer="Default" Speed="1" />
+        </Animations>
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="StaticProp">
+        <Var ObjectId="4294967295" Name="ShowMesh" Value="true" />
+    </UserDefinedVariables>
+</Entity>
