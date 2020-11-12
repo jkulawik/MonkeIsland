@@ -60,7 +60,7 @@ class cMonkeThrowCandidate
 
 //----------------------------------------------------------------------
 
-tString gsMonkeSound_PlayerDetected = "monke/le_enemy/monke_detect";
+tString gsMonkeSound_PlayerDetected = "monke/le_enemy/monke_short_alert";
 tString gsMonkeSound_PlayerSpotted = "monke/le_enemy/monke_detect";
 tString gsMonkeSound_Attack = "monke/le_enemy/monke_attack";
 tString gsMonkeSound_StartSearch = "monke/le_enemy/monke_search";
@@ -145,7 +145,7 @@ array<tString> mvMonkeAnim_Sniff = { "sniff_long_1", "sniff_long_2" };
 tString gsMonkeAnim_BeHit = "monke_hit_reaction"; // used when hit by an object and stunned
 tString gsMonkeAnim_Threaten = "alert";
 array<tString> gvMonkeAnim_AngryGesture = { "angry_1", "angry_2" };
-tString gsMonkeAnim_Frustration = "frustration"; // used after losing the player and when having to retreat from the player
+tString gsMonkeAnim_Frustration = "angry_2"; // used after losing the player and when having to retreat from the player
 tString gsMonkeAnim_TurnToPlayer = "none"; // used when the ghoul detects the player behind it or is hit, quickly turns to the player
 tString gsMonkeAnim_StartHunt = "none";
 tString gsMonkeAnim_CallOut = "none";
@@ -156,12 +156,10 @@ tString gsMonkeAnim_Agree = "alert";
 tString gsMonkeAnim_SearchGround = "alert";
 tString gsMonkeAnim_InteractWithFetish = "attack_close_1";
 tString gsMonkeAnim_EatQuick = "eat_loop";
-array<tString> mvMonkeAnim_Scream = { "scream_1", "scream_2" };
+array<tString> mvMonkeAnim_Scream = { "alert" };
 array<tString> mvMonkeAnim_BreakDoor = { "attack_close_2" };
 array<tString> mvMonkeAnim_HitDoor = { "attack_close_1", "attack_close_2" };
 array<tString> mvMonkeAnim_HitObstacle = { "attack_close_1", "attack_close_2" };
-tString gsMonkeAnim_Enthralled = "alert";
-tString gsMonkeAnim_LostTrackSmall = "angry_2";
 tString gsMonkeAnim_ShrugOff = "shrug_off_d";
 
 tString gsMonkeAnim_Move_IdleAggressive = "aggressive_idle_stand";
@@ -6900,7 +6898,11 @@ class cScrAgentMonke : cScrAgentHumanoid
 		mpMover.SetIdleAnimName(gsMonkeAnim_Move_IdleAggressive);
 		
 		if (UsesVoice() && msAlertSubject != "") mpBarkMachine.PlayVoice(msAlertSubject, 1);
-		else mBaseObj.PlaySound("PlayerSpotted", gsMonkeSound_PlayerSpotted, true, true);
+		else
+		{
+			mBaseObj.PlaySound("PlayerSpotted", gsMonkeSound_PlayerSpotted, true, true);
+			mBaseObj.PlaySound("PlayerSpotted2", gsMonkeSound_PlayerDetected, true, true);
+		}
 
 		mpStateMachine.AddTimer("CheckLastKnownPosition", 2.0f);		
 	}
@@ -11624,10 +11626,8 @@ class cScrAgentMonke : cScrAgentHumanoid
 					Terror_AddEnemy(mBaseObj.GetID(), gfAlertTime * 3.0f);
 				}
 				
-				cLux_AddTodoMessage("TODO-SOUND: threaten");
 				mBaseObj.PlaySound("AngryShout", gsMonkeSound_Threaten, true, true);
 				
-				cLux_AddTodoMessage("TODO-ANIM: threaten");
 				mpMover.PlayAnimation(gsMonkeAnim_Threaten, 0.0f, false, false, "");
 			}
 			else if (mfStare_DistanceCovered < -2.0f)
