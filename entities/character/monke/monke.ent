@@ -6,7 +6,11 @@
         </Mesh>
         <Bones>
             <Bone ID="1" Name="chimp_geo" />
-            <Bone ID="2" Name="mixamorig:Hips" />
+            <Bone ID="2" Name="mixamorig:Hips">
+                <Sockets>
+                    <Socket ID="61" Name="socket_root" CreStamp="0" ModStamp="1605178646" WorldPos="-7.38716e-05 0.719594 -0.0110436" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
             <Bone ID="3" Name="mixamorig:Spine" />
             <Bone ID="4" Name="mixamorig:Spine1" />
             <Bone ID="5" Name="mixamorig:Spine2" />
@@ -79,18 +83,17 @@
         <Bodies />
         <Joints />
         <Animations>
-            <Animation Name="monke_attack_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_1.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_attack_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_2.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_kick" File="mods/MonkeIsland/entities/character/monke/animations/monke_kick.fbx" Layer="Default" Speed="1" />
+            <Animation Name="attack_close_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="attack_lunge_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="attack_close_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_kick.fbx" Layer="Default" Speed="1" />
             <Animation Name="monke_death" File="mods/MonkeIsland/entities/character/monke/animations/monke_death.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_run" File="mods/MonkeIsland/entities/character/monke/animations/monke_run.fbx" Layer="Default" Speed="0.35" />
-            <Animation Name="monke_hit_reaction" File="mods/MonkeIsland/entities/character/monke/animations/monke_hit_reaction.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_idle_extra_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_1.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_idle_extra_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_2.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_idle_extra_3" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_3.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_walk" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk.fbx" Layer="Default" Speed="1" />
-            <Animation Name="monke_idle" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle.fbx" Layer="Default" Speed="1" />
-            <Animation Name="alert" File="mods/MonkeIsland/entities/character/monke/animations/alert.fbx" Layer="Default" Speed="1" />
+            <Animation Name="run" File="mods/MonkeIsland/entities/character/monke/animations/monke_run.fbx" Layer="Default" Speed="0.2" />
+            <Animation Name="idle_extra_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="idle_extra_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="idle_extra_3" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_3.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk.fbx" Layer="Default" Speed="0.7" />
+            <Animation Name="idle" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="alert" File="mods/MonkeIsland/entities/character/monke/animations/alert.fbx" Layer="Default" Speed="0.7" />
             <Animation Name="monke_climb_left" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_left.fbx" Layer="Default" Speed="1" />
             <Animation Name="monke_climb_right" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_right.fbx" Layer="Default" Speed="1" />
             <Animation Name="monke_climb_up_right" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_up_right.fbx" Layer="Default" Speed="1" />
@@ -100,6 +103,13 @@
             <Animation Name="monke_idle_to_climb" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_to_climb.fbx" Layer="Default" Speed="1" />
             <Animation Name="monke_idle_to_wall_hang" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_to_wall_hang.fbx" Layer="Default" Speed="1" />
             <Animation Name="monke_wall_hang_to_fall" File="mods/MonkeIsland/entities/character/monke/animations/monke_wall_hang_to_fall.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_walk_search" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk_search.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_hit_reaction" File="mods/MonkeIsland/entities/character/monke/animations/monke_hit_reaction.fbx" Layer="Default" Speed="1.2" />
+            <Animation Name="alert_var1" File="mods/MonkeIsland/entities/character/monke/animations/alert.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk_search" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk_search.fbx" Layer="Default" Speed="1" />
+            <Animation Name="angry_1" File="mods/MonkeIsland/entities/character/monke/animations/angry_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="angry_2" File="mods/MonkeIsland/entities/character/monke/animations/angry_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_flip" File="mods/MonkeIsland/entities/character/monke/animations/monke_flip.fbx" Layer="Default" Speed="1" />
         </Animations>
         <ProcAnimations />
     </ModelData>
@@ -122,19 +132,19 @@
         <Var ObjectId="4294967295" Name="CharBodyBoneIsFeet" Value="true" />
         <Var ObjectId="4294967295" Name="CharBodyBoneYOffset" Value="0" />
         <Var ObjectId="4294967295" Name="CharBodyMaterial" Value="" />
-        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="" />
-        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="" />
-        <Var ObjectId="4294967295" Name="CloseAttackName" Value="monke_attack" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="agent_monke.hps" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="cScrAgentMonke" />
+        <Var ObjectId="4294967295" Name="CloseAttackName" Value="attack_close" />
         <Var ObjectId="4294967295" Name="NumAttackAnims" Value="2" />
-        <Var ObjectId="4294967295" Name="LungeAttackName" Value="monke_attack" />
-        <Var ObjectId="4294967295" Name="NumAttackLungeAnims" Value="2" />
+        <Var ObjectId="4294967295" Name="LungeAttackName" Value="attack_lunge" />
+        <Var ObjectId="4294967295" Name="NumAttackLungeAnims" Value="1" />
         <Var ObjectId="4294967295" Name="MinEatTime" Value="30" />
         <Var ObjectId="4294967295" Name="MaxEatTime" Value="45" />
-        <Var ObjectId="4294967295" Name="CharMover_IdleAnim" Value="monke_idle" />
-        <Var ObjectId="4294967295" Name="CharMover_WalkAnim" Value="monke_walk" />
-        <Var ObjectId="4294967295" Name="CharMover_RunAnim" Value="monke_run" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleAnim" Value="idle" />
+        <Var ObjectId="4294967295" Name="CharMover_WalkAnim" Value="walk" />
+        <Var ObjectId="4294967295" Name="CharMover_RunAnim" Value="run" />
         <Var ObjectId="4294967295" Name="CharMover_BackwardAnim" Value="" />
-        <Var ObjectId="4294967295" Name="CharMover_IdleExtraAnim" Value="monke_idle_extra_" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraAnim" Value="idle_extra_" />
         <Var ObjectId="4294967295" Name="CharMover_IdleExtraMinWait" Value="4" />
         <Var ObjectId="4294967295" Name="CharMover_IdleExtraMaxWait" Value="10" />
         <Var ObjectId="4294967295" Name="CharMover_IdleExtraPauseProcedural" Value="true" />
@@ -159,9 +169,9 @@
         <Var ObjectId="4294967295" Name="FootPlacement_FootDepth" Value="0.05" />
         <Var ObjectId="4294967295" Name="FootPlacement_MaxFootHeight" Value="0.25" />
         <Var ObjectId="4294967295" Name="FootPlacement_FadeSpeed" Value="8.0" />
-        <Var ObjectId="4294967295" Name="FootPlacement_LeftFoot" Value="mixamorig:LeftFoot mixamorig:LeftLeg" />
-        <Var ObjectId="4294967295" Name="FootPlacement_RightFoot" Value="mixamorig:RightFoot mixamorig:RightLeg" />
-        <Var ObjectId="4294967295" Name="FootPlacement_FrontLeftFoot" Value="mixamorig:LeftFoot mixamorig:LeftLeg" />
+        <Var ObjectId="4294967295" Name="FootPlacement_LeftFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_RightFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FrontLeftFoot" Value="" />
         <Var ObjectId="4294967295" Name="FootPlacement_FrontRightFoot" Value="" />
         <Var ObjectId="4294967295" Name="FootPlacement_FootOffset" Value="0 0 0" />
     </UserDefinedVariables>

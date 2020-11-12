@@ -1,0 +1,1308 @@
+#include "modules/ModuleInterfaces.hps"
+
+//---------------------------------------------------
+
+shared enum eModuleType_Custom
+{
+	// Must be bigger than eModuleType_LastEnum
+	eModuleType_Custom_MenuHandler=51,
+	eModuleType_Custom_ItemHandler=52,
+	eModuleType_Custom_HeatHandler=53,
+	eModuleType_Custom_DeathHandler=55,
+	eModuleType_Custom_SketchbookUIHandler=57,
+	eModuleType_Custom_TerrorHandler=58,
+	eModuleType_Custom_AgentBlackboard=59,
+	eModuleType_Custom_GhoulProgressionHandler = 65,
+	eModuleType_Custom_FogPushHandler = 67,
+	eModuleType_Custom_FearHandler = 70,
+	eModuleType_Custom_PregHandler = 71,
+	eModuleType_Custom_PushableFogHandler = 72,
+	eModuleType_Custom_ShadowFleshHandler = 73,
+	eModuleType_Custom_DreamHandler = 74,
+	eModuleType_Custom_RiftHandler = 75,
+	eModuleType_Custom_DarkWorldPowerHandler = 76,
+	eModuleType_Custom_StruggleFlashHandler = 77,
+	eModuleType_Custom_PlayerEmotionHandler = 78,
+	eModuleType_Custom_FontHandler = 79,
+	eModuleType_Custom_AchievementHandler = 80,
+	eModuleType_Custom_LastEnum
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// ACHIEVEMENT HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrAchievementHandler_Custom_Interface
+{
+	void IncreaseCount(eAchievementCount aCount);
+}
+
+shared enum eAchievementCount
+{
+	eAchievementCount_Notes,
+	eAchievementCount_CrewNotes,
+	eAchievementCount_Cylinders,
+	eAchievementCount_UsedMatches,
+	eAchievementCount_BrokenProps
+}
+
+//---------------------------------------------------
+
+
+/////////////////////////////////////////
+// FONT HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrFontHandler_Interface
+{
+	void SetLanguage(const tString& in asLanguage);
+	tString GetFont(eFontType aFontType, int alSize);
+}
+
+shared enum eFontType
+{
+	eFontType_MainMenu,
+	eFontType_MainMenu_InfoBox,
+	eFontType_Sketchbook,
+	eFontType_GamepadPrompt,
+	eFontType_Hints,
+	eFontType_Readable,
+	eFontType_MemoryCylinder_Big,
+	eFontType_MemoryCylinder_Small,
+	eFontType_ControlsPrompt,
+	eFontType_Subtitles,
+	eFontType_Credits
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// MENU HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrMenuHandler_Interface
+{
+	void EnablePauseMenu(bool abX);
+	void ShowMainMenu(bool abX);
+	bool GetMenuActive();
+	void GameOver();
+	void SetMenuActive(bool abX);
+	void SetSaveLoadEnabled(bool abX);
+	void SetMainMenuSketchbookSketch(const tString& in asSketch);
+	void SetMainMenuItemsPhase(eMainMenuPhase_Items aPhase);
+	void SetMainMenuGhoulPhase(int alPhase);
+	
+}
+
+shared enum eMainMenuPhase_Sketchbook
+{
+	eMainMenuPhase_Sketchbook_None,
+	eMainMenuPhase_Sketchbook_Plane,
+	eMainMenuPhase_Sketchbook_Caves,
+	eMainMenuPhase_Sketchbook_CavesB,
+	eMainMenuPhase_Sketchbook_DWL,
+	eMainMenuPhase_Sketchbook_PathToOutpost,
+	eMainMenuPhase_Sketchbook_Courtyard,
+	eMainMenuPhase_Sketchbook_Arsenal,
+	eMainMenuPhase_Sketchbook_LQ,
+	eMainMenuPhase_Sketchbook_Cistern,
+	eMainMenuPhase_Sketchbook_Oasis,
+	eMainMenuPhase_Sketchbook_AlchemistLab,
+	eMainMenuPhase_Sketchbook_HQA,
+	eMainMenuPhase_Sketchbook_HQB,
+	eMainMenuPhase_Sketchbook_PillarsRoom,
+	eMainMenuPhase_Sketchbook_VitaeStation,
+	eMainMenuPhase_Sketchbook_GhoulsNest,
+	eMainMenuPhase_Sketchbook_FactoryA,
+	eMainMenuPhase_Sketchbook_FactoryB,
+	eMainMenuPhase_Sketchbook_FactoryC,
+	eMainMenuPhase_Sketchbook_FactoryD,
+	eMainMenuPhase_Sketchbook_Town,
+	eMainMenuPhase_Sketchbook_Sandstorm,
+	eMainMenuPhase_Sketchbook_Undercity,
+	eMainMenuPhase_Sketchbook_End,
+}
+
+shared enum eMainMenuPhase_Ghoul
+{
+	eMainMenuPhase_Ghoul_None,
+	eMainMenuPhase_Ghoul_VeryMild,
+	eMainMenuPhase_Ghoul_Mild,
+	eMainMenuPhase_Ghoul_Medium,
+	eMainMenuPhase_Ghoul_Strong,
+	eMainMenuPhase_Ghoul_VeryStrong,
+	eMainMenuPhase_Ghoul_Max,
+}
+
+shared enum eMainMenuPhase_Items
+{
+	eMainMenuPhase_Items_None,
+	eMainMenuPhase_Items_Doll,
+	eMainMenuPhase_Items_DollRing,
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// ITEMS
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+// Item used for rendering inventory
+shared interface iScrItemType
+{
+	// Item Type ID
+	tString GetID();
+	// String ID for name
+	tString GetNameID();
+	// String ID for description
+	tString GetDescID();
+	// Can this type be combined with this other type?
+	bool CanCombineWith(iScrItemType@ apOtherType);
+	// How many of these can we have? -1 = infinite
+	int GetAmountMax();
+	// How many of these can we have? -1 = infinite
+	bool AllowsStacking();
+	// Can this be combined with anything at all?
+	bool CanCombine();
+	// Is combining prioritized over stacking?
+	bool PrioritizeCombineOverStacking();
+	// Get type/types item can combine with
+	tString GetCombineType();
+	// Should hand animation be played when picking up or held?
+	bool GetUsesArmAnimation();
+	bool GetUseArmAnimationYaw();
+	bool GetUseArmAnimationPitch();
+	bool GetUsesInspectAnimation();
+	tString GetEntityInspectAnimation();
+	tString GetPlayerInspectAnimation();
+	
+	/////////////////////
+	// Inventory
+	// Icon
+	tString GetInventoryIcon();
+	// Alternative icon
+	tString GetAltInventoryIcon();
+	// Custom icon for pickup
+	tString GetPickupIcon();
+	// Is it a special item?
+	//bool GetSpecialItem();
+	
+	/////////////////////
+	// Container stuff
+	bool IsContainer();
+	// What type of stuff does it hold?
+	tString GetContainerContentType();
+	// On spawn, how much does it have in it (random value)?
+	int GenerateInitAmount();
+	
+	////////////////////
+	// Use
+	bool CanUseOnSelf();
+	tString GetCanUseOnSelfMapCallback();
+	tString GetUseOnSelfMapCallback();
+	bool CanUseOnWorld();
+	tString GetCanUseOnWorldMapCallback();
+	tString GetUseOnWorldMapCallback();
+	bool GetUseCanMove();
+	int GetUsingState();
+		
+	////////////////////
+	// Hands
+	// Take out into left hand
+	bool IsLeftHand();
+	eItemHandlerHand GetEquipHand();
+	// Is it a flashlight source?
+	bool IsLightSource();
+	// Hand entity
+	tString GetHandEntityFile();
+	// Accessory entity
+	tString GetAccessoryEntityFile();
+	// Accessory socket
+	tString GetAccessorySocket();
+	// Accessory entity scale
+	float GetAccessoryEntityScale();
+	// Is accessory?
+	bool IsAccessory();
+	// Use socket parent bone rotation instead of socket rotation?
+	bool UseParentBoneRotation();
+	// Entity scale
+	float GetEntityScale();
+	//Toggle times
+	float GetEquipToggleDelay();
+	float GetUnequipToggleDelay();
+}
+
+//---------------------------------------------------
+
+shared interface iScrItem
+{
+	// Item ID
+	tString GetID();
+	// Type ID
+	tString GetTypeID();
+	// Type class
+	iScrItemType@ GetType();
+	// Crosshair gui element
+	const tString& GetCrossHairGfx();
+	// Get the amount of items of the same type or content type
+	int GetAmount();
+	// Amount of items of the same type or content type before SetAmount() was called.
+	int GetPreviousAmount();
+	// Set the amount of items of the same type or content type
+	void SetAmount(int alAmount);
+	//The maximum amount allowed.	
+	int GetMaxAmount();
+	// Is amount maxed?
+	bool IsAmountMaxed();
+	// Can we combine these items?
+	bool CanCombineWith(iScrItem@ apOtherItem);
+	// Can this be combined with anything at all?
+	bool CanCombine();	
+	// Does it contain things?
+	bool IsContainer();
+	// What does it contain?
+	tString GetContentType();
+	// Change what it contains
+	void SetContentType(const tString& in asContentType);
+	// Get fullness level
+	float GetFullness();
+	// Set fullness level
+	void SetFullness(float afFullness);
+	// Disable/enable use on self
+	void SetDisableUseOnSelf(bool abX);
+	// Is use on self disabled?
+	bool GetUseOnSelfDisabled();
+	// If use altenative icon
+	bool GetUseAltInventoryIcon();
+	// Set use alternative icon
+	void SetUseAltInventoryIcon(bool abX, bool wbWhenSketchbookClosed = true);
+	// Get active inventory icon
+	tString GetActiveInventoryIcon();
+	// Get icon shown when picking up item
+	tString GetPickupIcon();
+	// Set hidden from inventory
+	void SetHidden(bool abX);
+	// Get hidden from inventory
+	bool GetHidden();
+	// Make sure this subtype can be added
+	bool CanAddSubType(const tString& in asType, const tString& in asSubType);
+	
+	tString GetInternalEntity();
+	void DestroyInternalEntity();
+	void Destroy();
+}
+
+//---------------------------------------------------
+
+shared enum eItemSpawn
+{
+	eItemSpawn_World,
+	eItemSpawn_Hand,
+	eItemSpawn_LeftHand
+}
+
+//---------------------------------------------------
+
+shared enum eItemHandlerHand
+{
+	eItemHandlerHand_Left,
+	eItemHandlerHand_Right,
+	eItemHandlerHand_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iScrItemHandler_Interface
+{
+	void ClearInventory();
+	tString AddToInventory(const tString& in asType, bool abDrawGuiAnimation = false);
+	void AddManyToInventory(const tString& in asType, int alCount);
+	void RemoveFromInventory(const tString& in asItemID, bool abWholeBulk=false, bool abSkipUnequip=false);
+	bool Combine(const tString& in asItemAID, const tString& in asItemBID);
+	iScrItem@ GetByID(const tString& in asItemID);
+	bool WillItemTypeFit(const tString& in asType);
+	void RemoveTypeFromInventory(const tString& in asType, int alCount=-1);
+	bool IsTypeInInventory(const tString& in asType);
+	int GetTypeCountInInventory(const tString& in asType);
+	int GetContentTypeCountInInventory(const tString& in asType);
+	tString GetFirstOfTypeInInventory(const tString& in asType);
+	void UpdateInventoryIcons();
+	tString PickUpEntity(const tString& in asEntityName, bool abMakeHeld=false, bool abThenPutAway=true);
+	tString SpawnAsEntity(const tString& in sItemID, const cMatrixf& in aTransform, const tString& in asName="", float afScale=1.0f, eItemSpawn aSpawn=eItemSpawn_World, bool abIsAccessory=false);
+	tString SpawnTypeAsEntity(const tString& in asType, const cMatrixf& in aTransform, const tString& in asName="", float afScale=1.0f, eItemSpawn aSpawn=eItemSpawn_World, bool abIsAccessory=false);
+	iScrItemType@ FindType(const tString& in asType);
+	
+	// For iterating through for inventory UI - 
+	// best to ignore otherwise.
+	uint GetItemCount();
+	iScrItem@ GetItem(int i);
+	
+	// For UI preloading
+	void GetContentTypes(array<tString>& out avTypes);
+	
+	// Player hands
+	void TakeOut(const tString& in asItem, bool abThenPutAway=false);
+	void Equip(const tString& in asItem);
+	void Unequip(const tString& in asItem, bool abInstant=false);
+	void PutAway(eItemHandlerHand aHand);
+	bool IsItemHeld(eItemHandlerHand aHand);
+	int GetHeldItemState(eItemHandlerHand aHand);
+	tString GetHeldItem(eItemHandlerHand aHand);
+	tString GetHeldEntity(eItemHandlerHand aHand);
+	tString GetAccessoryEntityByID(const tString &in asItemID);
+	bool CanUseHeldItemOnSelf(eItemHandlerHand aHand);
+	bool CanUseHeldItemOnWorld(eItemHandlerHand aHand, const tString& in asPickedEntity);
+	void UseHeldItemOnSelf(eItemHandlerHand aHand);
+	void UseHeldItemOnWorld(eItemHandlerHand aHand, const tString& in asEntity);
+	void KillHeldItem(eItemHandlerHand aHand);
+	void StopUsingItem(eItemHandlerHand aHand);
+	tString GetLastHeldItem(eItemHandlerHand aHand);
+	bool IsPickingUpItem();
+	void CancelPuttingAway(eItemHandlerHand aHand);
+	void ToggleHeldItem(const tString&in asItem, eItemHandlerHand aHand);
+	void ToggleMatch();
+	
+	// Entities
+	void SetEntityItemType(const tString& in asEntity, const tString& in asTypeID);
+	tString GetEntityItemType(const tString& in asEntity);
+	void CopyItemDataToEntity(iScrItem@ apItem, const tString& in asEntity);
+	void CopyEntityToItemData(const tString& in asEntity, iScrItem@ apItem);
+	void SetEntityContent(const tString& in asEntity, const tString& in asSubType, int alLevel);
+	void CopyItemEntityInfo(const tString& in asSource, const tString& in asDest);
+	
+	void ShowMatchCount(bool abEmpty, bool abRemainOnScreen = true);
+	void ShowShadowFleshVialCount(bool abEmpty, bool abRemainOnScreen = true);
+	void FlashItemCount(int alFlashCount = 1);
+	
+	void GiveAllItems();
+	
+	void StartPickUpGuiAnimation(const tString &in asIcon, float afDelay=0.f);
+	bool GetIsPickupGuiAnimating();
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// SKETCHBOOK UI
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+shared enum eSketchbookState
+{
+	eSketchbookState_Inventory,
+	eSketchbookState_Ideas,
+	eSketchbookState_Notes,
+	eSketchbookState_Memories,
+	eSketchbookState_Alys,
+	
+	eSketchbookState_LastEnum,
+}
+
+//-------------------------------------------------
+
+shared interface iScrSketchbookUIHandler_Interface
+{
+	void OpenSketchbook(const bool abPauseGame=true);
+	void CloseSketchbook();
+	bool IsSketchbookOpen();
+	
+	void SetSketchbookState(int alState);
+	void ToggleSkethcbookState(int alState);
+	void SetInventoryEnabled(bool abX);
+	
+	void GetNoteData(const tString&in asNoteID, tString&out asCategoryID, tString&out asVoiceEntry, tString&out asFrontEntry, tString&out asBackEntry);
+	void AddNoteByID(const tString &in asNoteID);
+	int CheckNotesAmount();
+	void CollectAllNotes();
+	void ClearNotes();
+	
+	void AddIdeaNew(const tString &in asName, const tString &in asIdeaToReplace="", bool abNotify = true);
+	void AddIdea(const tString &in asName, const tString &in asPageID, bool abNotify = true, const tString &in asIdeaToReplace = "");
+	void AddIdeaEntry(const tString &in asName, int alPageNumber=-1, bool abNotify = true, const tString &in asIdeaToReplace = "");
+	void AddIdeasPage();
+	bool GetIdeaActive(const tString &in asName);
+	void RemoveIdea(const tString &in asName);
+	void RemoveAllIdeas();
+	void AddAllIdeas(const bool abComplete);
+	void SetIdeaHintEnabled(bool abX);
+		
+	void DrawContainerLevelGui(tString asItemID, const cVector3f avPos, float afScale=1.0f, float afAdditionalProgress=0.0f);
+	
+    void Microflash(const tString&in asSubject, const tString &in asCallback, int alLineId =- 1, float afDuckAudioTo=1.0f);
+	void SetLockByMemoryID(const tString&in asMemoryID, const bool abLocked, const bool abDoFlashback=true, const tString &in asCallback="", bool abAllowSkip=true);
+	bool IsFlashbackActive(bool abJustCheckSketchActive = false);
+	bool IsMicroflashActive();
+	void SetLockForAllMemories(const bool abLocked);
+	bool GetIsMemoryUnlocked(const tString&in asMemoryID);
+	void StopAnyMemoryFlashes();
+	void StopMicroflashEffects();
+	
+	void AddMemoryCylinder(const tString&in asSubject, const tString&in asText);
+	
+	bool GetPopupIconsEnabled();
+	
+	int GetPlaytime(bool abAddCurrent=false);
+	void ResetPlaytime();
+	bool BeatenDevPlaytime();
+	
+	void OnReadNoteComplete();
+	
+	void RenderDWNoteGUI(const tString& in asEntity, float afTimeStep);
+	
+	bool NotifyIdeasStateActive();
+	
+	int GetUsedMatchesCounter();
+	void IncreaseUsedMatchesCounter();
+	
+	void RenderCrewSketchPageGUI(const tString& in asPageID, float afAlpha, float afFontScale=1.0f, bool abShowText=true);
+	void RenderBookCoverLabel(float afFontScale=1.0f);
+}
+	
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// HEAT HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+// Desert heat levels
+// The hotter it is, the faster health will decrease
+// This maps to gvHeatLevels in HeatHandler.hps
+shared enum eHeatLevel
+{
+	eHeatLevel_None=0,
+	eHeatLevel_Warm,
+	eHeatLevel_Hot,
+	eHeatLevel_VeryHot,
+	eHeatLevel_Scorching,
+	eHeatLevel_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iScrHeatHandler_Interface
+{
+    void SetHeatActive(const bool abActive, const float afMaxHeatExposureToAdd, const bool abShouldPerformEvents, const bool abShouldAffectMoveSpeed, const bool abShouldProtectEyes);
+	bool InShadow();
+    int GetHeatLevel();
+    void SetHeatLevel(const int alHeatLevel);
+    void SetEventsActive(const bool abActive);
+	void SetAnimationEventsActive(bool abX);
+    void SetAffectMoveSpeed(const bool abAffectSpeed);
+    void SetProtectEyesFromSun(const bool abActive);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DEATH HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrDeathHandler_Interface
+{
+	void StartDeath();
+	void StartRespawn(bool abTeleport);
+	void SetDeathAnimation(const tString &in asAnim);
+	void ResetDeathAnimation();
+	void SkipDeathAnimation(bool abSkip);
+	void ResetDeathConditions();
+	tString GetDeathSource();
+	void SetDeathSource(const tString &in asSource);
+	void SetDeathAreaForSource(const tString &in asSource, const tString &in asArea);
+	void SetDefaultDeathArea(const tString &in asArea);
+	void PickRespawnArea(const tString &in asSpecifiedAreas);
+	void SetRespawnCallback(const tString &in asFunc);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TERROR HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTerrorHandler_Interface
+{
+	void AddTerrorEnemy(tID aEnemy, float afTimeBeforeHunt = 6.0f);
+	void RemoveTerrorEnemy(tID aEnemy);
+	void AddHuntingEnemy(tID aEnemy, bool abPlayMusic=false, tString asMusic="", float afVolume=0.65f, float afFadeInTime=1.75f, float afFadeOut=3.0f);
+	void RemoveHuntingEnemy(tID aEnemy);
+	float GetAmount();	
+	bool GetPlayerIsBeingHunted();
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// AGENT BLACKBOARD
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+class cAgentEvent
+{
+	int mlStateId;
+	eAgentProximityEvent mEventType;
+	float mfProbability;
+	
+	cAgentEvent() {}
+	cAgentEvent(int alStateId, eAgentProximityEvent aEventType, float afProbability)
+	{
+		this = cAgentEvent();
+		mlStateId = alStateId;
+		mEventType = aEventType;
+		mfProbability = afProbability;
+	}
+}
+
+shared enum eAgentEnvironmentEvent
+{
+	eAgentEnvironmentEvent_GhoulSearchGround,
+	eAgentEnvironmentEvent_GhoulInteractWithFetish,
+	eAgentEnvironmentEvent_GhoulEat,
+	eAgentEnvironmentEvent_MonkeSearchGround,
+	eAgentEnvironmentEvent_MonkeInteractWithFetish,
+	eAgentEnvironmentEvent_MonkeEat,
+	eAgentEnvironmentEvent_LastEnum,
+}
+
+shared enum eAgentProximityEvent
+{
+	eAgentProximityEvent_GhoulRandom,
+	eAgentProximityEvent_GhoulTalk,
+	eAgentProximityEvent_GhoulFight,
+	eAgentProximityEvent_GhoulFollow,
+	
+	eAgentProximityEvent_MonkeRandom,
+	eAgentProximityEvent_MonkeTalk,
+	eAgentProximityEvent_MonkeFight,
+	eAgentProximityEvent_MonkeFollow,
+}
+
+shared class cBreadcrumb
+{
+	int mlId;
+	cVector3f mvPosition;
+	float mfMaxRadius;
+	float mfRadius;
+	float mfDuration;
+	float mfDecayTime;
+	float mfTimer;
+	tID m_idFearArea;
+	bool mbPickedUp;
+}
+	
+//---------------------------------------------------
+
+shared interface iScrAgentBlackboardModule_Interface
+{
+	void SetDebugMode(bool abActive);
+	void AddAgent(tID aEnemy);
+	void RemoveAgent(tID aEnemy);
+	void SetAgentHunt(tID aEnemy, bool abHunt);
+	void SetAgentInvestigate(tID aEnemy, bool abInvestigate);
+	int GetHuntingAgentCount();
+	int GetHuntingAgentCountInRadius(const cVector3f &in avPos, float afRadius);
+	int GetAgentCount();
+	void SetAlert();
+	int GetAlertLevel();
+	void ReduceAlertLevel(int alMin=1, int alMax=3);
+	void ResetAlertLevel();
+	void ShowDebug(bool abX);
+	int RegisterGhoulHoleNetwork(cLuxMap@ apMap, const tString &in asNetworkName, const tString &in asPlayerPath = "", const tString &in asConnectionsName = "");
+	array<tID> GetGhoulHoleNetwork(int mlId);
+	void SetGhoulHoleUsed(tID a_idHole, tID a_idAgent);
+	void RemoveGhoulHoleUsed(tID a_idHole);
+	void RemoveGhoulHolesUsedBy(tID a_idAgent);
+	bool GetGhoulHoleUsed(tID a_idHole);
+	tID GetGhoulHoleUsedBy(tID a_idHole);
+	int GetFreeGhoulHoleCount(int alNetworkId);
+	tID GetClosestGhoulHole(int alNetworkId, const cVector3f &in avPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = true, bool abAheadOfPlayer = false, bool abBehindPlayer = false, bool abOnlyOutOfPlayerSight = false, array<tID>@ avExcludeHoles = null);
+	tID GetRandomGhoulHole(int alNetworkId, const cVector3f &in avPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = true, bool abAheadOfPlayer = false, bool abBehindPlayer = false, bool abOnlyOutOfPlayerSight = false, array<tID>@ avExcludeHoles = null);
+	tID GetBestGhoulHole(int alNetworkId, const cVector3f &in avPos, tID a_idAgent);
+	int GetPlayerPathIndex(int alNetworkId, const cVector3f &in avPos);
+	array<cVector3f> GetClosestWallConnection(int alNetworkId, const cVector3f &in avPos, const cVector3f &in avGoalPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f);
+	void RequestBackup(tID a_idAgent, const cVector3f &in avPointOfInterest, int alRequestedState, int alRequestedBackupCount, float afMaxDistance, bool abOnlyIfNotAggressive = true, bool abClosest = true);
+	void AgentBlockedByDoor(tID a_idAgent, const cVector3f &in avSourcePos);
+	void ForceProximityEvent(eAgentProximityEvent aEventType = eAgentProximityEvent_GhoulRandom);
+	void ForceProximityEvent(tID a_idAgent1, tID a_idAgent2, eAgentProximityEvent aEventType = eAgentProximityEvent_GhoulRandom);
+	void ForceGhoulFollow(tID a_idAgent1, tID a_idAgent2, bool abMeetMidway, const cVector3f &in avMeetPos, bool abMoveToSpecificPos, const cVector3f &in avMoveToPos);
+	void AddEnvironmentEvent(const tString &in asEntityName, eAgentEnvironmentEvent aEventType);
+	void SetProximityEventsActive(bool abActive);
+    void SetCheckCollisionCourse(bool abX);
+	tID GetClosestAgent(const cVector3f &in avPos);
+	cBreadcrumb@ GetStrongestBreadcrumb(const cVector3f &in avPos, float afRadius);
+	cBreadcrumb@ GetStrongestBreadcrumbCenter(const cVector3f &in avPos, float afRadius);
+	cBreadcrumb@ GetClosestBreadcrumb(const cVector3f &in avPos);
+	cBreadcrumb@ GetBreadcrumb(int alId);
+	void RemoveBreadCrumb(int alId);
+	void RemoveAllBreadCrumbs();
+	void AddBreadCrumb(const cBreadcrumb &in aBread);
+	int GetBreadCrumbCounter();
+	void AddWraithPartnership(tID a_idLeader, tID a_idServant);
+	void RemoveWraithPartnership(tID a_idLeader, tID a_idServant);
+	int GetWraithServantCount(tID a_idLeader);
+	void WraithNotifyPlayerSpotted(tID a_idWraith, cVector3f mvPos);
+	void AddWraithDetectingPlayer(tID a_idWraith);
+	void RemoveWraithDetectingPlayer(tID a_idWraith);
+	void AddWraithBillboards(const tString &in asBillboards);
+	void GetWraithBillboards(tID a_idWraith, int alNum, array<tID> &out avBillboards);
+	void ReleaseWraithBillboards(tID a_idWraith, array<tID> &in avBillboards);
+	void SetWraithStruggleOwner(tID a_idWraith);
+	tID GetWraithStruggleOwner();
+	float GetStruggleCooldown();
+	void SetStruggleCooldown(float afCooldown);
+	void SetOverlookedAchievementDetectionActive(bool abX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// GHOUL PROGRESSION HANDLER
+/////////////////////////////////////////
+	
+shared enum eGhoulBarkStage
+{
+	eGhoulBarkStage_Ill,
+	eGhoulBarkStage_BecomingMonster,
+	eGhoulBarkStage_BecomingGhoul
+}
+
+//---------------------------------------------------
+
+shared interface iScrGhoulProgressionHandler_Interface
+{
+	void Increase(bool abIgnoreLimit = false, bool abDoEffects = true, bool abRubberBanding = true);	
+	bool GetIncreaseEffectsActive();
+	void DoEffects(float afMaterialFadeTime = -1.0f);
+	
+	int GetProgression();
+	void SetProgression(int alProgression);	
+	int GetMaxProgression();
+
+	int GetLimit();
+	void SetLimit(int alLimit, bool abIgnoreCurrentLimit = false);
+	
+	void SetPermafailFadeProgression(int alProgression);
+	int GetPermafailFadeProgression();
+	
+	void SetIncreaseDuringStruggle(bool abX, float afTimeUntilMax);
+	
+	void DoVeinPulse(float afPulseTime);
+	void DoVeinPulseTo(float afX, float afPulseTime);
+	void FadeVeinAmount(float afX, float afFadeTime);
+	
+	void FadeCustomArmMaterial(const tString &in asMaterial, float afFadeTime);
+	void FadeCustomArmMaterial(int alGhoulLevel, float afFadeTime);
+
+	void SetBarkStage(eGhoulBarkStage stage);
+	eGhoulBarkStage GetBarkStage();
+	tString GetPostPermaFailBark();
+	
+	void ResetArms();
+	void SetArmsVisible(bool abVisible);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// PREGNANCY HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared enum ePregStage
+{
+	ePregStage_Unknown = 0, 		// Tasi doesn't know (from start)
+	ePregStage_Stage1 = 1, 			// 4.5 Months (Deep Caves up to end of Dream: The Park)
+	ePregStage_Stage2 = 2,			// 6.5 Months (HQA up to end of Dream: The Home)
+	ePregStage_Stage3 = 3,			// 9 Months (up to the birth)
+	ePregStage_Born = 4,			// Baby is born
+	ePregStage_BornRecovered = 5,	// Baby is born, Tasi has recovered a bit
+	ePregStage_Test = 6,			// For testing
+	
+	ePregStage_Max = 7
+}
+	
+//---------------------------------------------------
+
+shared enum eBabyTalkStage
+{
+	eBabyTalkStage_Unknown,
+	eBabyTalkStage_CavesToCisternStart,
+	eBabyTalkStage_CisternStartToOasis,
+	eBabyTalkStage_OasisToAlchemists,
+	eBabyTalkStage_Alchemists,
+	eBabyTalkStage_TTH_BeforeName,
+	eBabyTalkStage_TTH_AfterName,
+	eBabyTalkStage_DWF_BeforeScan,
+	eBabyTalkStage_DWF_AfterScan,
+	eBabyTalkStage_DWF_Tortured,
+	eBabyTalkStage_DWF_NotTortured,
+	eBabyTalkStage_Town,
+	eBabyTalkStage_Born,
+	eBabyTalkStage_Carried
+}
+
+//---------------------------------------------------
+
+shared interface iScrPregHandler_Interface
+{
+	tString GetBabyTalkStageName();
+	ePregStage GetStage();
+	tString GetPregStageName();
+	tString GetPregStageBodyModel();
+	void SetStage(ePregStage preg);
+	void SetBarksActive(bool value);
+	void SetWhispering(bool value);
+	bool ShouldWhisper();
+	tString GetBabyTalkVoiceSubject();
+	eBabyTalkStage GetBabyTalkStage();
+	void SetBabyTalkStage(eBabyTalkStage stage);
+	void SetBabyKickRateMul(const float afMul);
+	void SetBabyTalkSpecialSubject(tString subjectID);
+	void SetBabyTalkRoomSpecificSubject(tString subjectID, bool abLockedSafeRoomOnly);
+	void SetBabyKicksEnabled(bool abX);
+    bool GetBabyKicksEnabled();
+	float GetTimeSinceLastBabyKick();
+	int GetBabyKickId();
+	void DoBabyKick(bool abForce);
+	void OnItemTakenOut(const tString& in asItem);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// FEAR HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared class cFearObjectParams
+{
+	tID m_idEntity;
+	float mfBaseFearRate;
+	float mfSurpriseFactor;
+	float mfLookAtFactor;
+	float mfActivationDistance;
+	float mfDeactivationDistance;
+	float mfActivationDelay;
+	float mfActivationLightLevel;
+	tString msActivationCallback;
+	tString msDeactivationCallback;
+	tString msActivationTriggers;
+	bool mbLookAtDetectWholeArea;
+}
+
+shared class cFearScaryObjectParams : cFearObjectParams
+{
+	float mfInteractFactor;
+}
+
+shared class cFearThreatParams : cFearObjectParams
+{
+	float mfMaxFearDist;
+	float mfMinFearDist;
+}
+
+shared class cFearAreaParams
+{
+	tID m_idArea;
+	tString msMap;
+	int mlPriority;
+	bool mbSafe;
+	bool mbNoFear;
+	bool mbDarknessFear;
+	float mfBabyKickRateMultiplier;
+	bool mbLocked;
+	tString msUnsafeMusic;
+	tString msSafeMusic;
+	float mfNonAgentRateCap;
+	bool mbAllowProgressWithToken;
+	bool mbAllowProgressWithoutToken;
+	int mlMaxProgressCount;
+	int mlProgressAmount;
+}
+
+shared class cFearRateAreaParams
+{
+	tID m_idArea;
+	tString msMap;
+	float mfFearRate;
+	int mlPriority;
+	float mfIncreaseSpeed;
+	float mfDecreaseSpeed;
+}
+
+shared enum eFearForcedRateType
+{
+	eFearForcedRateType_Script,
+	eFearForcedRateType_Vertigo,
+	eFearForcedRateType_Underwater,
+	eFearForcedRateType_PermaFail,
+	eFearForcedRateType_Heat,
+	eFearForcedRateType_Struggle
+}
+
+shared enum eFearRateMulType
+{
+	eFearRateMulType_Script,
+	eFearRateMulType_BabyKick,
+	eFearRateMulType_CheckBaby,
+	
+	eFearRateMulType_LastEnum
+}
+
+shared enum eFearWhisperStage
+{
+	eFearWhisperStage_StartToSalim,
+	eFearWhisperStage_SalimToRadio,
+	eFearWhisperStage_RadioToBabyKick,
+	eFearWhisperStage_BabyKickToOasis,
+	eFearWhisperStage_OasisToBabyKick,
+	eFearWhisperStage_BabyKickToHQA,
+	eFearWhisperStage_HQAToVitaeStation,
+	eFearWhisperStage_VitaeStationToMilking,
+	eFearWhisperStage_MilkingToDWFA,
+	eFearWhisperStage_DWFAToDWFC,
+	eFearWhisperStage_DWFCToTown,
+	eFearWhisperStage_TownToBirth,
+	eFearWhisperStage_BirthToThroneRoom,
+	eFearWhisperStage_ThroneRoomToEnd
+}
+
+shared enum eFearAreaState
+{
+	eFearAreaState_None,
+	eFearAreaState_Safe,
+	eFearAreaState_Unsafe,
+}
+
+shared interface iScrFearHandler_Interface
+{
+	void Debug();
+	void SetActive(bool abActive);
+	bool GetIsActive();
+	void SetPaused(bool abPaused);
+	bool GetPaused();
+	bool IsInitialized();
+	void SetDefaultState(eFearAreaState aState);
+	void SetUpdateInterval(float afInterval);
+	void RegisterScaryObject(cFearScaryObjectParams@ apFearObject);
+	void RegisterThreat(cFearThreatParams@ apFearObject);
+	void RegisterThreatAgent(cFearThreatParams@ apFearObject);
+	void RegisterFearArea(cFearAreaParams@ apFearArea);
+	void RegisterFearRateArea(cFearRateAreaParams@ apFearRateArea);
+	void SetDarknessFactorActive(bool abX);
+	void ForceUnderwaterFear(bool abX);
+	float GetLevel();
+	void SetDifficultyMul(float afMul);
+	bool IsAgentNearby();
+	void SetMaxLevel(float afMax);
+	void ResetMaxLevel();
+	float GetRate();
+	void SetAverageBrightness(bool abActive);
+	void SetForcedAddFearRate(uint alId, float afFearRate, float afDuration = -1.0f, bool abGasp = true, float afIncreaseSpeed = -1.0f, float afDecreaseSpeed = -1.0f, float afDelay = 0.0f);
+	void AddProgressToken();
+	bool PlayGasp(float afPrevContrib, float afContrib, bool abDelay = false);
+	void SetLevelTo(float afLevel);
+	void FadeLevelTo(float afLevel, float afFadeTime, bool abIgnoreRegenCap = true);
+	void FadeRateMulTo(eFearRateMulType aType, float afMul, float afFadeTime);
+	void IncreaseLevel(float afAmount, const tString&in asSource = "", bool abIgnoreRegenCap = true, bool abDoIntro = true);
+	
+	void SetStruggleGradingTextureActive(bool abX);
+	
+	void SetAllowWarningHint(bool abX);
+	void SetAllowDarknessReminderHint(bool abX);
+	void SetAllowLanternOveruseHint(bool abX);
+	void SetAllowLanternReminderHint(bool abX);
+	void SetAllowLanternRefillHint(bool abX);
+	void SetAllowMonsterHint(bool abX);
+	
+	bool GetPermaFailEnabled();
+	bool GetIsPermaFailing();
+	void SetPermaFailEnabled(bool abEnabled);
+	void SetWakeUpSoundsAllowed(bool abAllowed);
+	void SetPermaFailRandCamRotActive(const bool abActive);
+	void SetPermaFailStruggleEnabled(bool abEnabled);
+	void SetPermaFailPlayVocals(bool abEnabled);
+	void StopStruggleSoundLoop(float afFadeTime);
+	void PlayStruggleSoundLoop(float afFadeTime, float afVolume, bool abAutoStop);
+	void SetStruggleSoundLoopAutoStop(float afDelay);
+	void TriggerPermaFail(bool abDoIntro = false, const tString&in asSource = "", bool abPlaySkippedIntroSound = false);
+	void TriggerPermaFail_Fall();
+	int GetTotalTimesPermafailed();
+	void AddPermaFailScene(const tString &in asPlayerAnim, const tString &in asEntity, const tString &in asAnimEntity, const tString &in asEntityAnim, float afDuration, bool abRandomLookDir = false);
+	void AddPermaFailScene(const tString &in asMoveStartEnt, const tString &in asMoveEndEnt, float afMoveSpeed, float afDuration, bool abRandomLookDir = false, bool abCrouch = false);
+	void AddPermaFailScene(const tString &in asCameraAnim, float afDuration);
+	void ClearPermaFailScenes();
+	void StopPermaFailScenes();
+	void SetPermaFailRespawnArea(const tString &in asArea);
+	tString GetPermFailRespawnArea();
+	void SetPermaFailWakeUpMusicPrio(int alPrio);
+	void StartPermaFailIntro(bool abPlaySounds = false);
+	bool HasPermaFailScenesAdded();
+	void SetPermaFailTriggerAnimation(const tString &in asAnim);
+	void SetUsePermaFailTriggerAnimation(bool abX);
+	void StartPermaFailWakeUpSequence(float afDelay);
+	void SetVolumeResetOnCustomPermaFail(bool abX);
+	void SetPlayPermaFailGhoulBreathing(bool abX);
+	void SetPermafailBabySceneEnabled(bool abX, bool abAutoReset);
+	void FadeTentacleSizeAddTo(float afSizeTarget, float afTime);
+	
+	bool IsLookingAtScaryEntity();
+	
+	void PlayerHearAgent(const cVector3f &in avPosition, float afRadius);
+	void SetFearLevelRateMul(float afMul);
+	void IncreaseLevelRegenCap();
+	bool GetPlayerPastLastCap();
+	void SetCanGasp(bool abX);
+	void SetCameraRollActive(bool abX);
+	
+	void SetFearTentaclesMul(float afMul);
+	float GetFearTentaclesMul();
+	
+	int GetFearAreaState();
+	tID GetActiveFearArea();
+	bool IsInDarknessArea();
+	
+	void SetFearAreaSafe(const tString &in asName, bool abSafe);
+	void SetFearAreaGivesFear(const tString &in asName, bool abGivesFear);
+	bool GetFearAreaSafe(const tString &in asName);
+	bool GetFearAreaDarknessFear(const tString &in asName);
+	float GetFearAreaBabyKickRateMul(const tString &in asName);
+	float GetCurrFearAreaBabyKickRateMul();
+	void SetFearAreaLocked(const tString &in asName, bool abLocked);
+	bool GetFearAreaLocked(const tString &in asName);
+	void SetFearAreaUnsafeMusic(const tString &in asName, const tString &in msMusic);
+	tString GetFearAreaUnsafeMusic(const tString &in asName);
+	void SetFearAreaSafeMusic(const tString &in asName, const tString &in msMusic);
+	tString GetFearAreaSafeMusic(const tString &in asName);
+	float GetFearAreaSafeMusicVol();
+	
+	void SetFearRateAreaRate(const tString &in asName, float afRate);
+	float GetFearRateAreaRate(const tString &in asName);
+	void SetFearAreaPriority(const tString &in asName, int alPriority);
+	
+	void SetComponentEnabled_ScaryObject(const tString&in asEntity, bool abEnabled);
+	void SetComponentEnabled_Threat(const tString&in asEntity, bool abEnabled);
+	void SetComponentEnabled_ThreatAgent(const tString&in asEntity, bool abEnabled);
+	
+	void SetComponentFearRateBoost_ScaryObject(const tString&in asEntity, float afAmount, float afTime, bool abGasp = true, float afIncreaseSpeed = -1.0f, float afDecreaseSpeed = -1.0f, float afDelay = 0.0f);
+	void SetComponentFearRateBoost_Threat(const tString&in asEntity, float afAmount, float afTime, bool abGasp = true, float afIncreaseSpeed = -1.0f, float afDecreaseSpeed = -1.0f, float afDelay = 0.0f);
+	void SetComponentFearRateBoost_ThreatAgent(const tString&in asEntity, float afAmount, float afTime, bool abGasp = true, float afIncreaseSpeed = -1.0f, float afDecreaseSpeed = -1.0f, float afDelay = 0.0f);
+	
+	void SetComponentManualFearActivation_ScaryObject(const tString&in asEntity, bool abX);
+	void SetComponentManualFearActivation_Threat(const tString&in asEntity, bool abX);
+	void SetComponentManualFearActivation_ThreatAgent(const tString&in asEntity, bool abX);
+	
+	void SetComponentFearActive_ScaryObject(const tString&in asEntity, bool abActive);
+	void SetComponentFearActive_Threat(const tString&in asEntity, bool abActive);
+	void SetComponentFearActive_ThreatAgent(const tString&in asEntity, bool abActive);
+	
+	void SetComponentSurpriseFactor_ScaryObject(const tString&in asEntity, float afFactor);
+	void SetComponentSurpriseFactor_Threat(const tString&in asEntity, float afFactor);
+	void SetComponentSurpriseFactor_ThreatAgent(const tString&in asEntity, float afFactor);
+	
+	void SetComponentLookAtFactor_ScaryObject(const tString&in asEntity, float afFactor);
+	void SetComponentLookAtFactor_Threat(const tString&in asEntity, float afFactor);
+	void SetComponentLookAtFactor_ThreatAgent(const tString&in asEntity, float afFactor);
+	
+	void SetComponentBaseFearRate_ThreatAgent(const tString&in asEntity, float afFearRate);
+	void SetComponentBaseFearRateMul_ThreatAgent(const tString&in asEntity, float afFearRateMul);
+	void SetComponentOverrideFactor_ThreatAgent(const tString&in asEntity, float afFactor);
+	void SetComponentActivationDistance_ThreatAgent(const tString&in asEntity, float afDistance);
+	void SetComponentDeactivationDistance_ThreatAgent(const tString&in asEntity, float afDistance);
+	void SetComponentMaxFearDistance_ThreatAgent(const tString&in asEntity, float afDistance);
+	void SetComponentCanGasp_ScaryObject(const tString&in asEntity, bool abX);
+	void SetComponentCanGasp_Threat(const tString&in asEntity, bool abX);
+	void SetComponentCanGasp_ThreatAgent(const tString&in asEntity, bool abX);
+	
+	// Whispers
+	void SetWhisperStage(eFearWhisperStage stage);
+	void SetWhispersActive(bool aValue);
+	void SetWhispersDecreaseSpeed(float afSpeed);
+	
+	void OnReceivePlayerBodyMessage(int alMessageId, cLuxEntityMessageData @apData);
+	
+	void DoTentacleBoost();
+}
+	
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// SHADOW FLESH HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+const cColor gShadowFleshLightColor(0.5,0.05,0.05,0.4);
+
+//---------------------------------------------------
+
+shared interface iScrShadowFleshHandler_Interface
+{
+	void SpawnFlesh(const tString &in asFlesh, const tString &in asDecals, float afMinTime, float afMaxTime, bool abDefaultEffects, float afShake = 0.01f, float afImageTrail = 1.f);
+	void DoFleshEffectsAtPos(const cVector3f &in avPos, float afLightRadius, float afShake = 0.01f, float afImageTrail = 1.f);
+	void SetupDecals(const tString &in asDecals);
+	void AddGroup(const tString &in asFlesh, const tString &in asDecals);
+	void ResetSpawnedDecalsOnMapLeave(bool abX);
+	void SetFleshSpawnSoundVolumeMul(float afX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DREAM HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrDreamHandler_Interface
+{
+	void SetActive(const bool abActive);
+	bool GetIsActive();
+	void PregnancyContractions();
+	void FadeDreamBlurFx(const tString&in asEntity, const float afTime);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// RIFT HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrRiftHandler_Interface
+{
+	void SetActive(bool abX);
+	bool IsActive();
+	tID GetActiveRiftId();
+	void SetAllowHint(bool abX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DARK WORLD POWER HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrDarkWorldPowerHandler_Interface
+{
+	void SetActive(bool abX);
+	bool IsActive();
+	void AddExtender(cLuxMap@ pMap, tID a_idEnt, float afRadius, const tString &in asCallback);
+	void AddEmitter(cLuxMap@ pMap, tID a_idEnt, float afRadius, const tString &in asCallback);
+	void AddReceiver(cLuxMap@ pMap, tID a_idEnt, const tString &in asCallback);
+	void SetEntityPairRadius(const tString &in asFirst, const tString &in asSecond, float afRadius);
+	void AddMask(const tString &in asEntity, const tString &in asMaskArea);
+	void SetEntityEnabled(tID a_idEnt, bool abX);
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// STRUGGLE FLASH HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+shared interface iScrStruggleFlashHandler_Interface
+{
+	void SetActive(const bool abActive);
+	bool GetIsActive();
+	void DoFlash(float afFadeInTime, float afDelay, bool abIntense);
+	bool GetFlashActive();
+	void Clear();
+	void SetProgression(const int alProgression);
+	int GetProgression();
+	void PreloadFlashGroupTextures(const int alProgression);
+	
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER BODY HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+shared enum ePlayerBodyAnimation_Custom
+{
+	ePlayerBodyAnimation_Custom_BirthIdle=ePlayerBodyAnimation_LastEnum,
+	ePlayerBodyAnimation_Custom_BirthPush,
+	ePlayerBodyAnimation_Custom_BirthRest,
+	ePlayerBodyAnimation_Custom_SwimIdle,
+	ePlayerBodyAnimation_Custom_SwimForward,
+	ePlayerBodyAnimation_Custom_SwimFastToSlow,
+	ePlayerBodyAnimation_Custom_SwimForwardSlow,
+	
+	ePlayerBodyAnimation_Custom_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iScrPlayerBodyHandler_Custom_Interface
+{
+	void SetSwimStateActive(const bool abActive, const tString&in asStartPositionEntity, const tString&in asTargetEntity, const tString&in asWaterEntity, float afAnimBlendInTime);
+    void SetSwimBodyYaw(const float afAngle);
+	void SetBirthIdleActive(const tString &in asAtEntity, float afFadeTime);
+	void SetBirthPushActive(const tString &in asAtEntity);
+	void SetBirthRestActive(const tString &in asAtEntity);
+	void PlayBirthAnimation(const tString &in asTargetEntity, const tString &in asAnimation, float afFadeTime, const tString &in asCallback);
+	void SetUnequipItemsOnCutscene(bool abX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER BODY HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared enum eEmotionSoundType
+{
+	eEmotionSoundType_Loop,
+	eEmotionSoundType_RateLoop,
+	eEmotionSoundType_FearLoop,
+	eEmotionSoundType_OneShotEvent,
+	
+	eEmotionSoundType_LastEnum
+}
+
+//---------------------------------------------------
+
+shared enum eEmotionPlaylistType
+{
+	eEmotionPlaylistType_Breathing,
+	eEmotionPlaylistType_Heartbeat,
+	
+	eEmotionPlaylistType_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iScrPlayerEmotionHandler_Interface
+{
+	void SetActive(const bool abActive);
+	bool GetIsActive();
+	int StartEmotionSoundInst(eEmotionPlaylistType aPlaylistType, eEmotionSoundType aEmotionSoundType, const int alPrio, const tString&in asSoundFile, const float afDuration, const float afFadeIn, const float afFadeOut);
+	void SetEmotionSoundInstParams(eEmotionPlaylistType aPlaylistType, const int alID, const float afFearRate, const float afFearFocus, const float afFearLevel, const float afFearCap);
+	void SetEmotionSoundInstVolume(eEmotionPlaylistType aPlaylistType, const int alID, const float afVolume);
+	int GetHigherEmotionSoundPrio(eEmotionPlaylistType aPlaylistType);
+	void StopEmotionSoundInst(eEmotionPlaylistType aPlaylistType, const int alID, float afFadeOut);
+	void PauseEmotionSoundInst(eEmotionPlaylistType aPlaylistType, const int alID, bool abPause);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// FLAMMABLE HANDLER - ALEX TEST TEMP
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrTempFlammableComponentHandler_Interface
+{
+	void ToggleAmount(int alAmount);
+	void ToggleRandom();
+	void SetRandomOn(bool abOn);
+	void SetAmountOn(int alAmount, bool abOn);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// STUPID TEST GAME - ALEX TEST TEMP
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared interface iScrTempStupidTestGameHandler_Interface
+{
+	void SetActive(bool abStart);
+	void ManageFlammableAmount(int alAmount);
+	void AgentAdd();
+	void AgentKill(tID a_idAgent);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TEMP FIRE COMPONENT HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTempFireComponentHandler_Interface
+{
+	void SetActive(bool abActive);
+	void SetToggleTime(float afMin, float afMax);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TEMP STUPID GAME HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTempStupidGameHandler_Interface
+{
+	cVector3f GetRandomRespawnPos();
+	void SetActive(bool abActive);
+	bool IsActive();
+	void UpdateBurningBarrelCount(bool abIncrease);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TEMP TEST GAME RULES HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTestGameRulesHandler_Interface
+{
+	void FireComponentChangeStateEvent(tString asEntityName, bool abOn);
+	void SetActive(bool abActive);
+	void SetWinPercent(float afPercent);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TEMP TEST GAME ENEMY HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTestGameEnemyHandler_Interface
+{
+	void SetActive(bool abActive);
+	void AddAgent();
+	void KillAgent(tID idAgent);
+	cVector3f GetRandomPosition();
+}
