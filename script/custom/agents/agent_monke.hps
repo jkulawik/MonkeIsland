@@ -139,8 +139,8 @@ tString gsMonkeAnim_AttackClose2 = "attack_close_2";
 
 //////////////////////
 // TODO: add actual animations
-array<tString> mvMonkeAnim_LookAroundLong = { "look_around_long_1", "look_around_long_2" };
-tString gsMonkeAnim_LookAroundShort = "look_around_short";
+array<tString> mvMonkeAnim_LookAroundLong = { "look_around_long_1" };
+tString gsMonkeAnim_LookAroundShort = "look_around_long_1";
 array<tString> mvMonkeAnim_Sniff = { "sniff_long_1", "sniff_long_2" };
 tString gsMonkeAnim_BeHit = "monke_hit_reaction"; // used when hit by an object and stunned
 tString gsMonkeAnim_Threaten = "alert";
@@ -160,7 +160,7 @@ array<tString> mvMonkeAnim_Scream = { "alert" };
 array<tString> mvMonkeAnim_BreakDoor = { "attack_close_2" };
 array<tString> mvMonkeAnim_HitDoor = { "attack_close_1", "attack_close_2" };
 array<tString> mvMonkeAnim_HitObstacle = { "attack_close_1", "attack_close_2" };
-tString gsMonkeAnim_ShrugOff = "shrug_off_d";
+tString gsMonkeAnim_ShrugOff = "none";
 
 tString gsMonkeAnim_Move_IdleAggressive = "aggressive_idle_stand";
 tString gsMonkeAnim_Move_WalkSearch = "walk_search";
@@ -9703,8 +9703,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 		mBaseObj.PlaySound("AttackSound", gsMonkeSound_Attack, true, true);
 		
 		tString sAnim = GetRandomLungeAttack();
-//		cLux_AddDebugMessage("LUNGE ANIM " + sAnim);
-		mpMover.PlayAnimation(sAnim, 0.1f, false, false,"");
+		mpMover.PlayAnimation(sAnim, 0.1f, false, true, "");
 		
 		mpStateMachine.AddTimer("Exit", 2.2);
 	}
