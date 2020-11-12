@@ -35,6 +35,7 @@ class cScrMap : iScrMap
 	void Setup()
 	{
 		// Put display name entry in english.lang / Levels
+		PlayerBody_SetActive(true);
 		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
 		
 		// Set up color grading etc.
