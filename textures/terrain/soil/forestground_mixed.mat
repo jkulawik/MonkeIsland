@@ -1,8 +1,8 @@
 <Material>
-    <Main BlendMode="Add" DepthTest="true" ForceFullScaleTextures="false" PhysicsMaterial="Sand" Type="terrain" UVSubDivs="1 1" UseAlpha="false" />
+    <Main Type="terrain" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="grass" BlendMode="Add" />
     <TextureUnits>
-        <Diffuse AnimFrameTime="0" AnimMode="None" AnimStartTime="0" Compress="true" File="textures/terrain/soil/forestground_mixed.dds" MipMaps="false" Type="2D" Wrap="Repeat" />
-        <NMap AnimFrameTime="0" AnimMode="None" AnimStartTime="0" Compress="true" File="textures/terrain/soil/forestground_mixed_nrm.dds" MipMaps="true" Type="2D" Wrap="Repeat" />
+        <Diffuse MipMaps="true" Compress="true" File="mods/MonkeIsland/textures/terrain/soil/forestground_mixed.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap MipMaps="true" Compress="true" File="mods/MonkeIsland/textures/terrain/soil/forestground_mixed_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
     </TextureUnits>
     <SpecificVariables />
 </Material>
