@@ -7,7 +7,60 @@
                     <Var ObjectId="268435456" Name="Crouching" Value="false" />
                 </UserVariables>
             </Area>
-            <Area ID="268435458" Name="Liquid_1" CreStamp="1605140093" ModStamp="1605140307" WorldPos="-7.85066 3.13415 11.5557" Rotation="0 0 0" Scale="5.60739 1.55897 5.45373" Active="true" Mesh="" UID="16 82 268435458" AreaType="Liquid">
+            <Area ID="268435457" Name="Liquid_1" CreStamp="1605140093" ModStamp="1605140307" WorldPos="-7.85066 3.13415 11.5557" Rotation="0 0 0" Scale="5.60739 1.55897 5.45373" Active="true" Mesh="" UID="16 82 268435457" AreaType="Liquid">
+                <UserVariables>
+                    <Var ObjectId="268435457" Name="Note" Value="" />
+                    <Var ObjectId="268435457" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435457" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435457" Name="UserVar" Value="" />
+                    <Var ObjectId="268435457" Name="Static" Value="false" />
+                    <Var ObjectId="268435457" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435457" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435457" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435457" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435457" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435457" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435457" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435457" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435457" Name="Density" Value="100" />
+                    <Var ObjectId="268435457" Name="LinearViscosity" Value="1" />
+                    <Var ObjectId="268435457" Name="AngularViscosity" Value="1" />
+                    <Var ObjectId="268435457" Name="PhysicsMaterial" Value="water" />
+                    <Var ObjectId="268435457" Name="PlayerSpeedMul" Value="0.8" />
+                    <Var ObjectId="268435457" Name="BuoyancyOnPlayerOnly" Value="false" />
+                    <Var ObjectId="268435457" Name="HasWaves" Value="true" />
+                    <Var ObjectId="268435457" Name="WaveAmp" Value="0.04" />
+                    <Var ObjectId="268435457" Name="WaveFreq" Value="3" />
+                    <Var ObjectId="268435457" Name="MaxWaveDistance" Value="25" />
+                    <Var ObjectId="268435457" Name="UpperMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_oasis.mat" />
+                    <Var ObjectId="268435457" Name="LowerMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_underwater.mat" />
+                    <Var ObjectId="268435457" Name="GridSize" Value="0" />
+                    <Var ObjectId="268435457" Name="TextureTileSize" Value="1" />
+                    <Var ObjectId="268435457" Name="StaticMesh" Value="true" />
+                    <Var ObjectId="268435457" Name="EnvParticlesToClip" Value="" />
+                    <Var ObjectId="268435457" Name="ReflectionColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435457" Name="ReflectionBrightness" Value="1" />
+                    <Var ObjectId="268435457" Name="UseFog" Value="true" />
+                    <Var ObjectId="268435457" Name="FogColor" Value="0.4140625 0.73907458782196044922 1 1" />
+                    <Var ObjectId="268435457" Name="FogStart" Value="0" />
+                    <Var ObjectId="268435457" Name="FogEnd" Value="2" />
+                    <Var ObjectId="268435457" Name="FogFalloffExp" Value="2" />
+                    <Var ObjectId="268435457" Name="FogBrightness" Value="1" />
+                    <Var ObjectId="268435457" Name="FogExponential" Value="false" />
+                    <Var ObjectId="268435457" Name="FogDensity" Value="0.25" />
+                    <Var ObjectId="268435457" Name="FogHeightBased" Value="false" />
+                    <Var ObjectId="268435457" Name="FogHeightDensity" Value="0.25" />
+                    <Var ObjectId="268435457" Name="FogHeightHorizon" Value="1" />
+                    <Var ObjectId="268435457" Name="FogUnderwater" Value="true" />
+                    <Var ObjectId="268435457" Name="FogSkybox" Value="false" />
+                    <Var ObjectId="268435457" Name="EffectOnExit" Value="true" />
+                    <Var ObjectId="268435457" Name="CameraCollideCallback" Value="" />
+                    <Var ObjectId="268435457" Name="CameraEnterEffectPreset" Value="" />
+                    <Var ObjectId="268435457" Name="CameraExitEffectPreset" Value="" />
+                    <Var ObjectId="268435457" Name="UnderwaterLightColor" Value="0.181 0.224 0.264 1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435458" Name="Liquid_2" CreStamp="1605306795" ModStamp="1605309703" WorldPos="-37.75 2.35456 -34.25" Rotation="0 4.71239 0" Scale="23.5 2.32528 21.5" Active="true" Mesh="" UID="16 102 268435458" AreaType="Liquid">
                 <UserVariables>
                     <Var ObjectId="268435458" Name="Note" Value="" />
                     <Var ObjectId="268435458" Name="BlocksLineOfSight" Value="false" />
@@ -32,23 +85,23 @@
                     <Var ObjectId="268435458" Name="WaveAmp" Value="0.04" />
                     <Var ObjectId="268435458" Name="WaveFreq" Value="3" />
                     <Var ObjectId="268435458" Name="MaxWaveDistance" Value="25" />
-                    <Var ObjectId="268435458" Name="UpperMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_oasis.mat" />
-                    <Var ObjectId="268435458" Name="LowerMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_underwater.mat" />
+                    <Var ObjectId="268435458" Name="UpperMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_cistern_reflect.mat" />
+                    <Var ObjectId="268435458" Name="LowerMaterial" Value="F:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/liquid/water/waterplane_factory_underwater.mat" />
                     <Var ObjectId="268435458" Name="GridSize" Value="0" />
-                    <Var ObjectId="268435458" Name="TextureTileSize" Value="1" />
+                    <Var ObjectId="268435458" Name="TextureTileSize" Value="3" />
                     <Var ObjectId="268435458" Name="StaticMesh" Value="true" />
                     <Var ObjectId="268435458" Name="EnvParticlesToClip" Value="" />
-                    <Var ObjectId="268435458" Name="ReflectionColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435458" Name="ReflectionBrightness" Value="1" />
+                    <Var ObjectId="268435458" Name="ReflectionColor" Value="0.13671875 0.13127480447292327881 0.0945281982421875 1" />
+                    <Var ObjectId="268435458" Name="ReflectionBrightness" Value="0.5" />
                     <Var ObjectId="268435458" Name="UseFog" Value="true" />
-                    <Var ObjectId="268435458" Name="FogColor" Value="0.4140625 0.73907458782196044922 1 1" />
+                    <Var ObjectId="268435458" Name="FogColor" Value="0.4140625 0.40114831924438476563 0.295989990234375 1" />
                     <Var ObjectId="268435458" Name="FogStart" Value="0" />
-                    <Var ObjectId="268435458" Name="FogEnd" Value="2" />
+                    <Var ObjectId="268435458" Name="FogEnd" Value="3" />
                     <Var ObjectId="268435458" Name="FogFalloffExp" Value="2" />
                     <Var ObjectId="268435458" Name="FogBrightness" Value="1" />
                     <Var ObjectId="268435458" Name="FogExponential" Value="false" />
                     <Var ObjectId="268435458" Name="FogDensity" Value="0.25" />
-                    <Var ObjectId="268435458" Name="FogHeightBased" Value="false" />
+                    <Var ObjectId="268435458" Name="FogHeightBased" Value="true" />
                     <Var ObjectId="268435458" Name="FogHeightDensity" Value="0.25" />
                     <Var ObjectId="268435458" Name="FogHeightHorizon" Value="1" />
                     <Var ObjectId="268435458" Name="FogUnderwater" Value="true" />
@@ -57,7 +110,35 @@
                     <Var ObjectId="268435458" Name="CameraCollideCallback" Value="" />
                     <Var ObjectId="268435458" Name="CameraEnterEffectPreset" Value="" />
                     <Var ObjectId="268435458" Name="CameraExitEffectPreset" Value="" />
-                    <Var ObjectId="268435458" Name="UnderwaterLightColor" Value="0.181 0.224 0.264 1" />
+                    <Var ObjectId="268435458" Name="UnderwaterLightColor" Value="0.4156863093376159668 0.40000003576278686523 0.29411765933036804199 1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435512" Name="Area_WaterHeightMarker" CreStamp="1605309283" ModStamp="1605309576" WorldPos="-39.25 2.35456 -34.25" Rotation="0 4.71239 0" Scale="7.5 2.32528 5" Active="true" Mesh="" UID="16 69 268435512" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435512" Name="Note" Value="This area is just to guide the designer visually, delete later" />
+                    <Var ObjectId="268435512" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435512" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435512" Name="UserVar" Value="" />
+                    <Var ObjectId="268435512" Name="Static" Value="false" />
+                    <Var ObjectId="268435512" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435512" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435512" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435512" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435512" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435512" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435512" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435512" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435512" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435512" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435512" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435512" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435512" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435512" Name="CustomInteractIcon" Value="Default" />
                 </UserVariables>
             </Area>
         </Objects>
