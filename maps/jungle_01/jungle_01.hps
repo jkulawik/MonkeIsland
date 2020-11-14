@@ -41,7 +41,8 @@ class cScrMap : iScrMap
 		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
 		
 		Game_AutoSave();
-
+		
+		ActivateGhoul();
 		
 		// Set up color grading etc.
 	}
@@ -84,19 +85,14 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
-		//*
-		Entity_SetActive("ghoul", true);
-		//Ghoul_ModePatrol_ClearNodes("ghoul");
-		//Ghoul_ModePatrol_Setup("ghoul", false, eGhoulSpeed_Walk);
-		Ghoul_CommandPatrol_AddNode("ghoul", "PathNodePatrol_7", 3.0, 5.0);
-		Ghoul_CommandPatrol_AddNode("ghoul", "PathNodePatrol_1", 3.0, 5.0);
-		Ghoul_CommandPatrol_AddNode("ghoul", "PathNodePatrol_2", 3.0, 5.0);
-		Ghoul_CommandPatrol_AddNode("ghoul", "PathNodePatrol_2", 3.0, 5.0);
-		//Ghoul_Mode_Set("ghoul", eGhoulMode_Patrol, false);
-		Ghoul_CommandPatrol_Execute("ghoul", true, 1, false, eGhoulSpeed_Walk, "");
 
+		Map_AddTimer("timerName", .1f, "StaggeredInit");
 		
-		//*/
+	}
+	
+	void StaggeredInit(const tString &in asTimer)
+	{
+		//stuff here
 	}
 
 	//-------------------------------------------------------
@@ -191,6 +187,60 @@ class cScrMap : iScrMap
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
+	// SCENE 2 Pool encounter
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		 
+		//-------------------------------------------------------
+	 
+		/*Put any variables that are used by many events in Scene X here.*/
+	 
+		//-------------------------------------------------------
+	 
+		/*Put any functions that are used in more than one event in Scene X here.*/
+	 
+		//-------------------------------------------------------
+		
+		//} END General	
+	 
+		/////////////////////////////////////////
+		// Event Set up the enemy
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+
+		/*Put any variables that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		/*Put any functions that are only used in Scene X, Event X here.*/
+		
+		void ActivateGhoul()
+		{
+		tString enemy = "ghoul";
+		Entity_SetActive(enemy, true);
+		//Ghoul_ModePatrol_ClearNodes("ghoul");
+		//Ghoul_ModePatrol_Setup("ghoul", false, eGhoulSpeed_Walk);
+		Ghoul_CommandPatrol_AddNode(enemy, "PathNodePatrol_1", 3.0, 5.0);
+		Ghoul_CommandPatrol_AddNode(enemy, "PathNodePatrol_2", 3.0, 5.0);
+		//Ghoul_Mode_Set("ghoul", eGhoulMode_Patrol, false);
+		Ghoul_CommandPatrol_Execute(enemy, true, 10, false, eGhoulSpeed_Walk, "");
+		}
+
+		//-------------------------------------------------------
+
+		//} END Event *Name Of Event*
+	 
+	//} END SCENE X
+	
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
 	// SCENE X *NAME OF SCENE*
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
@@ -227,6 +277,5 @@ class cScrMap : iScrMap
 
 		//} END Event *Name Of Event*
 	 
-	//} END SCENE X
- 
+	//} END SCENE X 
 }
