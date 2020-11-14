@@ -10,7 +10,6 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
-#include "helpers/custom/helper_props_custom.hps"
 
 //--------------------------------------------------
  
@@ -35,8 +34,27 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		PlayerBody_SetActive(true);
-		Player_SetVertigoActive(false);
+		// Put display name entry in english.lang / Levels
+		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
+		
+		// Set up color grading etc.
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+		/////////////////
+		// Preload gui
+		//ImGui_PreloadImage("some_image");
+
+		///////////////
+		// Preload particles
+		//ParticleSystem_Preload("some_particle.ps");
+
+		//////////////
+		// Preload screen effects
+		//Material_Preload("some_material.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -45,7 +63,13 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
+		// Any general setup of script / entities
 		
+		/////////////////////////
+		// Debug
+		if(cLux_ScriptDebugOn())
+		{
+		}
 	}
 
 	//-------------------------------------------------------
@@ -54,6 +78,7 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		Game_AutoSave();
 	}
 
 	//-------------------------------------------------------
@@ -70,7 +95,34 @@ class cScrMap : iScrMap
 	// The player has died.
 	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
 	{
+	}
 	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
 	}
 
 	//-------------------------------------------------------
@@ -83,7 +135,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-		
 		}
 	}
 
@@ -95,18 +146,6 @@ class cScrMap : iScrMap
 	{
 		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
 		return afY;
-	}
-	
-	//-------------------------------------------------------
-	
-	void OnGui(float afTimeStep)
-	{
-		/*cImGuiLabelData label;
-		label.mFontAlign = eFontAlign_Center;
-		label.mFont.mvSize = cVector2f(30,30);
-		
-		ImGui_SetTransCategory("SampleMap");
-		ImGui_DoLabelExt("SampleMessage", label, ImGui_NrmPos(0,0,10.0f), ImGui_NrmSize(1.0f,1.0f)); */
 	}
  
 	//-------------------------------------------------------
@@ -138,9 +177,9 @@ class cScrMap : iScrMap
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
-		 /////////////////////////////////////////
-		 // General
-		 //{//////////////////////////////////////
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
 		 
 		//-------------------------------------------------------
 	 
@@ -154,55 +193,22 @@ class cScrMap : iScrMap
 		
 		//} END General	
 	 
-		 /////////////////////////////////////////
-		 // Event *Name Of Event*
-		 //{//////////////////////////////////////
+		/////////////////////////////////////////
+		// Event *Name Of Event*
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+
+		/*Put any variables that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		/*Put any functions that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		//} END Event *Name Of Event*
 	 
-		 //-------------------------------------------------------
-	 
-		 /*Put any variables that are only used in Scene X, Event X here.*/
-	 
-		 //-------------------------------------------------------
-	 
-		 /*Put any functionsthat are only used in Scene X, Event X here.*/
-	 
-		 //-------------------------------------------------------
-	 
-		 //} END Event *Name Of Event*
-	 
-	 //} END SCENE X
- 
- 
-	 /////////////////////////////////////////
-	 // ==============
-	 // TERMINALS
-	 // ==============
-	 //////////////////////////////////////
-	 //{
- 
-		 //-------------------------------------------------------
-	 
-		 /////////////////////////////////////////
-		 // Terminal *Name Of Terminal*
-		 //{//////////////////////////////////////
-	 
-		 //-------------------------------------------------------
-	 
-		 /*Put any variables that are only used Terminal here.*/
-	 
-		 //-------------------------------------------------------
-	 
-		 /*Put any functions that are only used Terminal here.*/
-	 
-		 //-------------------------------------------------------
-	 
-		 //} END Terminal *Name Of Terminal*
-		 
-		void OnGuiDWNote(const tString&in asEntityName, float afTimeStep)
-		{
-			DWNote_RenderGUI(asEntityName, afTimeStep);
-		}
-	
-	//} //END TERMINALS
+	//} END SCENE X
  
 }
