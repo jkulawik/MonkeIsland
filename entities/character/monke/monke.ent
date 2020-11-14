@@ -1,0 +1,240 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="mods/MonkeIsland/entities/character/monke/monke_hpl.fbx">
+            <SubMesh ID="0" Name="chimp_geo" CreStamp="0" ModStamp="1605045138" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="3190" Material="mods/MonkeIsland/entities/character/monke/monke.mat" Static="true" />
+        </Mesh>
+        <Bones>
+            <Bone ID="1" Name="chimp_geo" />
+            <Bone ID="2" Name="mixamorig:Hips">
+                <Sockets>
+                    <Socket ID="61" Name="socket_root" CreStamp="0" ModStamp="1605178646" WorldPos="-7.38716e-05 0.719594 -0.0110436" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="3" Name="mixamorig:Spine" />
+            <Bone ID="4" Name="mixamorig:Spine1" />
+            <Bone ID="5" Name="mixamorig:Spine2" />
+            <Bone ID="6" Name="mixamorig:Neck" />
+            <Bone ID="7" Name="mixamorig:Head">
+                <Sockets>
+                    <Socket ID="60" Name="socket_struggle_lookat" CreStamp="0" ModStamp="1605132103" WorldPos="-7.38716e-05 1.23015 0.211553" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                    <Socket ID="59" Name="socket_eye_left" CreStamp="0" ModStamp="1605132091" WorldPos="0.00653633 1.32697 0.17208" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="8" Name="mixamorig:HeadTop_End">
+                <Sockets>
+                    <Socket ID="62" Name="head_top" CreStamp="0" ModStamp="1605202283" WorldPos="-1.60479e-06 1.39066 0.0993308" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="9" Name="mixamorig:LeftShoulder" />
+            <Bone ID="10" Name="mixamorig:LeftArm" />
+            <Bone ID="11" Name="mixamorig:LeftForeArm" />
+            <Bone ID="12" Name="mixamorig:LeftHand">
+                <Sockets>
+                    <Socket ID="58" Name="socket_lefthand_damage" CreStamp="0" ModStamp="1605132064" WorldPos="0.480691 0.55602 -0.0464674" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="13" Name="mixamorig:LeftHandThumb1" />
+            <Bone ID="14" Name="mixamorig:LeftHandThumb2" />
+            <Bone ID="15" Name="mixamorig:LeftHandThumb3" />
+            <Bone ID="16" Name="mixamorig:LeftHandIndex1" />
+            <Bone ID="17" Name="mixamorig:LeftHandIndex2" />
+            <Bone ID="18" Name="mixamorig:LeftHandIndex3" />
+            <Bone ID="19" Name="mixamorig:LeftHandMiddle1" />
+            <Bone ID="20" Name="mixamorig:LeftHandMiddle2" />
+            <Bone ID="21" Name="mixamorig:LeftHandMiddle3" />
+            <Bone ID="22" Name="mixamorig:LeftHandRing1" />
+            <Bone ID="23" Name="mixamorig:LeftHandRing2" />
+            <Bone ID="24" Name="mixamorig:LeftHandRing3" />
+            <Bone ID="25" Name="mixamorig:LeftHandPinky1" />
+            <Bone ID="26" Name="mixamorig:LeftHandPinky2" />
+            <Bone ID="27" Name="mixamorig:LeftHandPinky3" />
+            <Bone ID="28" Name="mixamorig:RightShoulder" />
+            <Bone ID="29" Name="mixamorig:RightArm" />
+            <Bone ID="30" Name="mixamorig:RightForeArm" />
+            <Bone ID="31" Name="mixamorig:RightHand">
+                <Sockets>
+                    <Socket ID="57" Name="socket_righthand_damage" CreStamp="0" ModStamp="1605132052" WorldPos="-0.480838 0.556019 -0.0471673" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="32" Name="mixamorig:RightHandThumb1" />
+            <Bone ID="33" Name="mixamorig:RightHandThumb2" />
+            <Bone ID="34" Name="mixamorig:RightHandThumb3" />
+            <Bone ID="35" Name="mixamorig:RightHandIndex1" />
+            <Bone ID="36" Name="mixamorig:RightHandIndex2" />
+            <Bone ID="37" Name="mixamorig:RightHandIndex3" />
+            <Bone ID="38" Name="mixamorig:RightHandMiddle1" />
+            <Bone ID="39" Name="mixamorig:RightHandMiddle2" />
+            <Bone ID="40" Name="mixamorig:RightHandMiddle3" />
+            <Bone ID="41" Name="mixamorig:RightHandRing1" />
+            <Bone ID="42" Name="mixamorig:RightHandRing2" />
+            <Bone ID="43" Name="mixamorig:RightHandRing3" />
+            <Bone ID="44" Name="mixamorig:RightHandPinky1" />
+            <Bone ID="45" Name="mixamorig:RightHandPinky2" />
+            <Bone ID="46" Name="mixamorig:RightHandPinky3" />
+            <Bone ID="47" Name="mixamorig:LeftUpLeg" />
+            <Bone ID="48" Name="mixamorig:LeftLeg" />
+            <Bone ID="49" Name="mixamorig:LeftFoot" />
+            <Bone ID="50" Name="mixamorig:LeftToeBase" />
+            <Bone ID="51" Name="mixamorig:LeftToe_End" />
+            <Bone ID="52" Name="mixamorig:RightUpLeg" />
+            <Bone ID="53" Name="mixamorig:RightLeg" />
+            <Bone ID="54" Name="mixamorig:RightFoot" />
+            <Bone ID="55" Name="mixamorig:RightToeBase" />
+            <Bone ID="56" Name="mixamorig:RightToe_End" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations>
+            <Animation Name="attack_close_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_1.fbx" Layer="Default" Speed="1">
+                <Event Name="AttackSound" Time="0.666" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_attack" />
+                <Event Name="AttackStart" Time="0.076" Direction="Both" Type="Message" DestSocket="" Value="0" />
+                <Event Name="AttackEnd" Time="0.855" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="AttackFinish" Time="0.911" Direction="Both" Type="Message" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="attack_lunge_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_attack_2.fbx" Layer="Default" Speed="1">
+                <Event Name="AttackLeftStart" Time="0.305" Direction="Both" Type="Message" DestSocket="" Value="0" />
+                <Event Name="AttackLeftEnd" Time="0.56" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="SoundAttackLeft" Time="0.445" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_attack" />
+                <Event Name="SoundAttackRight" Time="0.783" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_attack" />
+                <Event Name="AttackRightStart" Time="0.687" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="AttackRightEnd" Time="0.953" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="New Event" Time="0.217345" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="0.686579" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="1.1918" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="attack_close_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_kick.fbx" Layer="Default" Speed="1">
+                <Event Name="AttackSound" Time="0.602" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/attack_hit" />
+                <Event Name="AttackStart" Time="0.076" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="AttackEnd" Time="0.736" Direction="Both" Type="Message" DestSocket="" Value="" />
+                <Event Name="AttackFinish" Time="0.911" Direction="Both" Type="Message" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="monke_death" File="mods/MonkeIsland/entities/character/monke/animations/monke_death.fbx" Layer="Default" Speed="1" />
+            <Animation Name="run" File="mods/MonkeIsland/entities/character/monke/animations/monke_run.fbx" Layer="Default" Speed="0.2">
+                <Event Name="SoundFootstepL1" Time="0.276" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="SoundFootstepR1" Time="0.664" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="New Event" Time="0.275748" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_run" />
+                <Event Name="New Event" Time="0.663787" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_run" />
+            </Animation>
+            <Animation Name="idle_extra_1" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="idle_extra_2" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="idle_extra_3" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_3.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk.fbx" Layer="Default" Speed="0.7">
+                <Event Name="FootestepL1" Time="0.25" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="FootestepR1" Time="0.761407" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="New Event" Time="0.2415" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="0.759" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="idle" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="alert" File="mods/MonkeIsland/entities/character/monke/animations/alert.fbx" Layer="Default" Speed="0.7" />
+            <Animation Name="monke_climb_left" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_left.fbx" Layer="Default" Speed="1">
+                <Event Name="SoundClimb" Time="0.663773" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="monke_climb_right" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_right.fbx" Layer="Default" Speed="1">
+                <Event Name="SoundClimb" Time="0.739988" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="monke_climb_up_right" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_up_right.fbx" Layer="Default" Speed="1">
+                <Event Name="New Event" Time="0.583057" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="0.974751" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="1.59967" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="2.35316" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="2.70299" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="monke_climb_up_left" File="mods/MonkeIsland/entities/character/monke/animations/monke_climb_up_left.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_wall_fall" File="mods/MonkeIsland/entities/character/monke/animations/monke_wall_fall.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_wall_fall_to_land" File="mods/MonkeIsland/entities/character/monke/animations/monke_wall_fall_to_land.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Body" Time="0.468439" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/animations/wall_fall_land/drop_land_body" />
+                <Event Name="Sound_Impact" Time="0.189" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/animations/wall_fall_land/drop_land_impact" />
+                <Event Name="New Event" Time="0.583057" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="0.974751" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="1.59967" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="2.35316" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="2.70299" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="monke_idle_to_climb" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_to_climb.fbx" Layer="Default" Speed="1">
+                <Event Name="SoundFootstep" Time="0.463206" Direction="Both" Type="Step" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="monke_idle_to_wall_hang" File="mods/MonkeIsland/entities/character/monke/animations/monke_idle_to_wall_hang.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_wall_hang_to_fall" File="mods/MonkeIsland/entities/character/monke/animations/monke_wall_hang_to_fall.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_hit_reaction" File="mods/MonkeIsland/entities/character/monke/animations/monke_hit_reaction.fbx" Layer="Default" Speed="1.2" />
+            <Animation Name="alert_var1" File="mods/MonkeIsland/entities/character/monke/animations/alert.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk_search" File="mods/MonkeIsland/entities/character/monke/animations/monke_walk_search.fbx" Layer="Default" Speed="1">
+                <Event Name="SoundFootstepL_1" Time="0.361" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="SoundFootstepR_1" Time="1.13" Direction="Both" Type="Step" DestSocket="" Value="" />
+                <Event Name="New Event" Time="0.33887" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+                <Event Name="New Event" Time="1.11628" Direction="Both" Type="PlaySound" DestSocket="" Value="creatures/foley/creature/ghoul/ghoul_walk" />
+            </Animation>
+            <Animation Name="angry_1" File="mods/MonkeIsland/entities/character/monke/animations/angry_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="angry_2" File="mods/MonkeIsland/entities/character/monke/animations/angry_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="idle_extra_4" File="mods/MonkeIsland/entities/character/monke/animations/monke_flip.fbx" Layer="Default" Speed="1" />
+            <Animation Name="aggressive_idle_stand" File="mods/MonkeIsland/entities/character/monke/animations/aggressive_idle_stand.fbx" Layer="Default" Speed="1" />
+            <Animation Name="look_around_long_1" File="mods/MonkeIsland/entities/character/monke/animations/look_around_long_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="monke_flip" File="mods/MonkeIsland/entities/character/monke/animations/monke_flip.fbx" Layer="Default" Speed="1" />
+        </Animations>
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Agent_Ghoul">
+        <Var ObjectId="4294967295" Name="Note" Value="" />
+        <Var ObjectId="4294967295" Name="Health" Value="100" />
+        <Var ObjectId="4294967295" Name="Toughness" Value="0" />
+        <Var ObjectId="4294967295" Name="EventTag" Value="" />
+        <Var ObjectId="4294967295" Name="VoiceSourceBone" Value="" />
+        <Var ObjectId="4294967295" Name="CastShadows" Value="true" />
+        <Var ObjectId="4294967295" Name="EffectsOnTime" Value="1" />
+        <Var ObjectId="4294967295" Name="EffectsOffTime" Value="1" />
+        <Var ObjectId="4294967295" Name="RootMotionBone" Value="mixamorig:Hips" />
+        <Var ObjectId="4294967295" Name="CutsceneEndAlignmentBone" Value="" />
+        <Var ObjectId="4294967295" Name="CharBodySize" Value="0.85 1.25 0.85" />
+        <Var ObjectId="4294967295" Name="MeshPositionOffset" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="MeshRotationOffset" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="MeshScaleOffset" Value="1 1 1" />
+        <Var ObjectId="4294967295" Name="CharBodyPosBone" Value="mixamorig:Hips" />
+        <Var ObjectId="4294967295" Name="CharBodyBoneIsFeet" Value="true" />
+        <Var ObjectId="4294967295" Name="CharBodyBoneYOffset" Value="0" />
+        <Var ObjectId="4294967295" Name="CharBodyMaterial" Value="" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="agent_monke.hps" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="cScrAgentMonke" />
+        <Var ObjectId="4294967295" Name="CloseAttackName" Value="attack_close" />
+        <Var ObjectId="4294967295" Name="NumAttackAnims" Value="2" />
+        <Var ObjectId="4294967295" Name="LungeAttackName" Value="attack_lunge" />
+        <Var ObjectId="4294967295" Name="NumAttackLungeAnims" Value="1" />
+        <Var ObjectId="4294967295" Name="MinEatTime" Value="30" />
+        <Var ObjectId="4294967295" Name="MaxEatTime" Value="45" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleAnim" Value="idle" />
+        <Var ObjectId="4294967295" Name="CharMover_WalkAnim" Value="walk" />
+        <Var ObjectId="4294967295" Name="CharMover_RunAnim" Value="run" />
+        <Var ObjectId="4294967295" Name="CharMover_BackwardAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraAnim" Value="idle_extra_" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraMinWait" Value="3" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraMaxWait" Value="8" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraPauseProcedural" Value="true" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_IdleToClimb" Value="monke_idle_to_climb" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_ClimbLeft" Value="monke_climb_left" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_ClimbRight" Value="monke_climb_right" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_ClimbUpLeft" Value="monke_climb_up_left" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_ClimbUpRight" Value="monke_climb_up_right" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_IdleToHang" Value="monke_idle_to_wall_hang" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_HangToFall" Value="monke_wall_hang_to_fall" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_Fall" Value="monke_wall_fall" />
+        <Var ObjectId="4294967295" Name="ClimbAnimations_FallToLand" Value="monke_wall_fall_to_land" />
+        <Var ObjectId="4294967295" Name="HeadTracker_Bones" Value="mixamorig:Neck$mixamorig:Head" />
+        <Var ObjectId="4294967295" Name="HeadTracker_BoneMuls" Value="0.5 1" />
+        <Var ObjectId="4294967295" Name="HeadTracker_ChestBone" Value="" />
+        <Var ObjectId="4294967295" Name="HeadTracker_SpeedMul" Value="1" />
+        <Var ObjectId="4294967295" Name="HeadTracker_MaxSpeed" Value="1" />
+        <Var ObjectId="4294967295" Name="HeadTracker_MaxAngle" Value="45" />
+        <Var ObjectId="4294967295" Name="FootPlacement_AlignPelvis" Value="true" />
+        <Var ObjectId="4294967295" Name="FootPlacement_MaxPelvisAlign" Value="0.5" />
+        <Var ObjectId="4294967295" Name="FootPlacement_AlignToes" Value="false" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FootDepth" Value="0.05" />
+        <Var ObjectId="4294967295" Name="FootPlacement_MaxFootHeight" Value="0.25" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FadeSpeed" Value="8.0" />
+        <Var ObjectId="4294967295" Name="FootPlacement_LeftFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_RightFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FrontLeftFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FrontRightFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FootOffset" Value="0 0 0" />
+    </UserDefinedVariables>
+    <Notes Content="MONKE!!" />
+</Entity>

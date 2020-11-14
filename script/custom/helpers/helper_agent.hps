@@ -1,0 +1,4201 @@
+#include "custom/agents/agent_types_custom.hps"
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// AGENT SENSES
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Set temporary blinding on an agent
+ * 
+ * @param asAgentName, name of the agent. 
+ * @param abBlinded, If agent should be blind.
+ * @param afRecovery, Time until recovery (set to < 0 for indefinite).
+ **/
+ void Agent_SetBlinded(const tString &in asAgentName, bool abBlinded, float afRecovery)
+{
+	cScript_SetGlobalArgBool(0, abBlinded);
+	cScript_SetGlobalArgFloat(1, afRecovery);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGenAgent", "_Global_SetAgentBlinded")==false)
+	{
+		Error("Could not find agent with name '"+asAgentName+"' for Agent_SetBlinded");
+	}
+	else
+	{
+		cLux_AddDebugMessage("Setting " + asAgentName + " blind for " + afRecovery + " seconds");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Set the agents hearing mul
+ * 
+ * @param asAgentName, name of the agent. 
+ * @param abDeafened, If agent should be deafened.
+ * @param afRecovery, Time until recovery (set to < 0 for indefinite).
+ **/
+ void Agent_SetDeafened(const tString &in asAgentName, bool abDeafened, float afRecovery)
+{
+	cScript_SetGlobalArgBool(0, abDeafened);
+	cScript_SetGlobalArgFloat(1, afRecovery);	
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentHumanoid", "_Global_SetAgentDefeaned")==false)
+	{
+		Error("Could not find agent with name '"+asAgentName+"' for Agent_SetDeafened");
+	}
+	else
+	{
+		cLux_AddDebugMessage("Setting " + asAgentName + " deaf for " + afRecovery + " seconds");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets a callback for when the agent enters or exits a set range around the player
+ * 
+ * @param asAgentName, name of the agent. 
+ * @param asFunction, name of the funtion, syntax void Func(int)
+ * @param afDistance, when the agent enters this range, the callback function will be called with 1, when it exits with -1
+ **/
+void Agent_SetDistanceCallback(const tString &in asAgentName, const tString &in asFunction, float afDistance)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgFloat(1, afDistance);	
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetDistanceCallback")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetDistanceCallback()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// MONKE
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Puts a monke in the EatMeat state and destroys the specified meat.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asMeatEntity, name of the meat to be destroyed
+ **/
+void Monke_EatMeat(const tString &in asAgentName, const tString &in asMeatEntity)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_EatMeat")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_EatMeat()");
+	}
+	else
+	{
+		Entity_Destroy(asMeatEntity);
+	}
+}
+ 
+//-------------------------------------------------
+
+/**
+ * Puts the monke into a mode, which determines its behavior when it's not reacting to the player's presence.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aMode, which mode to put the monke in
+ * @param abForce, if true the monke will switch the behavior instantly regardless of state, otherwise it will do so more naturally on the next best opportunity
+ * 
+ **/
+void Monke_Mode_Set(const tString &in asAgentName, eMonkeMode aMode, bool abForce = false)
+{
+	cScript_SetGlobalArgInt(0, int(aMode));
+	cScript_SetGlobalArgBool(1, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_Mode_Set") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Mode_Set()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the monke's patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the monke will move
+ * 
+ **/
+void Monke_ModePatrol_Setup(const tString &in asAgentName, bool abRandom = false, eMonkeSpeed aSpeed = eMonkeSpeed_Walk)
+{
+	cScript_SetGlobalArgBool(0, abRandom);
+	cScript_SetGlobalArgInt(1, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModePatrol_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_Setup()");
+	}
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the monke should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the monke should wait at this node
+ * @param asAnimName, name of the animation that should play when the monke reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Monke_ModePatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModePatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol mode list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Monke_ModePatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModePatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Sets the speed of movement for the current patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aSpeed, the speed with which the monke will move
+ * 
+ **/
+void Monke_ModePatrol_SetSpeed(const tString &in asAgentName, eMonkeSpeed aSpeed = eMonkeSpeed_Walk)
+{
+	cScript_SetGlobalArgInt(0, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModePatrol_SetSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_SetSpeed()");
+	} 
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the StalkThroughHoles mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asHoleNetwork, the name of the group of monke holes the monke should move between, use wildcard *
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the monke will move along these areas and make noise, use wildcard *
+ * @param abHideUntilDisturbed, if the monke shouldn't emerge unless the player makes noise
+ **/
+void Monke_ModeStalkThroughHoles_Setup(const tString &in asAgentName, const tString &in asHoleNetwork, const tString &in asPlayerPath = "", const tString &in asHoleConnections = "", bool abHideUntilDisturbed = false)
+{
+	cScript_SetGlobalArgString(0, asHoleNetwork);
+	cScript_SetGlobalArgString(1, asPlayerPath);
+	cScript_SetGlobalArgString(2, asHoleConnections);
+	cScript_SetGlobalArgBool(3, abHideUntilDisturbed);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModeStalkThroughHoles_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeStalkThroughHoles_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Puts the monke in the enthralled state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asLookAtEntity, name of the entity to be turned toward
+ * @param asStandPosEntity, name of the entity to stand at
+ * @param asIdleAnim, name of the idle animation
+ * 
+ **/
+void Monke_ModeEnthralled_Setup(const tString &in asAgentName, const tString &in asLookAtEntity, const tString &in asStandPosEntity, const tString &in asIdleAnim)
+{
+	cScript_SetGlobalArgString(0, asLookAtEntity);
+	cScript_SetGlobalArgString(1, asStandPosEntity);
+	cScript_SetGlobalArgString(2, asIdleAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModeEnthralled_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeEnthralled_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the monke enter the Guard state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asLookAtEntity, name of the entity to be turned toward
+ * @param asStandPosEntity, name of the entity to stand at
+ * @param asIdleAnim, name of the idle animation
+ * @param asIdleSound, name of the sound entity placed in the map that will be played when guarding
+ * @param asDisturbAnim, name of the disturbed animation
+ * @param aSpeedState, speed state of the monke when moving to the stand pos
+ * 
+ **/
+void Monke_ModeGuard_Setup(const tString &in asAgentName, const tString &in asLookAtEntity, const tString &in asStandPosEntity, const tString &in asIdleAnim,
+						   const tString &in asIdleSound, const tString &in asDisturbAnim, eMonkeSpeed aSpeedState = eMonkeSpeed_FastWalk)
+{
+	cScript_SetGlobalArgString(0, asLookAtEntity);
+	cScript_SetGlobalArgString(1, asStandPosEntity);
+	cScript_SetGlobalArgString(2, asIdleAnim);
+	cScript_SetGlobalArgString(3, asIdleSound);
+	cScript_SetGlobalArgString(4, asDisturbAnim);
+	cScript_SetGlobalArgInt(5, aSpeedState);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModeGuard_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeGuard_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the monke randomly wander inside a specified area
+ * 
+ * @param asAgentName, name of the agent
+ * @param avAreaCenter, the center of the area
+ * @param afMinRadius, the closest distance the nodes can be picked from
+ * @param afMaxRadius, the furthest distance the nodes can be picked from
+ * 
+ **/
+void Monke_ModeRandomWanderArea_Setup(const tString &in asAgentName, const cVector3f &in avAreaCenter, float afMinRadius, float afMaxRadius)
+{
+	cScript_SetGlobalArgVector3f(0, avAreaCenter);
+	cScript_SetGlobalArgFloat(1, afMinRadius);
+	cScript_SetGlobalArgFloat(2, afMaxRadius);
+
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_ModeRandomWanderArea_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeRandomWanderArea_Setup()");
+	}
+}
+ 
+//-------------------------------------------------
+
+/**
+ * Removes the current command that is set for the monke to execute.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the monke should abandond the command immediately, or wait to finish what it's doing
+ * 
+ **/
+void Monke_Command_Remove(const tString &in asAgentName, bool abForce = true)
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_Command_Remove") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Command_Remove()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a node to the list of patrol nodes for a patrol command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the monke should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the monke should wait at this node
+ * @param asAnimName, name of the animation that should play when the monke reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Monke_CommandPatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandPatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol command list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Monke_CommandPatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandPatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Sets the speed of movement for the current patrol command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aSpeed, the speed with which the monke will move
+ * 
+ **/
+void Monke_CommandPatrol_SetSpeed(const tString &in asAgentName, eMonkeSpeed aSpeed = eMonkeSpeed_Walk)
+{
+	cScript_SetGlobalArgInt(0, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandPatrol_SetSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_SetSpeed()");
+	} 
+}
+
+/**
+ * Executes the patrol command
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param alLoopCount, how many times the monke should patrol the node set, only positive values are allowed, use the patrol mode for infinite loops
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the monke will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandPatrol_Execute(const tString &in asAgentName, bool abForce = false, int alLoopCount = 1, bool abRandom = false, eMonkeSpeed aSpeed = eMonkeSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, alLoopCount);
+	cScript_SetGlobalArgBool(2, abRandom);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandPatrol_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_Execute()");
+	}
+}
+
+/**
+ * Executes the smell patrol command, where the monke will patrol while sniffing. If the monke actually catches the player's scent
+ * and begins tracking them down, the smell patrol becomes a normal patrol.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param alLoopCount, how many times the monke should patrol the node set, only positive values are allowed, use the patrol mode for infinite loops
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the monke will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandSmellPatrol_Execute(const tString &in asAgentName, bool abForce = false, int alLoopCount = 1, bool abRandom = false, eMonkeSpeed aSpeed = eMonkeSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, alLoopCount);
+	cScript_SetGlobalArgBool(2, abRandom);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandSmellPatrol_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandSmellPatrol_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the retreat command
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abAutomaticRetreat, if the monke should pick an appropriate node to retreat to, otherwise a position needs to be provided with the avPos argument
+ * @param avPos, the position the monke should retreat to, will only be considered when abAutomaticRetreat is true
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandRetreat_Execute(const tString &in asAgentName, bool abForce = false, bool abAutomaticRetreat = true, const cVector3f &in avPos = cVector3f_Zero, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgBool(1, abAutomaticRetreat);
+	cScript_SetGlobalArgVector3f(2, avPos);
+	cScript_SetGlobalArgString(3, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandRetreat_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandRetreat_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the monke move to and enter a specified monke hole
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abInstant, if the monke should start hiding in a hole instantly, being teleported then and hidden
+ * @param asHole, the name of the hole the monke should retreat to
+ * @param aSpeed, the speed with which the monke will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandGoToSpecificHole_Execute(const tString &in asAgentName, const tString &in asHole, bool abForce = false, bool abInstant = false, bool abDeactivateAfter = false, eMonkeSpeed aSpeed = eMonkeSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asHole);
+	cScript_SetGlobalArgInt(2, int(aSpeed));
+	cScript_SetGlobalArgString(3, asCompletedCallback);
+	cScript_SetGlobalArgBool(4, abInstant);
+	cScript_SetGlobalArgBool(5, abDeactivateAfter);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandGoToSpecificHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandGoToSpecificHole_Execute()");
+	}
+}
+
+/**
+ * Executes the command that makes the monke move to and enter a hole based on certain parameters
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abInstant, if the monke should start hiding in a hole instantly, being teleported then and hidden
+ * @param abClosest, if the closest node to avPos should be picked, otherwise a random node that fits the other parameters will be chosen
+ * @param avPos, the position to which distances will be calculated
+ * @param aSpeed, the speed with which the monke will move
+ * @param afMinRadius, the minimum distance from avPos that a monke hole can be at
+ * @param afMaxRadius, the maximum distance from avPos that a monke hole can be at
+ * @param abOnlyFree, if only free holes (that aren't occupied by other monkes) should be chosen
+ * @param abOnlyOutOfPlayerSight, if only holes that are out of the player's sight should be chosen
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandGoToHole_Execute(const tString &in asAgentName, const cVector3f &in avPos, bool abForce = false, bool abInstant = false, bool abDeactivateAfter = false, bool abClosest = true,
+									eMonkeSpeed aSpeed = eMonkeSpeed_Walk, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = false, bool abOnlyOutOfPlayerSight = false,
+									const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgVector3f(0, avPos);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgInt(2, int(aSpeed));
+	cScript_SetGlobalArgBool(3, abClosest);
+	cScript_SetGlobalArgFloat(4, afMinRadius);
+	cScript_SetGlobalArgFloat(5, afMaxRadius);
+	cScript_SetGlobalArgBool(6, abOnlyFree);
+	cScript_SetGlobalArgBool(7, abOnlyOutOfPlayerSight);
+	cScript_SetGlobalArgString(8, asCompletedCallback);
+	cScript_SetGlobalArgBool(9, abInstant);
+	cScript_SetGlobalArgBool(10, abDeactivateAfter);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandGoToHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandGoToHole_Execute()");
+	}
+}
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the monke emerge from a hole. If the monke is not hiding, it will be teleported to the hole and play the emerge animation.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asHole, the name of the hole the monke should emerge from
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * @param asCustomAnim, name of the custom animation
+ * @param asCustomAnimEntity, entity to play the custom anim at
+ * 
+ **/
+void Monke_CommandEmergeFromHole_Execute(const tString &in asAgentName, const tString &in asHole, bool abForce = false, const tString &in asCompletedCallback = "", const tString &in asCustomAnim = "", const tString &in asCustomAnimEntity = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asHole);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	cScript_SetGlobalArgString(3, asCustomAnim);
+	cScript_SetGlobalArgString(4, asCustomAnimEntity);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandEmergeFromHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandEmergeFromHole_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the monke move to and interact with a door.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asDoorName, the name of the door the monke should interact with
+ * @param abBreak, if the monke should break the door, otherwise it will attempt to open it
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asHole, the name of the hole the monke should emerge from
+ * @param aSpeed, the speed with which the monke will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandUseDoor_Execute(const tString &in asAgentName, const tString &in asDoorName, bool abBreak = false, bool abForce = false, eMonkeSpeed aSpeed = eMonkeSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgString(0, asDoorName);
+	cScript_SetGlobalArgBool(1, abBreak);
+	cScript_SetGlobalArgBool(2, abForce);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandUseDoor_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandUseDoor_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the smell command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandSmell_Execute(const tString &in asAgentName, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandSmell_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandSmell_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the wake up command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asWakeUpAnim, name of the wake up animation
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandWakeUp_Execute(const tString &in asAgentName, const tString &in asWakeUpAnim, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asWakeUpAnim);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandWakeUp_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandWakeUp_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the wake up command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afAggroLevel, the level of aggressiveness, values 0-7 with 0 being stopped, and 7 being the most aggressive
+ * @param abThreatenGestures, if the monke should use threatening gestures
+ * @param abAdjustSpeed, if the monke should slow down as it appraoches the player
+ * @param afMinSpeedDist, when using abAdjustSpeed, the distance at which the monke will reach minimum speed, -1 is default
+ * @param afMaxSpeedDist, when using abAdjustSpeed, the distance at which the monke will have maximum speed, -1 is default
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Monke_CommandThreatenPlayer_Execute(const tString &in asAgentName, int afAggroLevel = 1, bool abThreatenGestures = true, bool abAdjustSpeed = false, float afMinSpeedDist = -1, float afMaxSpeedDist = -1, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, afAggroLevel);
+	cScript_SetGlobalArgBool(2, abThreatenGestures);
+	cScript_SetGlobalArgBool(3, abAdjustSpeed);
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	cScript_SetGlobalArgFloat(5, afMinSpeedDist);
+	cScript_SetGlobalArgFloat(6, afMaxSpeedDist);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandThreatenPlayer_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandThreatenPlayer_Execute()");
+	}
+}
+
+void Monke_CommandThreatenPlayer_SetAggressiveness(const tString &in asAgentName, int afAggroLevel)
+{
+	cScript_SetGlobalArgInt(0, afAggroLevel);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CommandThreatenPlayer_SetAggressiveness") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandThreatenPlayer_SetAggressiveness()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Set a callback in the map to be called once the monke has emerged from hole.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the function, synctax void Func(const tString &in asMonke, const tString &in asHole)
+ * @param abAutoRemove, if the callback should automatically be removed
+ *  
+ **/
+void Monke_SetCallback_EmergeCompleted(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_EmergeCompleted")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EmergeCompleted()");
+	}
+}
+
+/**
+ * Set a callback in the map to be called when the monke starts to hide in a hole
+ * 
+ * @param asAgentName, name of the agent. 
+ * @param asFunction, name of the function, syntaxvoid Func(const tString &in asEntity, const tString &in asHoleName)
+ * @param abAutoRemove, if the callback should automatically be removed
+ *  
+ **/
+void Monke_SetCallback_EnterHideInHole(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_EnterHideInHole") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterHideInHole()");
+	}
+}
+
+ /**
+ * Sets the name of the callback called when entering hunt
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * @param abAutoRemove, if the callback should automatically be removed
+ * 
+ **/
+void Monke_SetCallback_EnterHunt(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_EnterHunt") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterHunt()");
+	}
+}
+
+//-------------------------------------------------
+
+ /**
+ * Sets the name of the callback called after throwing the player
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * 
+ **/
+void Monke_SetCallback_ThrowAnimationOver(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_ThrowAnimationOver") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_ThrowAnimationOver()");
+	}
+}
+ 
+//-------------------------------------------------
+
+ /**
+ * Adds a callback for when the monke enters the idle state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * @param abAutoRemove, if the callback should automatically be removed
+ * 
+ **/
+void Monke_SetCallback_EnterIdle(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_EnterIdle") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterIdle()");
+	}
+}
+
+//-------------------------------------------------
+
+ /**
+ * Adds a callback for when the wraith is alerted
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func(const tString &in asEntity)
+  * 
+ **/
+void Monke_SetCallback_Alerted(const tString &in asAgentName, const tString &in asFunction)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCallback_Alerted") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_Alerted()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets whether the monke can enter super hunt mode.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abActive, if the monke should be able to enter super hunt mode
+ * 
+ **/
+ void Monke_SetSuperHunt(const tString &in asAgentName, bool abActive)
+ {
+	cScript_SetGlobalArgBool(0, abActive);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetSuperHunt") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSuperHunt()");
+	}
+ }
+
+/**
+ * Sets whether the monke can be attracted.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abCanBeAttracted, whether the monke can be attracted or not
+ * 
+ **/
+void Monke_SetCanBeAttracted(const tString &in asAgentName, bool abCanBeAttracted)
+{
+	cScript_SetGlobalArgBool(0, abCanBeAttracted);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCanBeAttracted") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCanBeAttracted()");
+	}
+}
+
+/**
+ * Returns true if monke meets requirements to be attracted by a lure.
+ * 
+ * @param asAgentName, name of the agent. 
+ **/ 
+bool Monke_CanBeAttracted(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_GetCanBeAttracted")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetCanBeAttracted()");
+	}
+	
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * Sets whether the monke can be attracted.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abCanBeAttracted, whether the monke can be attracted or not
+ * 
+ **/
+void Monke_SetSmellingActive(const tString &in asAgentName, bool abActive)
+{
+	cScript_SetGlobalArgBool(0, abActive);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetSmellingActive") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSmellingActive()");
+	}
+}
+
+/**
+ * Sets whether the monke's attacks kill instantly or not.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abInstantKill, whether the monke kills instantly or not
+ * 
+ **/
+void Monke_SetInstantKill(const tString &in asAgentName, bool abInstantKill)
+{
+	cScript_SetGlobalArgBool(0, abInstantKill);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetInstantKill") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetInstantKill()");
+	}
+}
+
+/**
+ * Returns the name of the monke's current state. Should NEVER use this, let me know what the issue is so it can be fixed properly!
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+tString Monke_GetCurrentState(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_GetCurrentState") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetCurrentState()");
+	}
+	return cScript_GetGlobalReturnString();
+}
+ 
+/**
+ * Sets whether the monke's hunt speed will be adapting to a certain distance from the player, and the player's speed. Overrides "Monke_SetAdjustHuntSpeed".
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * @param afTarDist, desired distance to keep
+ * 
+ **/
+void Monke_SetAdaptiveHuntSpeed(const tString &in asAgentName, bool abX, float afTarDist)
+{     
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgFloat(1, afTarDist);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetAdaptiveHuntSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAdaptiveHuntSpeed()");
+	}
+}
+
+/**
+ * Sets whether the monke should slow down when hunting if the player isn't looking at it. Overridden by "Monke_SetAdaptiveHuntSpeed".
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+void Monke_SetAdjustHuntSpeed(const tString &in asAgentName, bool abX, float afMul=0.8f)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgFloat(1,afMul);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetAdjustHuntSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAdjustHuntSpeed()");
+	}
+}
+
+/**
+ * Returns true if the monke is in a suspicious state.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+bool Monke_IsSuspicious(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_IsSuspicious") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_IsSuspicious()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * If the monke is in an aggressive state
+ * 
+ * @param asAgentName, name of the agent. 
+ **/ 
+bool Monke_IsAggressive(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_GetStateIsAggressive")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetStateIsAggressive()");
+	}
+	
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * Sets whether the monke should should detect and react to the player's flashlight/lantern.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+//void Monke_SetDetectFlashlight(const tString &in asAgentName, bool abX)
+//{
+//	cScript_SetGlobalArgBool(0, abX);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetDetectFlashlight") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetDetectFlashlight()");
+//	}
+//}
+
+//------------------------------------------------------- 
+ 
+/**
+ * Sets whether the monke should should use map specific voice files
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+void Monke_SetUseVoice(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetUseVoice") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+	}
+}
+
+//bool Monke_IsBlocked(const tString &in asAgentName)
+//{
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_IsBlocked") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_IsBlocked()");
+//	}
+//	return cScript_GetGlobalReturnBool();
+//}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets the monke hole network that the monke can use.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNetwork, the name of the group of monke holes the monke should move between, use wildcard *
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the monke will move along these areas and make noise, use wildcard *
+ * 
+ **/
+void Monke_SetHoleNetwork(const tString &in asAgentName, const tString &in asNetwork, const tString &in asPlayerPath, const tString &in asHoleConnections)
+{
+	cScript_SetGlobalArgString(0, asNetwork);
+	cScript_SetGlobalArgString(1, asPlayerPath);
+	cScript_SetGlobalArgString(2, asHoleConnections);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetHoleNetwork") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetHoleNetwork()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets wether the monke can throw the player away instead of hitting them.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, value.
+ * @param abOnce, if the monke should only be allowed to throw the player once.
+ * 
+ **/
+void Monke_SetAllowPlayerThrow(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetAllowPlayerThrow") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAllowPlayerThrow()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Get throw damage, but skip animation (useful for custom throw event).
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, value.
+ * 
+ **/
+void Monke_CancelPlayerThrow(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_CancelPlayerThrow") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CancelPlayerThrow()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Enables or disables the monke's attack
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, if the monke can attack
+ * 
+ **/
+void Monke_SetCanAttack(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetCanAttack") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCanAttack()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets wether the monke can throw the player away instead of hitting them.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param alDir, throw direction (-1=all, 0/1/7=forward, 2/3=left, 4=back, 5/6=right.
+ * 
+ **/
+void Monke_SetPlayerThrowForcedDirection(const tString &in asAgentName, int alDir)
+{
+	cScript_SetGlobalArgInt(0, alDir);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetPlayerThrowForcedDirection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetPlayerThrowForcedDirection()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets whether the monke can enter super hunt mode.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abActive, if the monke should be able to enter super hunt mode
+ * 
+ **/
+ void Monke_SetVisibile(const tString &in asAgentName, bool abVisibility)
+ {
+	cScript_SetGlobalArgBool(0, abVisibility);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetVisible") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetEyeVisibility()");
+	}
+ }
+ 
+ //-------------------------------------------------
+ 
+ void Monke_SetCustomWalkAnim(const tString &in asAgent, const tString &in asAnim)
+ {
+	cScript_SetGlobalArgString(0, asAnim);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentMonke", "_Global_SetCustomWalkAnim") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_SetCustomWalkAnim()");
+	}
+ }
+ 
+ //-------------------------------------------------
+
+/**
+ * Sets the player path the monke will use to better stalk the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * 
+ **/
+//void Monke_SetPlayerPath(const tString &in asAgentName, const tString &in asPlayerPath)
+//{
+//	cScript_SetGlobalArgString(0, asPlayerPath);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetUseVoice") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+//	}
+//}
+
+/**
+ * Sets the player path the monke will use to better stalk the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the monke will move along these areas and make noise, use wildcard *
+ * 
+ **/
+//void Monke_SetHoleConnections(const tString &in asAgentName, const tString &in asHoleConnections)
+//{
+//	cScript_SetGlobalArgString(0, asHoleConnections);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentMonke", "_Global_SetUseVoice") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+//	}
+//}
+
+//-------------------------------------------------
+
+void SleepingMonke_ForceWakeUp(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_ForceWakeUp");
+}
+
+//-------------------------------------------------
+
+bool SleepingMonke_IsAwake(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_IsAwake");
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+void SleepingMonke_SetSensesActive(const tString &in asEntity, bool abX)
+{
+	array<iLuxEntity@> vEntities;
+	cLux_GetCurrentMap().GetEntityArray(asEntity, eLuxEntityType_Prop, "cScrPropSleepingMonke", vEntities);
+	if (vEntities.length() == 0)
+	{
+		Error("Couldn't find prop '" + asEntity + "' for SleepingMonke_SetSensesActive");
+		return;
+	}
+	
+	iLuxEntity@ pEnt = null;
+	for (int i = 0; i < vEntities.size(); i++)
+	{
+		@pEnt = vEntities[i];
+		cScript_SetGlobalArgBool(0, abX);
+		cScript_RunGlobalFunc(pEnt.GetName(), "cScrPropSleepingMonke", "_Global_SetSensesActive");
+	}
+}
+
+//-------------------------------------------------
+
+void SleepingMonke_ForceReact(const tString &in asEntity, float afMinDelay = 0.5f, float afMaxDelay = 1.f, const tString &in asCustomStirAnim = "")
+{
+	cScript_SetGlobalArgFloat(0, afMinDelay);
+	cScript_SetGlobalArgFloat(1, afMaxDelay);
+	cScript_SetGlobalArgString(2, asCustomStirAnim);
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_ForceReact");
+}
+
+//-------------------------------------------------
+
+void SleepingMonke_ChangeToAlert(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_ChangeToAlert");
+}
+
+//-------------------------------------------------
+
+tString SleepingMonke_GetType(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_GetType");
+	return cScript_GetGlobalReturnString();
+}
+
+//-------------------------------------------------
+
+void SleepingMonke_Reset(const tString &in asEntity)
+{
+	array<iLuxEntity@> vEntities;
+	cLux_GetCurrentMap().GetEntityArray(asEntity, eLuxEntityType_Prop, "cScrPropSleepingMonke", vEntities);
+	if (vEntities.length() == 0)
+	{
+		Error("Couldn't find prop '" + asEntity + "' for SleepingMonke_Reset");
+		return;
+	}
+	
+	iLuxEntity@ pEnt = null;
+	for (int i = 0; i < vEntities.size(); i++)
+	{
+		@pEnt = vEntities[i];
+		if (pEnt.IsActive() == false)
+		{
+			Error("Prop '" + pEnt.GetName() + "' for SleepingMonke_Reset is not active, skipping!");
+			continue;
+		}
+		
+		cScript_RunGlobalFunc(pEnt.GetName(), "cScrPropSleepingMonke", "_Global_Reset");
+	}
+}
+
+//-------------------------------------------------
+
+void SleepingMonke_SetManualReact(const tString &in asEntity, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingMonke", "_Global_SetManualReact");
+}
+ 
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// SAND LURKER
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Puts a sand lurker in the wander state.
+ * 
+ * @param asAgentName, name of the agent.
+ **/
+void SandLurker_Wander(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentSandLurker", "_Global_Wander")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Wander()");
+	}
+}
+
+/**
+ * Puts a sand lurker in the idle state.
+ * 
+ * @param asAgentName, name of the agent.
+ **/
+void SandLurker_ForceIdle(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentSandLurker", "_Global_ForceIdle")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ForceIdle()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// WRAITH
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Puts the monke into a mode, which determines its behavior when it's not reacting to the player's presence.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aMode, which mode to put the monke in
+ * @param abForce, if true the monke will switch the behavior instantly regardless of state, otherwise it will do so more naturally on the next best opportunity
+ * 
+ **/
+void Wraith_Mode_Set(const tString &in asAgentName, eWraithMode aMode, bool abForce = false)
+{
+	cScript_SetGlobalArgInt(0, int(aMode));
+	cScript_SetGlobalArgBool(1, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_Mode_Set") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Mode_Set()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_ModeIdle_SetResetSpotlight(const tString &in asAgentName, bool abReset = true, bool abOnce = false)
+{
+	cScript_SetGlobalArgBool(0, abReset);
+	cScript_SetGlobalArgBool(1, abOnce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeIdle_SetResetSpotlight") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_OverrideIdleSpotlightOn()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_ModeIdle_SetSpotlightOn(const tString &in asAgentName, bool abOn)
+{
+	cScript_SetGlobalArgBool(0, abOn);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeIdle_SetSpotlightOn") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeIdle_SetSpotlightOn()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the monke's patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the monke will move
+ * 
+ **/
+void Wraith_ModePatrol_Setup(const tString &in asAgentName, bool abRandom = false, eWraithSpeed aSpeed = eWraithSpeed_Walk)
+{
+	cScript_SetGlobalArgBool(0, abRandom);
+	cScript_SetGlobalArgInt(1, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModePatrol_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_Setup()");
+	}
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the monke should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the monke should wait at this node
+ * @param asAnimName, name of the animation that should play when the monke reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Wraith_ModePatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModePatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol mode list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Wraith_ModePatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModePatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_ClearNodes()");
+	} 
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the monke's patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param afLookAroundTime, how often the wraith should look around 360, -1 means never
+ * @param afGoToPlayerTime, how often the wraith should move to a position close to the player, -1 means never
+ * @param afPulseTime, how often the wraith should do a pulse, -1 means never
+ * 
+ **/
+void Wraith_ModeWraithPatrol_Setup(const tString &in asAgentName, bool abStartPulse = true, bool abRandom = false, eWraithSpeed aSpeed = eWraithSpeed_Walk)
+{
+	cScript_SetGlobalArgBool(0, abRandom);
+	cScript_SetGlobalArgInt(1, int(aSpeed));
+	cScript_SetGlobalArgBool(2, abStartPulse);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_Setup()");
+	}
+}
+
+/**
+ * Sets how of then the wraith should look around.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afTime, how often the wraith should look around
+ * 
+ **/
+void Wraith_ModeWraithPatrol_SetBurstTime(const tString &in asAgentName, float afTime)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_SetBurstTime") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_SetBurstTime()");
+	}
+}
+
+/**
+ * Sets how often the wraith should burst.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afTime, how often the wraith should burst
+ * 
+ **/
+void Wraith_ModeWraithPatrol_SetLookAroundTime(const tString &in asAgentName, float afTime)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_SetLookAroundTime") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_SetLookAroundTime()");
+	}
+}
+
+/**
+ * Sets how often the wraith should move to a position close to the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afTime, how often the wraith should move to a position close to the player
+ * 
+ **/
+void Wraith_ModeWraithPatrol_SetGoTowardsPlayerTime(const tString &in asAgentName, float afTime)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_SetGoTowardsPlayer") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_SetGoTowardsPlayer()");
+	}
+}
+
+/**
+ * Sets how often the wraith should pulse.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afTime, how often the wraith should pulse
+ * 
+ **/
+void Wraith_ModeWraithPatrol_SetPulseTime(const tString &in asAgentName, float afTime)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_SetPulseTime") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_SetPulseTime()");
+	}
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * 
+ **/
+void Wraith_ModeWraithPatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol mode list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Wraith_ModeWraithPatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeWraithPatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeWraithPatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Makes the wraith follow a monke and direct its light at it.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asMonke, name of the entity the wraith should follow
+ * @param afMaxDist, the most distance the wraith should keep, -1 for default
+ * @param afMinDist, the least distance the wraith should keep, -1 for default
+ * 
+ **/
+void Wraith_ModeControlMonke_Setup(const tString &in asAgentName, const tString &in asMonke, float afMaxDist = -1, float afMinDist = -1)
+{
+	cScript_SetGlobalArgString(0, asMonke);
+	cScript_SetGlobalArgFloat(1, afMaxDist);
+	cScript_SetGlobalArgFloat(2, afMinDist);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeControlMonke_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeControlMonke_Setup()");
+	} 
+}
+
+/**
+ * Removes all the nodes from the patrol mode list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Wraith_ModeFlyPatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * 
+ **/
+void Wraith_ModeFlyPatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_AddNode()");
+	}
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode. Checks the suffix of the entity and only adds those that fall within the specified range.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param alStartRange, start of the suffix range
+ * @param alEndRange, end of the suffix range
+ * 
+ **/
+void Wraith_ModeFlyPatrol_AddNodeRange(const tString &in asAgentName, const tString&in asNodeName, int alStartRange, int alEndRange)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgInt(1, alStartRange);
+	cScript_SetGlobalArgInt(2, alEndRange);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_AddNodeRange") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_AddNodeRange()");
+	}
+}
+
+void Wraith_ModeFlyPatrol_ClearLookAtFields(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_ClearLookAtFields") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_ClearLookAtFields()");
+	} 
+}
+
+void Wraith_ModeFlyPatrol_AddLookAtfield(const tString &in asAgentName, const tString&in asFieldName)
+{
+	cScript_SetGlobalArgString(0, asFieldName);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_AddLookAtfield") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_AddLookAtfield()");
+	}
+}
+
+void Wraith_ModeFlyPatrol_SetPlayerGoalDirection(const tString &in asAgentName, const tString &in asDirectionWidget)
+{
+	cScript_SetGlobalArgString(0, asDirectionWidget);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_SetPlayerGoalDirection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_SetPlayerGoalDirection()");
+	}
+}
+
+void Wraith_ModeFlyPatrol_RemovePlayerGoalDirection(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_RemovePlayerGoalDirection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_RemovePlayerGoalDirection()");
+	}
+}
+
+void Wraith_ModeFlyPatrol_SetSweepRange(const tString &in asAgentName, const cVector2f &in avRange)
+{
+	cScript_SetGlobalArgVector2f(0, avRange);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_SetSweepRange") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_SetSweepRange()");
+	}
+}
+
+void Wraith_ModeFlyPatrol_SetUseRandomNodes(const tString &in asAgentName, bool abRandom)
+{
+	cScript_SetGlobalArgBool(0, abRandom);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_SetUseRandomNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_SetUseRandomNodes()");
+	}
+}
+
+/**
+ * Sets up the basic parameters for the monke's patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * 
+ **/
+void Wraith_ModeFlyPatrol_Setup(const tString &in asAgentName, bool abUsePathNodes = true)
+{
+	cScript_SetGlobalArgBool(0, abUsePathNodes);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyPatrol_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyPatrol_Setup()");
+	}
+}
+
+/**
+ * Setup for FlyFollowEntity, where the wraith will follow an entity while flying
+ * 
+ * @param asAgentName, name of the agent
+ * @param asEntity, name of the entity to follow
+ * 
+ **/
+void Wraith_ModeFlyFollowEntity_Setup(const tString &in asAgentName, const tString &in asEntity, float afMaxSpeedMul = 1.0f)
+{
+	cScript_SetGlobalArgString(0, asEntity);
+	cScript_SetGlobalArgFloat(1, afMaxSpeedMul);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyFollowEntity_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyFollowEntity_Setup()");
+	}
+}
+
+void Wraith_ModeFlyFollowEntity_SetEntity(const tString &in asAgentName, const tString &in asEntity, float afMaxSpeedMul = 1.0f)
+{
+	cScript_SetGlobalArgString(0, asEntity);
+	cScript_SetGlobalArgFloat(1, afMaxSpeedMul);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyFollowEntity_SetEntity") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyFollowEntity_SetEntity()");
+	}
+}
+
+void Wraith_ModeFlyFollowEntity_SetDetectionMul(const tString &in asAgentName, float afDetectionMul)
+{
+	cScript_SetGlobalArgFloat(0, afDetectionMul);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ModeFlyFollowEntity_SetDetectionMul") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeFlyFollowEntity_SetDetectionMul()");
+	}
+}
+
+void Wraith_ModeGuardPosition_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GuardPosition_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GuardPosition_ClearNodes()");
+	}
+}
+
+void Wraith_ModeGuardPosition_AddNode(const tString &in asAgentName, const tString &in asLookPos)
+{
+	iLuxEntity@ pLook = cLux_GetCurrentMap().GetEntityByName(asLookPos);
+	if (pLook is null)
+	{
+		Error("Couldn't find entity '" + asLookPos + "' for Wraith_StartSpotlightFollow");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pLook.GetID());
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GuardPosition_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GuardPosition_AddNode()");
+	}
+}
+
+void Wraith_ModeGuardPosition_Setup(const tString &in asAgentName, const cVector3f&in avStandPos, float afMinTime, float afMaxTime)
+{
+	cScript_SetGlobalArgVector3f(0, avStandPos);
+	cScript_SetGlobalArgFloat(1, afMinTime);
+	cScript_SetGlobalArgFloat(2, afMaxTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GuardPosition_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GuardPosition_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith enter or exit stealth mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abStealth, whether the wraith should enter or exit stealth mode
+ * @param abEffects, if effects should be used for the transition, otherwise it will be instant
+ * @param asCompletedCallback, map callback for when the wraith enters or exits stealth mode, syntax: void Func(const tString &in asEntity, bool abStealthActive)
+ * 
+ **/
+void Wraith_SetStealth(const tString &in asAgentName, bool abStealth, bool abEffects = true, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abStealth);
+	cScript_SetGlobalArgBool(1, abEffects);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetStealth") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetStealth()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetFly(const tString &in asAgentName, bool abFly)
+{
+	cScript_SetGlobalArgBool(0, abFly);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetFly") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetFly()");
+	}
+}
+
+void Wraith_ForceStruggle(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ForceStruggle") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ForceStruggle()");
+	}
+}
+
+void Wraith_StopStruggle(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StopStruggle") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_StopStruggle()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_StopSpotlightMovement(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StopSpotlightMovement") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_StopSpotlightMovement()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_TurnSpotlightToPos(const tString &in asAgentName, const cVector3f &in avPos, bool abForce = false, bool abFade = true, float afTurnSpeed = 2.2f, float afTurningDoneMul = 1.0f)
+{
+	cScript_SetGlobalArgVector3f(0, avPos);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgBool(2, abFade);
+	cScript_SetGlobalArgFloat(3, afTurnSpeed);
+	cScript_SetGlobalArgFloat(4, afTurningDoneMul);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_TurnSpotlightToPos") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_TurnSpotlightToPos()");
+	}
+}
+
+//-------------------------------------------------
+
+iLuxEntity@ Wraith_GetSpotlightEntity(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GetSpotlightEntity") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetSpotlightEntity()");
+	}
+	return cLux_ID_Entity(cScript_GetGlobalReturnID());
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightOn(const tString &in asAgentName, bool abX, bool abSpotlightOnly = false, float afEffectFadeTime = 0.f)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgBool(1, abSpotlightOnly);
+	cScript_SetGlobalArgFloat(2, afEffectFadeTime);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightOn") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightOn()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightColor(const tString &in asAgentName, const tString &in asColorName)
+{
+	cScript_SetGlobalArgString(0, asColorName);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightColor") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightColor()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightDefaultColor(const tString &in asAgentName, const tString &in asColorName, cColor aColor)
+{
+	cScript_SetGlobalArgString(0, asColorName);
+	cScript_SetGlobalArgColor(1, aColor);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightDefaultColor") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightDefaultColor()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_StartSpotlightFollow(const tString &in asAgentName, const tString &in asEntity, const cVector3f &in avOffset = 0.f, bool abLocalOffset = true)
+{
+	iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(asEntity);
+	if (pEnt is null)
+	{
+		Error("Couldn't find entity '" + asEntity + "' for Wraith_StartSpotlightFollow");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pEnt.GetID());
+	cScript_SetGlobalArgVector3f(1, avOffset);
+	cScript_SetGlobalArgBool(2, abLocalOffset);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StartSpotlightFollow") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_StartSpotlightFollow()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_StopSpotlightFollow(const tString &in asAgentName)
+{
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StopSpotlightFollow") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_StopSpotlightFollow()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightMovement_Forward(const tString &in asAgentName, bool abForce = false)
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightMovement_Forward") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightMovement_Forward()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightMovement_ForwardOffset(const tString &in asAgentName, float mfHOffset, float mfVOffset, bool abForce = false)
+{
+	cScript_SetGlobalArgFloat(0, mfHOffset);
+	cScript_SetGlobalArgFloat(1, mfVOffset);
+	cScript_SetGlobalArgBool(2, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightMovement_ForwardOffset") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightMovement_ForwardOffset()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightMovement_SidewaysEight(const tString &in asAgentName, float afSpeed = 1.0f, float afHMul = 1.0f, float afVMul = 1.0f, bool abUseCustomTarget = false, const cVector3f &in avCustomTarget = cVector3f_Zero)
+{
+	cScript_SetGlobalArgFloat(0, afSpeed);
+	cScript_SetGlobalArgFloat(1, afHMul);
+	cScript_SetGlobalArgFloat(2, afVMul);
+	cScript_SetGlobalArgBool(3, abUseCustomTarget);
+	cScript_SetGlobalArgVector3f(4, avCustomTarget);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightMovement_SidewaysEight") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightMovement_SidewaysEight()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightMovement_SidewaysEightAtEntity(const tString &in asAgentName, float afSpeed = 1.0f, float afHMul = 1.0f, float afVMul = 1.0f, const tString &in asEntity = "", bool abResetTimer = false, bool abForce = false)
+{
+	cScript_SetGlobalArgFloat(0, afSpeed);
+	cScript_SetGlobalArgFloat(1, afHMul);
+	cScript_SetGlobalArgFloat(2, afVMul);
+	cScript_SetGlobalArgString(3, asEntity);
+	cScript_SetGlobalArgBool(4, abResetTimer);
+	cScript_SetGlobalArgBool(5, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightMovement_SidewaysEightAtEntity") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightMovement_SidewaysEightAtEntity()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SpotlightMovement_SetSidewaysEightTarget(const tString &in asAgentName, const cVector3f &in avCustomTarget)
+{
+	cScript_SetGlobalArgVector3f(0, avCustomTarget);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SpotlightMovement_SetSidewaysEightTarget") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SpotlightMovement_SetSidewaysEightTarget()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightMovement_FollowEntity(const tString &in asAgentName, const tString &in asEntity, bool abForce = false)
+{
+	cScript_SetGlobalArgString(0, asEntity);
+	cScript_SetGlobalArgBool(1, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightMovement_FollowEntity") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightMovement_FollowEntity()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetInfiniteStruggle(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetInfiniteStruggle") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetInfiniteStruggle()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetPlayStruggleOutroAnim(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetPlayStruggleOutroAnim") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetPlayStruggleOutroAnim()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetStruggleDashActive(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetStruggleDashActive") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetStruggleDashActive()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetStruggleWinnable(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StruggleWinnable") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_StruggleWinnable()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetStruggleFollowEnt(const tString &in asAgentName, const tString &in asEntity, const cVector3f &in avOffset = cVector3f_Zero)
+{
+	iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(asEntity);
+	if (pEnt is null)
+	{
+		Error("Couldn't find entity '" + asEntity + "' for Wraith_SetStruggleFollowEnt");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pEnt.GetID());
+	cScript_SetGlobalArgVector3f(1, avOffset);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetStruggleFollowEnt") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetStruggleFollowEnt()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSight(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSight") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSight()");
+	}
+}
+
+//-------------------------------------------------
+
+bool Wraith_GetSight(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GetSight") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetSight()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+void Wraith_SetHearing(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetHearing") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetHearing()");
+	}
+}
+
+//-------------------------------------------------
+
+bool Wraith_GetHearing(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GetHearing") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetHearing()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+void Wraith_SetGazeDetection(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetGazeDetection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetGazeDetection()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetGazeWitoutEvent(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetGazeWitoutEvent") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetGazeWitoutEvent()");
+	}
+}
+
+//-------------------------------------------------
+
+bool Wraith_GetGazeDetection(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GetGazeDetection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetGazeDetection()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+void Wraith_SetLeader(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetLeader") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetLeader()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetServant(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetServant") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetServant()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_AddSpawnSuggestion(const tString &in asAgentName, const tString &in asSpawn)
+{
+	cScript_SetGlobalArgString(0, asSpawn);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_AddSpawnSuggestion") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_AddSpawnSuggestion()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_ClearSpawnSuggestions(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ClearSpawnSuggestions") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ClearSpawnSuggestions()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_AddPlayerPathNode(const tString &in asAgentName, const tString &in asNode)
+{
+	cScript_SetGlobalArgString(0, asNode);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_AddPlayerPathNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_AddPlayerPathNode()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_ClearPlayerPath(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ClearPlayerPath") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ClearPlayerPath()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetPlayerStress(const tString &in asAgentName, float afStress)
+{
+	cScript_SetGlobalArgFloat(0, afStress);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetPlayerStress") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetPlayerStress()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetPeekDetectionActive(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetPeekDetectionActive") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetPeekDetectionActive()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetNoiseCounterTutorialOver(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetNoiseCounterTutorialOver") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetNoiseCounterTutorialOver()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightBeamQuality(const tString &in asAgentName, int alQuality)
+{
+	cScript_SetGlobalArgInt(0, alQuality);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightBeamQuality") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetSpotlightBeamQuality");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_StartFacingEntity(const tString &in asAgentName, const tString &in asEntity, float afFadeInSpeed = 0.6, float afFadeinTime = 1, float afFacingSpeed = 2)
+{
+	iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(asEntity);
+	if (pEnt is null)
+	{
+		Error("Couldn't find entity '" + asEntity + "' for Wraith_StartSpotlightFollow");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pEnt.GetID());
+	cScript_SetGlobalArgFloat(1, afFadeInSpeed);
+	cScript_SetGlobalArgFloat(2, afFadeinTime);
+	cScript_SetGlobalArgFloat(3, afFacingSpeed);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StartFacingEntity") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_StartFacingEntity");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_StopFacingEntity(const tString &in asAgentName, float afFadeOutSpeed = 0.6)
+{
+	cScript_SetGlobalArgFloat(0, afFadeOutSpeed);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_StopFacingEntity") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_StopFacingEntity");
+	}
+}
+
+//-------------------------------------------------
+
+
+int Wraith_GetAlertState(const tString &in asAgentName)
+{
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_GetAlertState") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_GetAlertState");
+	}
+	return cScript_GetGlobalReturnInt();
+}
+
+//-------------------------------------------------
+
+void Wraith_SetVolumeMul(const tString &in asAgentName, float afMul, bool abInstant = false)
+{
+	cScript_SetGlobalArgBool(0, abInstant);
+	cScript_SetGlobalArgFloat(1, afMul);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetVolumeMul") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetVolumeMul");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetCoverage(const tString &in asAgentName, float afCoverage, float afFadeTime = -1, bool abFadeCrystal = true)
+{
+	cScript_SetGlobalArgFloat(0, afCoverage);
+	cScript_SetGlobalArgFloat(1, afFadeTime);
+	cScript_SetGlobalArgBool(2, abFadeCrystal);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCoverage") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCoverage");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a callback for when the wraith detects something out of place, like hearing a sound, seeing the player or noticing the player's gaze.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCallback, called when the wraith's behavior is disrupted, syntax: void Func(const tString &in asEntityName)
+ * 
+ **/
+void Wraith_SetCallback_Alerted(const tString &in asAgentName, const tString &in asCallback)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_Alerted") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCallback_Alerted");
+	}
+}
+
+//-------------------------------------------------
+
+ /**
+ * Adds a callback for when the wraith calms down after being alerted
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func(const tString &in asEntity)
+  * 
+ **/
+void Wraith_SetCallback_CalmedDown(const tString &in asAgentName, const tString &in asFunction)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_CalmedDown") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_CalmedDown()");
+	}
+}
+
+
+//-------------------------------------------------
+
+/**
+ * Adds a callback for when the wraith enters a struggle.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCallback, syntax: void Func(const tString &in asEntityName)
+ * 
+ **/
+void Wraith_SetCallback_Struggle(const tString &in asAgentName, const tString &in asCallback)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_Struggle") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCallback_Struggle");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a callback for when the player sees the wraith's beam
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCallback, syntax: void Func(const tString &in asEntityName, int alState)
+ * @param afCallbackDelay, how long the player should look at the beam before the callback is triggered
+ * @param abRemoveWhenTriggered, if the callback should be removed after it is triggered once
+ * 
+ **/
+
+void Wraith_SetCallback_BeamSeen(const tString &in asAgentName, const tString &in asCallback, float afCallbackDelay = 0.5f, bool abRemoveWhenTriggered = true)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	cScript_SetGlobalArgFloat(1, afCallbackDelay);
+	cScript_SetGlobalArgBool(2, abRemoveWhenTriggered);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_BeamSeen") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCallback_BeamSeen");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a callback for when the player sees the wraith's beam
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCallback, syntax: void Func(const tString &in asEntityName, int alState)
+ * @param afCallbackDelay, how long the player should look at the beam before the callback is triggered
+ * @param abRemoveWhenTriggered, if the callback should be removed after it is triggered once
+ * 
+ **/
+
+void Wraith_SetCallback_BeamCenterSeen(const tString &in asAgentName, const tString &in asCallback, float afCallbackDelay = 0.5f, bool abRemoveWhenTriggered = true)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	cScript_SetGlobalArgFloat(1, afCallbackDelay);
+	cScript_SetGlobalArgBool(2, abRemoveWhenTriggered);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_BeamCenterSeen") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCallback_BeamCenterSeen");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a callback for when the wraith pulses
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCallback, syntax: void Func(const tString &in asEntityName)
+ * 
+ **/
+
+void Wraith_SetCallback_Pulse(const tString &in asAgentName, const tString &in asCallback, bool abRemoveWhenTriggered = true)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	cScript_SetGlobalArgBool(1, abRemoveWhenTriggered);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetCallback_Pulse") == false)
+	{
+		Error("Could not run '" + asAgentName + "' / _Global_SetCallback_Pulse");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith move its flashlight in a scanning motion around the target position.
+ * 
+ * @param asAgentName, name of the agent
+ * @param avPos,the position the wraith should scan
+ * @param afTime, how long the wraith should scan
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, will be called when the command is completed, syntax: void Func(const tString &in asEntityName)
+ * 
+ **/
+void Wraith_CommandScanPosition_Execute(const tString &in asAgentName, const cVector3f &in avPos, float afTime, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgVector3f(0, avPos);
+	cScript_SetGlobalArgFloat(1, afTime);
+	cScript_SetGlobalArgBool(2, abForce);
+	cScript_SetGlobalArgString(3, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandScanPosition_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandScanPosition_Execute()");
+	} 
+}
+
+//-------------------------------------------------
+
+/**
+ * Removes the current command that is set for the wraith to execute.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the wraith should abandond the command immediately, or wait to finish what it's doing
+ * 
+ **/
+void Wraith_Command_Remove(const tString &in asAgentName, bool abForce = true)
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_Command_Remove") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Command_Remove()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Gets the ID of the current command of the wraith.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+int Wraith_Command_Get(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_Command_Get") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Command_Get()");
+	}
+	
+	return cScript_GetGlobalReturnInt();
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a node to the list of patrol nodes for a patrol command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the wraith should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the wraith should wait at this node
+ * @param asAnimName, name of the animation that should play when the wraith reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Wraith_CommandPatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandPatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_AddNode()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Removes all the nodes from the patrol command list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Wraith_CommandPatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandPatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_ClearNodes()");
+	} 
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the patrol command
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param alLoopCount, how many times the monke should patrol the node set, only positive values are allowed, use the patrol mode for infinite loops
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the monke will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandPatrol_Execute(const tString &in asAgentName, bool abForce = false, int alLoopCount = 1, bool abRandom = false, bool abSpotlightOn = false, eWraithSpeed aSpeed = eWraithSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, alLoopCount);
+	cScript_SetGlobalArgBool(2, abRandom);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	cScript_SetGlobalArgBool(5, abSpotlightOn);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandPatrol_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith pulse and look for the player's amulet
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandPulse_Execute(const tString &in asAgentName, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandPulse_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPulse_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Puts the wraith in a state where it can be controlled by script until the command is removed or the wraith notices the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandCustom_Execute(const tString &in asAgentName, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandCustom_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandCustom_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith search a position by sweeping it's beam.
+ * 
+ * @param asAgentName, name of the agent
+ * @param avSearchPos, position to search
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandFlyToNode_Execute(const tString &in asAgentName, const tString &in asNode, bool abForce = false, float afSoundVol = 1, bool abSpotlight = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgString(0, asNode);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	cScript_SetGlobalArgFloat(3, afSoundVol);
+	cScript_SetGlobalArgBool(4, abSpotlight);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandFlyToNode_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandFlyToNode_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith fly to a node.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNode, name of the node
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandFlySpotlightSearch_Execute(const tString &in asAgentName, const cVector3f &in avSearchPos, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgVector3f(0, avSearchPos);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandFlySpotlightSearch_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandFlySpotlightSearch_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith look at a position suspiciously, as if it heard a sound.
+ * 
+ * @param asAgentName, name of the agent
+ * @param avPos, name of the node
+ * @param abPlayerSound, if the wraith should react as if it was a player sound
+ * @param abScan, if the wratih should scan the position for a while
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandLookAtPosition_Execute(const tString &in asAgentName, const cVector3f &in avPos, bool abScan = false, bool abAlerted = false, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgVector3f(1, avPos);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	cScript_SetGlobalArgBool(3, abScan);
+	cScript_SetGlobalArgBool(4, abAlerted);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandLookAtPosition_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandLookAtPosition_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * DEPRECATED, DO NOT USE. Makes the wraith enter stealth mode and disappear as soon as possible.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abSilent, weather the wraith should make noise when disappearing
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandDisappear_Execute(const tString &in asAgentName, bool abSilent = false, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	Error("Wraith_CommandDisappear_Execute is deprecated, do not use!");
+	
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	cScript_SetGlobalArgBool(2, abSilent);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandDisappear_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandDisappear_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith search a position.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandSearch_Execute(const tString &in asAgentName, const cVector3f &in avPos, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	cScript_SetGlobalArgVector3f(2, avPos);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandSearch_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandSearch_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the wraith dash to a position
+ * 
+ * @param asAgentName, name of the agent
+ * @param avPos, target position
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Wraith_CommandDash_Execute(const tString &in asAgentName, const cVector3f &in avPos, bool abQuick = false, bool abDisappearAfter = false, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abQuick);
+	cScript_SetGlobalArgBool(4, abDisappearAfter);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	cScript_SetGlobalArgVector3f(3, avPos);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_CommandDash_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandDash_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightSoundVolumeMul(const tString &in asAgentName, float afMul)
+{
+	cScript_SetGlobalArgFloat(0, afMul);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightSoundVolumeMul") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightSoundVolumeMul()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetFearFromBeam(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetFearFromBeam") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightBillboardExtraLength()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetSpotlightBillboardExtraLength(const tString &in asAgentName, float afExtraLength, float afStartOffset)
+{
+	cScript_SetGlobalArgFloat(0, afExtraLength);
+	cScript_SetGlobalArgFloat(1, afStartOffset);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetSpotlightBillboardExtraLength") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSpotlightBillboardExtraLength()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetHearingMul(const tString &in asAgentName, float afHearingMul)
+{
+	cScript_SetGlobalArgFloat(0, afHearingMul);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetHearingMul") == false)
+	{
+		Error("Could not run'"+asAgentName+"' / _Global_SetHearingMul()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_ResetHearingMul(const tString &in asAgentName)
+{
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_ResetHearingMul") == false)
+	{
+		Error("Could not run'"+asAgentName+"' / _Global_ResetHearingMul()");
+	}
+}
+
+//-------------------------------------------------
+
+void Wraith_SetBillboardRange(const tString &in asAgentName, const cVector2f &in avMinRange, const cVector2f &in avMaxRange)
+{
+	cScript_SetGlobalArgVector2f(0, avMinRange);
+	cScript_SetGlobalArgVector2f(1, avMaxRange);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentWraith", "_Global_SetBillboardRange") == false)
+	{
+		Error("Could not run'"+asAgentName+"' / _Global_SetBillboardRange()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// YOUNG TIN HINAN
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+void YoungTinHinan_Activate(const tString &in asAgent, float afTime, bool abPlaySound = true)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	cScript_SetGlobalArgBool(1, abPlaySound);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_Activate") == false)
+	{
+		Error("Could not run '" + asAgent + "' / YoungTinHinan_Activate");
+	} 
+}
+
+//-------------------------------------------------
+
+void YoungTinHinan_Deactivate(const tString &in asAgent, float afTime, bool abPlaySound = true)
+{
+	cScript_SetGlobalArgFloat(0, afTime);
+	cScript_SetGlobalArgBool(1, abPlaySound);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_Deactivate") == false)
+	{
+		Error("Could not run '" + asAgent + "' / YoungTinHinan_Deactivate");
+	} 
+}
+
+//-------------------------------------------------
+
+void YoungTinHinan_MoveTo(const tString &in asAgent, const tString &in asEntity, const tString &in asCallback, int alSpeedState = -1, bool abExactStopAtEnd = false)
+{
+	cScript_SetGlobalArgString(0, asEntity);
+	cScript_SetGlobalArgString(1, asCallback);
+	cScript_SetGlobalArgBool(2, abExactStopAtEnd);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_MoveTo") == false)
+	{
+		Error("Could not run '" + asAgent + "' / YoungTinHinan_MoveTo");
+	}
+
+	if (alSpeedState != -1)
+	{
+		cLuxCharMover@ pCharMover = cast<cLuxCharMover@>(cLux_GetCurrentMap().GetEntityComponent(eLuxEntityComponentType_CharMover, asAgent));
+		if (pCharMover !is null)
+			pCharMover.SetSpeedState(eYoungTinHinanSpeed(alSpeedState));
+	}
+}
+
+//-------------------------------------------------
+
+void YoungTinHinan_SetFlying(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_SetFlying") == false)
+	{
+		Error("Could not run '" + asAgent + "' / YoungTinHinan_SetFlying");
+	} 
+}
+
+//-------------------------------------------------
+
+void YoungTinHinan_SetCustomCoverage(const tString &in asAgent, float afCoverage)
+{
+	cScript_SetGlobalArgFloat(0, afCoverage);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_SetCustomCoverage") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetCustomCoverage");
+	} 
+}
+
+//-------------------------------------------------
+
+void YoungTinHinan_SetAutoTurnTowardPlayer(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentYoungTinHinan", "_Global_SetAutoTurnTowardPlayer") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetAutoTurnTowardPlayer");
+	} 
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// TIN HINAN
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+void TinHinan_Setup(const tString &in asAgent, const tString &in asCovers, const tString &in asCoverAreas, const tString &in asGhost)
+{
+	cScript_SetGlobalArgString(0, asCovers);
+	cScript_SetGlobalArgString(1, asCoverAreas);
+	cScript_SetGlobalArgString(2, asGhost);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_Setup") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_Setup");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightColor(const tString &in asAgent, const tString &in asColor)
+{
+	cScript_SetGlobalArgString(0, asColor);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightColor") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetSpotlightColor");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetPassive(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetPassive") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetPassive");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_HearBaby(const tString &in asAgent)
+{
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_HearBaby") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_HearBaby");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetDying(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetDying") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetDying");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightSoundVolumeMul(const tString &in asAgent, float afMul)
+{
+	cScript_SetGlobalArgFloat(0, afMul);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightSoundVolumeMul") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_SetSpotlightSoundVolumeMul()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_StopSpotlightMovement(const tString &in asAgent)
+{
+	if(cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_StopSpotlightMovement") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_StopSpotlightMovement()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightOn(const tString &in asAgent, bool abX, bool abSpotlightOnly = false, float afEffectFadeTime = 0.f)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgBool(1, abSpotlightOnly);
+	cScript_SetGlobalArgFloat(2, afEffectFadeTime);
+	if(cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightOn") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_SetSpotlightOn()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_StartSpotlightFollow(const tString &in asAgent, const tString &in asEntity, const cVector3f &in avOffset = 0.f, bool abLocalOffset = true)
+{
+	iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(asEntity);
+	if (pEnt is null)
+	{
+		Error("Couldn't find entity '" + asEntity + "' for TinHinan_StartSpotlightFollow");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pEnt.GetID());
+	cScript_SetGlobalArgVector3f(1, avOffset);
+	cScript_SetGlobalArgBool(2, abLocalOffset);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_StartSpotlightFollow") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_StartSpotlightFollow()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_TurnSpotlightToPos(const tString &in asAgent, const cVector3f &in avPos, bool abForce = false, bool abFade = true, float afTurnSpeed = 2.2f, float afTurningDoneMul = 1.0f)
+{
+	cScript_SetGlobalArgVector3f(0, avPos);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgBool(2, abFade);
+	cScript_SetGlobalArgFloat(3, afTurnSpeed);
+	cScript_SetGlobalArgFloat(4, afTurningDoneMul);
+	if(cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_TurnSpotlightToPos") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_TurnSpotlightToPos()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_StopSpotlightFollow(const tString &in asAgent)
+{
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_StopSpotlightFollow") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_StopSpotlightFollow()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetAnimationState(const tString &in asAgent, int alState)
+{
+	cScript_SetGlobalArgInt(0, alState);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetAnimationState") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetAnimationState()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightRadius(const tString &in asAgent, float afRadius)
+{
+	cScript_SetGlobalArgFloat(0, afRadius);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightRadius") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetSpotlightRadius()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightFeedbackActive(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightFeedbackActive") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetSpotlightFeedbackActive()");
+	}
+}
+
+//-------------------------------------------------
+
+void TinHinan_SetSpotlightBillboardActive(const tString &in asAgent, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentTinHinan", "_Global_SetSpotlightBillboardsActive") == false)
+	{
+		Error("Could not run '" + asAgent + "' / _Global_SetSpotlightBillboardsActive()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// DOCTOR
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+void Doctor_SetAdaptiveSpeed(const tString &in asAgentName, bool abX)
+{     
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentDoctor", "_Global_SetAdaptiveSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAdaptiveSpeed()");
+	}
+}
+
+//-------------------------------------------------
+
+bool Doctor_GetAdaptiveSpeed(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentDoctor", "_Global_GetAdaptiveSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetAdaptiveSpeed()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+/**
+ * Set a callback in the map to be called once the monke has emerged from hole.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the function, syntax void Func(const tString &in asDoctor, int alSpeedState)
+ *  
+ **/
+void Doctor_SetOutOfSightAdaptSpeed(const tString &in asAgentName, bool abState, float afMul=0.5f)
+{
+	cScript_SetGlobalArgString(0, asAgentName);
+	cScript_SetGlobalArgBool(1, abState);
+	cScript_SetGlobalArgFloat(2, afMul);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentDoctor", "_Global_SetOutOfSightAdaptSpeed")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetOutOfSightAdaptSpeed()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Set a callback in the map to be called once the monke has emerged from hole.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the function, syntax void Func(const tString &in asDoctor, int alSpeedState)
+ *  
+ **/
+void Doctor_SetCallback_AdaptiveSpeedChanged(const tString &in asAgentName, const tString &in asFunction)
+{
+	cScript_SetGlobalArgString(0, asAgentName);
+	cScript_SetGlobalArgString(1, asFunction);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentDoctor", "_Global_SetCallback_AdaptiveSpeedChanged")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_AdaptiveSpeedChanged()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// STUPID TEST GAME AGENT
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+void StupidTestGameAgent_IncreaseSpeed(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrStupidGameAgent", "_Global_IncreaseSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' _Global_IsAttractable()");
+	}
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// GHOUL
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Puts a ghoul in the EatMeat state and destroys the specified meat.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asMeatEntity, name of the meat to be destroyed
+ **/
+void Ghoul_EatMeat(const tString &in asAgentName, const tString &in asMeatEntity)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_EatMeat")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_EatMeat()");
+	}
+	else
+	{
+		Entity_Destroy(asMeatEntity);
+	}
+}
+ 
+//-------------------------------------------------
+
+/**
+ * Puts the ghoul into a mode, which determines its behavior when it's not reacting to the player's presence.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aMode, which mode to put the ghoul in
+ * @param abForce, if true the ghoul will switch the behavior instantly regardless of state, otherwise it will do so more naturally on the next best opportunity
+ * 
+ **/
+void Ghoul_Mode_Set(const tString &in asAgentName, eGhoulMode aMode, bool abForce = false)
+{
+	cScript_SetGlobalArgInt(0, int(aMode));
+	cScript_SetGlobalArgBool(1, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_Mode_Set") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Mode_Set()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the ghoul's patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the ghoul will move
+ * 
+ **/
+void Ghoul_ModePatrol_Setup(const tString &in asAgentName, bool abRandom = false, eGhoulSpeed aSpeed = eGhoulSpeed_Walk)
+{
+	cScript_SetGlobalArgBool(0, abRandom);
+	cScript_SetGlobalArgInt(1, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModePatrol_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_Setup()");
+	}
+}
+
+/**
+ * Adds a node to the list of nodes to patrol in patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the ghoul should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the ghoul should wait at this node
+ * @param asAnimName, name of the animation that should play when the ghoul reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Ghoul_ModePatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModePatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol mode list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Ghoul_ModePatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModePatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Sets the speed of movement for the current patrol mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aSpeed, the speed with which the ghoul will move
+ * 
+ **/
+void Ghoul_ModePatrol_SetSpeed(const tString &in asAgentName, eGhoulSpeed aSpeed = eGhoulSpeed_Walk)
+{
+	cScript_SetGlobalArgInt(0, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModePatrol_SetSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModePatrol_SetSpeed()");
+	} 
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the basic parameters for the StalkThroughHoles mode.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asHoleNetwork, the name of the group of ghoul holes the ghoul should move between, use wildcard *
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the ghoul will move along these areas and make noise, use wildcard *
+ * @param abHideUntilDisturbed, if the ghoul shouldn't emerge unless the player makes noise
+ **/
+void Ghoul_ModeStalkThroughHoles_Setup(const tString &in asAgentName, const tString &in asHoleNetwork, const tString &in asPlayerPath = "", const tString &in asHoleConnections = "", bool abHideUntilDisturbed = false)
+{
+	cScript_SetGlobalArgString(0, asHoleNetwork);
+	cScript_SetGlobalArgString(1, asPlayerPath);
+	cScript_SetGlobalArgString(2, asHoleConnections);
+	cScript_SetGlobalArgBool(3, abHideUntilDisturbed);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModeStalkThroughHoles_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeStalkThroughHoles_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Puts the ghoul in the enthralled state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asLookAtEntity, name of the entity to be turned toward
+ * @param asStandPosEntity, name of the entity to stand at
+ * @param asIdleAnim, name of the idle animation
+ * 
+ **/
+void Ghoul_ModeEnthralled_Setup(const tString &in asAgentName, const tString &in asLookAtEntity, const tString &in asStandPosEntity, const tString &in asIdleAnim)
+{
+	cScript_SetGlobalArgString(0, asLookAtEntity);
+	cScript_SetGlobalArgString(1, asStandPosEntity);
+	cScript_SetGlobalArgString(2, asIdleAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModeEnthralled_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeEnthralled_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the ghoul enter the Guard state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asLookAtEntity, name of the entity to be turned toward
+ * @param asStandPosEntity, name of the entity to stand at
+ * @param asIdleAnim, name of the idle animation
+ * @param asIdleSound, name of the sound entity placed in the map that will be played when guarding
+ * @param asDisturbAnim, name of the disturbed animation
+ * @param aSpeedState, speed state of the ghoul when moving to the stand pos
+ * 
+ **/
+void Ghoul_ModeGuard_Setup(const tString &in asAgentName, const tString &in asLookAtEntity, const tString &in asStandPosEntity, const tString &in asIdleAnim,
+						   const tString &in asIdleSound, const tString &in asDisturbAnim, eGhoulSpeed aSpeedState = eGhoulSpeed_FastWalk)
+{
+	cScript_SetGlobalArgString(0, asLookAtEntity);
+	cScript_SetGlobalArgString(1, asStandPosEntity);
+	cScript_SetGlobalArgString(2, asIdleAnim);
+	cScript_SetGlobalArgString(3, asIdleSound);
+	cScript_SetGlobalArgString(4, asDisturbAnim);
+	cScript_SetGlobalArgInt(5, aSpeedState);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModeGuard_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeGuard_Setup()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Makes the ghoul randomly wander inside a specified area
+ * 
+ * @param asAgentName, name of the agent
+ * @param avAreaCenter, the center of the area
+ * @param afMinRadius, the closest distance the nodes can be picked from
+ * @param afMaxRadius, the furthest distance the nodes can be picked from
+ * 
+ **/
+void Ghoul_ModeRandomWanderArea_Setup(const tString &in asAgentName, const cVector3f &in avAreaCenter, float afMinRadius, float afMaxRadius)
+{
+	cScript_SetGlobalArgVector3f(0, avAreaCenter);
+	cScript_SetGlobalArgFloat(1, afMinRadius);
+	cScript_SetGlobalArgFloat(2, afMaxRadius);
+
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_ModeRandomWanderArea_Setup") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_ModeRandomWanderArea_Setup()");
+	}
+}
+ 
+//-------------------------------------------------
+
+/**
+ * Removes the current command that is set for the ghoul to execute.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the ghoul should abandond the command immediately, or wait to finish what it's doing
+ * 
+ **/
+void Ghoul_Command_Remove(const tString &in asAgentName, bool abForce = true)
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_Command_Remove") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_Command_Remove()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Adds a node to the list of patrol nodes for a patrol command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNodeName, name of the node
+ * @param afMinWaitTime, the minimum amount of time how long the ghoul should wait at this node
+ * @param afMaxWaitTime, the maximum amount of time how long the ghoul should wait at this node
+ * @param asAnimName, name of the animation that should play when the ghoul reaches this node
+ * @param abLoopAnim, if the animation should loop
+ * 
+ **/
+void Ghoul_CommandPatrol_AddNode(const tString &in asAgentName, const tString&in asNodeName, float afMinWaitTime = 0, float afMaxWaitTime= - 1,
+								const tString &in asAnimName = "", bool abLoopAnim = false)
+{
+	cScript_SetGlobalArgString(0, asNodeName);
+	cScript_SetGlobalArgFloat(1, afMinWaitTime);
+	cScript_SetGlobalArgFloat(2, afMaxWaitTime);
+	cScript_SetGlobalArgString(3, asAnimName);
+	cScript_SetGlobalArgBool(4, abLoopAnim);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandPatrol_AddNode") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_AddNode()");
+	}
+}
+
+/**
+ * Removes all the nodes from the patrol command list.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+void Ghoul_CommandPatrol_ClearNodes(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandPatrol_ClearNodes") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_ClearNodes()");
+	} 
+}
+
+/**
+ * Sets the speed of movement for the current patrol command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param aSpeed, the speed with which the ghoul will move
+ * 
+ **/
+void Ghoul_CommandPatrol_SetSpeed(const tString &in asAgentName, eGhoulSpeed aSpeed = eGhoulSpeed_Walk)
+{
+	cScript_SetGlobalArgInt(0, int(aSpeed));
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandPatrol_SetSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_SetSpeed()");
+	} 
+}
+
+/**
+ * Executes the patrol command
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param alLoopCount, how many times the ghoul should patrol the node set, only positive values are allowed, use the patrol mode for infinite loops
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the ghoul will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandPatrol_Execute(const tString &in asAgentName, bool abForce = false, int alLoopCount = 1, bool abRandom = false, eGhoulSpeed aSpeed = eGhoulSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, alLoopCount);
+	cScript_SetGlobalArgBool(2, abRandom);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandPatrol_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandPatrol_Execute()");
+	}
+}
+
+/**
+ * Executes the smell patrol command, where the ghoul will patrol while sniffing. If the ghoul actually catches the player's scent
+ * and begins tracking them down, the smell patrol becomes a normal patrol.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param alLoopCount, how many times the ghoul should patrol the node set, only positive values are allowed, use the patrol mode for infinite loops
+ * @param abRandom, if nodes should be picked randomly, otherwise they will be picked in the order added
+ * @param aSpeed, the speed with which the ghoul will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandSmellPatrol_Execute(const tString &in asAgentName, bool abForce = false, int alLoopCount = 1, bool abRandom = false, eGhoulSpeed aSpeed = eGhoulSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, alLoopCount);
+	cScript_SetGlobalArgBool(2, abRandom);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandSmellPatrol_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandSmellPatrol_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the retreat command
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abAutomaticRetreat, if the ghoul should pick an appropriate node to retreat to, otherwise a position needs to be provided with the avPos argument
+ * @param avPos, the position the ghoul should retreat to, will only be considered when abAutomaticRetreat is true
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandRetreat_Execute(const tString &in asAgentName, bool abForce = false, bool abAutomaticRetreat = true, const cVector3f &in avPos = cVector3f_Zero, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgBool(1, abAutomaticRetreat);
+	cScript_SetGlobalArgVector3f(2, avPos);
+	cScript_SetGlobalArgString(3, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandRetreat_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandRetreat_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the ghoul move to and enter a specified ghoul hole
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abInstant, if the ghoul should start hiding in a hole instantly, being teleported then and hidden
+ * @param asHole, the name of the hole the ghoul should retreat to
+ * @param aSpeed, the speed with which the ghoul will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandGoToSpecificHole_Execute(const tString &in asAgentName, const tString &in asHole, bool abForce = false, bool abInstant = false, bool abDeactivateAfter = false, eGhoulSpeed aSpeed = eGhoulSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asHole);
+	cScript_SetGlobalArgInt(2, int(aSpeed));
+	cScript_SetGlobalArgString(3, asCompletedCallback);
+	cScript_SetGlobalArgBool(4, abInstant);
+	cScript_SetGlobalArgBool(5, abDeactivateAfter);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandGoToSpecificHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandGoToSpecificHole_Execute()");
+	}
+}
+
+/**
+ * Executes the command that makes the ghoul move to and enter a hole based on certain parameters
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param abInstant, if the ghoul should start hiding in a hole instantly, being teleported then and hidden
+ * @param abClosest, if the closest node to avPos should be picked, otherwise a random node that fits the other parameters will be chosen
+ * @param avPos, the position to which distances will be calculated
+ * @param aSpeed, the speed with which the ghoul will move
+ * @param afMinRadius, the minimum distance from avPos that a ghoul hole can be at
+ * @param afMaxRadius, the maximum distance from avPos that a ghoul hole can be at
+ * @param abOnlyFree, if only free holes (that aren't occupied by other ghouls) should be chosen
+ * @param abOnlyOutOfPlayerSight, if only holes that are out of the player's sight should be chosen
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandGoToHole_Execute(const tString &in asAgentName, const cVector3f &in avPos, bool abForce = false, bool abInstant = false, bool abDeactivateAfter = false, bool abClosest = true,
+									eGhoulSpeed aSpeed = eGhoulSpeed_Walk, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = false, bool abOnlyOutOfPlayerSight = false,
+									const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgVector3f(0, avPos);
+	cScript_SetGlobalArgBool(1, abForce);
+	cScript_SetGlobalArgInt(2, int(aSpeed));
+	cScript_SetGlobalArgBool(3, abClosest);
+	cScript_SetGlobalArgFloat(4, afMinRadius);
+	cScript_SetGlobalArgFloat(5, afMaxRadius);
+	cScript_SetGlobalArgBool(6, abOnlyFree);
+	cScript_SetGlobalArgBool(7, abOnlyOutOfPlayerSight);
+	cScript_SetGlobalArgString(8, asCompletedCallback);
+	cScript_SetGlobalArgBool(9, abInstant);
+	cScript_SetGlobalArgBool(10, abDeactivateAfter);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandGoToHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandGoToHole_Execute()");
+	}
+}
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the ghoul emerge from a hole. If the ghoul is not hiding, it will be teleported to the hole and play the emerge animation.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asHole, the name of the hole the ghoul should emerge from
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * @param asCustomAnim, name of the custom animation
+ * @param asCustomAnimEntity, entity to play the custom anim at
+ * 
+ **/
+void Ghoul_CommandEmergeFromHole_Execute(const tString &in asAgentName, const tString &in asHole, bool abForce = false, const tString &in asCompletedCallback = "", const tString &in asCustomAnim = "", const tString &in asCustomAnimEntity = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asHole);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	cScript_SetGlobalArgString(3, asCustomAnim);
+	cScript_SetGlobalArgString(4, asCustomAnimEntity);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandEmergeFromHole_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandEmergeFromHole_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the command that makes the ghoul move to and interact with a door.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asDoorName, the name of the door the ghoul should interact with
+ * @param abBreak, if the ghoul should break the door, otherwise it will attempt to open it
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asHole, the name of the hole the ghoul should emerge from
+ * @param aSpeed, the speed with which the ghoul will move
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandUseDoor_Execute(const tString &in asAgentName, const tString &in asDoorName, bool abBreak = false, bool abForce = false, eGhoulSpeed aSpeed = eGhoulSpeed_Walk, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgString(0, asDoorName);
+	cScript_SetGlobalArgBool(1, abBreak);
+	cScript_SetGlobalArgBool(2, abForce);
+	cScript_SetGlobalArgInt(3, int(aSpeed));
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandUseDoor_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandUseDoor_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the smell command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandSmell_Execute(const tString &in asAgentName, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asCompletedCallback);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandSmell_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandSmell_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the wake up command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asWakeUpAnim, name of the wake up animation
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandWakeUp_Execute(const tString &in asAgentName, const tString &in asWakeUpAnim, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgString(1, asWakeUpAnim);
+	cScript_SetGlobalArgString(2, asCompletedCallback);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandWakeUp_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandWakeUp_Execute()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Executes the wake up command.
+ * 
+ * @param asAgentName, name of the agent
+ * @param afAggroLevel, the level of aggressiveness, values 0-7 with 0 being stopped, and 7 being the most aggressive
+ * @param abThreatenGestures, if the ghoul should use threatening gestures
+ * @param abAdjustSpeed, if the ghoul should slow down as it appraoches the player
+ * @param afMinSpeedDist, when using abAdjustSpeed, the distance at which the ghoul will reach minimum speed, -1 is default
+ * @param afMaxSpeedDist, when using abAdjustSpeed, the distance at which the ghoul will have maximum speed, -1 is default
+ * @param abForce, if the command should be executed immediately, or at a more appropriate time
+ * @param asCompletedCallback, the function that will be called after the command is completed, syntax: void Func(const tString &in asEntity)
+ * 
+ **/
+void Ghoul_CommandThreatenPlayer_Execute(const tString &in asAgentName, int afAggroLevel = 1, bool abThreatenGestures = true, bool abAdjustSpeed = false, float afMinSpeedDist = -1, float afMaxSpeedDist = -1, bool abForce = false, const tString &in asCompletedCallback = "")
+{
+	cScript_SetGlobalArgBool(0, abForce);
+	cScript_SetGlobalArgInt(1, afAggroLevel);
+	cScript_SetGlobalArgBool(2, abThreatenGestures);
+	cScript_SetGlobalArgBool(3, abAdjustSpeed);
+	cScript_SetGlobalArgString(4, asCompletedCallback);
+	cScript_SetGlobalArgFloat(5, afMinSpeedDist);
+	cScript_SetGlobalArgFloat(6, afMaxSpeedDist);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandThreatenPlayer_Execute") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandThreatenPlayer_Execute()");
+	}
+}
+
+void Ghoul_CommandThreatenPlayer_SetAggressiveness(const tString &in asAgentName, int afAggroLevel)
+{
+	cScript_SetGlobalArgInt(0, afAggroLevel);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CommandThreatenPlayer_SetAggressiveness") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CommandThreatenPlayer_SetAggressiveness()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Set a callback in the map to be called once the ghoul has emerged from hole.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the function, synctax void Func(const tString &in asGhoul, const tString &in asHole)
+ * @param abAutoRemove, if the callback should automatically be removed
+ *  
+ **/
+void Ghoul_SetCallback_EmergeCompleted(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_EmergeCompleted")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EmergeCompleted()");
+	}
+}
+
+/**
+ * Set a callback in the map to be called when the ghoul starts to hide in a hole
+ * 
+ * @param asAgentName, name of the agent. 
+ * @param asFunction, name of the function, syntaxvoid Func(const tString &in asEntity, const tString &in asHoleName)
+ * @param abAutoRemove, if the callback should automatically be removed
+ *  
+ **/
+void Ghoul_SetCallback_EnterHideInHole(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_EnterHideInHole") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterHideInHole()");
+	}
+}
+
+ /**
+ * Sets the name of the callback called when entering hunt
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * @param abAutoRemove, if the callback should automatically be removed
+ * 
+ **/
+void Ghoul_SetCallback_EnterHunt(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_EnterHunt") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterHunt()");
+	}
+}
+
+//-------------------------------------------------
+
+ /**
+ * Sets the name of the callback called after throwing the player
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * 
+ **/
+void Ghoul_SetCallback_ThrowAnimationOver(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_ThrowAnimationOver") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_ThrowAnimationOver()");
+	}
+}
+ 
+//-------------------------------------------------
+
+ /**
+ * Adds a callback for when the ghoul enters the idle state
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func()
+ * @param abAutoRemove, if the callback should automatically be removed
+ * 
+ **/
+void Ghoul_SetCallback_EnterIdle(const tString &in asAgentName, const tString &in asFunction, bool abAutoRemove = false)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	cScript_SetGlobalArgBool(1, abAutoRemove);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_EnterIdle") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_EnterIdle()");
+	}
+}
+
+//-------------------------------------------------
+
+ /**
+ * Adds a callback for when the wraith is alerted
+ * 
+ * @param asAgentName, name of the agent
+ * @param asFunction, name of the callback function, syntax: void Func(const tString &in asEntity)
+  * 
+ **/
+void Ghoul_SetCallback_Alerted(const tString &in asAgentName, const tString &in asFunction)
+{
+	cScript_SetGlobalArgString(0, asFunction);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCallback_Alerted") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCallback_Alerted()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets whether the ghoul can enter super hunt mode.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abActive, if the ghoul should be able to enter super hunt mode
+ * 
+ **/
+ void Ghoul_SetSuperHunt(const tString &in asAgentName, bool abActive)
+ {
+	cScript_SetGlobalArgBool(0, abActive);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetSuperHunt") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSuperHunt()");
+	}
+ }
+
+/**
+ * Sets whether the ghoul can be attracted.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abCanBeAttracted, whether the ghoul can be attracted or not
+ * 
+ **/
+void Ghoul_SetCanBeAttracted(const tString &in asAgentName, bool abCanBeAttracted)
+{
+	cScript_SetGlobalArgBool(0, abCanBeAttracted);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCanBeAttracted") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCanBeAttracted()");
+	}
+}
+
+/**
+ * Returns true if ghoul meets requirements to be attracted by a lure.
+ * 
+ * @param asAgentName, name of the agent. 
+ **/ 
+bool Ghoul_CanBeAttracted(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_GetCanBeAttracted")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetCanBeAttracted()");
+	}
+	
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * Sets whether the ghoul can be attracted.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abCanBeAttracted, whether the ghoul can be attracted or not
+ * 
+ **/
+void Ghoul_SetSmellingActive(const tString &in asAgentName, bool abActive)
+{
+	cScript_SetGlobalArgBool(0, abActive);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetSmellingActive") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetSmellingActive()");
+	}
+}
+
+/**
+ * Sets whether the ghoul's attacks kill instantly or not.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abInstantKill, whether the ghoul kills instantly or not
+ * 
+ **/
+void Ghoul_SetInstantKill(const tString &in asAgentName, bool abInstantKill)
+{
+	cScript_SetGlobalArgBool(0, abInstantKill);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetInstantKill") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetInstantKill()");
+	}
+}
+
+/**
+ * Returns the name of the ghoul's current state. Should NEVER use this, let me know what the issue is so it can be fixed properly!
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+tString Ghoul_GetCurrentState(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_GetCurrentState") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetCurrentState()");
+	}
+	return cScript_GetGlobalReturnString();
+}
+ 
+/**
+ * Sets whether the ghoul's hunt speed will be adapting to a certain distance from the player, and the player's speed. Overrides "Ghoul_SetAdjustHuntSpeed".
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * @param afTarDist, desired distance to keep
+ * 
+ **/
+void Ghoul_SetAdaptiveHuntSpeed(const tString &in asAgentName, bool abX, float afTarDist)
+{     
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgFloat(1, afTarDist);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetAdaptiveHuntSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAdaptiveHuntSpeed()");
+	}
+}
+
+/**
+ * Sets whether the ghoul should slow down when hunting if the player isn't looking at it. Overridden by "Ghoul_SetAdaptiveHuntSpeed".
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+void Ghoul_SetAdjustHuntSpeed(const tString &in asAgentName, bool abX, float afMul=0.8f)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_SetGlobalArgFloat(1,afMul);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetAdjustHuntSpeed") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAdjustHuntSpeed()");
+	}
+}
+
+/**
+ * Returns true if the ghoul is in a suspicious state.
+ * 
+ * @param asAgentName, name of the agent
+ * 
+ **/
+bool Ghoul_IsSuspicious(const tString &in asAgentName)
+{     
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_IsSuspicious") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_IsSuspicious()");
+	}
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * If the ghoul is in an aggressive state
+ * 
+ * @param asAgentName, name of the agent. 
+ **/ 
+bool Ghoul_IsAggressive(const tString &in asAgentName)
+{
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_GetStateIsAggressive")==false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_GetStateIsAggressive()");
+	}
+	
+	return cScript_GetGlobalReturnBool();
+}
+
+/**
+ * Sets whether the ghoul should should detect and react to the player's flashlight/lantern.
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+//void Ghoul_SetDetectFlashlight(const tString &in asAgentName, bool abX)
+//{
+//	cScript_SetGlobalArgBool(0, abX);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetDetectFlashlight") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetDetectFlashlight()");
+//	}
+//}
+
+//------------------------------------------------------- 
+ 
+/**
+ * Sets whether the ghoul should should use map specific voice files
+ * 
+ * @param asAgentName, name of the agent
+ * @param abX, value
+ * 
+ **/
+void Ghoul_SetUseVoice(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetUseVoice") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+	}
+}
+
+//bool Ghoul_IsBlocked(const tString &in asAgentName)
+//{
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_IsBlocked") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_IsBlocked()");
+//	}
+//	return cScript_GetGlobalReturnBool();
+//}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets the ghoul hole network that the ghoul can use.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asNetwork, the name of the group of ghoul holes the ghoul should move between, use wildcard *
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the ghoul will move along these areas and make noise, use wildcard *
+ * 
+ **/
+void Ghoul_SetHoleNetwork(const tString &in asAgentName, const tString &in asNetwork, const tString &in asPlayerPath, const tString &in asHoleConnections)
+{
+	cScript_SetGlobalArgString(0, asNetwork);
+	cScript_SetGlobalArgString(1, asPlayerPath);
+	cScript_SetGlobalArgString(2, asHoleConnections);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetHoleNetwork") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetHoleNetwork()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets wether the ghoul can throw the player away instead of hitting them.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, value.
+ * @param abOnce, if the ghoul should only be allowed to throw the player once.
+ * 
+ **/
+void Ghoul_SetAllowPlayerThrow(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetAllowPlayerThrow") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetAllowPlayerThrow()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Get throw damage, but skip animation (useful for custom throw event).
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, value.
+ * 
+ **/
+void Ghoul_CancelPlayerThrow(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_CancelPlayerThrow") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_CancelPlayerThrow()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Enables or disables the ghoul's attack
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abX, if the ghoul can attack
+ * 
+ **/
+void Ghoul_SetCanAttack(const tString &in asAgentName, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetCanAttack") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetCanAttack()");
+	}
+}
+
+//------------------------------------------------------- 
+
+/**
+ * Sets wether the ghoul can throw the player away instead of hitting them.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param alDir, throw direction (-1=all, 0/1/7=forward, 2/3=left, 4=back, 5/6=right.
+ * 
+ **/
+void Ghoul_SetPlayerThrowForcedDirection(const tString &in asAgentName, int alDir)
+{
+	cScript_SetGlobalArgInt(0, alDir);
+	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetPlayerThrowForcedDirection") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetPlayerThrowForcedDirection()");
+	}
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets whether the ghoul can enter super hunt mode.
+ * 
+ * @param asAgentName, name of the agent.
+ * @param abActive, if the ghoul should be able to enter super hunt mode
+ * 
+ **/
+ void Ghoul_SetVisibile(const tString &in asAgentName, bool abVisibility)
+ {
+	cScript_SetGlobalArgBool(0, abVisibility);
+	if(cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetVisible") == false)
+	{
+		Error("Could not run '"+asAgentName+"' / _Global_SetEyeVisibility()");
+	}
+ }
+ 
+ //-------------------------------------------------
+ 
+ void Ghoul_SetCustomWalkAnim(const tString &in asAgent, const tString &in asAnim)
+ {
+	cScript_SetGlobalArgString(0, asAnim);
+	if (cScript_RunGlobalFunc(asAgent, "cScrAgentGhoul", "_Global_SetCustomWalkAnim") == false)
+	{
+		Error("Could not run '"+asAgent+"' / _Global_SetCustomWalkAnim()");
+	}
+ }
+ 
+ //-------------------------------------------------
+
+/**
+ * Sets the player path the ghoul will use to better stalk the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asPlayerPath, the name of the group of nodes that represent the general path the player will take, used to determine if a hole is ahead or behind the player, use wildcard *
+ * 
+ **/
+//void Ghoul_SetPlayerPath(const tString &in asAgentName, const tString &in asPlayerPath)
+//{
+//	cScript_SetGlobalArgString(0, asPlayerPath);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetUseVoice") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+//	}
+//}
+
+/**
+ * Sets the player path the ghoul will use to better stalk the player.
+ * 
+ * @param asAgentName, name of the agent
+ * @param asHoleConnections, the name of a group of areas that represent the connections between holes, the ghoul will move along these areas and make noise, use wildcard *
+ * 
+ **/
+//void Ghoul_SetHoleConnections(const tString &in asAgentName, const tString &in asHoleConnections)
+//{
+//	cScript_SetGlobalArgString(0, asHoleConnections);
+//	if (cScript_RunGlobalFunc(asAgentName, "cScrAgentGhoul", "_Global_SetUseVoice") == false)
+//	{
+//		Error("Could not run '"+asAgentName+"' / _Global_SetUseVoice()");
+//	}
+//}
+
+//-------------------------------------------------
+
+void SleepingGhoul_ForceWakeUp(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_ForceWakeUp");
+}
+
+//-------------------------------------------------
+
+bool SleepingGhoul_IsAwake(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_IsAwake");
+	return cScript_GetGlobalReturnBool();
+}
+
+//-------------------------------------------------
+
+void SleepingGhoul_SetSensesActive(const tString &in asEntity, bool abX)
+{
+	array<iLuxEntity@> vEntities;
+	cLux_GetCurrentMap().GetEntityArray(asEntity, eLuxEntityType_Prop, "cScrPropSleepingGhoul", vEntities);
+	if (vEntities.length() == 0)
+	{
+		Error("Couldn't find prop '" + asEntity + "' for SleepingGhoul_SetSensesActive");
+		return;
+	}
+	
+	iLuxEntity@ pEnt = null;
+	for (int i = 0; i < vEntities.size(); i++)
+	{
+		@pEnt = vEntities[i];
+		cScript_SetGlobalArgBool(0, abX);
+		cScript_RunGlobalFunc(pEnt.GetName(), "cScrPropSleepingGhoul", "_Global_SetSensesActive");
+	}
+}
+
+//-------------------------------------------------
+
+void SleepingGhoul_ForceReact(const tString &in asEntity, float afMinDelay = 0.5f, float afMaxDelay = 1.f, const tString &in asCustomStirAnim = "")
+{
+	cScript_SetGlobalArgFloat(0, afMinDelay);
+	cScript_SetGlobalArgFloat(1, afMaxDelay);
+	cScript_SetGlobalArgString(2, asCustomStirAnim);
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_ForceReact");
+}
+
+//-------------------------------------------------
+
+void SleepingGhoul_ChangeToAlert(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_ChangeToAlert");
+}
+
+//-------------------------------------------------
+
+tString SleepingGhoul_GetType(const tString &in asEntity)
+{
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_GetType");
+	return cScript_GetGlobalReturnString();
+}
+
+//-------------------------------------------------
+
+void SleepingGhoul_Reset(const tString &in asEntity)
+{
+	array<iLuxEntity@> vEntities;
+	cLux_GetCurrentMap().GetEntityArray(asEntity, eLuxEntityType_Prop, "cScrPropSleepingGhoul", vEntities);
+	if (vEntities.length() == 0)
+	{
+		Error("Couldn't find prop '" + asEntity + "' for SleepingGhoul_Reset");
+		return;
+	}
+	
+	iLuxEntity@ pEnt = null;
+	for (int i = 0; i < vEntities.size(); i++)
+	{
+		@pEnt = vEntities[i];
+		if (pEnt.IsActive() == false)
+		{
+			Error("Prop '" + pEnt.GetName() + "' for SleepingGhoul_Reset is not active, skipping!");
+			continue;
+		}
+		
+		cScript_RunGlobalFunc(pEnt.GetName(), "cScrPropSleepingGhoul", "_Global_Reset");
+	}
+}
+
+//-------------------------------------------------
+
+void SleepingGhoul_SetManualReact(const tString &in asEntity, bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_RunGlobalFunc(asEntity, "cScrPropSleepingGhoul", "_Global_SetManualReact");
+}
+ 
+//-------------------------------------------------
