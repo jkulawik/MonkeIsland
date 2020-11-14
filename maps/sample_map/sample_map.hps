@@ -58,6 +58,7 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{
+		Player_SetHealth(100);
 		PlayerBody_SetActive(true);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
@@ -94,6 +95,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+
 		}
 	}
 

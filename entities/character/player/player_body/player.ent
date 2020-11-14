@@ -1,0 +1,1185 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="mods/MonkeIsland/entities/character/player/player_body/player_double_arm.fbx">
+            <SubMesh ID="0" Name="m_Tasi_R_Arm" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="5244" Material="" Static="true" />
+            <SubMesh ID="1" Name="m_Tasi_L_Arm" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="5321" Material="" Static="true" />
+            <SubMesh ID="2" Name="m_Tasi_Ring" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="1080" Material="" Static="true" />
+            <SubMesh ID="3" Name="m_Tasi_Body" CreStamp="0" ModStamp="1605312832" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="16312" Material="mods/MonkeIsland/entities/character/player/tasi_body_upgrade_v2/tasi_body_upgrade_v2.mat" Static="true" />
+            <SubMesh ID="4" Name="m_Tasi_Head" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="11527" Material="" Static="true" />
+            <SubMesh ID="5" Name="m_Tasi_R_Arm1" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="5244" Material="" Static="true" />
+            <SubMesh ID="6" Name="m_Tasi_L_Arm1" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="5321" Material="" Static="true" />
+        </Mesh>
+        <Bones>
+            <Bone ID="157" Name="j_Root" />
+            <Bone ID="158" Name="j_L_Hip" />
+            <Bone ID="159" Name="j_L_Leg_1" />
+            <Bone ID="160" Name="j_L_Leg_2" />
+            <Bone ID="161" Name="j_L_Leg_3" />
+            <Bone ID="162" Name="j_L_Leg_4" />
+            <Bone ID="163" Name="j_L_Leg_5" />
+            <Bone ID="164" Name="j_L_Leg_6" />
+            <Bone ID="165" Name="j_L_Foot">
+                <Sockets>
+                    <Socket ID="145" Name="L_Foot" CreStamp="0" ModStamp="1561725375" WorldPos="0.164175 0.100491 -0.110936" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="166" Name="j_L_Toes" />
+            <Bone ID="167" Name="j_L_boot_knot_1" />
+            <Bone ID="168" Name="j_L_boot_knot_2" />
+            <Bone ID="178" Name="j_Spine_1" />
+            <Bone ID="179" Name="j_Spine_2" />
+            <Bone ID="180" Name="j_Spine_3" />
+            <Bone ID="181" Name="j_L_Clavicle" />
+            <Bone ID="182" Name="j_L_Arm_Zero" />
+            <Bone ID="183" Name="j_L_Arm_Assist" />
+            <Bone ID="184" Name="j_L_Arm_1" />
+            <Bone ID="185" Name="j_L_Arm_2" />
+            <Bone ID="186" Name="j_L_Arm_3" />
+            <Bone ID="187" Name="j_L_Arm_4" />
+            <Bone ID="188" Name="j_L_Arm_5" />
+            <Bone ID="189" Name="j_L_Arm_6" />
+            <Bone ID="190" Name="j_L_Wrist" />
+            <Bone ID="191" Name="j_L_Thumb_1" />
+            <Bone ID="192" Name="j_L_Thumb_2">
+                <Sockets>
+                    <Socket ID="302" Name="RingSocket" CreStamp="0" ModStamp="1601026441" WorldPos="0.595266 1.25666 0.0736105" Rotation="2.56451 2.53984 -3.02677" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="193" Name="j_L_Thumb_3" />
+            <Bone ID="194" Name="j_L_Index_1" />
+            <Bone ID="195" Name="j_L_Index_2" />
+            <Bone ID="196" Name="j_L_Index_3" />
+            <Bone ID="197" Name="j_L_Index_4" />
+            <Bone ID="198" Name="j_L_Mid_1" />
+            <Bone ID="199" Name="j_L_Mid_2" />
+            <Bone ID="200" Name="j_L_Mid_3" />
+            <Bone ID="201" Name="j_L_Mid_4" />
+            <Bone ID="202" Name="j_L_Ring_1" />
+            <Bone ID="203" Name="j_L_Ring_2" />
+            <Bone ID="204" Name="j_L_Ring_3" />
+            <Bone ID="205" Name="j_L_Ring_4" />
+            <Bone ID="206" Name="j_ring" />
+            <Bone ID="207" Name="j_L_Pinky_1" />
+            <Bone ID="208" Name="j_L_Pinky_2" />
+            <Bone ID="209" Name="j_L_Pinky_3" />
+            <Bone ID="210" Name="j_L_Pinky_4" />
+            <Bone ID="211" Name="j_L_HandSocket">
+                <Sockets>
+                    <Socket ID="143" Name="L_Hand" CreStamp="0" ModStamp="1561725287" WorldPos="0.604303 1.25071 0.0260039" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="212" Name="j_L_Wrist_Spur_Dwn" />
+            <Bone ID="213" Name="j_L_Wrist_Spur_Up" />
+            <Bone ID="214" Name="j_L_Breast" />
+            <Bone ID="215" Name="j_R_Breast" />
+            <Bone ID="216" Name="j_Spine_4" />
+            <Bone ID="217" Name="j_Neck" />
+            <Bone ID="218" Name="j_Head">
+                <Sockets>
+                    <Socket ID="144" Name="CameraSocket" CreStamp="0" ModStamp="1561725327" WorldPos="0 1.838 0.153" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="219" Name="j_Head_Jaw" />
+            <Bone ID="220" Name="j_L_Eye" />
+            <Bone ID="221" Name="j_R_Eye" />
+            <Bone ID="222" Name="j_hair_1" />
+            <Bone ID="223" Name="j_hair_2" />
+            <Bone ID="226" Name="j_scarf_neck" />
+            <Bone ID="227" Name="j_button_1" />
+            <Bone ID="228" Name="j_button_2" />
+            <Bone ID="229" Name="j_scarf_under" />
+            <Bone ID="230" Name="j_scarf_over" />
+            <Bone ID="231" Name="j_scarf_1" />
+            <Bone ID="232" Name="j_scarf_2" />
+            <Bone ID="233" Name="j_scarf_3" />
+            <Bone ID="234" Name="j_R_Clavicle" />
+            <Bone ID="235" Name="j_R_Arm_Zero" />
+            <Bone ID="236" Name="j_R_Arm_Assist" />
+            <Bone ID="237" Name="j_R_Arm_1" />
+            <Bone ID="238" Name="j_R_Arm_2" />
+            <Bone ID="239" Name="j_R_Arm_3" />
+            <Bone ID="240" Name="j_R_Arm_4" />
+            <Bone ID="241" Name="j_R_Arm_5" />
+            <Bone ID="242" Name="j_R_Arm_6">
+                <Sockets>
+                    <Socket ID="149" Name="AmuletSocket" CreStamp="0" ModStamp="1596633657" WorldPos="-0.568687 1.34488 0.0103915" Rotation="-0.300391 -1.34084 1.0196" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="243" Name="j_R_Wrist" />
+            <Bone ID="244" Name="j_R_Thumb_1" />
+            <Bone ID="245" Name="j_R_Thumb_2" />
+            <Bone ID="246" Name="j_R_Thumb_3" />
+            <Bone ID="247" Name="j_R_Index_1" />
+            <Bone ID="248" Name="j_R_Index_2" />
+            <Bone ID="249" Name="j_R_Index_3" />
+            <Bone ID="250" Name="j_R_Index_4" />
+            <Bone ID="251" Name="j_R_Mid_1" />
+            <Bone ID="252" Name="j_R_Mid_2" />
+            <Bone ID="253" Name="j_R_Mid_3" />
+            <Bone ID="254" Name="j_R_Mid_4" />
+            <Bone ID="255" Name="j_R_Ring_1" />
+            <Bone ID="256" Name="j_R_Ring_2" />
+            <Bone ID="257" Name="j_R_Ring_3" />
+            <Bone ID="258" Name="j_R_Ring_4" />
+            <Bone ID="259" Name="j_R_Pinky_1" />
+            <Bone ID="260" Name="j_R_Pinky_2" />
+            <Bone ID="261" Name="j_R_Pinky_3" />
+            <Bone ID="262" Name="j_R_Pinky_4" />
+            <Bone ID="263" Name="j_R_HandSocket">
+                <Sockets>
+                    <Socket ID="142" Name="R_Hand" CreStamp="0" ModStamp="1561725270" WorldPos="-0.604303 1.25071 0.0260039" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="264" Name="j_R_Wrist_Spur_Dwn" />
+            <Bone ID="265" Name="j_R_Wrist_Spur_Up" />
+            <Bone ID="266" Name="j_R_Hip" />
+            <Bone ID="267" Name="j_R_Leg_1" />
+            <Bone ID="268" Name="j_R_Leg_2" />
+            <Bone ID="269" Name="j_R_Leg_3" />
+            <Bone ID="270" Name="j_R_Leg_4" />
+            <Bone ID="271" Name="j_R_Leg_5" />
+            <Bone ID="272" Name="j_R_Leg_6" />
+            <Bone ID="273" Name="j_R_Foot">
+                <Sockets>
+                    <Socket ID="146" Name="R_Foot" CreStamp="0" ModStamp="1561725383" WorldPos="-0.164175 0.100491 -0.110936" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="274" Name="j_R_Toes" />
+            <Bone ID="275" Name="j_R_boot_knot_2" />
+            <Bone ID="276" Name="j_R_boot_knot_1" />
+            <Bone ID="286" Name="j_Char_root" />
+            <Bone ID="288" Name="Tasi_Mesh_Grp" />
+            <Bone ID="289" Name="m_Tasi_R_Arm" />
+            <Bone ID="290" Name="m_Tasi_L_Arm" />
+            <Bone ID="291" Name="m_Tasi_R_Arm1" />
+            <Bone ID="292" Name="m_Tasi_L_Arm1" />
+            <Bone ID="293" Name="m_Tasi_Head" />
+            <Bone ID="294" Name="m_Tasi_Ring" />
+            <Bone ID="295" Name="m_Tasi_Body" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations>
+            <Animation Name="walk_fwd" File="entities/character/player/player_body/animation/walk_fwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.144518" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.694352" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_fwd_larm" File="entities/character/player/player_body/animation/walk_fwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_rarm" File="entities/character/player/player_body/animation/walk_fwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_back" File="entities/character/player/player_body/animation/walk_bkwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.321" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.771" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0.5" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.473" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="" />
+            </Animation>
+            <Animation Name="walk_back_larm" File="entities/character/player/player_body/animation/walk_bkwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_back_rarm" File="entities/character/player/player_body/animation/walk_bkwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_right" File="entities/character/player/player_body/animation/walk_strafe_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.215" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.716" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_R" Time="0.93" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_R" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+                <Event Name="IK_Enable_L" Time="0.4" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_L" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_right_larm" File="entities/character/player/player_body/animation/walk_strafe_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_right_rarm" File="entities/character/player/player_body/animation/walk_strafe_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_left" File="entities/character/player/player_body/animation/walk_strafe_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.237" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.764" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_R" Time="0" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_R" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+                <Event Name="IK_Enable_L" Time="0.4" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_L" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_left_larm" File="entities/character/player/player_body/animation/walk_strafe_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_left_rarm" File="entities/character/player/player_body/animation/walk_strafe_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_fwd_right" File="entities/character/player/player_body/animation/walk_right_fwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.238" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.796" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_fwd_right_larm" File="entities/character/player/player_body/animation/walk_right_fwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_right_rarm" File="entities/character/player/player_body/animation/walk_right_fwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_back_right" File="entities/character/player/player_body/animation/walk_right_bkwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.181" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.733" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_back_right_larm" File="entities/character/player/player_body/animation/walk_right_bkwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_back_right_rarm" File="entities/character/player/player_body/animation/walk_right_bkwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_fwd_left" File="entities/character/player/player_body/animation/walk_left_fwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.238" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.796" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_fwd_left_larm" File="entities/character/player/player_body/animation/walk_left_fwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_left_rarm" File="entities/character/player/player_body/animation/walk_left_fwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_back_left" File="entities/character/player/player_body/animation/walk_left_bkwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.181" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.733" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="walk_back_left_larm" File="entities/character/player/player_body/animation/walk_left_bkwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_back_left_rarm" File="entities/character/player/player_body/animation/walk_left_bkwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_fwd" File="entities/character/player/player_body/animation/run_fwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.313" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.131" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.334" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.452" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="run_fwd_larm" File="entities/character/player/player_body/animation/run_fwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_rarm" File="entities/character/player/player_body/animation/run_fwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_right" File="entities/character/player/player_body/animation/run_strafe_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.314" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.641" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="run_right_larm" File="entities/character/player/player_body/animation/run_strafe_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_right_rarm" File="entities/character/player/player_body/animation/run_strafe_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_left" File="entities/character/player/player_body/animation/run_strafe_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.314" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.641" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.118" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.242" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.44" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="run_left_larm" File="entities/character/player/player_body/animation/run_strafe_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_left_rarm" File="entities/character/player/player_body/animation/run_strafe_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_fwd_right" File="entities/character/player/player_body/animation/run_fwd_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.316" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="run_fwd_right_larm" File="entities/character/player/player_body/animation/run_fwd_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_right_rarm" File="entities/character/player/player_body/animation/run_fwd_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_fwd_left" File="entities/character/player/player_body/animation/run_fwd_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.316" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="run_fwd_left_larm" File="entities/character/player/player_body/animation/run_fwd_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_left_rarm" File="entities/character/player/player_body/animation/run_fwd_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="idle_stand" File="entities/character/player/player_body/animation/idle_stand.fbx" Layer="Body" Speed="1">
+                <Event Name="IK_Enable_Right" Time="0" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+            </Animation>
+            <Animation Name="idle_stand_larm" File="entities/character/player/player_body/animation/idle_stand_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="idle_stand_rarm" File="entities/character/player/player_body/animation/idle_stand_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="stand_turn_left" File="entities/character/player/player_body/animation/stand_turn_left90.fbx" Layer="Body" Speed="1" />
+            <Animation Name="stand_turn_left90_larm" File="entities/character/player/player_body/animation/stand_turn_left90_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="stand_turn_left90_rarm" File="entities/character/player/player_body/animation/stand_turn_left90_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="stand_turn_right" File="entities/character/player/player_body/animation/stand_turn_right90.fbx" Layer="Body" Speed="1" />
+            <Animation Name="stand_turn_right90_larm" File="entities/character/player/player_body/animation/stand_turn_right90_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="stand_turn_right90_rarm" File="entities/character/player/player_body/animation/stand_turn_right90_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="idle_stand_tr_crouch" File="entities/character/player/player_body/animation/idle_stand_tr_crouch.fbx" Layer="Body" Speed="1" />
+            <Animation Name="idle_stand_tr_crouch_larm" File="entities/character/player/player_body/animation/idle_stand_tr_crouch_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="idle_stand_tr_crouch_rarm" File="entities/character/player/player_body/animation/idle_stand_tr_crouch_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_tr_idle_stand" File="entities/character/player/player_body/animation/crouch_tr_idle_stand.fbx" Layer="Body" Speed="1" />
+            <Animation Name="crouch_tr_idle_stand_larm" File="entities/character/player/player_body/animation/crouch_tr_idle_stand_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_tr_idle_stand_rarm" File="entities/character/player/player_body/animation/crouch_tr_idle_stand_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_fwd" File="entities/character/player/player_body/animation/crouch_fwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.475" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.893" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_fwd_larm" File="entities/character/player/player_body/animation/crouch_fwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_fwd_rarm" File="entities/character/player/player_body/animation/crouch_fwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_back" File="entities/character/player/player_body/animation/crouch_bkwd.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.944" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.471" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_back_larm" File="entities/character/player/player_body/animation/crouch_bkwd_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_back_rarm" File="entities/character/player/player_body/animation/crouch_bkwd_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_right" File="entities/character/player/player_body/animation/crouch_strafe_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.519" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.971" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_right_larm" File="entities/character/player/player_body/animation/crouch_strafe_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_right_rarm" File="entities/character/player/player_body/animation/crouch_strafe_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_left" File="entities/character/player/player_body/animation/crouch_strafe_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.519" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.971" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_left_larm" File="entities/character/player/player_body/animation/crouch_strafe_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_left_rarm" File="entities/character/player/player_body/animation/crouch_strafe_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_fwd_right" File="entities/character/player/player_body/animation/crouch_fwd_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.442" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.898" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_fwd_right_larm" File="entities/character/player/player_body/animation/crouch_fwd_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_fwd_right_rarm" File="entities/character/player/player_body/animation/crouch_fwd_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_back_right" File="entities/character/player/player_body/animation/crouch_bkwd_right.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.923" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.434" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_back_right_larm" File="entities/character/player/player_body/animation/crouch_bkwd_right_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_back_right_rarm" File="entities/character/player/player_body/animation/crouch_bkwd_right_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_fwd_left" File="entities/character/player/player_body/animation/crouch_fwd_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.442" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.898" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_fwd_left_larm" File="entities/character/player/player_body/animation/crouch_fwd_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_fwd_left_rarm" File="entities/character/player/player_body/animation/crouch_fwd_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_back_left" File="entities/character/player/player_body/animation/crouch_bkwd_left.fbx" Layer="Body" Speed="1">
+                <Event Name="Step_Right" Time="0.923" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="Step_Left" Time="0.434" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="IK_Enable_Left" Time="0" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="true" />
+                <Event Name="IK_Disable_Left" Time="0.343023" Direction="Both" Type="IK" DestSocket="j_L_Foot" Value="false" />
+                <Event Name="IK_Enable_Right" Time="0.4" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="true" />
+                <Event Name="IK_Disable_Right" Time="0.858804" Direction="Both" Type="IK" DestSocket="j_R_Foot" Value="false" />
+            </Animation>
+            <Animation Name="crouch_back_left_larm" File="entities/character/player/player_body/animation/crouch_bkwd_left_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_back_left_rarm" File="entities/character/player/player_body/animation/crouch_bkwd_left_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_idle" File="entities/character/player/player_body/animation/crouch_idle.fbx" Layer="Body" Speed="1" />
+            <Animation Name="crouch_idle_larm" File="entities/character/player/player_body/animation/crouch_idle_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_idle_rarm" File="entities/character/player/player_body/animation/crouch_idle_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_turn_left" File="entities/character/player/player_body/animation/crouch_turn_left90.fbx" Layer="Body" Speed="1" />
+            <Animation Name="crouch_turn_left90_larm" File="entities/character/player/player_body/animation/crouch_turn_left90_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_turn_left90_rarm" File="entities/character/player/player_body/animation/crouch_turn_left90_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="crouch_turn_right" File="entities/character/player/player_body/animation/crouch_turn_right90.fbx" Layer="Body" Speed="1" />
+            <Animation Name="crouch_turn_right90_larm" File="entities/character/player/player_body/animation/crouch_turn_right90_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="crouch_turn_right90_rarm" File="entities/character/player/player_body/animation/crouch_turn_right90_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="jump_launch" File="entities/character/player/player_body/animation/jump_launch.fbx" Layer="Body" Speed="1" />
+            <Animation Name="jump_launch_larm" File="entities/character/player/player_body/animation/jump_launch_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="jump_launch_rarm" File="entities/character/player/player_body/animation/jump_launch_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="jump_fall" File="entities/character/player/player_body/animation/jump_fall.fbx" Layer="Body" Speed="1" />
+            <Animation Name="jump_fall_larm" File="entities/character/player/player_body/animation/jump_fall_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="jump_fall_rarm" File="entities/character/player/player_body/animation/jump_fall_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="jump_land" File="entities/character/player/player_body/animation/jump_land.fbx" Layer="Body" Speed="1" />
+            <Animation Name="jump_land_larm" File="entities/character/player/player_body/animation/jump_land_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="jump_land_rarm" File="entities/character/player/player_body/animation/jump_land_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="climb_attach" File="entities/character/player/player_body/animation/climb_attach.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_idle_left" File="entities/character/player/player_body/animation/climb_idle_left.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_idle_right" File="entities/character/player/player_body/animation/climb_idle_right.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_ladder_left" File="entities/character/player/player_body/animation/climb_ladder_left.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_ladder_right" File="entities/character/player/player_body/animation/climb_ladder_right.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_left_detach_bottom" File="entities/character/player/player_body/animation/climb_left_detach_bottom.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_left_detach_top" File="entities/character/player/player_body/animation/climb_left_detach_top.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_right_detach_bottom" File="entities/character/player/player_body/animation/climb_right_detach_bottom.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="climb_right_detach_top" File="entities/character/player/player_body/animation/climb_right_detach_top.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="tool_generic_draw" File="entities/character/player/player_body/animation/tool_generic_draw_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_generic_idle" File="entities/character/player/player_body/animation/tool_generic_idle_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_generic_holster" File="entities/character/player/player_body/animation/tool_generic_holster_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_generic_draw_larm" File="entities/character/player/player_body/animation/tool_lantern_draw_larm.fbx" Layer="LeftArm" Speed="1">
+                <Event Name="Sound_LanternDraw" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/tools/lantern/lantern_out" />
+            </Animation>
+            <Animation Name="tool_generic_holster_larm" File="entities/character/player/player_body/animation/tool_lantern_holster_larm.fbx" Layer="LeftArm" Speed="1">
+                <Event Name="Sound_LanternHolster" Time="0" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="player/tools/lantern/lantern_in" />
+            </Animation>
+            <Animation Name="tool_generic_idle_larm" File="entities/character/player/player_body/animation/tool_lantern_idle_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="wake_up_from_death_1a" File="entities/character/player/player_body/animation/wake_up_from_death_1a.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_1a" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_1a" />
+            </Animation>
+            <Animation Name="wake_up_from_death_1b" File="entities/character/player/player_body/animation/wake_up_from_death_1b.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_1b" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_1b" />
+            </Animation>
+            <Animation Name="wake_up_from_death_1c" File="entities/character/player/player_body/animation/wake_up_from_death_1c.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_1c" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_1c" />
+            </Animation>
+            <Animation Name="wake_up_from_death_2" File="entities/character/player/player_body/animation/wake_up_from_death_2.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_2" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_2" />
+            </Animation>
+            <Animation Name="wake_up_from_death_3a" File="entities/character/player/player_body/animation/wake_up_from_death_3a.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_3a" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_3a" />
+            </Animation>
+            <Animation Name="wake_up_from_death_3b" File="entities/character/player/player_body/animation/wake_up_from_death_3b.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_3b" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_3b" />
+            </Animation>
+            <Animation Name="wake_up_from_death_3c" File="entities/character/player/player_body/animation/wake_up_from_death_3c.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_3c" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_3c" />
+            </Animation>
+            <Animation Name="wake_up_from_death_4" File="entities/character/player/player_body/animation/wake_up_from_death_4.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_4" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_4" />
+            </Animation>
+            <Animation Name="wake_up_from_death_1_crouch" File="entities/character/player/player_body/animation/wake_up_from_death_1_crouch.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="wake_up_from_death_2_crouch" File="entities/character/player/player_body/animation/wake_up_from_death_2_crouch.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="wake_up_from_death_3_crouch" File="entities/character/player/player_body/animation/wake_up_from_death_3_crouch.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="wake_up_from_death_4_crouch" File="entities/character/player/player_body/animation/wake_up_from_death_4_crouch.fbx" Layer="FullBody" Speed="1">
+                <Event Name="death_4" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_death_4" />
+            </Animation>
+            <Animation Name="grab_item_rarm_a" File="entities/character/player/player_body/animation/grab_item_rarm_a.fbx" Layer="RightArm" Speed="1.25" />
+            <Animation Name="grab_item_rarm_b" File="entities/character/player/player_body/animation/grab_item_rarm_b.fbx" Layer="RightArm" Speed="1.25" />
+            <Animation Name="lean_left" File="entities/character/player/player_body/animation/lean_left.fbx" Layer="Custom" Speed="1" />
+            <Animation Name="lean_right" File="entities/character/player/player_body/animation/lean_right.fbx" Layer="Custom" Speed="1" />
+            <Animation Name="struggle_vitae_canister_larm" File="entities/character/player/player_body/animation/struggle_vitae_canister_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="struggle_vitae_canister_rarm" File="entities/character/player/player_body/animation/struggle_vitae_canister_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="struggle_zombie_larm" File="entities/character/player/player_body/animation/struggle_zombie_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="struggle_zombie_rarm" File="entities/character/player/player_body/animation/struggle_zombie_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="struggle_zombie_test2_larm" File="entities/character/player/player_body/animation/struggle_zombie_test2_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="struggle_zombie_test2_rarm" File="entities/character/player/player_body/animation/struggle_zombie_test2_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="struggle_zombie_pull_back_larm" File="entities/character/player/player_body/animation/struggle_zombie_pull_back_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="struggle_zombie_pull_back_rarm" File="entities/character/player/player_body/animation/struggle_zombie_pull_back_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="vitae_4d_attack_player" File="entities/character/player/player_body/animation/vitae_4d_attack_player.fbx" Layer="Default" Speed="1" />
+            <Animation Name="vitae_4d_escape_player" File="entities/character/player/player_body/animation/vitae_4d_escape_player.fbx" Layer="Default" Speed="1" />
+            <Animation Name="herberts_hq_a_stumble_ls" File="entities/character/player/player_body/animation/herberts_hq_a_stumble_ls.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_Stumble" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/3.3/herberts_hq_a_stumble" />
+            </Animation>
+            <Animation Name="herberts_hq_a_stumble_wp" File="entities/character/player/player_body/animation/herberts_hq_a_stumble_wp.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="dragged_by_ghoul" File="entities/character/player/player_body/animation/dragged_by_ghoul.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="dragged_by_ghoul_exit" File="entities/character/player/player_body/animation/dragged_by_ghoul_exit.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_knocks_player_down_but_then_recognizes_her" File="entities/character/player/player_body/animation/player_knocks_player_down_but_then_recognizes_her.fbx" Layer="Default" Speed="1" />
+            <Animation Name="struggle_gnaw_on_fairchild_loop" File="entities/character/player/player_body/animation/p_gnaw_on_fairchild.fbx" Layer="FullBody" Speed="1">
+                <Event Name="GnawSound" Time="0.75814" Direction="Both" Type="PlaySound" DestSocket="" Value="03_06_ghouls_nest/permafail_event/tasi_bite" />
+                <Event Name="GnawSound" Time="2.06047" Direction="Both" Type="PlaySound" DestSocket="" Value="03_06_ghouls_nest/permafail_event/tasi_bite" />
+            </Animation>
+            <Animation Name="struggle_gnaw_on_fairchild_intro" File="entities/character/player/player_body/animation/p_gnaw_on_fairchild_intro.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="struggle_gnaw_on_fairchild_outro" File="entities/character/player/player_body/animation/p_gnaw_on_fairchild_outro.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="struggle_gnaw_on_fairchild_resist" File="entities/character/player/player_body/animation/p_gnaw_on_fairchild_struggle.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="react_to_baby_kick" File="entities/character/player/player_body/animation/react_to_baby_kick.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="react_to_baby_kick_extended" File="entities/character/player/player_body/animation/react_to_baby_kick_extended.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="carried_by_the_shadow_mid_air" File="entities/character/player/player_body/animation/carried_by_the_shadow_mid_air.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="shadowcarry_land" File="entities/character/player/player_body/animation/land_after_being_carried_by_the_shadow.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="wake_up_see_pregnancy_preroll" File="entities/character/player/player_body/animation/wake_up_see_pregnancy_preroll.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="wake_up_see_pregnancy" File="entities/character/player/player_body/animation/wake_up_see_pregnancy.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_Wake_1" Time="0.25" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/3.3/wake_up_see_pregnancy_1" />
+                <Event Name="Sound_Wake_2" Time="28.25" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/3.3/wake_up_see_pregnancy_2" />
+            </Animation>
+            <Animation Name="fall_and_get_up_quickly" File="entities/character/player/player_body/animation/fall_and_get_up_quickly.fbx" Layer="PlayerBody" Speed="1" />
+            <Animation Name="knocked_out_by_debris_in_place" File="entities/character/player/player_body/animation/knocked_out_by_debris_in_place.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="die_fall" File="entities/character/player/player_body/animation/knocked_out_by_debris_in_place.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_trigger" File="entities/character/player/player_body/animation/permafail_trigger.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_PermafailTrigger" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/permafail_trigger" />
+            </Animation>
+            <Animation Name="fall_and_get_up_slow" File="entities/character/player/player_body/animation/fall_and_get_up_quickly.fbx" Layer="Default" Speed="0.5" />
+            <Animation Name="tf17_enter" File="entities/character/player/player_body/animation/tf17_enter.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="tf17_exit" File="entities/character/player/player_body/animation/tf17_exit.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="tf17_look_through_hole" File="entities/character/player/player_body/animation/tf17_look_through_hole.fbx" Layer="FullBody" Speed="0.75" />
+            <Animation Name="tf17_look_through_hole_exit" File="entities/character/player/player_body/animation/tf17_look_through_hole_exit.fbx" Layer="FullBody" Speed="0.75" />
+            <Animation Name="tf17_fire_fail_short" File="entities/character/player/player_body/animation/tf17_fire_fail_short.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="cannon_stumble" File="entities/character/player/player_body/animation/cannon_stumble.fbx" Layer="FullBody" Speed="1">
+                <Event Name="step_1" Time="0.301199" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="step_2" Time="0.487234" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="step_3" Time="0.708704" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="step_4" Time="1.24023" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="step_5" Time="1.99323" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+                <Event Name="step_6" Time="2.21913" Direction="Both" Type="Step" DestSocket="L_Foot" Value="" />
+                <Event Name="step_7" Time="5.08052" Direction="Both" Type="Step" DestSocket="R_Foot" Value="" />
+            </Animation>
+            <Animation Name="thrown_back_by_ghoul" File="entities/character/player/player_body/animation/thrown_back_by_ghoul.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_ThrowBackwards" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/ghoul_throw_forward" />
+            </Animation>
+            <Animation Name="thrown_forward_by_ghoul" File="entities/character/player/player_body/animation/thrown_forward_by_ghoul.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_ThrowForward" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/ghoul_throw_forward" />
+            </Animation>
+            <Animation Name="thrown_left_by_ghoul" File="entities/character/player/player_body/animation/thrown_left_by_ghoul.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_ThrowLeft" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/ghoul_throw_left" />
+            </Animation>
+            <Animation Name="thrown_right_by_ghoul" File="entities/character/player/player_body/animation/thrown_right_by_ghoul.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowRight" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/ghoul_throw_right" />
+            </Animation>
+            <Animation Name="puke_ft17_left" File="entities/character/player/player_body/animation/puke_ft17_left.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="puke_ft17_right" File="entities/character/player/player_body/animation/puke_ft17_right.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="interactive_stumble_test" File="entities/character/player/player_body/animation/herberts_hq_a_stumble_ls.fbx" Layer="Default" Speed="1">
+                <Event Name="New Event" Time="0.59766" Direction="Both" Type="PlaySound" DestSocket="" Value="player/footsteps/default/rock_dirt" />
+                <Event Name="New Event" Time="1.76945" Direction="Both" Type="PlaySound" DestSocket="" Value="player/footsteps/default/rock_dirt" />
+            </Animation>
+            <Animation Name="interactive_wakeup_test" File="entities/character/player/player_body/animation/wake_up_from_death_3a.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_not_trying_to_escape_tf17_fall_through_ground" File="entities/character/player/player_body/animation/player_not_trying_to_escape_tf17_fall_through_ground.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_trying_to_escape_tf17_fall_through_ground" File="entities/character/player/player_body/animation/player_trying_to_escape_tf17_fall_through_ground.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_tf17_push_cannon_start" File="entities/character/player/player_body/animation/player_tf17_push_cannon_start.fbx" Layer="FullBody" Speed="1">
+                <Event Name="sound_start_1" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_1" />
+                <Event Name="sound_start_2" Time="1" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_2" />
+                <Event Name="sound_start_3" Time="2" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_3" />
+                <Event Name="sound_start_4" Time="4" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_4" />
+                <Event Name="sound_start_5" Time="4.5" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_5" />
+                <Event Name="sound_start_6" Time="5" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_6" />
+                <Event Name="sound_start_7" Time="5.5" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_7" />
+                <Event Name="sound_start_8" Time="6" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/start/push_start_8" />
+            </Animation>
+            <Animation Name="player_tf17_push_cannon_idle1" File="entities/character/player/player_body/animation/player_tf17_push_cannon_idle1.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_tf17_push_cannon_idle1_tr_idle2" File="entities/character/player/player_body/animation/player_tf17_push_cannon_idle1_tr_idle2.fbx" Layer="FullBody" Speed="1">
+                <Event Name="sound_idle_move_1" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/idle_idle2/idle_to_idle_1" />
+                <Event Name="sound_idle_move_2" Time="1" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/idle_idle2/idle_to_idle_2" />
+                <Event Name="sound_idle_move_3" Time="2" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/idle_idle2/idle_to_idle_3" />
+                <Event Name="sound_idle_move_4" Time="3" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/idle_idle2/idle_to_idle_4" />
+                <Event Name="sound_idle_move_5" Time="4" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/idle_idle2/idle_to_idle_5" />
+            </Animation>
+            <Animation Name="player_tf17_push_cannon_idle2" File="entities/character/player/player_body/animation/player_tf17_push_cannon_idle2.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_tf17_push_cannon_end" File="entities/character/player/player_body/animation/player_tf17_push_cannon_end.fbx" Layer="FullBody" Speed="1">
+                <Event Name="sound_end_1" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_1" />
+                <Event Name="sound_end_2" Time="0.5" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_2" />
+                <Event Name="sound_end_3" Time="1" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_3" />
+                <Event Name="sound_end_4" Time="2" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_4" />
+                <Event Name="sound_end_5" Time="3" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_5" />
+                <Event Name="sound_end_6" Time="4" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_6" />
+                <Event Name="sound_end_stand_1" Time="10" Direction="Both" Type="PlaySound" DestSocket="" Value="02_05_cistern/tank_wakeup/cannon_end/cannon_end_stand" />
+            </Animation>
+            <Animation Name="player_salim_encounter" File="entities/character/player/player_body/animation/player_salim_encounter.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_shimmy_in_salim_encounter" File="entities/character/player/player_body/animation/player_shimmy_in_salim_encounter.fbx" Layer="Default" Speed="1">
+                <Event Name="shimmy_salim_foot_right_01" Time="0.5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_01" />
+                <Event Name="shimmy_salim_foot_right_02" Time="1" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_02" />
+                <Event Name="shimmy_salim_foot_right_03" Time="1.5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_03" />
+                <Event Name="shimmy_salim_foot_left_01" Time="0.4" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="" />
+                <Event Name="shimmy_salim_foot_left_02" Time="1.1" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_left_02" />
+                <Event Name="shimmy_salim_right_hand_01" Time="0.3" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_01" />
+                <Event Name="shimmy_salim_right_hand_02" Time="0.9" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_02" />
+                <Event Name="shimmy_salim_right_hand_03" Time="1" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_03" />
+                <Event Name="shimmy_salim_body_1" Time="0" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_01" />
+                <Event Name="shimmy_salim_body_2" Time="0.4" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_02" />
+                <Event Name="shimmy_salim_body_3" Time="0.9" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_03" />
+                <Event Name="shimmy_salim_body_4" Time="1.3" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_04" />
+                <Event Name="shimmy_salim_body_5" Time="1.6" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_05" />
+                <Event Name="shimmy_salim_body_6" Time="1.8" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_06" />
+                <Event Name="shimmy_salim_body_7" Time="2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_07" />
+                <Event Name="shimmy_salim_backwards_foot_right_1" Time="0.2" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_right_01" />
+                <Event Name="shimmy_salim_backwards_foot_right_2" Time="1.2" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_right_02" />
+                <Event Name="shimmy_salim_backwards_foot_left_1" Time="0.7" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_left_01" />
+                <Event Name="shimmy_salim_backwards_foot_left_2" Time="1.6" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_left_02" />
+                <Event Name="shimmy_salim_backwards_hand_right_1" Time="0.8" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_02" />
+                <Event Name="shimmy_salim_backwards_hand_right_2" Time="1.3" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_03" />
+                <Event Name="shimmy_salim_backwards_hand_right_3" Time="1.6" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_03" />
+                <Event Name="shimmy_salim_backwards_body_1" Time="0.3" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_01" />
+                <Event Name="shimmy_salim_backwards_body_2" Time="0.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_02" />
+                <Event Name="shimmy_salim_backwards_body_3" Time="0.8" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_03" />
+                <Event Name="shimmy_salim_backwards_body_4" Time="1.2" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_04" />
+                <Event Name="shimmy_salim_backwards_body_5" Time="1.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_05" />
+                <Event Name="shimmy_salim_backwards_body_6" Time="1.7" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_06" />
+                <Event Name="shimmy_salim_backwards_body_7" Time="1.9" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_07" />
+            </Animation>
+            <Animation Name="player_shimmy_out_salim_encounter" File="entities/character/player/player_body/animation/player_shimmy_out_salim_encounter.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_salim_encounter_close_eyes" File="entities/character/player/player_body/animation/player_salim_encounter_close_eyes.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_takes_salims_ring" File="entities/character/player/player_body/animation/player_takes_salims_ring.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_tf17_exit_after_fall" File="entities/character/player/player_body/animation/player_tf17_exit_after_fall.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_milking_machine_attracted" File="entities/character/player/player_body/animation/player_milking_machine_attracted.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_milking_machine_getup" File="entities/character/player/player_body/animation/player_milking_machine_getup.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_sink_hole" File="entities/character/player/player_body/animation/player_sink_hole_new.fbx" Layer="FullBody" Speed="1">
+                <Event Name="PS_Dust_L" Time="5.467" Direction="Both" Type="CreateParticle" DestSocket="L_Hand" Value="particles/dust/sand_impact_oneshot.ps" />
+                <Event Name="PS_Dust_R" Time="5.71554" Direction="Both" Type="CreateParticle" DestSocket="R_Hand" Value="particles/dust/sand_impact_oneshot.ps" />
+                <Event Name="PS_Dust_L" Time="7.51717" Direction="Both" Type="CreateParticle" DestSocket="L_Hand" Value="particles/dust/sand_impact_oneshot.ps" />
+                <Event Name="PS_Dust_L" Time="10.1679" Direction="Both" Type="CreateParticle" DestSocket="L_Hand" Value="particles/dust/sand_impact_oneshot.ps" />
+                <Event Name="PS_Dust_R" Time="10.7063" Direction="Both" Type="CreateParticle" DestSocket="R_Hand" Value="particles/dust/sand_impact_oneshot.ps" />
+            </Animation>
+            <Animation Name="move_in_to_pool_under_bodycrusher" File="entities/character/player/player_body/animation/move_in_to_pool_under_bodycrusher.fbx" Layer="Default" Speed="1" />
+            <Animation Name="move_out_from_pool_under_bodycrusher" File="entities/character/player/player_body/animation/move_out_from_pool_under_bodycrusher.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_grabbed_by_leon_under_bodycrusher" File="entities/character/player/player_body/animation/player_grabbed_by_leon_under_bodycrusher.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_hide_idle" File="entities/character/player/player_body/animation/player_hide_idle.fbx" Layer="Body" Speed="1" />
+            <Animation Name="player_hide_idle_larm" File="entities/character/player/player_body/animation/player_hide_idle_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="player_hide_idle_rarm" File="entities/character/player/player_body/animation/player_hide_idle_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="check_baby_start" File="entities/character/player/player_body/animation/baby_check_4m_stand_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_loop_1" File="entities/character/player/player_body/animation/baby_check_4m_stand_loop1.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_loop_2" File="entities/character/player/player_body/animation/baby_check_4m_stand_loop2.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_loop_3" File="entities/character/player/player_body/animation/baby_check_4m_stand_loop3.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_end" File="entities/character/player/player_body/animation/baby_check_4m_stand_end.fbx" Layer="FullBody" Speed="8" />
+            <Animation Name="check_baby_loop_upper_body" File="entities/character/player/player_body/animation/check_baby_loop_upper_body.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_start" File="entities/character/player/player_body/animation/player_slide_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_slide_loop" File="entities/character/player/player_body/animation/player_slide_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_slide_end" File="entities/character/player/player_body/animation/player_slide_end.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="walk_fwd_belly_larm" File="entities/character/player/player_body/animation/walk_fwd_belly_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_belly_rarm" File="entities/character/player/player_body/animation/walk_fwd_belly_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="flushed_to_oasis" File="entities/character/player/player_body/animation/flushed_to_oasis.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="flushed_out_of_pipe" File="entities/character/player/player_body/animation/flushed_out_of_pipe.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="flushed_out_of_the_cistern" File="entities/character/player/player_body/animation/flushed_out_of_the_cistern.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="stumble_after_oasis_pool" File="entities/character/player/player_body/animation/stumble_after_oasis_pool.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="crouch_drowned_by_ghoul" File="entities/character/player/player_body/animation/crouch_drowned_by_ghoul.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_exhausted" File="entities/character/player/player_body/animation/player_exhausted.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_PllayerExhausted" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/tasi_exhausted" />
+            </Animation>
+            <Animation Name="permafail_trigger_crouch" File="entities/character/player/player_body/animation/crouch_permafail_trigger.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_PermafailTriggerCrouch" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/permafail_trigger" />
+            </Animation>
+            <Animation Name="run_fwd_permafail" File="entities/character/player/player_body/animation/player_permafail_run.fbx" Layer="Body" Speed="1" />
+            <Animation Name="run_fwd_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_fwd_left_permafail" File="entities/character/player/player_body/animation/player_permafail_run.fbx" Layer="Body" Speed="1" />
+            <Animation Name="run_fwd_left_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_left_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="run_fwd_right_permafail" File="entities/character/player/player_body/animation/player_permafail_run.fbx" Layer="Body" Speed="1" />
+            <Animation Name="run_fwd_right_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="run_fwd_right_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_run_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_fwd_permafail" File="entities/character/player/player_body/animation/player_permafail_walk.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk_fwd_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_fwd_left_permafail" File="entities/character/player/player_body/animation/player_permafail_walk.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk_fwd_left_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_left_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="walk_fwd_right_permafail" File="entities/character/player/player_body/animation/player_permafail_walk.fbx" Layer="Default" Speed="1" />
+            <Animation Name="walk_fwd_right_larm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="walk_fwd_right_rarm_permafail" File="entities/character/player/player_body/animation/player_permafail_walk_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="slides_down_the_slope" File="entities/character/player/player_body/animation/slides_down_the_slope.fbx" Layer="Default" Speed="1">
+                <Event Name="New Event" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/player_slide" />
+            </Animation>
+            <Animation Name="permafail_trigger_rarm" File="entities/character/player/player_body/animation/permafail_trigger_rarm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="check_baby_crouch_loop_1" File="entities/character/player/player_body/animation/baby_check_4m_crouch_loop1.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_crouch_loop_2" File="entities/character/player/player_body/animation/baby_check_4m_crouch_loop2.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_crouch_loop_3" File="entities/character/player/player_body/animation/baby_check_4m_crouch_loop3.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="check_baby_crouch_end" File="entities/character/player/player_body/animation/baby_check_4m_crouch_end.fbx" Layer="Default" Speed="8" />
+            <Animation Name="player_rarm_protect_from_storm_start" File="entities/character/player/player_body/animation/player_rarm_protect_from_storm_start.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_rarm_protect_from_storm_loop" File="entities/character/player/player_body/animation/player_rarm_protect_from_storm_loop.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_rarm_protect_from_storm_end" File="entities/character/player/player_body/animation/player_rarm_protect_from_storm_end.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="climb_up_dwf_b_rnd_platform" File="entities/character/player/player_body/animation/climb_up_dwf_b_rnd_platform.fbx" Layer="Default" Speed="1" />
+            <Animation Name="climb_up_dwf_b_rnd_platform_glas_idle" File="entities/character/player/player_body/animation/climb_up_dwf_b_rnd_platform_glas_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="climb_up_dwf_b_rnd_platform_idle_lower_arm" File="entities/character/player/player_body/animation/climb_up_dwf_b_rnd_platform_idle_lower_arm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_down_loop" File="entities/character/player/player_body/animation/player_slide_down_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_down_land" File="entities/character/player/player_body/animation/player_slide_down_land.fbx" Layer="Default" Speed="1" />
+            <Animation Name="regain_balance_dwf_shuttle_sway" File="entities/character/player/player_body/animation/regain_balance_dwf_shuttle_sway.fbx" Layer="Default" Speed="1" />
+            <Animation Name="get_up_after_fall_from_plankbridge" File="entities/character/player/player_body/animation/get_up_after_fall_from_plankbridge.fbx" Layer="Default" Speed="1" />
+            <Animation Name="fall_from_collapsed_plankbridge" File="entities/character/player/player_body/animation/fall_from_collapsed_plankbridge.fbx" Layer="Default" Speed="1" />
+            <Animation Name="kneels_down_and_permafails" File="entities/character/player/player_body/animation/kneels_down_and_permafails.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_PermafailKneel" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/kneel_permafail" />
+            </Animation>
+            <Animation Name="player_wake_up_seq_crawl" File="entities/character/player/player_body/animation/player_wake_up_seq_crawl.fbx" Layer="FullBody" Speed="1.1">
+                <Event Name="crawl_1" Time="2.05" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl_01" />
+                <Event Name="crawl_2" Time="5.363" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl_02" />
+                <Event Name="crawl_3" Time="8.112" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl_03" />
+                <Event Name="crawl_4" Time="8.733" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl_04" />
+                <Event Name="wreckage_crawl_left_1" Time="5" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_01_wreckage/animations/crawl/forward/hand_left_01" />
+                <Event Name="wreckage_crawl_left_2" Time="10" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_01_wreckage/animations/crawl/forward/hand_left_02" />
+                <Event Name="wreckage_crawl_right_1" Time="1" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_01_wreckage/animations/crawl/forward/hand_right_01" />
+                <Event Name="wreckage_crawl_right_2" Time="2.5" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_01_wreckage/animations/crawl/forward/hand_right_02" />
+                <Event Name="wreckage_crawl_right_3" Time="7.5" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_01_wreckage/animations/crawl/forward/hand_right_03" />
+                <Event Name="wreckage_crawl_body_1" Time="1.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_01" />
+                <Event Name="wreckage_crawl_body_2" Time="2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_02" />
+                <Event Name="wreckage_crawl_body_3" Time="2.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_03" />
+                <Event Name="wreckage_crawl_body_4" Time="3" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_04" />
+                <Event Name="wreckage_crawl_body_5" Time="5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_05" />
+                <Event Name="wreckage_crawl_body_6" Time="5.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_06" />
+                <Event Name="wreckage_crawl_body_7" Time="6" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_07" />
+                <Event Name="wreckage_crawl_body_8" Time="9" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_08" />
+                <Event Name="wreckage_crawl_body_4_1" Time="3.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_04_1" />
+                <Event Name="wreckage_crawl_body_9" Time="9.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/forward/body_09" />
+                <Event Name="wreckage_crawl_backwards_left_1" Time="11.13" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_01_wreckage/animations/crawl/backward/hand_left_01" />
+                <Event Name="wreckage_crawl_backwards_left_2" Time="10.43" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_01_wreckage/animations/crawl/backward/hand_left_02" />
+                <Event Name="wreckage_crawl_backwards_left_3" Time="6.93" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_01_wreckage/animations/crawl/backward/hand_left_03" />
+                <Event Name="wreckage_crawl_backwards_right_1" Time="9.93" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_01_wreckage/animations/crawl/backward/hand_right_01" />
+                <Event Name="wreckage_crawl_backwards_right_2" Time="4.43" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_01_wreckage/animations/crawl/backward/hand_right_02" />
+                <Event Name="wreckage_crawl_backwards_body_1" Time="11.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_01" />
+                <Event Name="wreckage_crawl_backwards_body_2" Time="10.93" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_02" />
+                <Event Name="wreckage_crawl_backwards_body_3" Time="10.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_03" />
+                <Event Name="wreckage_crawl_backwards_body_4" Time="9.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_04" />
+                <Event Name="wreckage_crawl_backwards_body_5" Time="8.93" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_05" />
+                <Event Name="wreckage_crawl_backwards_body_6" Time="8.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_06" />
+                <Event Name="wreckage_crawl_backwards_body_7" Time="6.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_07" />
+                <Event Name="wreckage_crawl_backwards_body_8" Time="3.93" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_08" />
+                <Event Name="wreckage_crawl_backwards_body_9" Time="2.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_09" />
+                <Event Name="wreckage_crawl_backwards_body_10" Time="1.93" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_10" />
+                <Event Name="wreckage_crawl_backwards_body_11" Time="1.43" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/crawl/backward/body_11" />
+            </Animation>
+            <Animation Name="player_wake_up_seq_pick_up_bottle" File="entities/character/player/player_body/animation/player_wake_up_seq_pick_up_bottle.fbx" Layer="FullBody" Speed="1">
+                <Event Name="New Event" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/new/player_wake_pick_up_bottle" />
+            </Animation>
+            <Animation Name="player_wake_up_seq_look_at_bottle_loop" File="entities/character/player/player_body/animation/player_wake_up_seq_look_at_bottle_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_wake_up_seq_drink_and_sit_up_" File="entities/character/player/player_body/animation/player_wake_up_seq_drink_and_sit_up_.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_Drink" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/new/player_wake_drink_sit_up" />
+                <Event Name="DrinkLaudanum" Time="3.37616" Direction="Both" Type="Message" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="player_wake_up_seq_sit_loop" File="entities/character/player/player_body/animation/player_wake_up_seq_sit_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_wake_up_seq_end" File="entities/character/player/player_body/animation/player_wake_up_seq_end.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_StandUp" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/player_wake_stand_from_seat" />
+            </Animation>
+            <Animation Name="player_fall_through_cave" File="entities/character/player/player_body/animation/player_fall_through_cave.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_reach_out_baby" File="entities/character/player/player_body/animation/player_reach_out_baby.fbx" Layer="Default" Speed="1" />
+            <Animation Name="kneel_child_disappear_stand_up" File="entities/character/player/player_body/animation/kneel_child_disappear_stand_up.fbx" Layer="Default" Speed="1" />
+            <Animation Name="kneel_from_idle" File="entities/character/player/player_body/animation/kneel_from_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="kneel_loop" File="entities/character/player/player_body/animation/kneel_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_back_start" File="entities/character/player/player_body/animation/player_slide_back_start.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_back_loop" File="entities/character/player/player_body/animation/player_slide_back_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_slide_back_end" File="entities/character/player/player_body/animation/player_slide_back_end.fbx" Layer="Default" Speed="1" />
+            <Animation Name="look_at_doll_rarm_start" File="entities/character/player/player_body/animation/look_at_doll_rarm_start.fbx" Layer="Default" Speed="1" />
+            <Animation Name="look_at_doll_rarm_loop" File="entities/character/player/player_body/animation/look_at_doll_rarm_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="look_at_doll_rarm_end" File="entities/character/player/player_body/animation/look_at_doll_rarm_end.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_end_portal_collapse_to_idle" File="entities/character/player/player_body/animation/player_end_portal_collapse_to_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_rarm_reach_out_for_salim" File="entities/character/player/player_body/animation/player_rarm_reach_out_for_salim.fbx" Layer="Default" Speed="1" />
+            <Animation Name="thrown_right_by_ghoul_start" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_right_start.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowStart" Time="0.500606" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+            </Animation>
+            <Animation Name="thrown_right_by_ghoul_loop" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_right_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="thrown_right_by_ghoul_end" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_right_end.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowLand" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="thrown_left_by_ghoul_start" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_left_start.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowStart" Time="0.54154" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+            </Animation>
+            <Animation Name="thrown_left_by_ghoul_loop" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_left_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="thrown_left_by_ghoul_end" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_left_end.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowEnd" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="thrown_forward_by_ghoul_start" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_forward_start.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowStart" Time="0.762161" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+                <Event Name="Sound_ThrowGrab" Time="0.448387" Direction="Both" Type="PlaySound" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="thrown_forward_by_ghoul_loop" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_forward_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="thrown_forward_by_ghoul_end" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_forward_end.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowEnd" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="thrown_back_by_ghoul_start" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_back_start.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_GhoulGrab" Time="0.196593" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+                <Event Name="Sound_GhoulThrow" Time="0.951975" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+            </Animation>
+            <Animation Name="thrown_back_by_ghoul_loop" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_back_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="thrown_back_by_ghoul_end" File="entities/character/player/player_body/animation/player_thrown_by_ghoul_back_end.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_ThrowEnd" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="player_struggle_wake_up_normal_loop" File="entities/character/player/player_body/animation/player_struggle_wake_up_normal_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_struggle_wake_up_struggle_loop" File="entities/character/player/player_body/animation/player_struggle_wake_up_struggle_loop.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_struggle_wake_up_end" File="entities/character/player/player_body/animation/player_struggle_wake_up_end.fbx" Layer="Default" Speed="0.8">
+                <Event Name="Sound_WakeStruggleEnd" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/player_wake_end" />
+            </Animation>
+            <Animation Name="player_struggle_wake_up_start" File="entities/character/player/player_body/animation/player_struggle_wake_up_start.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_WakeStruggleStart" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_01_wreckage/animations/player_wake_start" />
+            </Animation>
+            <Animation Name="player_flushed_into_the_sea" File="entities/character/player/player_body/animation/player_flushed_into_the_sea.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_high_ghoul_paris_ending" File="entities/character/player/player_body/animation/player_high_ghoul_paris_ending.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_low_ghoul_paris_ending" File="entities/character/player/player_body/animation/player_low_ghoul_paris_ending.fbx" Layer="Default" Speed="1" />
+            <Animation Name="squeezes_through_the_crack_at_the_ledge" File="entities/character/player/player_body/animation/squeezes_through_the_crack_at_the_ledge.fbx" Layer="Default" Speed="1">
+                <Event Name="lightning" Time="6.26947" Direction="Both" Type="Message" DestSocket="" Value="0" />
+                <Event Name="sound_foot_right_1" Time="2" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_right_01" />
+                <Event Name="sound_foot_left_1" Time="2" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_left_01" />
+                <Event Name="sound_foot_right_2" Time="3" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_right_02" />
+                <Event Name="sound_foot_left_2" Time="4" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_left_02" />
+                <Event Name="sound_foot_right_3" Time="5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_right_03" />
+                <Event Name="sound_foot_left_4" Time="6" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_left_04" />
+                <Event Name="sound_foot_right_4" Time="6" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/foot_right_04" />
+                <Event Name="sound_hand_right_1" Time="0.352" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_right_01" />
+                <Event Name="sound_hand_right_2" Time="2.631" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_right_02" />
+                <Event Name="sound_hand_right_3" Time="3.547" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_right_03" />
+                <Event Name="sound_hand_right_4" Time="4.568" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_right_04" />
+                <Event Name="sound_hand_right_5" Time="5.294" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_right_05" />
+                <Event Name="sound_left_hand_1" Time="0.67" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_left_01" />
+                <Event Name="sound_left_hand_2" Time="2.085" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_left_02" />
+                <Event Name="sound_left_hand_3" Time="3.026" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_left_03" />
+                <Event Name="sound_left_hand_4" Time="3.931" Direction="Forward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/hand_left_04" />
+                <Event Name="sound_body_1" Time="1" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_01" />
+                <Event Name="sound_body_2" Time="2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_02" />
+                <Event Name="sound_body_3" Time="3" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_03" />
+                <Event Name="sound_body_4" Time="4" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_04" />
+                <Event Name="sound_body_5" Time="5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_05" />
+                <Event Name="sound_body_6" Time="6" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_06" />
+                <Event Name="sound_body_7" Time="7.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_forward/body_07" />
+                <Event Name="Sound_BackwardRightFoot_1" Time="4.949" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_right_backwards_01" />
+                <Event Name="Sound_BackwardRightFoot_2" Time="3.992" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_right_backwards_02" />
+                <Event Name="Sound_BackwardRightFoot_3" Time="2.33" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_right_backwards_03" />
+                <Event Name="Sound_BackwardRightFoot_4" Time="0.384" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_right_backwards_04" />
+                <Event Name="Sound_BackwardLeftFoot_1" Time="5.693" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_left_backwards_01" />
+                <Event Name="Sound_BackwardLeftFoot_2" Time="4.54" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_left_backwards_02" />
+                <Event Name="Sound_BackwardLeftFoot_3" Time="3.031" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_left_backwards_03" />
+                <Event Name="Sound_BackwardLeftFoot_4" Time="1.478" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/foot_left_backwards_04" />
+                <Event Name="Sound_BackwardRightHand_1" Time="4.839" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_right_01" />
+                <Event Name="Sound_BackwardRightHand_2" Time="3.848" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_right_02" />
+                <Event Name="Sound_BackwardRightHand_3" Time="3.393" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_right_03" />
+                <Event Name="Sound_BackwardRightHand_4" Time="2.464" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_right_04" />
+                <Event Name="Sound_BackwardLeftHand_1" Time="4.513" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_01" />
+                <Event Name="Sound_BackwardLeftHand_2" Time="3.906" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_02" />
+                <Event Name="Sound_BackwardLeftHand_3" Time="3.486" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_03" />
+                <Event Name="Sound_BackwardLeftHand_4" Time="2.36" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_04" />
+                <Event Name="Sound_BackwardLeftHand_5" Time="1.828" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_05" />
+                <Event Name="Sound_BackwardLeftHand_6" Time="0.963" Direction="Backward" Type="PlaySound" DestSocket="L_Hand" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/hand_backwards_left_06" />
+                <Event Name="Sound_BackwardsBody_1" Time="5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/body_backwards_01" />
+                <Event Name="Sound_BackwardsBody_2" Time="4.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/body_backwards_02" />
+                <Event Name="Sound_BackwardsBody_3" Time="3.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/body_backwards_03" />
+                <Event Name="Sound_BackwardsBody_4" Time="2.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/body_backwards_04" />
+                <Event Name="Sound_BackwardsBody_5" Time="1.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_04_dark_world_ledge/level_events/crack_squeeze_backwards/body_backwards_05" />
+            </Animation>
+            <Animation Name="player_gravity_shift_kicks_in" File="entities/character/player/player_body/animation/player_gravity_shift_kicks_in.fbx" Layer="Default" Speed="1">
+                <Event Name="fade_out" Time="4.133" Direction="Both" Type="Message" DestSocket="" Value="" />
+            </Animation>
+            <Animation Name="player_exit_plane_first_time" File="entities/character/player/player_body/animation/player_exit_plane_first_time.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_exit_plane" File="entities/character/player/player_body/animation/player_exit_plane.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_enter_plane" File="entities/character/player/player_body/animation/player_enter_plane.fbx" Layer="Default" Speed="1" />
+            <Animation Name="wake_up_from_permafail" File="entities/character/player/player_body/animation/wake_up_from_permafail.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailWake" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_wake" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_crouched" File="entities/character/player/player_body/animation/wake_up_from_permafail_crouched.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailCrouchWake" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_crouch" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var1" File="entities/character/player/player_body/animation/wake_up_from_permafail_var1.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailWake_V1" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_wake_1" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var1_crouched" File="entities/character/player/player_body/animation/wake_up_from_permafail_var1_crouched.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailWake_V1_Crouch" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_crouch_1" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var2" File="entities/character/player/player_body/animation/wake_up_from_permafail_var2.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailWake_V2" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_wake_2" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var2_crouched" File="entities/character/player/player_body/animation/wake_up_from_permafail_var2_crouched.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_PermafailWake_V2_crouch" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_crouch_2" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var3" File="entities/character/player/player_body/animation/wake_up_from_permafail_var3.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_Wake" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_wake_3" />
+            </Animation>
+            <Animation Name="wake_up_from_permafail_var3_crouched" File="entities/character/player/player_body/animation/wake_up_from_permafail_var3_crouched.fbx" Layer="Default" Speed="1">
+                <Event Name="DoVeins" Time="7.5" Direction="Both" Type="Message" DestSocket="" Value="1" />
+                <Event Name="DoStingerSound" Time="5" Direction="Both" Type="Message" DestSocket="" Value="2" />
+                <Event Name="DoStingerEffects" Time="6.83" Direction="Both" Type="Message" DestSocket="" Value="3" />
+                <Event Name="DoChange" Time="8.5" Direction="Both" Type="Message" DestSocket="" Value="4" />
+                <Event Name="Sound_Wake" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="new_sounds/animations/anim/permafail_crouch_3" />
+            </Animation>
+            <Animation Name="player_shimmy_in_salim_encounter_slow" File="entities/character/player/player_body/animation/player_shimmy_in_salim_encounter.fbx" Layer="Default" Speed="0.6">
+                <Event Name="shimmy_salim_foot_right_01" Time="0.5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_01" />
+                <Event Name="shimmy_salim_foot_right_02" Time="1" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_02" />
+                <Event Name="shimmy_salim_foot_right_03" Time="1.5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_right_03" />
+                <Event Name="shimmy_salim_foot_left_01" Time="0.4" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_left_01" />
+                <Event Name="shimmy_salim_foot_left_02" Time="1.1" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/forwards/foot_left_02" />
+                <Event Name="shimmy_salim_right_hand_01" Time="0.3" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_01" />
+                <Event Name="shimmy_salim_right_hand_02" Time="0.9" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_02" />
+                <Event Name="shimmy_salim_right_hand_03" Time="1" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/forwards/hand_right_03" />
+                <Event Name="shimmy_salim_body_1" Time="0" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_01" />
+                <Event Name="shimmy_salim_body_2" Time="0.4" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_02" />
+                <Event Name="shimmy_salim_body_3" Time="0.9" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_03" />
+                <Event Name="shimmy_salim_body_4" Time="1.3" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_04" />
+                <Event Name="shimmy_salim_body_5" Time="1.6" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_05" />
+                <Event Name="shimmy_salim_body_6" Time="1.8" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_06" />
+                <Event Name="shimmy_salim_body_7" Time="2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/forwards/body_07" />
+                <Event Name="shimmy_salim_backwards_foot_right_1" Time="0.2" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_right_01" />
+                <Event Name="shimmy_salim_backwards_foot_right_2" Time="1.2" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_right_02" />
+                <Event Name="shimmy_salim_backwards_foot_left_1" Time="0.7" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_left_01" />
+                <Event Name="shimmy_salim_backwards_foot_left_2" Time="1.6" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/salim_crack/backwards/foot_left_02" />
+                <Event Name="shimmy_salim_backwards_hand_right_1" Time="0.8" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_02" />
+                <Event Name="shimmy_salim_backwards_hand_right_2" Time="1.3" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_03" />
+                <Event Name="shimmy_salim_backwards_hand_right_3" Time="1.6" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/salim_crack/backwards/hand_right_03" />
+                <Event Name="shimmy_salim_backwards_body_1" Time="0.3" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_01" />
+                <Event Name="shimmy_salim_backwards_body_2" Time="0.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_02" />
+                <Event Name="shimmy_salim_backwards_body_3" Time="0.8" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_03" />
+                <Event Name="shimmy_salim_backwards_body_4" Time="1.2" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_04" />
+                <Event Name="shimmy_salim_backwards_body_5" Time="1.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_05" />
+                <Event Name="shimmy_salim_backwards_body_6" Time="1.7" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_06" />
+                <Event Name="shimmy_salim_backwards_body_7" Time="1.9" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/salim_crack/backwards/body_07" />
+            </Animation>
+            <Animation Name="player_shimmy_in_salim_encounter_nest" File="entities/character/player/player_body/animation/player_shimmy_in_salim_encounter.fbx" Layer="Default" Speed="0.4">
+                <Event Name="Scare" Time="1.16226" Direction="Forward" Type="Message" DestSocket="" Value="0" />
+            </Animation>
+            <Animation Name="player_fall_hqa_chase_a" File="entities/character/player/player_body/animation/player_fall_hqa_chase_a.fbx" Layer="Default" Speed="1" />
+            <Animation Name="tool_match_draw_larm" File="entities/character/player/player_body/animation/equip_match_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="tool_match_idle_larm" File="entities/character/player/player_body/animation/holding_burning_match_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="tool_match_holster_larm" File="entities/character/player/player_body/animation/shake_match_and_drop_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="tool_match_holster_fade" File="entities/character/player/player_body/animation/letting_go_of_match_larm.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="tool_match_draw" File="entities/character/player/player_body/animation/equip_match_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_match_idle" File="entities/character/player/player_body/animation/holding_burning_match_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_match_holster" File="entities/character/player/player_body/animation/letting_go_of_match_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_beam_struggle_rarm_start" File="entities/character/player/player_body/animation/player_beam_struggle_rarm_start.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_beam_struggle_larm_start" File="entities/character/player/player_body/animation/player_beam_struggle_larm_start.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="player_beam_struggle_rarm_reach_loop" File="entities/character/player/player_body/animation/player_beam_struggle_rarm_reach_loop.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_beam_struggle_larm_reach_loop" File="entities/character/player/player_body/animation/player_beam_struggle_larm_reach_loop.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="player_beam_struggle_rarm_struggle_loop" File="entities/character/player/player_body/animation/player_beam_struggle_rarm_struggle_loop.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_beam_struggle_larm_struggle_loop" File="entities/character/player/player_body/animation/player_beam_struggle_larm_struggle_loop.fbx" Layer="LeftArm" Speed="1" />
+            <Animation Name="player_beam_struggle_end" File="entities/character/player/player_body/animation/player_beam_struggle_end.fbx" Layer="FullBody" Speed="0.9">
+                <Event Name="Sound_BeamEnd" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="tool_amulet_run_idle" File="entities/character/player/player_body/animation/run_fwd_rarm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_swim_drown" File="entities/character/player/player_body/animation/player_swim_drown.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Drown" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="level_dreams/swim/drown" />
+            </Animation>
+            <Animation Name="player_swim_idle_tread" File="entities/character/player/player_body/animation/player_swim_idle_tread.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Drown" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="level_dreams/swim/drown" />
+            </Animation>
+            <Animation Name="player_swim_fast_crawl" File="entities/character/player/player_body/animation/player_swim_fast_crawl.fbx" Layer="Default" Speed="1">
+                <Event Name="LeftHandSplash" Time="0.748184" Direction="Forward" Type="CreateParticle" DestSocket="L_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="RightHandSplash" Time="1.44794" Direction="Forward" Type="CreateParticle" DestSocket="R_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="LeftHandSplash" Time="2.22034" Direction="Forward" Type="CreateParticle" DestSocket="L_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="RightHandSplash" Time="2.73607" Direction="Forward" Type="CreateParticle" DestSocket="R_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="LeftHandSplash" Time="3.52542" Direction="Forward" Type="CreateParticle" DestSocket="L_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="RightHandSplash" Time="0.0677966" Direction="Forward" Type="CreateParticle" DestSocket="R_Hand" Value="particles/water/swim_splash_oneshot.ps" />
+                <Event Name="Swim_FastLeft_1" Time="0.774706" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastLeft_2" Time="2.24585" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastLeft_3" Time="3.55482" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastRight_1" Time="0.106312" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastRight_2" Time="1.46179" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastRight_3" Time="2.77076" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_fast" />
+            </Animation>
+            <Animation Name="player_swim_fast_to_slow" File="entities/character/player/player_body/animation/player_swim_fast_to_slow.fbx" Layer="Default" Speed="1">
+                <Event Name="Swim_FastSlowRight_1" Time="0.162968" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastSlowRight_2" Time="1.82637" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastSlowRight_3" Time="3.45605" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Swim_FastSlowRight_4" Time="5.00145" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Swim_FastSlowLeft_1" Time="1.24193" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_fast" />
+                <Event Name="Swim_FastSlowLeft_2" Time="3.16384" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Swim_FastSlowLeft_3" Time="5.13632" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Transition Name="tr_player_swim_fast_crawl" Anim="player_swim_fast_crawl" PrevAnim="player_swim_slow_breaststroke" MinTime="0" MaxTime="0" />
+            </Animation>
+            <Animation Name="player_swim_slow_breaststroke" File="entities/character/player/player_body/animation/player_swim_slow_breaststroke.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_SwimSlowRight_1" Time="0.448505" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowRight_2" Time="2.66611" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowRight_3" Time="4.34053" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_1" Time="0.393688" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_2" Time="2.72591" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_3" Time="4.33555" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+            </Animation>
+            <Animation Name="player_swim_to_surface" File="entities/character/player/player_body/animation/player_swim_to_surface.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Surface" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="level_dreams/swim/swim_to_surface" />
+            </Animation>
+            <Animation Name="tool_amulet_draw" File="entities/character/player/player_body/animation/amulet_equip_rarm.fbx" Layer="RightArm" Speed="1">
+                <Event Name="Sound_AmuletDraw" Time="0" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="player/foley/animations/player/draw_holster/amulet_draw" />
+            </Animation>
+            <Animation Name="tool_amulet_holster" File="entities/character/player/player_body/animation/amulet_holster_rarm.fbx" Layer="RightArm" Speed="1">
+                <Event Name="Sound_AmuletHolster" Time="0" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="player/foley/animations/player/draw_holster/amulet_holster" />
+            </Animation>
+            <Animation Name="tool_amulet_idle" File="entities/character/player/player_body/animation/amulet_idle_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="player_ghoul_struggle_lift_up" File="entities/character/player/player_body/animation/player_ghoul_struggle_lift_up.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Grab" Time="0.717" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+                <Event Name="ghoul_lift" Time="1.60027" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_grab" />
+            </Animation>
+            <Animation Name="player_ghoul_struggle_hold_idle" File="entities/character/player/player_body/animation/player_ghoul_struggle_hold_idle.fbx" Layer="Default" Speed="1" />
+            <Animation Name="player_ghoul_struggle_scream_permafail" File="entities/character/player/player_body/animation/player_ghoul_struggle_scream_permafail.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_PermafailScream" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/player_ghoul_struggle_scream_permafail" />
+                <Event Name="Sound_Fall" Time="2.51397" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+            </Animation>
+            <Animation Name="player_ghoul_struggle_success" File="entities/character/player/player_body/animation/player_ghoul_struggle_success.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_GhoulDrop" Time="1.03383" Direction="Both" Type="PlaySound" DestSocket="" Value="04_02_sandstorm/animations/ghoul_drop" />
+                <Event Name="Sound_Kick" Time="0.634949" Direction="Both" Type="PlaySound" DestSocket="R_Foot" Value="04_02_sandstorm/animations/body_kick" />
+            </Animation>
+            <Animation Name="squeeze_through_crack_ghoul_encounter" File="entities/character/player/player_body/animation/squeeze_through_crack_ghoul_encounter.fbx" Layer="Default" Speed="0.4">
+                <Event Name="Scare" Time="1.162" Direction="Forward" Type="Message" DestSocket="" Value="" />
+                <Event Name="squeeze_ghoul_hand_right_3" Time="0.3" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/forwards/hand_right_03" />
+                <Event Name="squeeze_ghoul_hand_right_4" Time="1.1" Direction="Forward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/forwards/hand_right_04" />
+                <Event Name="squeeze_ghoul_foot_right_1" Time="0.2" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/forwards/foot_right_01" />
+                <Event Name="squeeze_ghoul_foot_right_2" Time="0.5" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/forwards/foot_right_02" />
+                <Event Name="squeeze_ghoul_foot_right_3" Time="1.1" Direction="Forward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/forwards/foot_right_03" />
+                <Event Name="squeeze_ghoul_foot_left_1" Time="0.2" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/ghoul_squeeze/forwards/foot_left_01" />
+                <Event Name="squeeze_ghoul_foot_left_2" Time="1.5" Direction="Forward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/ghoul_squeeze/forwards/foot_left_02" />
+                <Event Name="squeeze_ghoul_body_1" Time="0" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_01" />
+                <Event Name="squeeze_ghoul_body_2" Time="0.2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_02" />
+                <Event Name="squeeze_ghoul_body_3" Time="0.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_03" />
+                <Event Name="squeeze_ghoul_body_4" Time="0.7" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_04" />
+                <Event Name="squeeze_ghoul_body_5" Time="1" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_05" />
+                <Event Name="squeeze_ghoul_body_6" Time="1.2" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_06" />
+                <Event Name="squeeze_ghoul_body_7" Time="1.5" Direction="Forward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/forwards/body_07" />
+                <Event Name="squeeze_ghoul_backwards_hand_right_1" Time="1.9" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/backwards/hand_right_01" />
+                <Event Name="squeeze_ghoul_backwards_hand_right_2" Time="1.8" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/backwards/hand_right_02" />
+                <Event Name="squeeze_ghoul_backwards_hand_right_3" Time="1.7" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/backwards/hand_right_03" />
+                <Event Name="squeeze_ghoul_backwards_hand_right_4" Time="1" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/backwards/hand_right_04" />
+                <Event Name="squeeze_ghoul_backwards_hand_right_5" Time="0.9" Direction="Backward" Type="PlaySound" DestSocket="R_Hand" Value="01_02_caves/anim/ghoul_squeeze/backwards/hand_right_05" />
+                <Event Name="squeeze_ghoul_backwards_foot_right_1" Time="1.7" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/backwards/foot_right_01" />
+                <Event Name="squeeze_ghoul_backwards_foot_right_2" Time="1" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/backwards/foot_right_02" />
+                <Event Name="squeeze_ghoul_backwards_foot_right_3" Time="0.4" Direction="Backward" Type="PlaySound" DestSocket="R_Foot" Value="01_02_caves/anim/ghoul_squeeze/backwards/foot_right_03" />
+                <Event Name="squeeze_ghoul_backwards_foot_left_1" Time="1.4" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/ghoul_squeeze/backwards/foot_left_01" />
+                <Event Name="squeeze_ghoul_backwards_foot_left_2" Time="0.4" Direction="Backward" Type="PlaySound" DestSocket="L_Foot" Value="01_02_caves/anim/ghoul_squeeze/backwards/foot_left_02" />
+                <Event Name="squeeze_ghoul_backwards_body_1" Time="1.96013" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_01" />
+                <Event Name="squeeze_ghoul_backwards_body_2" Time="1.7" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_02" />
+                <Event Name="squeeze_ghoul_backwards_body_3" Time="1.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_03" />
+                <Event Name="squeeze_ghoul_backwards_body_4" Time="1.2" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_04" />
+                <Event Name="squeeze_ghoul_backwards_body_5" Time="1" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_05" />
+                <Event Name="squeeze_ghoul_backwards_body_6" Time="0.7" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_06" />
+                <Event Name="squeeze_ghoul_backwards_body_7" Time="0.5" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_07" />
+                <Event Name="squeeze_ghoul_backwards_body_8" Time="0.2" Direction="Backward" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_squeeze/backwards/body_08" />
+            </Animation>
+            <Animation Name="tool_orb_draw" File="entities/character/player/player_body/animation/orb_equip_rarm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="tool_orb_holster" File="entities/character/player/player_body/animation/orb_holster_rarm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="tool_orb_idle" File="entities/character/player/player_body/animation/orb_idle_rarm.fbx" Layer="Default" Speed="1" />
+            <Animation Name="pick_up_and_look_at_orb" File="entities/character/player/player_body/animation/pick_up_and_look_at_orb.fbx" Layer="Default" Speed="1" />
+            <Animation Name="pick_up_orb_pedestal" File="entities/character/player/player_body/animation/pick_up_orb_pedestal.fbx" Layer="Default" Speed="1" />
+            <Animation Name="spooked_fall_back_permafail_ghoul_encounter" File="entities/character/player/player_body/animation/spooked_fall_back_permafail_ghoul_encounter.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_SpookedFall" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="01_02_caves/anim/ghoul_scare" />
+                <Event Name="LookAtHands" Time="3.27541" Direction="Forward" Type="Message" DestSocket="" Value="852" />
+            </Animation>
+            <Animation Name="tasi_first_time_amulet_equip" File="entities/character/player/player_body/animation/tasi_first_time_amulet_equip.fbx" Layer="FullBody" Speed="1">
+                <Event Name="Sound_AmuletPickup" Time="0" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="player/foley/animations/player/draw_holster/amulet_first_draw" />
+            </Animation>
+            <Animation Name="plane_stumble" File="entities/character/player/player_body/animation/plane_stumble.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="tool_amulet_run_start_idle" File="entities/character/player/player_body/animation/amulet_idle_to_lowered_rarm.fbx" Layer="RightArm" Speed="1">
+                <Event Name="Sound_AmuletHolster" Time="0" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="player/foley/animations/player/draw_holster/amulet_holster" />
+            </Animation>
+            <Animation Name="tool_amulet_run_loop_idle" File="entities/character/player/player_body/animation/amulet_lowered_loop_rarm.fbx" Layer="RightArm" Speed="1" />
+            <Animation Name="tool_amulet_run_end_idle" File="entities/character/player/player_body/animation/amulet_lowered_to_idle_rarm.fbx" Layer="RightArm" Speed="1">
+                <Event Name="Sound_AmuletDraw" Time="0" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="player/foley/animations/player/draw_holster/amulet_draw" />
+            </Animation>
+            <Animation Name="permafail_struggle1_low_start" File="entities/character/player/player_body/animation/permafail_struggle1_low_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_low_loop" File="entities/character/player/player_body/animation/permafail_struggle1_low_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_low_end" File="entities/character/player/player_body/animation/permafail_struggle1_low_end.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_start" File="entities/character/player/player_body/animation/permafail_struggle1_high_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_loop" File="entities/character/player/player_body/animation/permafail_struggle1_high_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_end" File="entities/character/player/player_body/animation/permafail_struggle1_high_end.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_low_crouch_start" File="entities/character/player/player_body/animation/permafail_struggle1_low_crouch_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_low_crouch_loop" File="entities/character/player/player_body/animation/permafail_struggle1_low_crouch_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_low_crouch_end" File="entities/character/player/player_body/animation/permafail_struggle1_low_crouch_end.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_crouch_start" File="entities/character/player/player_body/animation/permafail_struggle1_high_crouch_start.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_crouch_loop" File="entities/character/player/player_body/animation/permafail_struggle1_high_crouch_loop.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="permafail_struggle1_high_crouch_end" File="entities/character/player/player_body/animation/permafail_struggle1_high_crouch_end.fbx" Layer="FullBody" Speed="1" />
+            <Animation Name="player_swim" File="entities/character/player/player_body/animation/player_swim_slow_breaststroke.fbx" Layer="Default" Speed="1.2">
+                <Event Name="Sound_SwimSlowRight_1" Time="0.448505" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowRight_2" Time="2.66611" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowRight_3" Time="4.34053" Direction="Both" Type="PlaySound" DestSocket="R_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_1" Time="0.393688" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_2" Time="2.72591" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+                <Event Name="Sound_SwimSlowLeft_3" Time="4.33555" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
+            </Animation>
+        </Animations>
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Prop_PlayerBody">
+        <Var ObjectId="4294967295" Name="Health" Value="1.0" />
+        <Var ObjectId="4294967295" Name="Toughness" Value="0" />
+        <Var ObjectId="4294967295" Name="MaxInteractDistance" Value="0" />
+        <Var ObjectId="4294967295" Name="EventTag" Value="" />
+        <Var ObjectId="4294967295" Name="ShowHints" Value="true" />
+        <Var ObjectId="4294967295" Name="LifeLength" Value="0" />
+        <Var ObjectId="4294967295" Name="DissolveDuringLifeDecrease" Value="true" />
+        <Var ObjectId="4294967295" Name="QuickSave" Value="false" />
+        <Var ObjectId="4294967295" Name="FullGameSave" Value="false" />
+        <Var ObjectId="4294967295" Name="BlocksLineOfSight" Value="MaterialBased" />
+        <Var ObjectId="4294967295" Name="MainPhysicsBody" Value="" />
+        <Var ObjectId="4294967295" Name="NoGravityWhenUnderwater" Value="false" />
+        <Var ObjectId="4294967295" Name="DisableFreezeAtStart" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="" />
+        <Var ObjectId="4294967295" Name="ShowMesh" Value="true" />
+        <Var ObjectId="4294967295" Name="DissolveOnDestruction" Value="false" />
+        <Var ObjectId="4294967295" Name="DissolveTime" Value="1.0" />
+        <Var ObjectId="4294967295" Name="RandomizeAnimationStart" Value="true" />
+        <Var ObjectId="4294967295" Name="RootMotionBone" Value="j_Root" />
+        <Var ObjectId="4294967295" Name="EffectsOnSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOffSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOnTime" Value="2" />
+        <Var ObjectId="4294967295" Name="EffectsOffTime" Value="1" />
+        <Var ObjectId="4294967295" Name="StaticMoveCheckCollision" Value="false" />
+        <Var ObjectId="4294967295" Name="StaticMoveStartSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveStopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSoundFade" Value="true" />
+        <Var ObjectId="4294967295" Name="BreakActive" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomBreakBehaviour" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakOnlyOnMainBody" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakDestroyJoints" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakMinEnergy" Value="100" />
+        <Var ObjectId="4294967295" Name="BreakEntity" Value="" />
+        <Var ObjectId="4294967295" Name="BreakEntityAlignBody" Value="" />
+        <Var ObjectId="4294967295" Name="BreakSound" Value="" />
+        <Var ObjectId="4294967295" Name="BreakParticleSystem" Value="" />
+        <Var ObjectId="4294967295" Name="BreakImpulse" Value="4" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawSoftLimit" Value="70" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawHardLimit" Value="95" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawSoftLimit_Crouch" Value="25" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawHardLimit_Crouch" Value="45" />
+        <Var ObjectId="4294967295" Name="PlayerBody_MinRunSpeed" Value="3" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawBones" Value="j_Spine_1 j_Spine_2 j_Spine_3 j_Spine_4" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawBoneWeights" Value="0.1 0.25 0.3 0.35" />
+        <Var ObjectId="4294967295" Name="PlayerBody_YawBoneAxes" Value="0 1 0" />
+        <Var ObjectId="4294967295" Name="PlayerBody_PitchBones" Value="j_Neck j_Head" />
+        <Var ObjectId="4294967295" Name="PlayerBody_PitchBoneWeights" Value="0.35 0.55" />
+        <Var ObjectId="4294967295" Name="PlayerBody_PitchBoneAxes" Value="0 1 0" />
+        <Var ObjectId="4294967295" Name="PlayerBody_ShakeBones" Value="j_Spine_1 j_Spine_2 j_Spine_3 j_Spine_4" />
+        <Var ObjectId="4294967295" Name="PlayerBody_ShakeBoneWeights" Value="0.1 0.3 0.5 0.1" />
+        <Var ObjectId="4294967295" Name="PlayerBody_ShakeBoneAxes" Value="0 1 1" />
+        <Var ObjectId="4294967295" Name="PlayerBody_LeftArmControlBone" Value="j_L_Arm_Assist" />
+        <Var ObjectId="4294967295" Name="PlayerBody_LeftArmPitchAxis" Value="1 0 0" />
+        <Var ObjectId="4294967295" Name="PlayerBody_LeftArmYawAxis" Value="0 1 0" />
+        <Var ObjectId="4294967295" Name="PlayerBody_RightArmControlBone" Value="j_R_Arm_Assist" />
+        <Var ObjectId="4294967295" Name="PlayerBody_RightArmPitchAxis" Value="-1 0 0" />
+        <Var ObjectId="4294967295" Name="PlayerBody_RightArmYawAxis" Value="0 -1 0" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_Idle" Value="idle_stand" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_Walk_Base" Value="walk" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_CrouchWalk_Base" Value="crouch" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_Run_Base" Value="run" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_TurnRight" Value="stand_turn_right" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_TurnLeft" Value="stand_turn_left" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_CrouchIdle" Value="crouch_idle" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_CrouchTurnRight" Value="crouch_turn_right" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_CrouchTurnLeft" Value="crouch_turn_left" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_StandToCrouch" Value="idle_stand_tr_crouch" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_CrouchToStand" Value="crouch_tr_idle_stand" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_JumpLaunch" Value="jump_launch" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_JumpFall" Value="jump_fall" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_JumpLand" Value="jump_land" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_PermafailWakeUpAnims" Value="wake_up_from_permafail wake_up_from_permafail_var1 wake_up_from_permafail_var3" />
+        <Var ObjectId="4294967295" Name="PlayerBodyAnim_PermafailCrouchWakeUpAnims" Value="wake_up_from_permafail_crouched wake_up_from_permafail_var1_crouched wake_up_from_permafail_var3_crouched" />
+        <Var ObjectId="4294967295" Name="FootPlacement_AlignPelvis" Value="true" />
+        <Var ObjectId="4294967295" Name="FootPlacement_MaxPelvisAlign" Value="0.5" />
+        <Var ObjectId="4294967295" Name="FootPlacement_AlignToes" Value="false" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FootDepth" Value="0.4" />
+        <Var ObjectId="4294967295" Name="FootPlacement_MaxFootHeight" Value="0.35" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FadeSpeed" Value="4" />
+        <Var ObjectId="4294967295" Name="FootPlacement_LeftFoot" Value="j_L_Foot j_L_Leg_3 j_L_Leg_1" />
+        <Var ObjectId="4294967295" Name="FootPlacement_RightFoot" Value="j_R_Foot j_R_Leg_3 j_R_Leg_1" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FrontLeftFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FrontRightFoot" Value="" />
+        <Var ObjectId="4294967295" Name="FootPlacement_FootOffset" Value="0 0.1 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_FadeSpeed" Value="4.0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_MaxAngleToTarget" Value="360" />
+        <Var ObjectId="4294967295" Name="HandPlacement_LeftHand" Value="j_L_Wrist j_L_Arm_3  j_L_Arm_1" />
+        <Var ObjectId="4294967295" Name="HandPlacement_LeftHandOffset" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_LeftHandRotation" Value="0 0 90" />
+        <Var ObjectId="4294967295" Name="HandPlacement_LeftHandTwist" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_LeftHandTest" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_RightHand" Value="j_R_Wrist j_R_Arm_3 j_R_Arm_1" />
+        <Var ObjectId="4294967295" Name="HandPlacement_RightHandOffset" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_RightHandRotation" Value="0 0 -90" />
+        <Var ObjectId="4294967295" Name="HandPlacement_RightHandTwist" Value="90 0 0" />
+        <Var ObjectId="4294967295" Name="HandPlacement_RightHandTest" Value="90 0 0" />
+    </UserDefinedVariables>
+</Entity>

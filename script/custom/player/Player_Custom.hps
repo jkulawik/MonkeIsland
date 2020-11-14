@@ -1,0 +1,2335 @@
+#include "player/Player.hps"
+#include "custom/player/PlayerTypes_Custom.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "helpers/helper_modules.hps"
+#include "custom/helpers/helper_items.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "helpers/helper_effects_custom.hps"
+#include "utilities/Utility_PickBasics.hps"
+
+//------------------------------------------------------------
+
+/////////////////////////////////////////
+// Custom Player
+/////////////////////////////////////////
+// This overrides the built-in cScrPlayer in Player.hps
+// So it's a good place to hook in to do your own game-specific behaviour.
+// A good strategy for simple additionas is to implement an empty method in 
+// cScrPlayer and override it here.
+
+//------------------------------------------------------------
+
+// This is just a demo really. :-)
+const tString gsFootstepParticle = "";
+
+// Sand movement
+float gfGroundFriction_Default = 6;
+float gfGroundFriction_OnSand = 15;
+
+const float gfMapDeepShadowDefault=0.35f;
+
+const float gfLookAccelerationSpeedReduction = 0.75f; // Higher value means mouse movement adds less to velocity
+const float gfLookAccelerationDrag = 4.0f; // Controls how quickly the mouse velocity goes back to 0. Higher = faster.
+
+const float gfVertigoMinDist = 15.f;
+const float gfVertigoFovAdd = 0.2f;
+const float gfVertigoMaxPitch = (-50.0f / 360.0f) * cMath_PiMul2;
+
+const float gfWaterHidingOxygenMax = 15.f;
+const float gfWaterHidingOxygenMin = 7.5f;
+
+const float gfBabyCheckDelay = 0.4f;
+
+const float gfNightVisionActivationTime = 0.25f;
+const float gfNightVisionDeactivationTime = 0.5f;
+const cColor gNightVisionColor(0.2f, 0.2f, 0.325f, 1.0f);
+const float gfNightVisionAgentRadiusMaxDist = 30.f;
+
+const float gfExertionMulFadeTime = 2.f;
+
+//------------------------------------------------------------
+
+class cScrPlayerCustom : cScrPlayer
+{
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap@ apMap) override
+	{
+		cScrPlayer::PreloadData(apMap);
+		
+		if (gsFootstepParticle!="")
+			apMap.PreloadParticleSystem(gsFootstepParticle);
+		
+		apMap.PreloadParticleSystem("underwater.ps");
+			
+		apMap.PreloadMaterial("player_damage_screen_minor.mat");
+		apMap.PreloadMaterial("player_damage_screen_major.mat");
+		apMap.PreloadMaterial("vignette_screen_strong.mat");
+		apMap.PreloadMaterial("vignette_screen_strongest.mat");
+	}
+	
+	//------------------------------------------------------------
+	
+	void Init() override
+	{
+		cScrPlayer::Init();
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset() override
+	{
+		cScrPlayer::Reset();
+		
+		mbSliding_Active = false;
+		mbSliding_SandOnly = true;
+		mfSliding_AngleThreshold = 45.f;
+		mfPregnancyExertion_Count = 0.f;
+		mfPregnancyExertion_Mul = 1.f;
+		mlPregnancyExertion_AnimStage = -1;
+		mfPregnancyExertion_AnimCount = 0.f;
+		mbPregnancyExertion_Active = true;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount) override
+	{
+		////////////////////////////////////
+		// Look acceleration
+		if(alAnalogId == eAnalogType_Look && mfLookAcceleration > 0)
+		{
+			float fLookSpeedMul = mfLookSpeedMul;
+			float fAccMul = (1.0f - gfLookAccelerationSpeedReduction * cMath_Easing(eEasing_QuartOut, mfLookAcceleration));
+			
+			mvLookVelocity += avAmount*-1*fLookSpeedMul * fAccMul;
+			return;
+		}
+		
+		cScrPlayer::OnAnalogInput(alAnalogId, avAmount);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAP
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		cScrPlayer::OnMapEnter(apMap);
+
+		mfMapDeepShadow = gfMapDeepShadowDefault;
+		ResetNightVision();
+		
+		// TODO: Move these!!
+		mBaseObj.SetCanDie(false);
+		mBaseObj.SetHealth(0.f);
+		
+		// TODO: Fix this with the new health thingies
+		// Commented out this since the player moves too slow since zero health is default, 
+		// might want to change this depending on fear instead
+		mbHealthSpeedMulActive = false;
+		mbHealthRegen_Active = true;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		cScrPlayer::OnMapLeave(apMap);
+		
+		// Make sure player lights are considered off
+		_Global_LanternOff();
+ 	}
+	
+	//------------------------------------------------------------
+	
+	void CreateWorldEntities(cLuxMap@ apMap)
+	{
+		cScrPlayer::CreateWorldEntities(apMap);
+		CreateWaterHidingLight(apMap);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep) override
+	{
+		UpdateOnSandCheck();
+		cScrPlayer::Update(afTimeStep);
+		UpdateVertigo(afTimeStep);	
+		UpdateSliding(afTimeStep);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool mbStopVoiceUnderwater = true;
+	
+	void VariableUpdate(float afTimeStep) override
+	{
+		UpdateLookAcceleration(afTimeStep);
+		cScrPlayer::VariableUpdate(afTimeStep);
+		
+		UpdateLightSwitchCounter(afTimeStep);
+		UpdateHealth(afTimeStep);
+		UpdateNightVision(afTimeStep);
+		UpdateWaterHiding(afTimeStep);
+		UpdateCheckBaby(afTimeStep);
+		UpdateDisorientEffect(afTimeStep);
+		UpdatePregnancyExertion(afTimeStep);
+
+		////////////////////////////
+		// Stop player voice scenes if player is underwater
+		bool bShouldStopVoiceFromStates = true;
+		
+		//// Shouldn't stop if it's a cutscene
+		if( mBaseObj.GetCurrentStateId() == ePlayerState_CutsceneAnimation ||
+			mBaseObj.GetCurrentStateId() == ePlayerState_InteractiveCutsceneAnimation ||
+			mBaseObj.GetCurrentStateId() == ePlayerState_InteractiveCameraAnimation)
+			bShouldStopVoiceFromStates = false;
+		
+		// if bShouldStopVoiceFromStates is false then we know that we're in some sort of cutscene stuff
+		if(mbStopVoiceUnderwater == true && bShouldStopVoiceFromStates == false) 
+		{
+			bShouldStopVoiceFromStates = true;
+		}
+		
+		//if(mbStopVoiceUnderwater == false)
+		//	bShouldStopVoiceFromStates = false;
+		
+		bool bPlayerSpeaking = Voice_CharacterIsSpeaking("Player");
+	
+		if( mBaseObj.IsInLiquid() &&
+			bShouldStopVoiceFromStates &&
+			Player_GetUnderwater() &&
+			bPlayerSpeaking)
+		{
+			Voice_StopScenesWithCharacter("Player");
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetMoveSpeedMul() override
+	{
+		cScrPlayer::_Global_GetMoveSpeedMul();
+		cScript_SetGlobalReturnFloat(cScript_GetGlobalReturnFloat() * mfHealthSpeedMul * mfWaterSpeedMul);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetTotalMoveSpeedMul() override
+	{
+		cScrPlayer::_Global_GetTotalMoveSpeedMul();
+		float fMul = cScript_GetGlobalReturnFloat();
+		
+		cScript_SetGlobalReturnFloat(fMul * mfHealthSpeedMul * mfWaterSpeedMul);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetRunSpeedMul() override
+	{
+		cScript_SetGlobalReturnFloat(mfRunSpeedMul*mfWaterRunSpeedMul*mfPregnancyExertion_Mul);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetHealthSpeedMulActive()
+	{
+		mbHealthSpeedMulActive = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetStopVoiceUnderwater()
+	{
+		cScript_SetGlobalReturnBool(mbStopVoiceUnderwater);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetStopVoiceUnderwater()
+	{
+		mbStopVoiceUnderwater = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	int mlBrokenItems = 0;
+	float mfGrabTimeStamp = -10000;
+	
+	void _Global_GetBrokenItems()
+	{
+		cScript_SetGlobalReturnInt(mlBrokenItems);
+	}
+	
+	void _Global_IncreaseBrokenItems()
+	{
+		if (mlBrokenItems < 20)
+			mlBrokenItems++;
+		else if (mlBrokenItems == 20)
+			Achievement_Unlock(eAchievement_Vandal);
+	}
+	//------------------------------------------------------------
+	
+	void _Global_SetGrabTimeStamp()
+	{
+		mfGrabTimeStamp = cEngine_GetGameTime();
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetTimeSinceGrabInteract()
+	{
+		float fTime = 0;
+		if (mBaseObj.GetCurrentStateId() != ePlayerState_Grab)
+		{
+			fTime = float(cEngine_GetGameTime()-mfGrabTimeStamp);
+		}
+		cScript_SetGlobalReturnFloat(fTime);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HEALTH
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbHealthSpeedMulActive = true;
+	float mfHealthSpeedMul = 1.0f;
+	
+	bool mbHealthRegen_Active = true;
+	//float mfHealthRegen_cap = 0.f;
+	int mlHealthRegen_ScreenId = -1;
+	//float mfHealthRegen_PrevHealth = 1.f;
+	float mfHealthRegen_TimeSinceDamage = 999999.f;
+		
+	//------------------------------------------------------------
+	
+	void UpdateHealth(float afTimeStep)
+	{
+		float fHealth = mBaseObj.GetHealth();
+
+		///////////////////////
+		// Health speed mul
+	
+		if (mbHealthSpeedMulActive && fHealth < 0.45f)
+		{
+			mfHealthSpeedMul = 0.5f+(fHealth/0.45f)*0.5f;
+		}
+		else 
+		{
+			mfHealthSpeedMul = 1.0f;
+		}
+		
+		///////////////////////
+		// Create screen effect if hurt
+		// TODO: Commented out this since everything would be red all of the time when health is zero which is default
+		//if (fHealth < 1.f && mlHealthRegen_ScreenId == -1)
+		//{
+			//float fAspect = mBaseObj.GetCamera().GetAspect();
+			//float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
+			//mlHealthRegen_ScreenId = Effect_Screen_Start("player_health_screen.mat", cVector2f(0.5f, 0.5f), cVector2f(fBaseSize * fAspect, fBaseSize));
+		//}
+			
+		if (mfHealthRegen_TimeSinceDamage < 999999.f)
+			mfHealthRegen_TimeSinceDamage += afTimeStep;
+		
+		//////////////////////////
+		// Fear Based Health Regen
+		int lState = mBaseObj.GetCurrentStateId();
+		bool bStateOK = lState != ePlayerState_Dead &&
+						lState != ePlayerState_Custom_Struggle && 
+						lState != ePlayerState_Custom_ReadMemoryCylinder;
+						
+		const float fTimeLimit = 60.f * 3.f;
+		bool bHealthOK = fHealth < 1.f && mfHealthRegen_TimeSinceDamage > fTimeLimit;
+		
+		if (bStateOK && bHealthOK && mbHealthRegen_Active)
+		{
+			float fHealthShield = (FearHandler_GetLevel() - 0.5f) / 0.5f;
+			fHealthShield = cMath_Clamp(fHealthShield, 0.f, 1.f);
+			mBaseObj.SetHealth(fHealthShield);
+		}
+		
+		///////////////////////
+		// Update screen effect
+		if (mlHealthRegen_ScreenId != -1)
+		{
+			float fAlpha = 1.f - cMath_Clamp(fHealth, 0.f, 1.f);
+			Effect_Screen_SetAlpha(mlHealthRegen_ScreenId, fAlpha * 0.3f);
+		}		
+	}
+	
+	//------------------------------------------------------------
+
+	void _Global_GetHealthRegenActive()
+	{
+		cScript_SetGlobalReturnBool(mbHealthRegen_Active);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetHealthRegenActive()
+	{
+		mbHealthRegen_Active = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DAMAGE EFFECTS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfDamage_MaxFearLevel = 1.f;
+	
+	//------------------------------------------------------------
+	
+	void _Global_GiveDamage()
+	{
+		float fAmount = cScript_GetGlobalArgFloat(0);
+		mfDamage_MaxFearLevel = cMath_Clamp(cScript_GetGlobalArgFloat(1), 0.f, 1.f);
+		int lType = cScript_GetGlobalArgInt(2);
+		
+		iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(cScript_GetGlobalArgString(3));
+		tID id = pEnt !is null ? pEnt.GetID() : tID_Invalid;
+		
+		mBaseObj.GiveDamage(fAmount, 0, lType, 0.f, id, -1);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnDamageTaken(float afAmount, int aType, tID a_idSource) override
+	{
+		if(Player_GetHealth() <= 0.f )
+		{
+			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
+			Death_Start("");
+			
+			return;
+		}
+		
+		////////////////
+		// Setup
+		tString sSource = "";
+		bool bDead = Player_IsDead();
+		bool bPlayerSpeaking = cLux_GetVoiceHandler().CharacterIsSpeaking("Player");
+		
+		if (aType != eDamageType_Fall && aType != eDamageType_FallBig)
+			mfHealthRegen_TimeSinceDamage = 0.f;
+		
+		////////////////
+		// Do effects		
+		if (aType == eDamageType_Fall || aType == eDamageType_FallBig)
+		{
+			sSource = "fall damage";
+			mfDamage_MaxFearLevel = 0.9f; // Don't allow permafailing from fall damage
+			
+			if (bDead == false)
+			{
+				Sound_PlayGui("player/vocalisations/hurt/player_pain_med", 1.0f, eSoundEntryType_GuiWorld);
+				
+				if (PlayerBody_IsActive() &&
+					aType == eDamageType_FallBig &&
+					mBaseObj.GetCurrentStateId() != ePlayerState_Custom_Struggle)
+				{
+					PlayerBody_PlayCutsceneAnimation("fall_and_get_up_quickly", false, 0.3f, "", 1.3f, 0.f, false, 0.f, 0.f);
+				}
+			}
+				
+		}
+		else
+		{			
+			if (bDead == false && bPlayerSpeaking)
+			{
+				tString sVocalization = "small";
+				if (afAmount >= 0.75) 		sVocalization = "big";
+				else if (afAmount >= 0.5)	sVocalization = "med";
+				
+				Sound_PlayGui("player/vocalisations/hurt/player_pain_"+ sVocalization + Player_GetReactionSoundSuffix(),1);
+			}
+		}
+
+		if (aType != eDamageType_Silent)
+		{
+			DoDamageScreenEffects(afAmount);
+			
+			tString sDamageSound = "player/foley/damage/player_hit";
+			if (aType == eDamageType_Guardian) sDamageSound = "player/foley/damage/player_shadow_hit";
+			Sound_PlayGui(sDamageSound, 1.0f, eSoundEntryType_GuiWorld);
+		}	
+		
+		////////////////
+		// Mod events
+		bool isAI = false;
+		iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByID(a_idSource);
+		if (pEnt !is null)
+		{
+			sSource = pEnt.GetName();
+			isAI = (pEnt.GetEntityType()==eLuxEntityType_Critter) || (pEnt.GetEntityType()==eLuxEntityType_Agent);
+		}
+			
+		if (!isAI)
+		{
+			cLux_AddDebugMessage("DAMAGE AMOUNT: "+afAmount);
+			if (afAmount>=0.5f)
+				ModEvent_Trigger(eModEvent_Hurt_Major);
+			else if (afAmount>=0.1f)
+				ModEvent_Trigger(eModEvent_Hurt_Minor);
+		}
+				
+		////////////////
+		// Add fear if any
+		if (Player_GetHealth() <= 0.f && afAmount > 0.f)
+		{			
+			float fFear = FearHandler_GetLevel();
+			float fTotalFear = fFear + afAmount;
+						
+			if (fFear <= mfDamage_MaxFearLevel)
+			{
+				if (fTotalFear > mfDamage_MaxFearLevel)
+					afAmount -= fTotalFear - mfDamage_MaxFearLevel;
+				
+				FearHandler_IncreaseLevel(afAmount, sSource, false, true);
+			}
+		}
+		
+		mfDamage_MaxFearLevel = 1.f;
+		
+		FearHandler_DoTentacleBoost();
+		
+		////////////////
+		// Map callback
+		cLuxMap @pMap = cLux_GetCurrentMap();
+		tString sFunc = "void OnDamageTaken(const tString&in, int)";
+		if (pMap.ScriptMethodExists(sFunc) && pMap.ScriptPrepare(sFunc))
+		{
+			pMap.SetArgString(0, sSource);
+			pMap.SetArgInt(1, aType);
+			if (pMap.ScriptExecute())
+			{
+				cLux_AddDebugMessage("Using OnDamageTaken(" + sSource + ", " + aType + ")");
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_DoDamageEffects()
+	{
+		float fAmount = cScript_GetGlobalArgFloat(0);
+		float FShake = cScript_GetGlobalArgFloat(1);
+		DoDamageScreenEffects(fAmount, FShake);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoDamageScreenEffects(float afAmount, float afShake = 0.05f)
+	{
+		/////////////////
+		// Screen effects
+		float fRumbleAmount = 0.7f;
+		float fRumbleTime = 0.5f;
+		if (afAmount > 0.3f)
+		{
+			fRumbleAmount = 0.9f;
+			fRumbleTime = 0.7f;
+			Effect_Screen_Start("player_damage_screen_major.mat", cVector2f(0.5, 0.52), cVector2f(1.75, 0.875), 1, 0, 0.25f, 3.f);
+		}
+		else
+		{
+			Effect_Screen_Start("player_damage_screen_minor.mat", cVector2f(0.5, 0.32), cVector2f(1.75, 0.5), 0.5, 0, 0.25f, 3.f);
+		}
+        
+		Effect_Rumble_Start(fRumbleAmount, fRumbleTime);
+		Effect_Shake_Start(afShake, 0.25, 0.05, 0.1f);
+        Effect_DollyZoom_Start(0.1f, 0.f, 0.15f, 1.5f);
+        Effect_ImageTrail_Start(1, 0, 0, 1);
+	}
+	
+	//------------------------------------------------------------
+	
+	float GetMinFallDamageHealth() override
+	{
+		return 0.f;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEATH
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnPlayerDead(int aType, const tString&in asSource) override
+	{
+		if (cLux_GetPlayer().IsActive() && cLux_GetPlayer().GetCanDie())
+		{            
+			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
+			Death_Start(asSource);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DRAWING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	void OnDraw(float afFrameTime) override
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	cUtility_PickBasics mPickBasics;
+	bool mbShowDisabledInteraction = false;
+	
+	//------------------------------------------------------------
+	
+	void OnGui(float afTimeStep) override
+	{
+		cScrPlayer::OnGui(afTimeStep);
+		
+		///////////////
+		// Draw crosshair
+		if(	mfCrosshairAlphaMul > 0.f &&
+			meCrossHairState != eCrossHairState_None &&
+			cLux_GetPlayer().IsActive() &&
+			cLux_GetGamePaused()==false &&
+			cLux_GetPlayer().GetCamera() is cLux_GetViewport().GetCamera() &&
+			cLux_GetHideCrosshair() == false)
+		{
+			tString sCross = "";
+			
+			///////////////
+			// Special behavior
+			if (mbUseNoHintsCursor && meCrossHairState != eCrossHairState_Default)
+			{
+				sCross = mvCrossHairGfx[eCrossHairState_NoHints];
+			}
+			else if (mbUseLargeDefaultCursor && meCrossHairState == eCrossHairState_Default)
+			{
+				sCross = mvCrossHairGfx[eCrossHairState_DefaultLarge];
+			}
+			else if (meCrossHairState == eCrossHairState_UseMatch && Player_IsHoldingMatch() == false)
+			{
+				sCross = mvCrossHairGfx[eCrossHairState_UseMatch_Unequipped];
+			}
+			else
+			{
+				sCross = mvCrossHairGfx[meCrossHairState];
+			}
+			
+			///////////////
+			// Equipped inventory item crosshair			
+			iScrItemHandler_Interface@ pHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+			float fCrosshairSizeMult = 1.0;
+			bool bItemCanBeUsed = false;
+			float fCrosshairAlpha = 1.f;
+			cColor crosshairColor = cColor(1,1,1,fCrosshairAlpha*mfCrosshairAlphaMul);	
+			
+			if (pHandler!=null)
+			{
+				tString sItem = pHandler.GetHeldItem(eItemHandlerHand_Right);
+				iScrItem@ pItem = pHandler.GetByID(sItem);
+				
+				if (pHandler.IsItemHeld(eItemHandlerHand_Right))
+				{		
+					///////////////
+					// If the item can be used on things
+					cCamera @pCam = mBaseObj.GetCamera();
+					if (pCam !is null && mPickBasics.UpdatePickCheck(pCam, true))
+						bItemCanBeUsed = pHandler.CanUseHeldItemOnWorld(eItemHandlerHand_Right, mPickBasics.GetFocusedEntity().GetName());
+						
+					// Only show crosshair if not holding, or holding and it can be used
+					if (bItemCanBeUsed || pItem.GetType().GetUsesArmAnimation() == false)
+					{
+						sCross = pItem.GetCrossHairGfx();
+						
+						if (sCross == "")
+							sCross = mvCrossHairGfx[eCrossHairState_UseOnWorld];
+						else
+							fCrosshairSizeMult = 0.35;
+							
+						if (bItemCanBeUsed == false)
+							crosshairColor = cColor(0.4, 0.4, 0.4);
+					}
+				}
+			}
+
+			///////////////
+			// Draw crosshair
+			if ( (meCrossHairState != eCrossHairState_Default  || gbDrawDefaultCrosshair) && sCross != "")
+			{
+				cImGuiGfx pCrossGfx = cImGuiGfx(sCross, eImGuiGfx_TextureTemporary);
+				
+				cVector3f vCrosshairPos = cVector3f(cLux_GetHudVirtualCenterSize().x/2, cLux_GetHudVirtualCenterSize().y/2, 0);
+				cVector2f vCrosshairSize = cLux_GetCurrentImGui().GetGfxSize(pCrossGfx) * fCrosshairSizeMult;
+				
+				// Draw Outline
+				if (bItemCanBeUsed)
+					DrawCrosshair(pCrossGfx, vCrosshairPos, vCrosshairSize * 1.05, cColor(20,20,20, 0.75));
+				
+				DrawCrosshair(pCrossGfx, vCrosshairPos, vCrosshairSize, crosshairColor);
+				
+				/////////////////////////////////////
+				// Draw counter for matches if needed
+				if (meCrossHairState == eCrossHairState_UseMatch && Player_IsHoldingMatch() == false)
+				{
+					//DrawStackCount(vCrosshairPos, vCrosshairSize, Matches_GetCount());
+					Item_ShowMatchCount(Matches_GetCount() == 0, false);
+				}
+			}
+		}
+		
+		//////////////////
+		// Draw debug menu
+		if(cLux_ScriptDebugOn() && cLux_HideDebugOutputOn()==false)
+		{
+			cVector3f vPos;
+			vPos.x = -cLux_GetHudVirtualOffset().x;
+			vPos.y = -cLux_GetHudVirtualOffset().y;
+			vPos.z = 0.0f;
+			
+			ImGui_SetTransCategory("");
+			
+			ImGui_GroupBegin(vPos, ImGui_GetSize());
+				
+			cImGuiLabelData labelData;
+			labelData.mColorBase = cColor(1.0f,1.0f,0.0f);
+			tString sText;
+			
+			if (cLux_GetGodModeActivated())
+				sText += "!!GOD!!";
+			else
+			{
+				sText += "Health: "+cString_ToString(Player_GetHealth(),3)+"  ";
+			}
+				
+			//sText += " Heat Mul: "+cString_ToString(Heat_GetHeatMul(),2) + "  ";
+
+			if (Heat_InShadow())
+				sText+= " IN SHADOW";
+			
+			sText += "  Light Level: "+cString_ToString(GetLightLevel(true),2) + "  ";
+			
+			sText += "  VisMul: "+cString_ToString(mfPlayerVisibilityMul,2) + "  ";
+			
+			sText += "  Fear: "+cString_ToString(FearHandler_GetLevel(),2) + "  ";
+			
+			sText += "  Fear Rate: "+cString_ToString(FearHandler_GetRate(),2) + "  ";
+			
+			sText += "  Ghoul Progression: "+cString_ToString(GhoulProgression_GetProgression(),2) + "  ";
+			
+			sText += "  Terror: "+cString_ToString(Terror_GetAmount(), 2) + "  ";
+			
+			ImGui_DoLabelExt(sText, labelData, cVector3f(190.0f,ImGui_GetSize().y-20.0f,100.0f), -1,1.0f);
+			ImGui_GroupEnd();
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void DrawCrosshair(cImGuiGfx @apCross, const cVector3f &in avPos, const cVector2f &in avSize, const cColor aColor = cColor_White)
+	{
+		//////////////////////////////////////////
+		// Don't draw while equip gui is animating
+		iScrItemHandler_Interface@ pHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		if (pHandler.GetIsPickupGuiAnimating()) return;
+		
+		////////////
+		// Crosshair
+		cVector3f vRenderPos = avPos;
+		vRenderPos.x -= avSize.x/2;
+		vRenderPos.y -= avSize.y/2;
+		ImGui_DrawGfx(apCross, vRenderPos, avSize, aColor);
+		
+		////////////////////////////
+		// Draw Disabled Interaction
+		int lState = mBaseObj.GetCurrentStateId();
+		bool bStateOK = mbShowDisabledInteraction || lState == ePlayerState_Custom_UsingRadio;
+		
+		if (bStateOK && meCrossHairState != eCrossHairState_Default)
+		{
+			cImGuiGfx pNoInteractIcon = cImGuiGfx("crosshair_cross");
+			
+			cVector2f vIconSize = cLux_GetCurrentImGui().GetGfxSize(pNoInteractIcon);
+			cVector3f vIconRenderPos = avPos;
+			vIconRenderPos.x -= vIconSize.x/2;
+			vIconRenderPos.y -= vIconSize.y/2;
+			vIconRenderPos.z = 0.01f;
+			
+			ImGui_DrawGfx(pNoInteractIcon, vIconRenderPos, vIconSize);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void DrawStackCount(const cVector3f&in avCrosshairPos, const cVector2f&in avCrosshairSize, int alCount)
+	{
+		iScrItemHandler_Interface@ pHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		if (pHandler.GetIsPickupGuiAnimating()) return;
+		
+		cVector2f vFontSize = 28;
+		cImGuiLabelData matchCounterLabel = ImGui_GetDefaultLabel();
+		matchCounterLabel.mFont.SetFile("architect_56.fnt");
+		matchCounterLabel.mFont.mvSize = vFontSize;
+		matchCounterLabel.mColorBase = cColor_White;
+		
+		cVector3f vLabelPos = avCrosshairPos+cVector3f(0, avCrosshairSize.y*0.5f-vFontSize.y, 0);
+		
+		tWString sStack = cResources_Translate("InventoryUI", "Stack");
+		tWString sOut = cString_ReplaceStringToW(sStack, tWString("%n"), cString_ToStringW(alCount,0));
+		ImGui_SetTextOverride(sOut);
+		cLux_GetCurrentImGui().DoLabel(_ImGui_GetTextString(""), matchCounterLabel, vLabelPos, cVector2f(100, vFontSize.y));
+		matchCounterLabel.mColorBase = cColor(0);
+		cLux_GetCurrentImGui().DoLabel(_ImGui_GetTextString(""), matchCounterLabel, vLabelPos+cVector3f(1.0f,1.0f,-1.0f), cVector2f(100, vFontSize.y));
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_ShowDisableInteractionCross()
+	{
+		mbShowDisabledInteraction = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ENVIRONMENT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	int mlFootstepPSID = 0;
+	
+	//------------------------------------------------------------
+		
+	void UpdateOnSandCheck()
+	{
+		iCharacterBody@ pCharBody = mBaseObj.GetCharacterBody();
+		
+		if(pCharBody.IsOnGround()==false)
+		{
+			SetOnSand(false, pCharBody);
+			return;
+		}
+		
+		iPhysicsMaterial @pGravityMat = pCharBody.GetGravityCollideMaterial();
+		if(pGravityMat is null || pGravityMat.GetSurfaceData()is null) return;
+		
+		SetOnSand(pGravityMat.GetSurfaceData().GetUserVar()=="Sand", pCharBody);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetOnSand(bool abOnSand, iCharacterBody@ apCharBody)
+	{
+		if (cScript_GetGlobalVarBool("PlayerOnSand") == abOnSand) return;
+		
+		//cLux_AddDebugMessage("SetOnSand "+abOnSand);
+		
+		cScript_SetGlobalVarBool("PlayerOnSand", abOnSand);
+		if (abOnSand)
+		{
+			apCharBody.SetGroundFriction(gfGroundFriction_OnSand);
+		}
+		else
+		{
+			apCharBody.SetGroundFriction(gfGroundFriction_Default);
+		}
+	}
+	
+	//------------------------------------------------------------
+		
+	void OnFootstep(const tString&in asMaterialName) override
+	{
+		if (gsFootstepParticle=="")
+			return;
+		
+		mlFootstepPSID++;
+		iCharacterBody @pCharBody = mBaseObj.GetCharacterBody();
+		cWorld@ pWorld = cLux_GetCurrentMap().GetWorld();
+		cParticleSystem @pPS = pWorld.CreateParticleSystem("footstepPS_"+mlFootstepPSID,
+			gsFootstepParticle, cVector3f(1), true, false);
+		if (pPS is null)
+		{
+			Error("Could not create footstep particles.");
+			return;
+		}
+		cVector3f particlePos = pCharBody.GetFeetPosition();
+		if (mlFootstepPSID%2==0)
+			particlePos+=cVector3f( -0.4, 0.2f, 0);
+		else
+			particlePos+=cVector3f( 0.4f, 0.2f, 0);
+			
+		pPS.SetPosition(particlePos);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// NIGHT VISION
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	///////////////////
+	// Settings
+	bool mbNightVision_Enabled = true;		
+	bool mbNightVision_Active = false;
+	bool mbNightVision_Force = false;
+	bool mbNightVision_IgnoreFearArea = false;
+	float mfNightVision_Count = 0.0f;
+	float mfNightVision_LightLevelCheckCount = 0.0f;
+	float mfNightVision_Mul = 0.0f;
+	float mfNightVision_Strength = 1.0f;
+	float mfNightVision_StrengthGoal = 1.0f;
+	float mfNightVision_StrengthFadeSpeed = 1.0f;
+	float mfNightVision_RadiusMin = 2.0f;
+	float mfNightVision_RadiusMax = 5.0f;
+	float mfNightVision_DefaultRadiusMax = 5.0f;
+	float mfNightVision_AgentRadiusAdd = 2.0f;
+	float mfNightVision_Brightness = 2.0f;
+	float mfNightVision_Falloff = 0.75f;
+	float mfNightVision_LightLevel = 1.0f;
+	int mlNightVision_ActivationFrame = 0;
+	
+	float mfMapDeepShadow = gfMapDeepShadowDefault;
+	
+	//------------------------------------------------------------
+	
+	void ResetNightVision()
+	{
+		mbNightVision_Enabled = true;
+		mbNightVision_Active = false;
+		mbNightVision_Force = false;
+		mbNightVision_IgnoreFearArea = false;
+		mfNightVision_Mul = 0.0f;
+		mfNightVision_Strength = 1.0f;
+		mfNightVision_StrengthGoal = 1.0f;
+		mfNightVision_StrengthFadeSpeed = 1.0f;
+		mfNightVision_LightLevelCheckCount= 0.0f;
+		mfNightVision_RadiusMin = 2.0f;
+		mfNightVision_RadiusMax = 5.0f;
+		mfNightVision_DefaultRadiusMax = 5.0f;
+		mfNightVision_AgentRadiusAdd = 2.0f;
+		mfNightVision_Brightness = 2.0f;
+		mfNightVision_Falloff = 0.75f;
+		mfNightVision_LightLevel = 1.0f;
+		mlNightVision_ActivationFrame = 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateNightVision(float afTimeStep)
+	{
+		if (mlNightVision_ActivationFrame < 2) ++mlNightVision_ActivationFrame;
+		
+		///////////////////
+		// Setup vars
+		cCamera@ pCam = mBaseObj.GetCamera();
+		iCharacterBody@ pBody = mBaseObj.GetCharacterBody();
+		
+		///////////////////
+		// Should activate?
+		bool bInShadow = mfNightVision_LightLevel < mfMapDeepShadow;
+		
+		mfNightVision_LightLevelCheckCount -= afTimeStep;
+		if (mfNightVision_LightLevelCheckCount <= 0.f)
+		{
+			mfNightVision_LightLevelCheckCount = cMath_RandRectf(0.25f, 0.30f);
+			
+			mfNightVision_LightLevel = GetLightLevel(true);
+			bInShadow = mfNightVision_LightLevel < mfMapDeepShadow;
+			
+			if (bInShadow == false)
+			{
+				// Do another check slightly in front of the player
+				float fDist = 0.f;
+				float fMaxDist = 1.25f;
+				cVector3f vNrm = 0.f;
+				cLux_GetClosestBody(pCam.GetPosition(), pBody.GetForward(), fMaxDist, fDist, vNrm);
+							
+				cVector3f vPos = pCam.GetPosition() + pBody.GetForward() * cMath_Min(fMaxDist, fDist);
+				mfNightVision_LightLevel = cMath_Min(mfNightVision_LightLevel, GetLightLevelAtPosWithoutIgnoredLights(vPos, 0.25f));
+				bInShadow = mfNightVision_LightLevel < mfMapDeepShadow;
+			}
+		}
+		
+		bool bAgentNearby = false;
+		if (Blackboard_GetAgentCount() > 0)
+		{
+			tID idAgent = Blackboard_GetClosestAgent(pBody.GetPosition());
+			cLuxAgent@ pAgent = cLux_ID_Agent(idAgent);
+						
+			if (pAgent !is null)
+			{
+				float fDistSqr = (pAgent.GetCharBody().GetPosition() - pBody.GetPosition()).SqrLength();
+				if (fDistSqr <= gfNightVisionAgentRadiusMaxDist * gfNightVisionAgentRadiusMaxDist)
+					bAgentNearby = true;
+			}
+		}
+						
+		bool bInDarknessFearArea = mbNightVision_IgnoreFearArea ? true : FearHandler_IsInDarknessArea() || bAgentNearby;
+		bool bShouldActivate = (bInDarknessFearArea && bInShadow) || mbNightVision_Force;
+
+		///////////////////
+		// Activate
+		if (mbNightVision_Active == false)
+		{
+			if (bShouldActivate) 
+			{
+				mfNightVision_Count += afTimeStep;
+
+				float fActivationTime = gfNightVisionActivationTime;
+				if (mbWaterHiding_Submerged)
+					fActivationTime *= 0.15f;
+					
+				if (mfNightVision_Count >= fActivationTime || mlNightVision_ActivationFrame == 1)
+				{
+					mbNightVision_Active = true;
+					mfNightVision_Count = 0.0f;
+					if (mlNightVision_ActivationFrame == 1) mfNightVision_Mul = 1;
+				}
+			}
+			else
+			{
+				mfNightVision_Count = 0.0f;
+			}
+		}
+		
+		///////////////////
+		// Deactivate
+		else
+		{
+			if ((bInShadow == false || bInDarknessFearArea == false) && mbNightVision_Force == false)
+			{
+				mfNightVision_Count += mbLanternOn ? 4.0f * afTimeStep : afTimeStep;
+				if (mfNightVision_Count >= gfNightVisionDeactivationTime)
+				{
+					mbNightVision_Active = false;
+					mfNightVision_Count = 0.0f;
+				}
+			}
+			else
+			{
+				mfNightVision_Count = 0.0f;
+			}
+		}
+		
+		///////////////////
+		// Fade radius
+		float fRadiusGoal = mfNightVision_DefaultRadiusMax;
+		
+		// Bigger radius if an agent is nearby
+		if (bAgentNearby) fRadiusGoal += mfNightVision_AgentRadiusAdd;;
+			
+		mfNightVision_RadiusMax = cMath_IncreaseTo(mfNightVision_RadiusMax, (1.f / 2.f) * afTimeStep, fRadiusGoal);
+		
+		///////////////////
+		// Fade mul
+		float fMulGoal = 0.f;
+		float fMulSpeed = 1.f / 2.5f;
+		
+		if (mbNightVision_Enabled && mbNightVision_Active)
+		{
+			fMulGoal = 1.f;
+			fMulSpeed = 1.f / 2.f;
+		}
+		
+		if (mbWaterHiding_Submerged)
+			fMulSpeed *= 2.5f;
+		
+		mfNightVision_Mul = cMath_IncreaseTo(mfNightVision_Mul, fMulSpeed * afTimeStep, fMulGoal);
+		
+		///////////////////
+		// Fade strength
+		mfNightVision_Strength = cMath_IncreaseTo(mfNightVision_Strength, afTimeStep * mfNightVision_StrengthFadeSpeed, mfNightVision_StrengthGoal);
+		
+		///////////////////
+		// Apply values
+		Map_SetNightVision(gNightVisionColor,
+						   mfNightVision_Brightness * mfNightVision_Mul * mfNightVision_Strength,
+						   mfNightVision_RadiusMin * mfNightVision_Mul * mfNightVision_Strength,
+						   mfNightVision_RadiusMax * mfNightVision_Mul * mfNightVision_Strength,
+						   mfNightVision_Falloff);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionEnabled()
+	{
+		mbNightVision_Enabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionStrength()
+	{
+		mfNightVision_Strength = cScript_GetGlobalArgFloat(0);
+		mfNightVision_StrengthGoal = mfNightVision_Strength;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FadeNightVisionStrength()
+	{
+		mfNightVision_StrengthGoal = cScript_GetGlobalArgFloat(0);
+		float fTime = cScript_GetGlobalArgFloat(1);
+		
+		mfNightVision_StrengthFadeSpeed = cMath_Abs(mfNightVision_Strength-mfNightVision_StrengthGoal)/cMath_Max(0.000001f, fTime);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetForceNightVision()
+	{
+		mbNightVision_Force = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetMapDeepShadow()
+	{
+		mfMapDeepShadow = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetMapDeepShadow()
+	{
+		cScript_SetGlobalReturnFloat(mfMapDeepShadow);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_IsInShadow()
+	{
+		cScript_SetGlobalReturnBool(GetLightLevel(true) < mfMapDeepShadow);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionIgnoreFearArea()
+	{
+		mbNightVision_IgnoreFearArea = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionBrightness()
+	{
+		mfNightVision_Brightness = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetNightVisionBrightness()
+	{
+		cScript_SetGlobalReturnFloat(mfNightVision_Brightness);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionRadius()
+	{
+		mfNightVision_DefaultRadiusMax = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetNightVisionAgentRadiusAdd()
+	{
+		mfNightVision_AgentRadiusAdd = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_IsNightVisionActive()
+	{
+		cScript_SetGlobalReturnBool(mbNightVision_Active);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetNightVisionRadiusMax()
+	{
+		cScript_SetGlobalReturnFloat(mfNightVision_RadiusMax);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// WATER HIDING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfWaterSpeedMul = 1.f;
+	float mfWaterRunSpeedMul = 1.f;
+	
+	bool mbWaterHiding_Submerged = false;
+	bool mbWaterHiding_EquipLanternOnEmerge = false;
+	float mfWaterHiding_OxygenCount = 15.f;
+	float mfWaterHiding_ForcedEmergeCount = 0.f;
+	float mfWaterHiding_LightBrightness = 1.f;
+	int mlWaterHiding_PrevUsedLiquidAreaNum = -1;
+	int mlWaterHiding_FeedbackStage = 0;
+	int mlWaterHiding_ScreenId = -1;
+	int mlWaterHiding_DofId = -1;	
+	cColor mWaterHiding_LightColor = cColor(0.f);
+	[nosave] tID m_idWaterHiding_Light = tID_Invalid;
+	
+	//------------------------------------------------------------
+	
+	void CreateWaterHidingLight(cLuxMap@ apMap)
+	{
+		cLightPoint@ pLight = apMap.GetWorld().CreateLightPoint("WaterHidingLight", "", false);
+		
+		pLight.SetDiffuseColor(mWaterHiding_LightColor);
+		pLight.SetBrightness(mfWaterHiding_LightBrightness);
+		pLight.SetRadius(7.f);
+		pLight.SetFalloffPow(0.8f);
+		pLight.SetScriptableIsSaved(false);
+		
+		m_idWaterHiding_Light = pLight.GetID();
+		mvPlayerLights.push_back(m_idWaterHiding_Light);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnUnderwaterEffectActive(bool abX, bool abUseStartAndEndEffects) override
+	{
+		/////////////////////////
+		// Setup vars
+		mbWaterHiding_Submerged = mBaseObj.GetUsedLiquidAreaNum() == 0 ? false : abX;
+		
+		int lState = mBaseObj.GetCurrentStateId();
+		bool bDoEffects = lState != ePlayerState_Dead &&
+						  lState != ePlayerState_Custom_PermaFail &&
+						  lState != ePlayerState_CutsceneAnimation &&
+						  FearHandler_GetIsPermaFailing() == false;
+		
+		/////////////////////////
+		// Submerge
+		if (mbWaterHiding_Submerged)
+		{
+			mbWaterHiding_EquipLanternOnEmerge = Item_IsLightSourceActive() && Item_GetHeldType(eItemHandlerHand_Left) == "Lantern";
+			
+			Item_PutAway(eItemHandlerHand_Right);
+			Item_PutAway(eItemHandlerHand_Left);
+		
+			///////////////////////
+			// Effects				
+			Sound_CreateAtEntity("Sound_WaterHiding_Submerge","player/footsteps/default/water_sweet/water_submerge", "player");
+			Sound_Stop("Sound_WaterHiding_GetOxygen", 0.05f);
+			
+			if (mfWaterHiding_OxygenCount <= gfWaterHidingOxygenMin && bDoEffects)
+				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "player/vocalisations/underwater/underwater_breath_low", "player");
+			
+			FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.15f, -1.f, false);
+			
+			///////////////////////
+			// Send message to agents
+			array<iLuxEntity@> vAgents;
+			cLux_GetCurrentMap().GetEntityArray("*", eLuxEntityType_Agent, "", vAgents);
+			for (int i = 0; i < vAgents.size(); i++)
+				vAgents[i].BroadcastMessage(eCustomEntityMessage_PlayerSubmerged, null, cVector3f(0), 0);
+		
+			///////////////////////
+			// Map callback
+			cLuxMap@ pMap = cLux_GetCurrentMap();
+			tString sCallback = "void OnPlayerSubmerge()";
+			if (pMap.ScriptMethodExists(sCallback) && pMap.ScriptPrepare(sCallback))
+				pMap.ScriptExecute();
+		}
+		/////////////////////////
+		// Emerge
+		else
+		{
+			int lCurrentState = cLux_GetPlayer().GetCurrentStateId();
+			
+			if (mbWaterHiding_EquipLanternOnEmerge && 
+				(lCurrentState != ePlayerState_CutsceneAnimation && lCurrentState != ePlayerState_InteractiveCutsceneAnimation))
+				Item_Equip(ItemType_GetFirstInInventory("Lantern"));
+			
+			///////////////////////
+			// Effects		
+			mlWaterHiding_FeedbackStage = 1;
+			tString sEmergeSound = "player/vocalisations/underwater/underwater_exit_low";
+			
+			if (mfWaterHiding_OxygenCount < gfWaterHidingOxygenMin)
+			{
+				mlWaterHiding_FeedbackStage = 0;
+				sEmergeSound = "player/vocalisations/underwater/underwater_exit_high";
+			}
+			
+			if (bDoEffects)
+				Sound_CreateAtEntity("Sound_WaterHiding_Emerge", sEmergeSound, "player");
+			
+			Sound_Stop("Sound_WaterHiding_OutOfOxygen", 0.2f);
+			
+			if (ParticleSystem_Exists("PS_WaterHiding_Bubbles"))
+			{
+				ParticleSystem_SetVisible("PS_WaterHiding_Bubbles", false);
+				ParticleSystem_Destroy("PS_WaterHiding_Bubbles");
+			}		
+			
+			mfWaterHiding_OxygenCount = cMath_Max(mfWaterHiding_OxygenCount, gfWaterHidingOxygenMin);
+			
+			if (mlWaterHiding_DofId != -1)
+				Effect_DoF_FadeOut(mlWaterHiding_DofId, 0.1f);
+			if (mlWaterHiding_ScreenId != -1)
+				Effect_Screen_FadeOut(mlWaterHiding_ScreenId, 0.5f);
+			
+			mlWaterHiding_DofId = -1;
+			mlWaterHiding_ScreenId = -1;
+				
+			FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.f, -1.f, false);
+			
+			///////////////////////
+			// Send message to agents
+			array<iLuxEntity@> vAgents;
+			cLux_GetCurrentMap().GetEntityArray("*", eLuxEntityType_Agent, "", vAgents);
+			for (int i = 0; i < vAgents.size(); i++)
+				vAgents[i].BroadcastMessage(eCustomEntityMessage_PlayerEmerged, null, cVector3f(0), 0);
+		
+			///////////////////////
+			// Map callback
+			cLuxMap@ pMap = cLux_GetCurrentMap();
+			tString sCallback = "void OnPlayerEmerge()";
+			if (pMap.ScriptMethodExists(sCallback) && pMap.ScriptPrepare(sCallback))
+				pMap.ScriptExecute();
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateWaterHiding(float afTimeStep)
+	{
+		WaterHiding_UpdateLightColor(afTimeStep);
+		
+		////////////////////////////
+		// Reset if dead or in an anim
+		int lState = cLux_GetPlayer().GetCurrentStateId();
+		if (cLux_GetPlayer().IsActive() == false ||
+			FearHandler_GetIsPermaFailing() ||
+			lState == ePlayerState_Dead ||
+			lState == ePlayerState_Custom_PermaFail ||
+			lState == ePlayerState_CutsceneAnimation ||
+			lState == ePlayerState_InteractiveCutsceneAnimation)
+		{		
+			return;
+		}
+		
+		////////////////////////////
+		// Update player speed
+		float fWaterSpeedMulTar = 1.f;
+		float fWaterRunSpeedMulTar = 1.f;
+		
+		if (mBaseObj.IsInLiquid())
+		{
+			float fHeight = mBaseObj.GetLiquidHeight();
+			if (fHeight > 0.2f)
+			{
+				fWaterSpeedMulTar = 1.f - (0.3f * cMath_Min(fHeight, 1.f));
+				fWaterRunSpeedMulTar = 1.f - (0.8f * cMath_Min(fHeight, 1.f));
+			}
+		}
+		
+		mfWaterSpeedMul = cMath_IncreaseTo(mfWaterSpeedMul, afTimeStep * 0.5f, fWaterSpeedMulTar);
+		mfWaterRunSpeedMul = cMath_IncreaseTo(mfWaterRunSpeedMul, afTimeStep * 0.5f, fWaterRunSpeedMulTar);
+		
+		////////////////////////////
+		// Force emerge, if still submerged, kill player
+		if (mfWaterHiding_ForcedEmergeCount > 0.f && FearHandler_GetIsPermaFailing() == false)
+		{
+			mfWaterHiding_ForcedEmergeCount -= afTimeStep;
+			if (mfWaterHiding_ForcedEmergeCount <= 0.f)
+			{			
+				if (mbWaterHiding_Submerged)
+				{
+					mlWaterHiding_FeedbackStage = 0;			
+					mfWaterHiding_OxygenCount = gfWaterHidingOxygenMax;
+					
+					FearHandler_TriggerPermaFail(false, "drown", true);
+				}
+			}
+			return;
+		}
+		////////////////////////////
+		// Submerged
+		if (mbWaterHiding_Submerged)
+		{
+			mfWaterHiding_OxygenCount -= afTimeStep;
+			if (mfWaterHiding_OxygenCount <= 0.f && cLux_GetGodModeActivated() == false)
+			{
+				mfWaterHiding_OxygenCount = 0.f;
+				mfWaterHiding_ForcedEmergeCount = 1.f;
+				
+				Player_SetCrouching(false);
+				Player_SetCrouchDisabledTime(1.f);
+				return;
+			}
+			
+			////////////////////////////
+			// Oxygen feedback
+			if (mlWaterHiding_FeedbackStage == 0)
+			{
+				if (mfWaterHiding_OxygenCount > gfWaterHidingOxygenMin) 
+					return;
+				
+				mlWaterHiding_FeedbackStage++;
+				
+				if (mlWaterHiding_ScreenId == -1)
+				{
+					//float fAspect = mBaseObj.GetCamera().GetAspect();
+					//float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
+					//float fBaseSize = 0.945f - (0.383f * (fAspect - 1.33));
+					cVector2f vSize = cVector2f(1.25, 1);
+					mlWaterHiding_ScreenId = Effect_Screen_Start("vignette_screen.mat", cVector2f(0.5f, 0.5f), vSize);
+					Effect_Screen_FadeAlpha(mlWaterHiding_ScreenId, 1.f, 0.5f);
+				}				
+				
+				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "player/vocalisations/underwater/underwater_breath_low", "player");
+				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.5f, -1.f, false);
+			}
+			else if (mlWaterHiding_FeedbackStage == 1)
+			{
+				if (mfWaterHiding_OxygenCount > gfWaterHidingOxygenMin / 2.f) 
+					return;
+				
+				mlWaterHiding_FeedbackStage++;
+				
+				ParticleSystem_CreateAtEntity("PS_WaterHiding_Bubbles", "underwater.ps", "player", true);
+				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "player/vocalisations/underwater/underwater_breath_high", "player");
+				
+				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.8f, -1.f, false);
+			}
+			return;
+		}
+		
+		////////////////////////////
+		// Not submerged, increase oxygen
+		mfWaterHiding_OxygenCount += (10.f / 5.f) * afTimeStep;
+		if (mfWaterHiding_OxygenCount >= gfWaterHidingOxygenMax)
+		{
+			mlWaterHiding_FeedbackStage = 0;
+			mfWaterHiding_OxygenCount = gfWaterHidingOxygenMax;
+		}			
+	}
+	
+	//------------------------------------------------------------
+	
+	void WaterHiding_UpdateLightColor(float afTimeStep)
+	{
+		int lNum = mBaseObj.GetUsedLiquidAreaNum();
+		iLight@ pLight = cLux_ID_Light(m_idWaterHiding_Light);
+		
+		if (pLight is null)
+		{
+			mlWaterHiding_PrevUsedLiquidAreaNum = lNum;
+			return;
+		}
+		
+		if (lNum > 0)
+		{
+			/////////////////
+			// Get light color of the current area
+			cLuxLiquidArea@ pArea = cLux_ID_LiquidArea(mBaseObj.GetUsedLiquidAreaID(lNum - 1));		
+			if (mlWaterHiding_PrevUsedLiquidAreaNum != lNum)
+			{
+				cScript_RunGlobalFunc(pArea.GetName(), "", "_Global_GetUnderwaterLightColor");
+				mWaterHiding_LightColor = cScript_GetGlobalReturnColor();
+				mWaterHiding_LightColor.a = 0.f; //disable specular
+				
+				pLight.SetDiffuseColor(mWaterHiding_LightColor);
+			}
+			
+			/////////////////
+			// Adjust brightness based on distance to liquid areas top
+			float fDist = mBaseObj.GetCamera().GetPosition().y - pArea.GetAreaBody().GetBoundingVolume().GetMax().y;
+			float fMax = 0.f;
+			float fMin = -0.2f;			
+			float fLightMul = 1.f - cMath_Clamp((fDist - fMin) / (fMax - fMin), 0.f, 1.f);
+			
+			pLight.SetBrightness(mfWaterHiding_LightBrightness * fLightMul);
+		}
+		else
+		{
+			pLight.SetBrightness(cMath_Max(0.0f, pLight.GetBrightness() - afTimeStep));
+		}
+		
+		pLight.SetWorldPosition(mBaseObj.GetCamera().GetPosition());
+		mlWaterHiding_PrevUsedLiquidAreaNum = lNum;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetOxygenCount()
+	{
+		cScript_SetGlobalReturnFloat(mfWaterHiding_OxygenCount);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetOxygenCount()
+	{
+		float fCount = cScript_GetGlobalArgFloat(0);
+		fCount = cMath_Clamp(fCount, 0.f, gfWaterHidingOxygenMax);
+		
+		mfWaterHiding_OxygenCount = fCount;
+
+		int lStage = mfWaterHiding_OxygenCount > gfWaterHidingOxygenMin / 2.f ? 0 : 1;
+		mlWaterHiding_FeedbackStage = cMath_Max(mlWaterHiding_FeedbackStage, lStage);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetUnderwater()
+	{
+		cScript_SetGlobalReturnBool(mbWaterHiding_Submerged);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// VERTIGO
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfVertigo_FovMulAdd = 0.f;
+	float mfVertigo_UpdateCount = 0.1f;
+	float mfVertigo_PulseCount = 0.f;
+	float mfVertigo_Intensity = 1.f;
+	float mfVertigo_IntensityGoal = 1.f;
+	float mfVertigo_IntensityFadeSpeed = 1.f;
+	int mlVertigo_RayId = 0;
+	int mlVertigo_RayHitCount = 4;
+	int mlVertigo_DoFId = -1;
+	int mlVertigo_RadialBlurId = -1;
+	bool mbVertigo_DoEffects = false;
+	bool mbVertigo_PrevDoEffects = false;
+	bool mbVertigo_Active = true;
+	
+	//------------------------------------------------------------
+	
+	void UpdateVertigo(float afTimeStep)
+	{		
+		/////////////////////////////
+		// Set up vars
+		cCamera@ pCam = mBaseObj.GetCamera();
+		
+		mfVertigo_PulseCount += afTimeStep;
+		if (mfVertigo_PulseCount > cMath_PiMul2)
+			mfVertigo_PulseCount -= cMath_PiMul2;
+		
+		float fFovPulse = cMath_Sin(mfVertigo_PulseCount) * 0.05f;
+		float fSwayPulse = cMath_Sin(mfVertigo_PulseCount * 2.f);
+		
+		mfVertigo_Intensity = cMath_IncreaseTo(mfVertigo_Intensity, afTimeStep * mfVertigo_IntensityFadeSpeed, mfVertigo_IntensityGoal);
+		float fIntensity = gfVertigoFovAdd * mfVertigo_Intensity;
+		
+		float fFovTar =	0.f;
+		float fSpeed = 0.225f;
+		
+		/////////////////////////////
+		// Effects
+		if (mbVertigo_DoEffects)
+		{
+			fFovTar = gfVertigoFovAdd + fFovPulse;
+			fSpeed = 0.105f;
+			
+			if (mfVertigo_Intensity > 0.75f)
+			{
+				if (mlVertigo_DoFId == -1)
+					mlVertigo_DoFId = Effect_DoF_Start(0.f, gfVertigoMinDist * 0.5f, 0.1f, 1.f);
+				if (mlVertigo_RadialBlurId == -1)
+					mlVertigo_RadialBlurId = Effect_RadialBlur_Start(0.05f, 1.f, 0.3f, 1.f);
+			}			
+			
+			if (mbVertigo_PrevDoEffects != mbVertigo_DoEffects)
+			{
+				Sound_PlayGui("player/UI/vertigo/vertigo_drone", 0.5f, eSoundEntryType_Gui);
+				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Vertigo, 0.1f, 9999, false);
+			}				
+		}
+		else
+		{
+			if (mlVertigo_DoFId != -1)
+				Effect_DoF_FadeOut(mlVertigo_DoFId, 1.f);
+			if (mlVertigo_RadialBlurId != -1)
+				Effect_RadialBlur_FadeOut(mlVertigo_RadialBlurId, 1.f);
+			
+			mlVertigo_DoFId = -1;
+			mlVertigo_RadialBlurId = -1;
+			
+			if (mbVertigo_PrevDoEffects != mbVertigo_DoEffects)
+			{
+				Sound_StopGui("player/UI/vertigo/vertigo_drone", 2.f);
+				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Vertigo, 0.f, 0.f, false);
+			}				
+		}
+		
+		mbVertigo_PrevDoEffects = mbVertigo_DoEffects;
+		
+		/////////////////////////////
+		// Apply FOV and pos adds
+		mfVertigo_FovMulAdd = cMath_IncreaseTo(mfVertigo_FovMulAdd, afTimeStep * fSpeed, fFovTar);
+		
+		float fT = cMath_Easing(eEasing_SineInOut, mfVertigo_FovMulAdd / gfVertigoFovAdd);					
+		float fFovMul = 1.f + fT * fIntensity;
+		
+		mBaseObj.SetCameraFOVMul(ePlayerFOVMul_Vertigo, fFovMul);
+		
+		float fSwayMoveMul = 1.f + cMath_Min(Player_GetSpeed() / 2.f, 1.f) * 1.75f;
+		cVector3f vSwayAdd = cVector3f_Right * 0.04f * fSwayPulse * fSwayMoveMul;
+		
+		cVector3f vPosAdd = (cVector3f_Down * fIntensity + vSwayAdd) * fT;
+		mBaseObj.SetCameraPosAdd(eCameraAddType_Vertigo, vPosAdd);
+		
+		/////////////////////////////
+		// Vertigo active?
+		if (mbVertigo_Active == false) 
+		{
+			mbVertigo_DoEffects = false;
+			mlVertigo_RayHitCount = 4;
+			return;
+		}
+		
+		/////////////////////////////
+		// Are we high up and looking down?
+		mfVertigo_UpdateCount -= afTimeStep;
+		if (mfVertigo_UpdateCount > 0.f)
+			return;
+		
+		mfVertigo_UpdateCount = 0.1f;
+		
+		if (pCam.GetPitch() > gfVertigoMaxPitch || mBaseObj.GetCurrentStateId() != ePlayerState_Normal)
+		{
+			mbVertigo_DoEffects = false;
+			mlVertigo_RayHitCount = 4;
+			return;
+		}			
+		
+		/////////////////////////////
+		// Check one dir every 0.1 seconds, do effects if at least one dir is clear and height is large enough!
+		cVector3f vStart = Player_GetCameraPosition() - vPosAdd;		
+		cVector3f[] vDirs = { pCam.GetForward(), 
+							  cMath_MatrixMul(cMath_MatrixRotateXYZ(pCam.GetUp() * cMath_ToRad(18.f)), pCam.GetForward()),
+							  cMath_MatrixMul(cMath_MatrixRotateXYZ(pCam.GetRight() * cMath_ToRad(10.f)), pCam.GetForward()),
+							  cMath_MatrixMul(cMath_MatrixRotateXYZ(pCam.GetUp() * cMath_ToRad(-18.f)), pCam.GetForward()) };
+		
+		mlVertigo_RayId = ++mlVertigo_RayId % 4;
+		
+		float fRayDist = 0.f;
+		cLux_GetClosestBody(vStart, vDirs[mlVertigo_RayId], 30.f, fRayDist, 0.f);
+		
+		cVector3f vRayPoint = vStart + vDirs[mlVertigo_RayId] * fRayDist;		
+		float fDiff = cMath_Abs(vStart.y - vRayPoint.y);
+		mlVertigo_RayHitCount = fDiff < gfVertigoMinDist ? cMath_Min(mlVertigo_RayHitCount + 1, 4) : 0;
+		
+		mbVertigo_DoEffects = mlVertigo_RayHitCount < 4;
+
+		// Uncomment me if you get Vertigo bug
+		//cLux_AddDebugMessage("Vertigo Start: " + vStart + " Dir: " + vDirs[mlVertigo_RayId] + " Offset: " + vPosAdd + " Height: " + fDiff + " Active: " + mbVertigo_DoEffects);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetVertigoActive()
+	{
+		mbVertigo_Active = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetVertigoActive()
+	{
+		cScript_SetGlobalReturnBool(mbVertigo_Active);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FadeVertigoIntensity()
+	{
+		mfVertigo_IntensityGoal = cScript_GetGlobalArgFloat(0);
+		
+		float fTime = cScript_GetGlobalArgFloat(1);
+		mfVertigo_IntensityFadeSpeed = cMath_Abs(mfVertigo_Intensity - mfVertigo_IntensityGoal) / cMath_Max(0.000001f, fTime);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// SLIDING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbSliding_Active = false;
+	bool mbSliding_UseParticles = true;
+	bool mbSliding_SandOnly = true;
+	float mfSliding_AngleThreshold = 45.f;
+	
+	//------------------------------------------------------------
+	
+	void UpdateSliding(float afTimeStep)
+	{
+		/////////////////////////
+		// Set up vars
+		iCharacterBody@ pBody = mBaseObj.GetCharacterBody();
+		cVector3f vNormal = pBody.GetLastGroundNormal();
+		
+		/////////////////////////
+		// Only slide if the angle is steep enough!
+		if (mbSliding_Active == false ||
+			pBody.IsOnGround() == false ||
+			mBaseObj.GetCurrentStateId() != ePlayerState_Normal ||
+			(mbSliding_SandOnly && cScript_GetGlobalVarBool("PlayerOnSand") == false) || 
+			cMath_ToDeg(cMath_Vector3Angle(vNormal, cVector3f_Up)) < mfSliding_AngleThreshold)
+			return;
+		
+		////////////////////////
+		// Get slide dir
+		cVector3f vSlideDir = cVector3f_Down - vNormal * cMath_Vector3Dot(vNormal, cVector3f_Down);
+		vSlideDir.Normalize();
+		
+		////////////////////////
+		// Get start pos
+		float fSlideDist = 0.f;
+		cVector3f vSurfaceNrm = 0.f;
+		cVector3f vStart = pBody.GetFeetPosition() + cVector3f(0.f, 0.5f, 0.f);
+		
+		cLux_GetClosestBody(vStart, vSlideDir, 20.f, fSlideDist, vSurfaceNrm);
+		
+		////////////////////////
+		// Don't slide too long or short!
+		if (fSlideDist > 15.f || fSlideDist < 3.f)
+			return;
+		
+		////////////////////////
+		// Get end pos
+		cTerrain@ pTerrain = cLux_GetCurrentMap().GetWorld().GetTerrain();
+		cVector3f vEnd = vStart + vSlideDir * fSlideDist;
+		cVector3f vTerrainNormal = 0.f;
+		float fTerrainHeight = 0.f;
+		
+		if (pTerrain !is null && pTerrain.GetWorldPosHeightAndNormal(vEnd, fTerrainHeight, vTerrainNormal))
+		{
+			// End is below terrain, escape!
+			if (vEnd.y < fTerrainHeight)
+				return;
+		}
+		
+		float fGroundDist = 0.f;
+		cVector3f vGroundOffset = cVector3f(0.f, 0.5f, 0.f);		
+		cLux_GetClosestBody(vEnd + vGroundOffset, cVector3f_Down, 2.f, fGroundDist, vSurfaceNrm);
+			
+		// Remove ground offset from distance
+		fGroundDist -= 0.5f;
+			
+		// Safety check
+		if (fGroundDist > 2.f)
+			return;
+		
+		cVector3f vSlideDirXZ = cVector3f(vSlideDir.x, 0.f, vSlideDir.z);
+		vEnd += cVector3f_Down * fGroundDist + vSlideDirXZ * (pBody.GetSize().z / 2.f);
+		
+		////////////////////////
+		// Figure out which slide to use!
+		cVector3f vFwdXZ = cVector3f(pBody.GetForward().x, 0.f, pBody.GetForward().z);
+		bool bSlideOnBack = cMath_Vector3Dot(vSlideDirXZ, vFwdXZ) > 0.f;
+		
+		////////////////////////
+		// Start sliding!		
+		cScript_SetGlobalArgVector3f(0, vStart);
+		cScript_SetGlobalArgVector3f(1, vEnd);
+		cScript_SetGlobalArgVector3f(2, vSlideDir);
+		cScript_SetGlobalArgBool(3, bSlideOnBack);
+		cScript_SetGlobalArgBool(4, mbSliding_UseParticles);
+		cScript_RunGlobalFunc("State_Slide", "", "_Global_SetupSlide");
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetSlidingActive()
+	{
+		mbSliding_Active = cScript_GetGlobalArgBool(0);
+		mfSliding_AngleThreshold = cScript_GetGlobalArgFloat(1);
+		mbSliding_SandOnly = cScript_GetGlobalArgBool(2);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetSlidingUseParticles()
+	{
+		mbSliding_UseParticles = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// CHECK BABY
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfCheckBaby_Delay = 1.f;
+	bool mbCheckBaby_Allowed = true;
+	bool mbCheckBaby_IgnoreState = false;
+	
+	//------------------------------------------------------------
+	
+	void UpdateCheckBaby(float afTimeStep)
+	{
+		/////////////////////////////
+		// Check baby?
+		if (mbCheckBaby_Allowed && cInput_IsTriggered(eAction_CheckBaby))
+		{			
+			mfCheckBaby_Delay -= afTimeStep;
+			if (mfCheckBaby_Delay <= 0.f)
+			{
+				iCharacterBody@ pBody = mBaseObj.GetCharacterBody();
+			
+				bool bStateOK = (mBaseObj.GetCurrentStateId() == ePlayerState_Normal || mbCheckBaby_IgnoreState) && Player_GetUnderwater() == false;
+				bool bMovementOK = pBody.IsOnGround() && 
+								   pBody.GetMoveSpeed(eCharDir_Right) == 0.f &&
+								   pBody.GetMoveSpeed(eCharDir_Forward) == 0.f;
+			
+				if (bStateOK && bMovementOK)
+					mBaseObj.ChangeState(ePlayerState_Custom_CheckBaby);
+			}
+		}
+		else
+		{
+			mfCheckBaby_Delay = gfBabyCheckDelay;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetAllowCheckBaby()
+	{
+		mbCheckBaby_Allowed = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetAllowCheckBabyInAnyState()
+	{
+		mbCheckBaby_IgnoreState = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DISORIENT EFFECT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	int mlDisorient_DofId = -1;
+	int mlDisorient_BlurId = -1;
+	float mfDisorient_Count = -1.f;
+	float mfDisorient_PulseCount = 0.f;
+	float mfDisorient_FarPlane = 4.f;
+	float mfDisorient_BlurAmount = 0.3f;
+	bool mbDisorient_AffectMovement = true;
+	
+	//------------------------------------------------------------
+	
+	void UpdateDisorientEffect(float afTimeStep)
+	{
+		if (mfDisorient_Count <= 0.f)
+			return;
+		
+		//////////////////////////
+		// Pulse DoF in and out
+		mfDisorient_PulseCount -= afTimeStep;
+		if (mfDisorient_PulseCount <= 0.f)
+		{
+			if (mlDisorient_DofId != -1)
+			{
+				mfDisorient_FarPlane = mfDisorient_FarPlane == 4.f ? 0.25f : 4.f;
+				mfDisorient_PulseCount = mfDisorient_FarPlane == 0.25f ? cMath_RandRectf(3.f, 5.f) : cMath_RandRectf(6.f, 8.f);
+				Effect_DoF_FadeFocus(mlDisorient_DofId, 0.f, mfDisorient_FarPlane, mfDisorient_PulseCount - 2.f);
+			}
+			
+			if (mlDisorient_BlurId != -1)
+			{
+				mfDisorient_BlurAmount = mfDisorient_BlurAmount == 0.3f ? 0.05f : 0.3f;
+				mfDisorient_PulseCount = mfDisorient_BlurAmount == 0.05f ? cMath_RandRectf(3.f, 5.f) : cMath_RandRectf(6.f, 8.f);
+				Effect_Blur_FadeAmount(mlDisorient_BlurId, mfDisorient_BlurAmount, mfDisorient_PulseCount - 2.f);
+			}
+		}
+		
+		//////////////////////////
+		// Stop disorient?
+		mfDisorient_Count -= afTimeStep;
+		if (mfDisorient_Count < 0.f)
+		{					
+			Player_FadeLookSpeedMulTo(1.f, 10.f);
+			Player_FadeLookAccelerationTo(0.f, 1.f);
+				
+			if (mbDisorient_AffectMovement)
+				Player_FadeMoveSpeedMulTo(1.f, 10.f, ePlayerMoveSpeedMulType_PlayerState);
+				
+			Effect_Sway_FadeOut(10.f);
+			
+			if (mlDisorient_DofId != -1)
+				Effect_DoF_FadeOut(mlDisorient_DofId, 10.f);
+			if (mlDisorient_BlurId != -1)
+				Effect_Blur_FadeOut(mlDisorient_BlurId, 10.f);
+			
+			mlDisorient_DofId = -1;
+			mlDisorient_BlurId = -1;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_Disorient()
+	{
+		mfDisorient_Count = cScript_GetGlobalArgFloat(0);
+		mbDisorient_AffectMovement = cScript_GetGlobalArgBool(1);
+		bool bBlur = cScript_GetGlobalArgBool(2);
+		
+		if (mfDisorient_Count <= 0.f) 
+			return;
+			
+		Player_FadeLookSpeedMulTo(0.4f, 3.f);
+		Player_FadeLookAccelerationTo(0.2f, 3.f);
+		
+		if (mbDisorient_AffectMovement)
+			Player_FadeMoveSpeedMulTo(0.7f, 3.f, ePlayerMoveSpeedMulType_PlayerState);
+			
+		if (mlDisorient_DofId != -1)
+			Effect_DoF_FadeOut(mlDisorient_DofId, 1.f);
+		if (mlDisorient_BlurId != -1)
+			Effect_Blur_FadeOut(mlDisorient_BlurId, 1.f);
+		
+		if (bBlur == false)
+			mlDisorient_DofId = Effect_DoF_Start(0.f, 0.1f, 0.025f, 3.f);
+		else
+			mlDisorient_BlurId = Effect_Blur_Start(0.3f, 1.f);
+		
+		Effect_Sway_FadeIn(0.75f, 0.75f, 0.5f, -90.f, 1.f, 0.25f, 0.99f, 0.4f, 0.8f, 0.05f, true);
+	}	
+	
+	//------------------------------------------------------------
+	
+	void _Global_StopDisorient()
+	{
+		mfDisorient_Count = 0.1f;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetRemainingDisorientDuration()
+	{
+		if (mfDisorient_Count > 0.f)
+			mfDisorient_Count = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LOOK ACCELERATION
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfLookAcceleration = 0;
+	cVector3f mvLookVelocity = 0;
+	float mfLookAccTarget = 0;
+	float mfLookAccFadeSpeed = 0;
+	
+	//------------------------------------------------------------
+	
+	void UpdateLookAcceleration(float afTimeStep)
+	{
+		// Fade
+		if (cMath_Abs(mfLookAccTarget-mfLookAcceleration)>0.001)
+		{
+			float fSpeed = mfLookAccFadeSpeed*afTimeStep;
+			if (cMath_Abs(fSpeed) > cMath_Abs(mfLookAccTarget-mfLookAcceleration))
+			{
+				fSpeed = mfLookAccTarget-mfLookAcceleration;
+			}
+				
+			mfLookAcceleration += fSpeed;
+		}
+		
+		// Camera movement
+		if (mfLookAcceleration > 0)
+		{		
+			iCharacterBody@ pCharBody = mBaseObj.GetCharacterBody();
+			if (pCharBody !is null) 
+				pCharBody.AddYaw(mvLookVelocity.x);
+
+			cCamera@ pCamera = mBaseObj.GetCamera();
+			if (pCamera !is null) 
+				pCamera.AddPitch(mvLookVelocity.y);
+
+			mvLookVelocity *= (1.0f-gfLookAccelerationDrag*afTimeStep)*cMath_Easing(eEasing_QuartOut, mfLookAcceleration);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetLookAcceleration()
+	{
+		mfLookAcceleration = cScript_GetGlobalArgFloat(0);
+		mfLookAccTarget = mfLookAcceleration;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FadeLookAccelerationTo()
+	{
+		mfLookAccTarget = cScript_GetGlobalArgFloat(0);
+		
+		float fTime = cScript_GetGlobalArgFloat(1);
+		mfLookAccFadeSpeed = (mfLookAccTarget-mfLookAcceleration)/fTime;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LIGHT SOURCE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbCanUseLightSource = true;
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCanUseLightSource()
+	{
+		cScript_SetGlobalReturnBool(mbCanUseLightSource && mbWaterHiding_Submerged == false);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCanUseLightSource()
+	{
+		mbCanUseLightSource = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_ToggleLightSource()
+	{
+		Item_ToggleHeldItem("Lantern", eItemHandlerHand_Left);
+		
+		// global reaction for trying to pull out the lantern after it is lost
+		if (cScript_GetGlobalVarBool("Global_LanternLost") && Item_IsLightSourceActive() == false)
+		{ 
+			if (Pregnancy_GetWhispering())
+				return;
+			
+			if (cLux_GetPlayer().GetCurrentStateId() != ePlayerState_Normal && cLux_GetPlayer().GetCurrentStateId() != ePlayerState_Custom_UsingItem)
+				return;
+				
+			if (Voice_AnySceneIsActive())
+				return;
+			
+			Voice_PlayDelayed("Global_Lantern_TryButLost", 0.5f);
+		}
+	}
+		
+	//------------------------------------------------------------
+	
+	float GetLightLevel(bool abIgnoreLighter = true, bool abIgnoreLantern = false)
+	{
+		float fLightLevel = mfPlayerLightLevel;
+		
+		if (abIgnoreLantern && mbLanternOn)
+		{
+			fLightLevel -= 1.0f;
+		}
+	
+		return fLightLevel;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetLightLevel()
+	{
+		cScript_SetGlobalReturnFloat(GetLightLevel(cScript_GetGlobalArgBool(0), cScript_GetGlobalArgBool(1)));
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PREGNANCY EXERTION
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfPregnancyExertion_Count = 0.f;
+	float mfPregnancyExertion_Mul = 1.f;	
+	float[][] mfPregnancyExertion_Threshold = {{10.f, 15.f, 20.f},				// Running
+											   {5.f, 8.f, 12.f}};				// Climbing
+	float[][] mfPregnancyExertion_MulGoal = {{1.f, 0.75f, 0.5f, 0.5f},			// Running
+											 {1.f, 0.8f, 0.65f}};				// Climbing
+	
+	int mlPregnancyExertion_AnimStage = -1;
+	float mfPregnancyExertion_AnimCount = 0.f;
+	bool mbPregnancyExertion_Active = true;
+	
+	//------------------------------------------------------------
+	
+	void UpdatePregnancyExertion(float afTimeStep)
+	{		
+		//////////////////
+		// Setup vars
+		iCharacterBody@ pBody = mBaseObj.GetCharacterBody();
+		int lPlayerState = mBaseObj.GetCurrentStateId();
+		int lPregStage = Pregnancy_GetStage();
+		
+		//////////////////
+		// Setup exertion	
+		int lExertionType = -1;	
+	
+		if (lPlayerState == ePlayerState_Normal && Player_GetRunning())	
+		{
+			lExertionType = 0;
+		}
+		else if (lPlayerState == ePlayerState_Ladder)
+		{
+			cScript_RunGlobalFunc("State_Ladder", "cScrPlayerState_Ladder", "_Global_IsMoving");
+			if (cScript_GetGlobalReturnBool())
+				lExertionType = 1;
+		}
+		
+		//////////////////
+		// Allow exertion?
+		bool bAllowExertion = true;
+		
+		if (lExertionType == -1)						bAllowExertion = false;
+		if (FearHandler_GetRate() >= 0.1f)				bAllowExertion = false;
+		if (Blackboard_GetHuntingAgentCount() > 0)		bAllowExertion = false;
+		if (lPregStage != ePregStage_Stage2)			bAllowExertion = false;
+		if (mbPregnancyExertion_Active == false)		bAllowExertion = false;
+		
+		//////////////////
+		// Count!
+		if (bAllowExertion)		mfPregnancyExertion_Count += afTimeStep;
+		else					mfPregnancyExertion_Count -= afTimeStep * 3.f;
+		
+		float fMaxCount = 30.f;
+		if (lExertionType > -1)
+		{
+			const int lThresholdSize = mfPregnancyExertion_Threshold[lExertionType].length();
+			fMaxCount = mfPregnancyExertion_Threshold[lExertionType][lThresholdSize - 1];
+		}
+		
+		mfPregnancyExertion_Count = cMath_Clamp(mfPregnancyExertion_Count, 0.f, fMaxCount);
+		
+		//////////////////
+		// Set mul
+		float fExertionMulGoal = 1.f;
+		bool bAtMaxExertion = lExertionType > -1;
+		
+		if (lExertionType > -1)
+		{
+			const int lMulGoalSize = mfPregnancyExertion_MulGoal[lExertionType].length();
+			fExertionMulGoal = mfPregnancyExertion_MulGoal[lExertionType][lMulGoalSize - 1];
+			
+			for (int i = 0; i < mfPregnancyExertion_Threshold[lExertionType].length(); ++i)
+			{
+				if (mfPregnancyExertion_Count < mfPregnancyExertion_Threshold[lExertionType][i])
+				{
+					bAtMaxExertion = false;
+					fExertionMulGoal = mfPregnancyExertion_MulGoal[lExertionType][i];
+					break;
+				}
+			}
+		}
+		
+		mfPregnancyExertion_Mul = cMath_IncreaseTo(mfPregnancyExertion_Mul, (1.f / gfExertionMulFadeTime) * afTimeStep, fExertionMulGoal);
+		
+		//////////////////
+		// Max exertion events
+		if (bAtMaxExertion)
+		{
+			//////////////////
+			// Running
+			if (lExertionType == 0)
+			{
+				if (pBody.IsOnGround() &&  mBaseObj.IsInLiquid() == false)
+				{
+					/*mfPregnancyExertion_Count = 0.f;
+					
+					if (PlayerBody_IsActive())
+					{
+						mlPregnancyExertion_AnimStage = 0;
+						mfPregnancyExertion_AnimCount = 0.f;
+					}
+					
+					// TODO: Custom bark!
+					cLux_AddTodoMessage(" Running exertion bark!");*/
+				}
+			}
+			//////////////////
+			// Climbing
+			else if (lExertionType == 1)
+			{
+				// TODO: Some anim here?
+			}
+		}
+		
+		//////////////////
+		// Anims
+		/*if (mfPregnancyExertion_AnimCount > 0.f)
+		{
+			mfPregnancyExertion_AnimCount -= afTimeStep;
+		}
+		else
+		{
+			if (mlPregnancyExertion_AnimStage == 0)
+			{
+				PlayerBody_PlayCutsceneAnimation("player_stop_to_catch_breath_pregnant_start", true, 0.3f);
+				
+				mfPregnancyExertion_AnimCount = 0.f;
+				mlPregnancyExertion_AnimStage = 1;
+			}
+			else if (mlPregnancyExertion_AnimStage == 1)
+			{
+				if (PlayerBody_GetAnimationState("player_stop_to_catch_breath_pregnant_start").GetRelativeTimePosition() >= 0.99f)
+				{
+					PlayerBody_PlayCutsceneAnimation("player_stop_to_catch_breath_pregnant_loop", true, 0.f);
+				
+					mfPregnancyExertion_AnimCount = cMath_RandRectf(2.5f, 4.f);
+					mlPregnancyExertion_AnimStage = 2;
+				}				
+			}
+			else if (mlPregnancyExertion_AnimStage == 2)
+			{
+				PlayerBody_PlayCutsceneAnimation("player_stop_to_catch_breath_pregnant_end", false, 0.3f);
+				
+				mfPregnancyExertion_AnimCount = 0.f;
+				mlPregnancyExertion_AnimStage = -1;
+			}
+		}*/
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetExertionMul()
+	{
+		cScript_SetGlobalReturnFloat(mfPregnancyExertion_Mul);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetPregnancyExertionActive()
+	{
+		mbPregnancyExertion_Active = cScript_GetGlobalArgBool(0);
+	}
+		
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LIGHT SWITCH COUNTER
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	float mfLightSwitchCounter = 0.0f;
+	
+	//------------------------------------------------------------
+	
+	void UpdateLightSwitchCounter(float afTimeStep)
+	{
+		mfLightSwitchCounter -= 0.4f * afTimeStep;
+		mfLightSwitchCounter = cMath_Clamp(mfLightSwitchCounter, 0.0f, 3.0f);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetLightSwitchCounter()
+	{
+		cScript_SetGlobalReturnFloat(mfLightSwitchCounter);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_LanternOn()
+	{
+		mbLanternOn = true;
+		mfLightSwitchCounter += 1.0f;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_LanternOff()
+	{
+		mbLanternOn = false;
+		mfLightSwitchCounter += 1.0f;
+	}	
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetLanternOn()
+	{
+		cScript_SetGlobalReturnBool(mbLanternOn);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// AI SOUNDS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnHearAISound(const tString &in asName, const cVector3f &in avPosition, float afRadius, int alPrio, bool abPhysicsObject)
+	{
+		iScrFearHandler_Interface @pHandler = cast<iScrFearHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_FearHandler) );
+		pHandler.PlayerHearAgent(avPosition, afRadius);
+	}
+	
+	//------------------------------------------------------------
+}
+
+//------------------------------------------------------------

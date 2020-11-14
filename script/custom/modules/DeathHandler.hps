@@ -1,0 +1,932 @@
+//----------------------------------------------------------------------------------------
+
+#include "interfaces/UserModule_Interface.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "base/Player_Types.hps"
+#include "base/InputHandler_Types.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_map.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_player.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_items.hps"
+#include "custom/helpers/helper_player_custom.hps"
+
+//----------------------------------------------------------------------------------------
+
+class cScrDeathHandler : iScrUserModule, iScrUserModule_Interface, iScrDeathHandler_Interface
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		
+	}
+		
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERFACE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------	
+	
+	tString msDeathSource;
+	tString msDefaultDeathArea;
+	tString msRespawnCallback;
+	tString msWakeUpAnim;
+	bool mbRespawnAreaPickedByOtherScript;
+	int mlImpactDofId = -1;
+	
+	//------------------------------------------------------------	
+	
+	tString GetDeathSource()
+	{
+		return msDeathSource;
+	}
+	
+	//------------------------------------------------------------	
+	
+	void SetDeathSource(const tString &in asSource)
+	{
+		msDeathSource = asSource;
+	}
+	
+    //------------------------------------------------------------	
+	
+	void SetDefaultDeathArea(const tString &in asArea)
+	{
+		msDefaultDeathArea = asArea;
+	}
+    
+	void SetDeathAreaForSource(const tString &in asSource, const tString &in asArea)
+	{
+        cScript_SetGlobalVarString("AreaForDeathSource_" + asSource, asArea);
+	}
+	
+	//-----------------------------------------------------------
+	
+	tString msDefaultDeathAnimation = "die_fall";
+	tString msDeathAnimation = "die_fall";
+	bool mbSkipDeathAnimation = false;
+	
+	void SetDeathAnimation(const tString &in asAnim)
+	{
+		msDeathAnimation = asAnim;
+	}
+	
+	void ResetDeathAnimation()
+	{
+		msDeathAnimation = msDefaultDeathAnimation;
+	}
+	
+	//-----------------------------------------------------------
+	
+	void SkipDeathAnimation(bool abSkip)
+	{
+		mbSkipDeathAnimation = abSkip;
+	}
+	
+	//-----------------------------------------------------------
+	
+	void StartDeath()
+	{
+		cLux_AddDebugMessage("[DEATH] [SETUP PHASE]");
+		cLux_AddDebugMessage("[DEATH] Source: "+msDeathSource);
+		
+		if (msDeathAreaActive!=""|| (mBaseObj.Timer_Exists(1)) )
+		{
+			Error("Death: already active");
+			return;
+		}
+		
+		////////////////
+		// Setup death
+		FearHandler_SetPaused(true);
+		Voice_StopAll();
+		
+		Item_PutAway(eItemHandlerHand_Left);
+		Item_PutAway(eItemHandlerHand_Right);
+		
+		cLux_GetPlayer().ChangeState(ePlayerState_Dead);
+		
+		Player_SetMoveSpeedMul(0.f, ePlayerMoveSpeedMulType_Death);
+		Player_SetLookSpeedMul(0.f);
+		Player_SetStandDisabled(false);
+		Player_SetCrouching(false, true, true);
+		
+		Music_StopAll(0.25f);
+		
+		iCharacterBody@ pBody = cLux_GetPlayer().GetCharacterBody();
+		pBody.SetActive(false);
+		
+		////////////////
+		// Play death animation
+		float fDist = 0.f;
+		cVector3f vNrm = 0.f;
+		cLux_GetClosestBody(pBody.GetFeetPosition() + cVector3f(0.f, 0.2f, 0.f), cVector3f_Down, 2.f, fDist, vNrm);
+		
+		bool bFalling = fDist > 10.f;
+		
+		// Makse sure the animation is played at ground level
+		if (bFalling == false)
+			pBody.SetFeetPosition(pBody.GetFeetPosition() + cVector3f(0.f, -fDist + 0.3f, 0.f), true);
+		
+		////////////////
+		// Death animation		
+		float fAnimLength = 0;
+		
+		if (msDeathAnimation == "" || mbSkipDeathAnimation || bFalling)
+		{
+			if (bFalling)
+				pBody.SetActive(true);
+			
+			mbSkipDeathAnimation = false;
+			mBaseObj.Timer_Add(1, 0.1f, "Timer_OnDeath");
+		}
+		else
+		{
+			PlayerBody_PlayCutsceneAnimation(msDeathAnimation, false, 0.3f, "", 0.6f);
+			
+			cAnimationState@ pState = Map_GetEntity(PlayerBody_GetEntityName()).GetMeshEntity().GetAnimationStateFromName(msDeathAnimation);
+			fAnimLength = pState.GetLength();
+			mBaseObj.Timer_Add(1, fAnimLength - 0.1f, "Timer_OnDeath");
+		}
+		
+		////////////////
+		// EFfects
+		Effect_ImageTrail_Start(2.f, 0.3f, fAnimLength, 0.3f);
+		mlImpactDofId = Effect_DoF_Start(0.1f, 0.2f, 1.f, 1.5f);
+	}
+	
+	//-----------------------------------------------------------
+	
+	void StartRespawn(bool abTeleport)
+	{			
+		cLux_AddDebugMessage("[RESPAWN] [SETUP PHASE]");
+		cLux_AddDebugMessage("[RESPAWN] Player will respawn at: "+msDeathAreaActive);
+				
+		bool bOverrideDefault = false;
+		cLuxMap @pMap = cLux_GetCurrentMap();
+		
+		///////////////////////
+		// If a respawn callback has been specified, use that
+		if (msRespawnCallback != "")
+		{
+			if (pMap.ScriptPrepare("bool " +msRespawnCallback+ "(const tString&in)"))
+			{		
+				cLux_AddDebugMessage("[RESPAWN] Using custom respawn callback: " + msRespawnCallback);		
+				tString sSource = msDeathSource;
+				pMap.SetArgString(0,sSource);
+				bOverrideDefault = true;
+				
+				
+				if (pMap.ScriptExecute())
+				{
+					cLux_AddDebugMessage("[RESPAWN] Custom respawn callback has been executed");	
+					bOverrideDefault = pMap.GetReturnBool();
+					cLux_AddDebugMessage("[RESPAWN] Custom respawn callback returned: " + bOverrideDefault);
+				}
+				
+				iLuxEntity@ pArea = Map_GetEntity(msDeathAreaActive);
+				if (pArea is null)
+				{
+					cLux_AddDebugMessage("Map tries to get entity: "+msDeathAreaActive);
+					Error("Can't find death area:"+msDeathAreaActive+" . Check if it is reset in map script");
+					return;
+				}
+		
+				if (abTeleport)
+				{
+					cLux_AddDebugMessage("[RESPAWN] Player teleported to: " + msDeathAreaActive);	
+					Player_PlaceAtEntity(msDeathAreaActive, true, true);
+				}	
+				
+				if (bOverrideDefault)
+				{
+					cLux_AddDebugMessage("[RESPAWN] Setting Post-Death values");
+					SetPostDeathValues();
+				}
+			}
+		}
+		/////////////////////
+		// If no respawn callback, check OnRespawn func
+		else if (pMap.ScriptPrepare("bool OnRespawn(const tString&in)"))
+		{
+			cLux_AddDebugMessage("[RESPAWN] Using general OnRespawn() callback");
+			tString sSource = msDeathSource;
+			pMap.SetArgString(0,sSource);
+			if (pMap.ScriptExecute())
+			{
+				bOverrideDefault = pMap.GetReturnBool();
+			}
+		}
+		
+		if (bOverrideDefault == false)
+		{
+			cLux_AddDebugMessage("[RESPAWN] Using rewpawn default behavior (fade out, timer, respawn)");
+			mBaseObj.Timer_Add(0, 0.25f, "OnTimer_FadeOut");
+			return;
+		}
+	}
+	
+	//-----------------------------------------------------------
+	
+	void OnTimer_FadeOut(uint64 alId)
+	{
+		//////////
+		// Fade Out
+		cLux_AddDebugMessage("[RESPAWN] Using default initial respawn fadeout. Will respawn in 0.15s");
+		Effect_Fade_Out(0.15f);		
+		mBaseObj.Timer_Add(1, 0.15f, "Timer_Respawn");
+	}
+	
+	//-----------------------------------------------------------
+
+	void ResetDeathConditions()
+	{
+		cLux_AddDebugMessage("Resetting player state, death area, death source, respawn callback");
+		cLux_GetPlayer().GetCharacterBody().SetActive(true);
+		cLux_GetPlayer().ChangeState(ePlayerState_Normal);
+			
+		Player_SetMoveSpeedMul(1, ePlayerMoveSpeedMulType_Death);
+		Player_SetLookSpeedMul(1);
+			
+		msDeathAreaActive="";
+		msDeathSource = "";
+		msRespawnCallback="";
+		mbRespawnAreaPickedByOtherScript = false;
+	}
+	
+	//------------------------------------------------------------
+
+	// Called as a helper from other scripts, this one should not be used internally.
+	void PickRespawnArea(const tString &in asSpecifiedAreas)
+	{
+		cLux_AddDebugMessage("[DEATH] Picked respawn area group: " + asSpecifiedAreas);
+		mbRespawnAreaPickedByOtherScript = true;
+		DeathAreas_PickOne(asSpecifiedAreas);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetRespawnCallback(const tString &in asFunc)
+	{
+		msRespawnCallback = asFunc;
+		cLux_AddDebugMessage("[DEATH] Set respawn callback: " + msRespawnCallback);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEATH SEQUENCE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	int mlDOFID = -1;
+	
+	//------------------------------------------------------------
+	
+	void Timer_OnDeath(uint64 alID)
+	{		
+		cLux_AddDebugMessage("[DEATH] [EXECUTION PHASE]");
+		cLux_AddDebugMessage("[DEATH] Player dies");		
+		
+		////////////
+		// Faded out
+		Effect_DoF_FadeOut(mlImpactDofId, 1.f);
+		mBaseObj.Timer_Remove(alID);
+		
+		/////////////////////////
+		// Override death in map script?
+		bool bOverrideDefault = false;
+		cLuxMap @pMap = cLux_GetCurrentMap();
+		if (pMap.ScriptPrepare("bool OnDeath(const tString&in)"))
+		{
+			cLux_AddDebugMessage("[DEATH] Found custom OnDeath() callback in map");
+			tString sSource = msDeathSource;
+			pMap.SetArgString(0,sSource);
+			if (pMap.ScriptExecute())
+			{
+				bOverrideDefault = pMap.GetReturnBool();
+			}
+		}
+		
+		if (bOverrideDefault)
+		{
+			cLux_AddDebugMessage("[DEATH] Overriding default OnDeath() callback");
+			return;
+		}
+		
+		GameOver_Start(GetDeathSource());
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_OnDeathPermaFail_Stage_1(uint64 alId)
+	{
+		Effect_Fade_Out(0.15f);
+		mBaseObj.Timer_Add(alId, 2.f, "OnTimer_OnDeathPermaFail_Stage_2");
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_OnDeathPermaFail_Stage_2(uint64 alId)
+	{
+		Player_SetHealth(0.75f);
+		ResetDeathConditions();
+		
+		FearHandler_TriggerPermaFail();
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_Respawn(uint64 alID)
+	{		
+		cLux_AddDebugMessage("[RESPAWN] [EXECUTION PHASE]");
+		cLux_GetPlayer().GetCharacterBody().SetActive(true);
+		
+		/////////////////////////
+		// Teleport to death area
+		iLuxEntity@ pArea = Map_GetEntity(msDeathAreaActive);
+		if (pArea is null)
+		{
+			Error("[RESPAWN] Couldn't respawn area: "+msDeathAreaActive);
+			return;
+		}
+		
+		cScript_RunGlobalFunc(msDeathAreaActive, "cScrAreaDeath", "_Global_GetRandomYaw");
+		bool bRandomYaw = cScript_GetGlobalReturnBool();
+		Player_PlaceAtEntity(msDeathAreaActive, true, true);
+		if (bRandomYaw)
+		{
+			cLux_GetPlayer().GetCharacterBody().SetYaw(cMath_RandRectf(0.0f,cMath_PiMul2));
+		}
+		
+		////////////////////////
+		// How many times has the player died using this area?
+		int lAreaDeaths = Entity_GetVarInt(msDeathAreaActive,"DeathAreaUseCount");
+				
+		/////////////////////////
+		// Call death area callback
+		tString sMapKeyName = "Deaths_Map_"+cLux_GetCurrentMap().GetName();
+		int lMapDeaths = cScript_GetGlobalVarInt(sMapKeyName);
+		
+		cScript_RunGlobalFunc(msDeathAreaActive, "cScrAreaDeath", "_Global_GetOnUsedCallback");
+		cLuxMap@ pMap = cLux_GetCurrentMap();
+		
+		tString sCallback = cScript_GetGlobalReturnString();
+		if (sCallback!="")
+		{
+			cLux_AddDebugMessage("[RESPAWN] Calling Death area callback set from the editor");
+			if(pMap.ScriptPrepare("void "+sCallback+"(const tString&in, int, int)"))
+			{
+				tString sArea = msDeathAreaActive;
+				pMap.SetArgString(0, sArea);
+				pMap.SetArgInt(1, lAreaDeaths);
+				pMap.SetArgInt(2, lMapDeaths);
+				pMap.ScriptExecute();
+			}
+		}
+		
+		////////////////////////
+		// Wake Up animation
+		
+		cScript_RunGlobalFunc(msDeathAreaActive, "cScrAreaDeath", "_Global_GetUseDefaultWakeUp");
+		bool bDefaultWakeUp = cScript_GetGlobalReturnBool();
+		
+		cScript_RunGlobalFunc(msDeathAreaActive, "cScrAreaDeath", "_Global_GetWakeUpAnim");
+		msWakeUpAnim = cScript_GetGlobalReturnString();
+		
+		cScript_RunGlobalFunc(msDeathAreaActive, "cScrAreaDeath", "_Global_GetUseRandomWakeUpAnim");
+		if (cScript_GetGlobalReturnBool())
+		{
+			iLuxEntity@ pPlayerBodyEnt = Map_GetEntity(PlayerBody_GetEntityName());
+			if (pPlayerBodyEnt !is null)
+			{
+				cMeshEntity@ pPlayerMesh = pPlayerBodyEnt.GetMeshEntity();
+				array<tString> sWakeUpAnims;
+				for (int i = 0; i < pPlayerMesh.GetAnimationStateNum(); ++i)
+				{
+					cAnimationState@ pState = pPlayerMesh.GetAnimationState(i);
+					if (cString_GetFirstStringPos(pState.GetName(), "wake_up_from_death") >= 0)
+					{
+						sWakeUpAnims.push_back(pState.GetName());
+					}
+				}	
+				if (sWakeUpAnims.size() > 0) msWakeUpAnim = sWakeUpAnims[cMath_RandRectl(0, sWakeUpAnims.size() - 1)];
+			}
+		}
+		
+		if (bDefaultWakeUp)
+		{
+			cLux_AddDebugMessage("[RESPAWN] Using default wakeup");
+			Player_FadeRollTo(78, 10,1000);
+			Player_SetForceCrawling(true);
+			Player_SetCrouching(true, true, true);
+			Player_SetStandDisabled(true);
+			
+			////////////////////////
+			// Start wakeup effects
+			Player_SetLookSpeedMul(0.4f);
+		
+			cCamera@ pCam = cLux_GetPlayer().GetCamera();
+			
+			pCam.SetYawLimits(	pCam.GetYaw() - cMath_ToRad(15), 
+								pCam.GetYaw() + cMath_ToRad(15));
+			
+			pCam.SetPitchLimits(pCam.GetPitch()-cMath_ToRad(15), 
+								pCam.GetPitch()+cMath_ToRad(15));
+		
+			mlDOFID = Effect_DoF_Start(0.1, 1, 1, -1);
+			Effect_Screen_Start("player_damage_screen.mat", cVector2f(0.5, 0.5), cVector2f(1.8, 1.8), 1, 0, 20.0f, 6.f);
+			
+			///////////////////////
+			// Next step
+			mBaseObj.Timer_Add(2, 4, "Timer_WakeUp_FadeIn");
+		}
+		
+		///////////////////////////////
+		// Do wake up anim?
+		else if (PlayerBody_IsActive() && msWakeUpAnim != "")
+		{			
+			mlDOFID = Effect_DoF_Start(0.1, 1, 1, -1);
+			Effect_Screen_Start("player_damage_screen.mat", cVector2f(0.5, 0.5), cVector2f(1.8, 1.8), 1, 0, 20.0f, 6.f);
+			
+			mBaseObj.Timer_Add(3, 4.f, "OnTimer_WakeUpAnim_Setup");
+		}
+		
+		///////////////////////////////
+		// Setup normal player state
+		else
+		{
+			cLux_AddDebugMessage("[RESPAWN] Resetting death conditions and player state");
+			ResetDeathConditions();
+		}
+		
+		ModEvent_Trigger(eModEvent_Death); // ?? 
+		
+		SetPostDeathValues();
+		FearHandler_SetPaused(false);
+		
+		// We've died, so forget the source as our final action
+		msDeathSource = "";
+		msRespawnCallback="";
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_WakeUp_FadeIn(uint64 alID)
+	{
+		cLux_AddDebugMessage("[RESPAWN] Default Anim: FadeIn");
+		/////////////////////////
+		// Activate
+		cLux_GetPlayer().GetCharacterBody().SetActive(true);
+		FearHandler_SetPaused(false);
+		
+		/////////////////////////
+		// Fade in
+		Effect_Fade_In(4.0f);
+		mBaseObj.Timer_Add(2, 2, "Timer_WakeUp_Crawl");
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_WakeUp_Crawl(uint64 alID)
+	{
+		cLux_AddDebugMessage("[RESPAWN] Default Anim: Crawl");
+		/////////////////////////
+		// Effects
+		Effect_DoF_FadeOut(mlDOFID, 1.0f);
+		
+		/////////////////////////
+		// Player
+		Player_SetMoveSpeedMul(0.4, ePlayerMoveSpeedMulType_Death);
+		Player_SetLookSpeedMul(1.0f);
+		Player_SetAfterDamageCrawl(true);
+		
+		//////////////////////////
+		// Camera offsets reset
+		Player_FadeRollTo(0, 8, 30);
+
+		//////////////////////////
+		// Camera Limits
+		Player_ResetCameraLimits();
+		
+		/////////////////////////
+		// Next step
+		mBaseObj.Timer_Add(0, 1.0f,"Timer_WakeUp_Stand");
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_WakeUp_Stand(uint64 alID)
+	{
+		Player_SetSlowStandupMotion(true);
+		Player_SetStandDisabled(false);
+		Player_SetCrouching(false);
+		Player_SetStandDisabled(true);
+		Player_FadeMoveSpeedMulTo(1.0f, 3.0f, ePlayerMoveSpeedMulType_Death);
+		Player_SetAfterDamageCrawl(false);
+		
+		cLux_AddDebugMessage("[RESPAWN] Default Anim: Stand");
+		cLux_GetPlayer().ChangeState(ePlayerState_Normal);
+		
+		Player_SetForceCrawling(false);
+
+		/////////////////////////
+		// Next step
+		mBaseObj.Timer_Add(0, 3,"Timer_WakeUp_AfterStand");
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_WakeUp_AfterStand(uint64 alID)
+	{
+		Player_SetStandDisabled(false);
+		Player_SetSlowStandupMotion(false);
+		
+		msDeathAreaActive="";
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////
+	// Wake up anim sequence
+	void OnTimer_WakeUpAnim_Setup(uint64 alId)
+	{
+		Player_SetMoveSpeedMul(0.f, ePlayerMoveSpeedMulType_Death);
+		Player_SetLookSpeedMul(1.f);
+		
+		tString sAnim = msWakeUpAnim;
+		
+		cLuxArea@ pArea = cLux_ToArea(cLux_GetCurrentMap().GetEntityByName(msDeathAreaActive));
+		cVector3f vOffset = cVector3f(0.f, pArea.GetAreaBody().GetBoundingVolume().GetSize().y * -0.5f, 0.f);
+		
+		PlayerBody_PlayCutsceneAtEntity(sAnim, msDeathAreaActive, false, 0.f, "", 0.f, 0.f, vOffset);
+		
+		mBaseObj.Timer_Add(3, 0.3f, "OnTimer_WakeUpAnim_FadeIn");
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_WakeUpAnim_FadeIn(uint64 alId)
+	{		
+		Effect_Fade_In(4.f);
+		FearHandler_SetPaused(false);
+
+		mBaseObj.Timer_Add(3, 2.f, "OnTimer_WakeUpAnim_Play");
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_WakeUpAnim_Play(uint64 alId)
+	{
+		Effect_DoF_FadeOut(mlDOFID, 1.f);
+		
+		tString sAnim = msWakeUpAnim;
+		
+		cLuxArea@ pArea = cLux_ToArea(cLux_GetCurrentMap().GetEntityByName(msDeathAreaActive));
+		cVector3f vOffset = cVector3f(0.f, pArea.GetAreaBody().GetBoundingVolume().GetSize().y * -0.5f, 0.f);
+		
+		PlayerBody_PlayCutsceneAtEntity(sAnim, msDeathAreaActive, false, 0.f, "OnDeath_WakeUpAnimOver", 1.f, 0.f, vOffset);
+		
+		cAnimationState@ pState = Map_GetEntity(PlayerBody_GetEntityName()).GetMeshEntity().GetAnimationStateFromName(sAnim);		
+		mBaseObj.Timer_Add(3, pState.GetLength() + 0.2f, "OnTimer_WakeUpAnim_End");
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_WakeUpAnim_End(uint64 alId)
+	{
+		ResetDeathConditions();
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEATH AREAS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	/* So the idea here is that we attempt to pick a Death area and materialise the
+	 * player at that location on death, with some state around that location changed.
+	 * If the Death area has Once Only ticked, then it will only ever be played once. 
+	 * We look for an active Once Only node first; if we run out of those, we pick a random
+	 * node from all remaining nodes, reshuffling once we've been through them all.
+	 */
+	 
+	tString msDeathAreaActive;
+	
+	//------------------------------------------------------------
+	
+	void DeathAreas_PickOne(const tString &in asSpecifiedAreas)
+	{
+		//////////////////////////////////
+		// Build lists of valid Death areas
+		array<tString> vOnceOnlyDeathAreas;
+		array<tString> vOtherDeathAreas;
+		
+		// If specific areas have been assigned, only grab them. Otherwise, grab all
+		array<iLuxEntity@> vEntities;
+		tString sAreas = asSpecifiedAreas == "" ? "*" : asSpecifiedAreas;
+		cLux_GetCurrentMap().GetEntityArray(sAreas, eLuxEntityType_Area, "cScrAreaDeath", vEntities);
+		
+		// Filter by active & used
+		iLuxEntity@ pEnt = null;
+		bool bIsOnceOnly = false;
+		tString sName = "";
+		int lUseCount = 0;
+		for (int i=0;i<vEntities.size();++i)
+		{
+			@pEnt = vEntities[i];
+			sName = pEnt.GetName();
+			
+			// Only use active areas (i.e. scripter can set an area active when they want it to be a possibility)
+			if (pEnt.IsActive() == false)
+				continue;
+			
+			cScript_RunGlobalFunc(sName, "cScrAreaDeath", "_Global_IsOnceOnly");
+			bIsOnceOnly = cScript_GetGlobalReturnBool();
+
+			// Always a candidate if it's not once only
+			if (!bIsOnceOnly)
+			{
+				vOtherDeathAreas.push_back(sName);
+				continue;
+			}
+			
+			// It's once only - have we used it? If so, ignore...
+			lUseCount = Entity_GetVarInt(sName,"DeathAreaUseCount");
+			if (lUseCount>0)
+				continue;
+				
+			vOnceOnlyDeathAreas.push_back(sName);
+		}
+		
+		// Have we got ANY non-once-over? If not, complain, because that's a mistake that needs to be fixed.
+		if (vOtherDeathAreas.size() == 0 && asSpecifiedAreas == "")
+		{
+			Error("!!!There aren't any non-Once Only death areas in this map! Please add some!");
+		}
+		else if (vOtherDeathAreas.size() < 3 && asSpecifiedAreas == "")
+		{
+			Error("!!!There aren't enough non-Once Only death areas in this map! Please add some more!");
+		}
+		
+		// Have we got any Once Only areas we can use? If so, pick one!
+		if (vOnceOnlyDeathAreas.size()>0)
+		{			
+			int lPossibles = vOnceOnlyDeathAreas.size();
+			int lPicked = cMath_RandRectl(0,lPossibles-1);
+			DeathAreas_SetAreaToUse(vOnceOnlyDeathAreas[lPicked]);
+			return;
+		}
+		
+		// Let's find a good candidate that's not Once Only
+		if (vOtherDeathAreas.size()==0)
+		{
+			Error("!!!No appropriate death areas (you really need some non-Once Only)!");
+			return;
+		}
+		
+		// Build a weighted list so we have
+		// a higher chance of picking a less-used
+		// area.
+		array<float> vfWeights;
+		vfWeights.resize(vOtherDeathAreas.size());
+		int lCount;
+		float fTotalWeight=0.0f;
+		for (int i=0;i<vOtherDeathAreas.size();++i)
+		{
+			lCount = Entity_GetVarInt(vOtherDeathAreas[i],"DeathAreaUseCount")+1;
+			vfWeights[i]=1.0f/(lCount*lCount);
+			fTotalWeight+=vfWeights[i];
+		}
+		
+		// Pick an area
+		float fAreaVal = cMath_RandRectf(0,fTotalWeight);
+		for (int i=0;i<vOtherDeathAreas.size();++i)
+		{
+			fAreaVal-=vfWeights[i];
+			if (fAreaVal<=0.0f)
+			{
+				// This is the one!
+				cLux_AddDebugMessage("[DEATH] Picked respawn area: " + vOtherDeathAreas[i]);
+				DeathAreas_SetAreaToUse(vOtherDeathAreas[i]);
+				return;
+			}
+		}
+		
+		Error("Shouldn't end up here!");
+	}
+	
+	//------------------------------------------------------------
+	
+	void DeathAreas_SetAreaToUse(const tString&in asArea)
+	{
+		msDeathAreaActive = asArea;
+		int lUseCount = Entity_GetVarInt(asArea,"DeathAreaUseCount");
+		lUseCount++;
+		Entity_SetVarInt(asArea, "DeathAreaUseCount", lUseCount);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetPostDeathValues()
+	{
+		Debug_Log("SET POST DEATH VALUES");
+		/////////////////////////
+		// Refresh player health values etc.
+		// Nudge up just a little		
+		Player_SetHealth(0.75f);
+		//Heat_SetHeatMul(0.0f);
+			
+		// Hit on lucidity meter
+		FearHandler_IncreaseLevelRegenCap();
+		
+		// Items
+		tString sItem = Item_GetHeld(eItemHandlerHand_Right);
+		if (sItem!="")
+			Item_Unequip(sItem, true);
+		sItem = Item_GetHeld(eItemHandlerHand_Left);
+		if (sItem!="")
+			Item_Unequip(sItem,true);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		msDeathAreaActive="";
+		msDeathSource="";
+		msRespawnCallback="";
+		mbRespawnAreaPickedByOtherScript=false;
+	}
+
+	//------------------------------------------------------------
+
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+	
+	void VariableUpdate(float afDeltaTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppGotInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppLostInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnDraw(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPostRender(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+}
