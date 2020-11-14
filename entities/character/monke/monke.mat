@@ -1,8 +1,9 @@
 <Material>
     <Main Type="soliddiffuse" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="Default" BlendMode="Add" />
     <TextureUnits>
-        <Diffuse MipMaps="true" Compress="false" File="mods/MonkeIsland/entities/character/monke/monke.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
-        <NMap MipMaps="true" Compress="false" File="mods/MonkeIsland/entities/character/monke/monke_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Diffuse MipMaps="true" Compress="true" File="mods/MonkeIsland/entities/character/monke/monke.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap MipMaps="true" Compress="true" File="mods/MonkeIsland/entities/character/monke/monke_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Specular MipMaps="true" Compress="false" File="mods/MonkeIsland/entities/character/monke/monke_spec.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
     </TextureUnits>
     <SpecificVariables>
         <Var ObjectId="4294967295" Name="HeightMapScale" Value="0.05" />

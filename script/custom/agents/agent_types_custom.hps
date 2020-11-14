@@ -1,0 +1,150 @@
+/////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////
+
+//----------------------------------------------
+
+shared enum eMonkeMode
+{
+	eMonkeMode_Idle,
+	eMonkeMode_Patrol,
+	eMonkeMode_StalkThroughHoles,
+	eMonkeMode_Hunt,
+	eMonkeMode_Trapped,
+	eMonkeMode_Enthralled,
+	eMonkeMode_Guard,
+	eMonkeMode_RandomWanderArea,
+}
+
+//----------------------------------------------
+
+shared enum eMonkeSpeed
+{
+	eMonkeSpeed_SlowestWalk,
+	eMonkeSpeed_SlowWalk,
+	eMonkeSpeed_Walk,
+	eMonkeSpeed_MediumWalk,
+	eMonkeSpeed_FastWalk,
+	eMonkeSpeed_FasterWalk,
+	eMonkeSpeed_Run,
+	eMonkeSpeed_FastRun,
+	eMonkeSpeed_SlowRun,
+	eMonkeSpeed_Stopped,
+	eMonkeSpeed_Lunge,
+	eMonkeSpeed_TurnDuringAttack,
+	eMonkeSpeed_QuickAccelRun,
+}
+
+//----------------------------------------------
+
+shared enum eGhoulMode
+{
+	eGhoulMode_Idle,
+	eGhoulMode_Patrol,
+	eGhoulMode_StalkThroughHoles,
+	eGhoulMode_Hunt,
+	eGhoulMode_Trapped,
+	eGhoulMode_Enthralled,
+	eGhoulMode_Guard,
+	eGhoulMode_RandomWanderArea,
+}
+
+//----------------------------------------------
+
+shared enum eGhoulSpeed
+{
+	eGhoulSpeed_SlowestWalk,
+	eGhoulSpeed_SlowWalk,
+	eGhoulSpeed_Walk,
+	eGhoulSpeed_MediumWalk,
+	eGhoulSpeed_FastWalk,
+	eGhoulSpeed_FasterWalk,
+	eGhoulSpeed_Run,
+	eGhoulSpeed_FastRun,
+	eGhoulSpeed_SlowRun,
+	eGhoulSpeed_Stopped,
+	eGhoulSpeed_Lunge,
+	eGhoulSpeed_TurnDuringAttack,
+	eGhoulSpeed_QuickAccelRun,
+}
+
+//----------------------------------------------
+
+shared enum eWraithMode
+{
+	eWraithMode_Idle,
+	eWraithMode_None,
+	eWraithMode_Patrol,
+	eWraithMode_WraithPatrol,
+	eWraithMode_ControlGhoul,
+	eWraithMode_FlyPatrol,
+	eWraithMode_FlyFollowEntity,
+	eWraithMode_TinHinan,
+	eWraithMode_GuardPosition,
+}
+
+//----------------------------------------------
+
+shared enum eWraithCommand
+{
+	eWraithCommand_None,
+	eWraithCommand_Patrol,
+	eWraithCommand_ScanPosition,
+	eWraithCommand_SearchArea,
+	eWraithCommand_Pulse,
+	eWraithCommand_Custom,
+	eWraithCommand_FlyToNode,
+	eWraithCommand_FlySpotlightSearch,
+	eWraithCommand_LookAtPosition,
+	eWraithCommand_Disappear,
+	eWraithCommand_Search,
+	eWraithCommand_Dash,
+}
+
+//----------------------------------------------
+
+shared enum eWraithSpeed
+{
+	eWraithSpeed_Walk,
+	eWraithSpeed_Slow,
+	eWraithSpeed_FastWalk,
+	eWraithSpeed_Search,
+	eWraithSpeed_SearchFast,
+	eWraithSpeed_SearchSlow,
+	eWraithSpeed_SearchTurn,
+	eWraithSpeed_SearchTurnSlow,
+	eWraithSpeed_Run,
+	eWraithSpeed_Burst,
+	eWraithSpeed_StealthMode,
+	eWraithSpeed_StealthMoveToPlayer,
+	eWraithSpeed_Struggle,
+	eWraithSpeed_ControlGhoul,
+	eWraithSpeed_Fly,
+}
+
+//----------------------------------------------
+
+shared enum eHumanoidSpeed
+{
+	eHumanoidSpeed_Walk,
+	eHumanoidSpeed_Walk_VerySlow,
+	eHumanoidSpeed_Walk_Slow,
+	eHumanoidSpeed_Walk_Fast,
+	eHumanoidSpeed_Walk_VeryFast,
+	eHumanoidSpeed_Run,
+	eHumanoidSpeed_Run_Slow,
+	eHumanoidSpeed_Run_Fast,
+	eHumanoidSpeed_Idle,
+}
+
+//----------------------------------------------
+
+shared enum eYoungTinHinanSpeed
+{
+	eYoungTinHinanSpeed_WalkingSlow,
+	eYoungTinHinanSpeed_WalkingFast,
+	eYoungTinHinanSpeed_FlyingSlow,
+	eYoungTinHinanSpeed_FlyingFast,
+}
+
+//----------------------------------------------
