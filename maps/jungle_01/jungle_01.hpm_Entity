@@ -1,6 +1,6 @@
 <HPLMapTrack_Entity ID="254C5B97C4C1285F566AA2F6610DA8F11CA04B77" MajorVersion="1" MinorVersion="1">
     <Section Name="13804122162549422590">
-        <FileIndex_Entities NumOfFiles="32">
+        <FileIndex_Entities NumOfFiles="45">
             <File Id="0" Path="entities/desert/organic/tree_acacia/tree_acacia.ent" />
             <File Id="1" Path="entities/desert/organic/tree_acacia_dry/tree_acacia_dry.ent" />
             <File Id="2" Path="entities/desert/organic/tree_acacia_dry/tree_acacia_dry_highwind.ent" />
@@ -33,6 +33,19 @@
             <File Id="29" Path="entities/darkworld/organic/darkworld_roots/darkworld_root_plant_01_static.ent" />
             <File Id="30" Path="entities/tin_hinan/special/vitae_station_pool_roots/pool_root_long_rigged.ent" />
             <File Id="31" Path="entities/tin_hinan/special/vitae_station_pool_roots/pool_root_short_rigged.ent" />
+            <File Id="32" Path="entities/character/ghoul/ghoul_female.ent" />
+            <File Id="33" Path="entities/character/ghoul/ghoul.ent" />
+            <File Id="34" Path="entities/archaeology/furniture/deskplate_01/deskplate_01.ent" />
+            <File Id="35" Path="entities/archaeology/furniture/deskplate_02/deskplate_02.ent" />
+            <File Id="36" Path="entities/archaeology/scaffolding/scaffolding_part_beam_long_1_broken_1.ent" />
+            <File Id="37" Path="entities/archaeology/tools/archaeology_tool_hammer/archaeology_tool_hammer.ent" />
+            <File Id="38" Path="entities/arabic_fort/special/02_03_scaffolding/scaffolding_plank_broken_1.ent" />
+            <File Id="39" Path="entities/nonexclusive/debris/sticks/stick_1.ent" />
+            <File Id="40" Path="entities/arabic_fort/debris/ab_broken_stick02_ent.ent" />
+            <File Id="41" Path="mods/MonkeIsland/entities/floating_planks/plank_float_1.ent" />
+            <File Id="42" Path="entities/tribal/ornaments/tribal_wood_mortar_cup/tribal_wood_mortar_cup.ent" />
+            <File Id="43" Path="entities/cistern/gameplay/broken_beam/cistern_beam_broken_grab.ent" />
+            <File Id="44" Path="entities/cistern/gameplay/passage_rubble/passage_wood_tear.ent" />
         </FileIndex_Entities>
         <Objects>
             <Entity ID="268435460" Name="tree_acacia_1" CreStamp="1605138933" ModStamp="1605138936" WorldPos="8 5.25 1.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 45 268435460">
@@ -343,7 +356,343 @@
                     <Var ObjectId="268435481" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435506" Name="moss_float01_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-39.875 3.5 -33.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 37 268435506">
+            <Entity ID="268435482" Name="moss_float01_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-39.875 3.5 -33.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 37 268435482">
+                <UserVariables>
+                    <Var ObjectId="268435482" Name="Note" Value="" />
+                    <Var ObjectId="268435482" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435482" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435482" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435482" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435482" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435482" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435482" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435482" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435482" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435483" Name="moss_float02_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.625 3.5 -34.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 38 268435483">
+                <UserVariables>
+                    <Var ObjectId="268435483" Name="Note" Value="" />
+                    <Var ObjectId="268435483" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435483" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435483" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435483" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435483" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435483" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435483" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435483" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435483" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435484" Name="moss_float03_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.875 3.5 -33.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 43 268435484">
+                <UserVariables>
+                    <Var ObjectId="268435484" Name="Note" Value="" />
+                    <Var ObjectId="268435484" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435484" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435484" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435484" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435484" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435484" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435484" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435484" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435484" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435485" Name="moss_float04_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-39.125 3.5 -34" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 41 268435485">
+                <UserVariables>
+                    <Var ObjectId="268435485" Name="Note" Value="" />
+                    <Var ObjectId="268435485" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435485" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435485" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435485" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435485" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435485" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435485" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435485" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435485" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435486" Name="moss_float05_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.125 3.5 -35.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 42 268435486">
+                <UserVariables>
+                    <Var ObjectId="268435486" Name="Note" Value="" />
+                    <Var ObjectId="268435486" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435486" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435486" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435486" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435486" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435486" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435486" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435486" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435486" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435487" Name="moss_float06_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-41.375 3.5 -35.5" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 36 268435487">
+                <UserVariables>
+                    <Var ObjectId="268435487" Name="Note" Value="" />
+                    <Var ObjectId="268435487" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435487" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435487" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435487" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435487" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435487" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435487" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435487" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435487" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435488" Name="moss_float07_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-41.375 3.5 -34.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 34 268435488">
+                <UserVariables>
+                    <Var ObjectId="268435488" Name="Note" Value="" />
+                    <Var ObjectId="268435488" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435488" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435488" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435488" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435488" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435488" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435488" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435488" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435488" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435489" Name="moss_float04_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-35.375 3.5 -37.75" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 39 268435489">
+                <UserVariables>
+                    <Var ObjectId="268435489" Name="Note" Value="" />
+                    <Var ObjectId="268435489" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435489" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435489" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435489" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435489" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435489" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435489" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435489" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435489" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435490" Name="moss_float01_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.125 3.5 -37.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 28 268435490">
+                <UserVariables>
+                    <Var ObjectId="268435490" Name="Note" Value="" />
+                    <Var ObjectId="268435490" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435490" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435490" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435490" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435490" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435490" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435490" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435490" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435490" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435491" Name="moss_float03_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.125 3.5 -37.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 35 268435491">
+                <UserVariables>
+                    <Var ObjectId="268435491" Name="Note" Value="" />
+                    <Var ObjectId="268435491" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435491" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435491" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435491" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435491" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435491" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435491" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435491" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435491" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435492" Name="moss_float02_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.875 3.5 -38.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 100 268435492">
+                <UserVariables>
+                    <Var ObjectId="268435492" Name="Note" Value="" />
+                    <Var ObjectId="268435492" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435492" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435492" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435492" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435492" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435492" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435492" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435492" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435492" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435493" Name="moss_float07_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.625 3.5 -38.25" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 99 268435493">
+                <UserVariables>
+                    <Var ObjectId="268435493" Name="Note" Value="" />
+                    <Var ObjectId="268435493" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435493" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435493" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435493" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435493" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435493" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435493" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435493" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435493" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435494" Name="moss_float06_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.625 3.5 -39.25" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 98 268435494">
+                <UserVariables>
+                    <Var ObjectId="268435494" Name="Note" Value="" />
+                    <Var ObjectId="268435494" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435494" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435494" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435494" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435494" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435494" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435494" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435494" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435494" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435495" Name="moss_float05_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.375 3.5 -39.25" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 33 268435495">
+                <UserVariables>
+                    <Var ObjectId="268435495" Name="Note" Value="" />
+                    <Var ObjectId="268435495" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435495" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435495" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435495" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435495" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435495" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435495" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435495" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435495" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435496" Name="moss_float04_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-40.125 3.5 -30.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 51 268435496">
+                <UserVariables>
+                    <Var ObjectId="268435496" Name="Note" Value="" />
+                    <Var ObjectId="268435496" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435496" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435496" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435496" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435496" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435496" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435496" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435496" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435496" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435497" Name="moss_float01_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-40.875 3.5 -30.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 50 268435497">
+                <UserVariables>
+                    <Var ObjectId="268435497" Name="Note" Value="" />
+                    <Var ObjectId="268435497" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435497" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435497" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435497" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435497" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435497" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435497" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435497" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435497" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435498" Name="moss_float03_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.875 3.5 -30" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 49 268435498">
+                <UserVariables>
+                    <Var ObjectId="268435498" Name="Note" Value="" />
+                    <Var ObjectId="268435498" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435498" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435498" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435498" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435498" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435498" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435498" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435498" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435498" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435499" Name="moss_float02_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.625 3.5 -31.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 48 268435499">
+                <UserVariables>
+                    <Var ObjectId="268435499" Name="Note" Value="" />
+                    <Var ObjectId="268435499" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435499" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435499" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435499" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435499" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435499" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435499" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435499" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435499" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435500" Name="moss_float07_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-42.375 3.5 -31" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 47 268435500">
+                <UserVariables>
+                    <Var ObjectId="268435500" Name="Note" Value="" />
+                    <Var ObjectId="268435500" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435500" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435500" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435500" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435500" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435500" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435500" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435500" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435500" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435501" Name="moss_float06_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-42.375 3.5 -32" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 46 268435501">
+                <UserVariables>
+                    <Var ObjectId="268435501" Name="Note" Value="" />
+                    <Var ObjectId="268435501" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435501" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435501" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435501" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435501" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435501" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435501" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435501" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435501" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435502" Name="moss_float05_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.125 3.5 -32" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 101 268435502">
+                <UserVariables>
+                    <Var ObjectId="268435502" Name="Note" Value="" />
+                    <Var ObjectId="268435502" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435502" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435502" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435502" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435502" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435502" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435502" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435502" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435502" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435503" Name="moss_float04_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-39.375 3.5 -26.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 114 268435503">
+                <UserVariables>
+                    <Var ObjectId="268435503" Name="Note" Value="" />
+                    <Var ObjectId="268435503" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435503" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435503" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435503" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435503" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435503" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435503" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435503" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435503" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435504" Name="moss_float01_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.125 3.5 -26.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 103 268435504">
+                <UserVariables>
+                    <Var ObjectId="268435504" Name="Note" Value="" />
+                    <Var ObjectId="268435504" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435504" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435504" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435504" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435504" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435504" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435504" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435504" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435504" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435505" Name="moss_float03_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.125 3.5 -26" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 104 268435505">
+                <UserVariables>
+                    <Var ObjectId="268435505" Name="Note" Value="" />
+                    <Var ObjectId="268435505" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435505" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435505" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435505" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435505" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435505" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435505" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435505" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435505" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435506" Name="moss_float02_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.875 3.5 -27.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 105 268435506">
                 <UserVariables>
                     <Var ObjectId="268435506" Name="Note" Value="" />
                     <Var ObjectId="268435506" Name="CastShadows" Value="true" />
@@ -357,7 +706,7 @@
                     <Var ObjectId="268435506" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435507" Name="moss_float02_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.625 3.5 -34.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 38 268435507">
+            <Entity ID="268435507" Name="moss_float07_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.625 3.5 -27" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 106 268435507">
                 <UserVariables>
                     <Var ObjectId="268435507" Name="Note" Value="" />
                     <Var ObjectId="268435507" Name="CastShadows" Value="true" />
@@ -371,7 +720,7 @@
                     <Var ObjectId="268435507" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435508" Name="moss_float03_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.875 3.5 -33.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 43 268435508">
+            <Entity ID="268435508" Name="moss_float06_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.625 3.5 -28" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 107 268435508">
                 <UserVariables>
                     <Var ObjectId="268435508" Name="Note" Value="" />
                     <Var ObjectId="268435508" Name="CastShadows" Value="true" />
@@ -385,7 +734,7 @@
                     <Var ObjectId="268435508" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435509" Name="moss_float04_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-39.125 3.5 -34" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 41 268435509">
+            <Entity ID="268435509" Name="moss_float05_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.375 3.5 -28" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 108 268435509">
                 <UserVariables>
                     <Var ObjectId="268435509" Name="Note" Value="" />
                     <Var ObjectId="268435509" Name="CastShadows" Value="true" />
@@ -399,7 +748,7 @@
                     <Var ObjectId="268435509" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435510" Name="moss_float05_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-40.125 3.5 -35.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 42 268435510">
+            <Entity ID="268435510" Name="moss_float01_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-37.625 3.5 -34.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 112 268435510">
                 <UserVariables>
                     <Var ObjectId="268435510" Name="Note" Value="" />
                     <Var ObjectId="268435510" Name="CastShadows" Value="true" />
@@ -413,7 +762,7 @@
                     <Var ObjectId="268435510" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435511" Name="moss_float06_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-41.375 3.5 -35.5" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 36 268435511">
+            <Entity ID="268435511" Name="moss_float03_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-38.625 3.5 -34.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 116 268435511">
                 <UserVariables>
                     <Var ObjectId="268435511" Name="Note" Value="" />
                     <Var ObjectId="268435511" Name="CastShadows" Value="true" />
@@ -427,7 +776,7 @@
                     <Var ObjectId="268435511" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435512" Name="moss_float07_sway_2" CreStamp="1605309977" ModStamp="1605309979" WorldPos="-41.375 3.5 -34.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 34 268435512">
+            <Entity ID="268435512" Name="moss_float02_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-38.375 3.5 -35.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 113 268435512">
                 <UserVariables>
                     <Var ObjectId="268435512" Name="Note" Value="" />
                     <Var ObjectId="268435512" Name="CastShadows" Value="true" />
@@ -441,7 +790,21 @@
                     <Var ObjectId="268435512" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435514" Name="moss_float04_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-35.375 3.5 -37.75" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 39 268435514">
+            <Entity ID="268435513" Name="moss_float07_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-39.125 3.5 -35.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 110 268435513">
+                <UserVariables>
+                    <Var ObjectId="268435513" Name="Note" Value="" />
+                    <Var ObjectId="268435513" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435513" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435513" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435513" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435513" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435513" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435513" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435513" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435513" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435514" Name="moss_float06_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-39.125 3.5 -36.5" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 111 268435514">
                 <UserVariables>
                     <Var ObjectId="268435514" Name="Note" Value="" />
                     <Var ObjectId="268435514" Name="CastShadows" Value="true" />
@@ -455,7 +818,7 @@
                     <Var ObjectId="268435514" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435515" Name="moss_float01_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.125 3.5 -37.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 28 268435515">
+            <Entity ID="268435515" Name="moss_float05_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-37.875 3.5 -36.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 115 268435515">
                 <UserVariables>
                     <Var ObjectId="268435515" Name="Note" Value="" />
                     <Var ObjectId="268435515" Name="CastShadows" Value="true" />
@@ -469,7 +832,7 @@
                     <Var ObjectId="268435515" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435516" Name="moss_float03_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.125 3.5 -37.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 35 268435516">
+            <Entity ID="268435516" Name="moss_float05_sway_7" CreStamp="1605310151" ModStamp="1605310156" WorldPos="-40.5 3.5 -37.75" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 32 268435516">
                 <UserVariables>
                     <Var ObjectId="268435516" Name="Note" Value="" />
                     <Var ObjectId="268435516" Name="CastShadows" Value="true" />
@@ -483,7 +846,7 @@
                     <Var ObjectId="268435516" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435517" Name="moss_float02_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.875 3.5 -38.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 100 268435517">
+            <Entity ID="268435517" Name="moss_float01_sway_7" CreStamp="1605310161" ModStamp="1605310162" WorldPos="-35.25 3.5 -39.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 31 268435517">
                 <UserVariables>
                     <Var ObjectId="268435517" Name="Note" Value="" />
                     <Var ObjectId="268435517" Name="CastShadows" Value="true" />
@@ -497,7 +860,7 @@
                     <Var ObjectId="268435517" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435518" Name="moss_float07_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.625 3.5 -38.25" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 99 268435518">
+            <Entity ID="268435518" Name="moss_float05_sway_8" CreStamp="1605310167" ModStamp="1605310169" WorldPos="-35.25 3.5 -40.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 52 268435518">
                 <UserVariables>
                     <Var ObjectId="268435518" Name="Note" Value="" />
                     <Var ObjectId="268435518" Name="CastShadows" Value="true" />
@@ -511,7 +874,7 @@
                     <Var ObjectId="268435518" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435519" Name="moss_float06_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-37.625 3.5 -39.25" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 98 268435519">
+            <Entity ID="268435519" Name="moss_float01_sway_8" CreStamp="1605310260" ModStamp="1605310268" WorldPos="-34.25 3.5 -32.25" Rotation="-0 2.61799 -0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 29 268435519">
                 <UserVariables>
                     <Var ObjectId="268435519" Name="Note" Value="" />
                     <Var ObjectId="268435519" Name="CastShadows" Value="true" />
@@ -525,7 +888,7 @@
                     <Var ObjectId="268435519" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435520" Name="moss_float05_sway_3" CreStamp="1605310087" ModStamp="1605310093" WorldPos="-36.375 3.5 -39.25" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 33 268435520">
+            <Entity ID="268435520" Name="moss_float02_sway_7" CreStamp="1605310275" ModStamp="1605310278" WorldPos="-34 3.5 -31.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 30 268435520">
                 <UserVariables>
                     <Var ObjectId="268435520" Name="Note" Value="" />
                     <Var ObjectId="268435520" Name="CastShadows" Value="true" />
@@ -539,7 +902,7 @@
                     <Var ObjectId="268435520" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435521" Name="moss_float04_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-40.125 3.5 -30.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 51 268435521">
+            <Entity ID="268435521" Name="moss_float01_sway_9" CreStamp="1605310298" ModStamp="1605310300" WorldPos="-34.5 3.5 -36" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 40 268435521">
                 <UserVariables>
                     <Var ObjectId="268435521" Name="Note" Value="" />
                     <Var ObjectId="268435521" Name="CastShadows" Value="true" />
@@ -553,7 +916,7 @@
                     <Var ObjectId="268435521" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435522" Name="moss_float01_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-40.875 3.5 -30.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 50 268435522">
+            <Entity ID="268435522" Name="moss_float03_sway_7" CreStamp="1605310302" ModStamp="1605310308" WorldPos="-34.25 3.5 -37.5" Rotation="0 -1.0472 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 26 268435522">
                 <UserVariables>
                     <Var ObjectId="268435522" Name="Note" Value="" />
                     <Var ObjectId="268435522" Name="CastShadows" Value="true" />
@@ -567,7 +930,7 @@
                     <Var ObjectId="268435522" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435523" Name="moss_float03_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.875 3.5 -30" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 49 268435523">
+            <Entity ID="268435523" Name="moss_float06_sway_7" CreStamp="1605310318" ModStamp="1605310321" WorldPos="-41.5 3.5 -36.75" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 27 268435523">
                 <UserVariables>
                     <Var ObjectId="268435523" Name="Note" Value="" />
                     <Var ObjectId="268435523" Name="CastShadows" Value="true" />
@@ -581,7 +944,7 @@
                     <Var ObjectId="268435523" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435524" Name="moss_float02_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.625 3.5 -31.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 48 268435524">
+            <Entity ID="268435524" Name="moss_float03_sway_8" CreStamp="1605310330" ModStamp="1605310333" WorldPos="-33.5 3.5 -29.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 25 268435524">
                 <UserVariables>
                     <Var ObjectId="268435524" Name="Note" Value="" />
                     <Var ObjectId="268435524" Name="CastShadows" Value="true" />
@@ -595,7 +958,7 @@
                     <Var ObjectId="268435524" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435525" Name="moss_float07_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-42.375 3.5 -31" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 47 268435525">
+            <Entity ID="268435525" Name="tree_acacia_dry_2" CreStamp="1605310579" ModStamp="1605310708" WorldPos="-35.75 5.95016 -27.1323" Rotation="-0.643303 0.122465 2.85039" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 23 268435525">
                 <UserVariables>
                     <Var ObjectId="268435525" Name="Note" Value="" />
                     <Var ObjectId="268435525" Name="CastShadows" Value="true" />
@@ -609,7 +972,7 @@
                     <Var ObjectId="268435525" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435526" Name="moss_float06_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-42.375 3.5 -32" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 46 268435526">
+            <Entity ID="268435526" Name="darkworld_root_plant_01_static_1" CreStamp="1605310643" ModStamp="1605312747" WorldPos="-19.7934 7.55202 -23.5956" Rotation="0.0586818 0.426194 0.140716" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 24 268435526">
                 <UserVariables>
                     <Var ObjectId="268435526" Name="Note" Value="" />
                     <Var ObjectId="268435526" Name="CastShadows" Value="true" />
@@ -623,7 +986,7 @@
                     <Var ObjectId="268435526" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435527" Name="moss_float05_sway_4" CreStamp="1605310095" ModStamp="1605310100" WorldPos="-41.125 3.5 -32" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 101 268435527">
+            <Entity ID="268435527" Name="pool_root_long_rigged_1" CreStamp="1605310661" ModStamp="1605311677" WorldPos="-26.7667 3.5 -18.4583" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 22 268435527">
                 <UserVariables>
                     <Var ObjectId="268435527" Name="Note" Value="" />
                     <Var ObjectId="268435527" Name="CastShadows" Value="true" />
@@ -637,7 +1000,7 @@
                     <Var ObjectId="268435527" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435528" Name="moss_float04_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-39.375 3.5 -26.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="21" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 114 268435528">
+            <Entity ID="268435528" Name="pool_root_short_rigged_1" CreStamp="1605310677" ModStamp="1605311677" WorldPos="-27.8198 4.69648 -19.693" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="31" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 21 268435528">
                 <UserVariables>
                     <Var ObjectId="268435528" Name="Note" Value="" />
                     <Var ObjectId="268435528" Name="CastShadows" Value="true" />
@@ -651,7 +1014,7 @@
                     <Var ObjectId="268435528" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435529" Name="moss_float01_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.125 3.5 -26.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 103 268435529">
+            <Entity ID="268435529" Name="tree_acacia_dry_3" CreStamp="1605310713" ModStamp="1605310746" WorldPos="-36.9108 6.30359 -27.1323" Rotation="-2.21099 0.734224 0.532681" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 19 268435529">
                 <UserVariables>
                     <Var ObjectId="268435529" Name="Note" Value="" />
                     <Var ObjectId="268435529" Name="CastShadows" Value="true" />
@@ -665,7 +1028,7 @@
                     <Var ObjectId="268435529" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435530" Name="moss_float03_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.125 3.5 -26" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 104 268435530">
+            <Entity ID="268435530" Name="tree_acacia_dry_4" CreStamp="1605310777" ModStamp="1605310841" WorldPos="-36.2674 8.61245 -27.1323" Rotation="-3.07274 -0.562062 0.0159753" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 20 268435530">
                 <UserVariables>
                     <Var ObjectId="268435530" Name="Note" Value="" />
                     <Var ObjectId="268435530" Name="CastShadows" Value="true" />
@@ -679,7 +1042,7 @@
                     <Var ObjectId="268435530" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435531" Name="moss_float02_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.875 3.5 -27.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 105 268435531">
+            <Entity ID="268435531" Name="tree_acacia_2" CreStamp="1605310867" ModStamp="1605310904" WorldPos="-36.3105 8.26896 -27.113" Rotation="-0.499809 -1.27145 0.519175" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 18 268435531">
                 <UserVariables>
                     <Var ObjectId="268435531" Name="Note" Value="" />
                     <Var ObjectId="268435531" Name="CastShadows" Value="true" />
@@ -693,7 +1056,7 @@
                     <Var ObjectId="268435531" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435532" Name="moss_float07_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.625 3.5 -27" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 106 268435532">
+            <Entity ID="268435532" Name="tree_acacia_dry_5" CreStamp="1605311574" ModStamp="1605311587" WorldPos="-17 5.70322 -22.9978" Rotation="0.768067 -1.2027 -0.802729" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 10 268435532">
                 <UserVariables>
                     <Var ObjectId="268435532" Name="Note" Value="" />
                     <Var ObjectId="268435532" Name="CastShadows" Value="true" />
@@ -707,7 +1070,7 @@
                     <Var ObjectId="268435532" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435533" Name="moss_float06_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-41.625 3.5 -28" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 107 268435533">
+            <Entity ID="268435533" Name="tree_acacia_dry_6" CreStamp="1605311592" ModStamp="1605311619" WorldPos="-15.1945 6.29359 -15.5022" Rotation="-1.02271 -1.05098 1.08357" Scale="1.19699 1.19699 1.19699" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 11 268435533">
                 <UserVariables>
                     <Var ObjectId="268435533" Name="Note" Value="" />
                     <Var ObjectId="268435533" Name="CastShadows" Value="true" />
@@ -721,7 +1084,7 @@
                     <Var ObjectId="268435533" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435534" Name="moss_float05_sway_5" CreStamp="1605310100" ModStamp="1605310103" WorldPos="-40.375 3.5 -28" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 108 268435534">
+            <Entity ID="268435534" Name="tree_acacia_dry_7" CreStamp="1605311625" ModStamp="1605311663" WorldPos="-17.3622 6.29359 -14.2943" Rotation="-2.47381 -0.81668 2.74565" Scale="1.19699 1.19699 1.19699" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 13 268435534">
                 <UserVariables>
                     <Var ObjectId="268435534" Name="Note" Value="" />
                     <Var ObjectId="268435534" Name="CastShadows" Value="true" />
@@ -735,7 +1098,21 @@
                     <Var ObjectId="268435534" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435536" Name="moss_float01_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-37.625 3.5 -34.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 112 268435536">
+            <Entity ID="268435535" Name="tree_acacia_dry_8" CreStamp="1605311625" ModStamp="1605311663" WorldPos="-19.1676 5.70322 -21.7899" Rotation="-2.28131 1.90689 -2.37912" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 12 268435535">
+                <UserVariables>
+                    <Var ObjectId="268435535" Name="Note" Value="" />
+                    <Var ObjectId="268435535" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435535" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435535" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435535" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435535" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435535" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435535" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435535" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435535" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435536" Name="pool_root_long_rigged_2" CreStamp="1605311685" ModStamp="1605311962" WorldPos="-24.817 4.44249 -21.2254" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 8 268435536">
                 <UserVariables>
                     <Var ObjectId="268435536" Name="Note" Value="" />
                     <Var ObjectId="268435536" Name="CastShadows" Value="true" />
@@ -748,8 +1125,9 @@
                     <Var ObjectId="268435536" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435536" Name="RenderLayer" Value="0" />
                 </UserVariables>
+                <Pose Hash="1904903895">0.38307 0.442305 0.795201 0.158997 0.000191 0.000048 -3.125 0.99487 -0.002989 0.096284 0.03088 99.999786 -0.000015 0 0.986829 -0 -0.161769 -0 100 0.000275 0.000244 0.97782 -0.006281 0.207243 -0.029633 100.000114 0.000092 0 0.985847 -0.008252 0.159486 -0.051007 99.999878 0.000168 0.000488 0.935942 -0.024066 -0.237107 -0.259255 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 -0 0 0 -3.125 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 0 -0 0 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
             </Entity>
-            <Entity ID="268435537" Name="moss_float03_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-38.625 3.5 -34.5" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 116 268435537">
+            <Entity ID="268435537" Name="pool_root_long_rigged_3" CreStamp="1605312311" ModStamp="1605312483" WorldPos="-19.4022 3.5852 -19.0455" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 9 268435537">
                 <UserVariables>
                     <Var ObjectId="268435537" Name="Note" Value="" />
                     <Var ObjectId="268435537" Name="CastShadows" Value="true" />
@@ -762,8 +1140,9 @@
                     <Var ObjectId="268435537" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435537" Name="RenderLayer" Value="0" />
                 </UserVariables>
+                <Pose Hash="1904903895">0.404058 0.304993 0.857296 0.093591 0 0.000024 -3.125097 0.960166 0.006051 0.188358 0.206314 99.999634 -0.000061 0.000244 0.946679 0.249439 0.113228 0.169583 100.000366 0.000122 0 0.994321 -0.01461 -0.100954 -0.030346 99.999878 0.000244 0.000244 0.960798 -0.002299 0.272393 -0.051619 100 0 0.000244 0.89459 0.006778 -0.238229 -0.378035 100 0.000244 0.000366 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 -0 0 0 -3.125 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 0 -0 0 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
             </Entity>
-            <Entity ID="268435538" Name="moss_float02_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-38.375 3.5 -35.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 113 268435538">
+            <Entity ID="268435538" Name="pool_root_long_rigged_4" CreStamp="1605312504" ModStamp="1605312665" WorldPos="-37.0278 4.08981 -29.8641" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 4 268435538">
                 <UserVariables>
                     <Var ObjectId="268435538" Name="Note" Value="" />
                     <Var ObjectId="268435538" Name="CastShadows" Value="true" />
@@ -776,8 +1155,9 @@
                     <Var ObjectId="268435538" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435538" Name="RenderLayer" Value="0" />
                 </UserVariables>
+                <Pose Hash="1904903895">0 -0.943026 -0.332719 -0 0 0 -3.125191 0.963621 0.018808 0.105023 -0.245052 100 0 -0.000244 0.981547 0.005359 -0.18911 -0.027817 100.000122 0.000244 0.000244 0.971092 0.019593 0.221913 0.08574 99.999756 -0.000488 -0.000488 0.955287 -0.028555 -0.277382 0.09834 99.999756 0.000732 0.000244 0.973998 -0 0 0.226558 99.999756 -0.000244 0.000732 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 -0 0 0 -3.125 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
             </Entity>
-            <Entity ID="268435539" Name="moss_float07_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-39.125 3.5 -35.5" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="24" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 110 268435539">
+            <Entity ID="268435539" Name="darkworld_root_plant_01_static_2" CreStamp="1605312748" ModStamp="1605312772" WorldPos="-18.1384 7.55202 -23.6992" Rotation="-0.155522 4.02319 -0.0724588" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 6 268435539">
                 <UserVariables>
                     <Var ObjectId="268435539" Name="Note" Value="" />
                     <Var ObjectId="268435539" Name="CastShadows" Value="true" />
@@ -791,7 +1171,7 @@
                     <Var ObjectId="268435539" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435540" Name="moss_float06_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-39.125 3.5 -36.5" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 111 268435540">
+            <Entity ID="268435540" Name="pool_root_long_rigged_5" CreStamp="1605312840" ModStamp="1605313006" WorldPos="-33.975 3.32748 -29.8208" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 7 268435540">
                 <UserVariables>
                     <Var ObjectId="268435540" Name="Note" Value="" />
                     <Var ObjectId="268435540" Name="CastShadows" Value="true" />
@@ -804,8 +1184,9 @@
                     <Var ObjectId="268435540" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435540" Name="RenderLayer" Value="0" />
                 </UserVariables>
+                <Pose Hash="1904903895">0.545352 -0.696545 -0.450102 -0.121758 9.938051 -7.321095 3.620148 0.960011 0.033196 -0.245943 -0.129576 99.999786 0 -0.000061 0.968156 0.028419 -0.1296 0.212298 99.999878 -0.000488 0.000122 0.989529 -0.008044 0.064196 -0.129018 100.000092 0.000977 0 0.98128 -0.003507 0.017952 0.191715 99.999939 -0.000488 0.000061 0.9617 0.026177 0.099015 -0.254252 99.999817 0.000488 -0.00061 0 -0.707107 -0.707107 -0 99.999878 -0.000244 0 0.707107 -0.707107 -0 -0 -3210.000244 0.000024 -191.95137 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 -0 0.000244 0 -3.125244 1 -0 -0 -0 99.999939 0.000244 -0.000244 1 -0 -0 -0 99.999969 -0.000488 0 1 -0 -0 -0 100.000061 0.000244 -0.000244 1 -0 -0 -0 99.999939 -0.000488 0 1 -0 -0 -0 99.999939 0.000244 -0.000244 0 -0.707107 -0.707107 -0 99.999878 -0.000244 0 0.707107 -0.707107 -0 -0 -3210 0 -191.951416</Pose>
             </Entity>
-            <Entity ID="268435541" Name="moss_float05_sway_6" CreStamp="1605310110" ModStamp="1605310112" WorldPos="-37.875 3.5 -36.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 115 268435541">
+            <Entity ID="268435541" Name="pool_root_long_rigged_6" CreStamp="1605313027" ModStamp="1605313089" WorldPos="-35.7084 3.69008 -29.9818" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 5 268435541">
                 <UserVariables>
                     <Var ObjectId="268435541" Name="Note" Value="" />
                     <Var ObjectId="268435541" Name="CastShadows" Value="true" />
@@ -818,274 +1199,80 @@
                     <Var ObjectId="268435541" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435541" Name="RenderLayer" Value="0" />
                 </UserVariables>
+                <Pose Hash="1904903895">0.084828 0.901673 0.370307 0.20655 0 0.000024 -3.12481 0.989663 -0.002486 -0.079042 -0.119639 99.999756 0.000854 0.000977 0.969956 0.02864 0.142279 -0.195247 100.000244 0 0 0.994285 -0 0 0.106755 100 -0.000244 0.000488 0.976264 0.01305 -0.215737 0.013975 99.999969 0.000488 0.000244 0.910707 -0.081471 0.217033 0.341866 99.999878 0 0.000488 0 -0.707107 -0.707107 -0 99.999939 0 -0.000488 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.950989 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 -0 0.000488 0 -3.125 1 -0 -0 -0 99.999939 0.000488 0 1 -0 -0 -0 100.000031 0 0 1 -0 -0 -0 100.000061 0 0 1 -0 -0 -0 100 0 0 1 -0 -0 -0 100 0 0.000488 0 -0.707107 -0.707107 -0 99.999939 0 -0.000488 0.707107 -0.707107 -0 -0 -3209.999268 0 -191.951172</Pose>
             </Entity>
-            <Entity ID="268435542" Name="moss_float05_sway_7" CreStamp="1605310151" ModStamp="1605310156" WorldPos="-40.5 3.5 -37.75" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 32 268435542">
+            <Entity ID="268435570" Name="tree_acacia_3" CreStamp="1605313351" ModStamp="1605313379" WorldPos="-35.25 8.36897 -24" Rotation="3.1009 -1.17368 -2.88678" Scale="0.497277 0.497277 0.497277" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 3 268435570">
                 <UserVariables>
-                    <Var ObjectId="268435542" Name="Note" Value="" />
-                    <Var ObjectId="268435542" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435542" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435542" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435542" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435542" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435542" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435542" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435542" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435542" Name="RenderLayer" Value="0" />
+                    <Var ObjectId="268435570" Name="Note" Value="" />
+                    <Var ObjectId="268435570" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435570" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435570" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435570" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435570" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435570" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435570" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435570" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435570" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435543" Name="moss_float01_sway_7" CreStamp="1605310161" ModStamp="1605310162" WorldPos="-35.25 3.5 -39.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 31 268435543">
+            <Entity ID="268435574" Name="ghoul" CreStamp="1605313816" ModStamp="1605315343" WorldPos="-38.6863 4.12442 -31.6296" Rotation="-0 3.31976 -0" Scale="1 1 1" FileIndex="32" Active="false" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 2 268435574">
                 <UserVariables>
-                    <Var ObjectId="268435543" Name="Note" Value="" />
-                    <Var ObjectId="268435543" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435543" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435543" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435543" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435543" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435543" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435543" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435543" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435543" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435544" Name="moss_float05_sway_8" CreStamp="1605310167" ModStamp="1605310169" WorldPos="-35.25 3.5 -40.5" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 52 268435544">
-                <UserVariables>
-                    <Var ObjectId="268435544" Name="Note" Value="" />
-                    <Var ObjectId="268435544" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435544" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435544" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435544" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435544" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435544" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435544" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435544" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435544" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435548" Name="moss_float01_sway_8" CreStamp="1605310260" ModStamp="1605310268" WorldPos="-34.25 3.5 -32.25" Rotation="-0 2.61799 -0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 29 268435548">
-                <UserVariables>
-                    <Var ObjectId="268435548" Name="Note" Value="" />
-                    <Var ObjectId="268435548" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435548" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435548" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435548" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435548" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435548" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435548" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435548" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435548" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435550" Name="moss_float02_sway_7" CreStamp="1605310275" ModStamp="1605310278" WorldPos="-34 3.5 -31.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="19" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 30 268435550">
-                <UserVariables>
-                    <Var ObjectId="268435550" Name="Note" Value="" />
-                    <Var ObjectId="268435550" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435550" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435550" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435550" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435550" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435550" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435550" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435550" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435550" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435551" Name="moss_float01_sway_9" CreStamp="1605310298" ModStamp="1605310300" WorldPos="-34.5 3.5 -36" Rotation="0 0 0" Scale="1 1 1" FileIndex="18" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 40 268435551">
-                <UserVariables>
-                    <Var ObjectId="268435551" Name="Note" Value="" />
-                    <Var ObjectId="268435551" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435551" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435551" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435551" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435551" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435551" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435551" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435551" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435551" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435552" Name="moss_float03_sway_7" CreStamp="1605310302" ModStamp="1605310308" WorldPos="-34.25 3.5 -37.5" Rotation="0 -1.0472 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 26 268435552">
-                <UserVariables>
-                    <Var ObjectId="268435552" Name="Note" Value="" />
-                    <Var ObjectId="268435552" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435552" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435552" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435552" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435552" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435552" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435552" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435552" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435552" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435553" Name="moss_float06_sway_7" CreStamp="1605310318" ModStamp="1605310321" WorldPos="-41.5 3.5 -36.75" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 27 268435553">
-                <UserVariables>
-                    <Var ObjectId="268435553" Name="Note" Value="" />
-                    <Var ObjectId="268435553" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435553" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435553" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435553" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435553" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435553" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435553" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435553" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435553" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435554" Name="moss_float03_sway_8" CreStamp="1605310330" ModStamp="1605310333" WorldPos="-33.5 3.5 -29.25" Rotation="0 0 0" Scale="1 1 1" FileIndex="20" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 25 268435554">
-                <UserVariables>
-                    <Var ObjectId="268435554" Name="Note" Value="" />
-                    <Var ObjectId="268435554" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435554" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435554" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435554" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435554" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435554" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435554" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435554" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435554" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435560" Name="tree_acacia_dry_2" CreStamp="1605310579" ModStamp="1605310708" WorldPos="-35.75 5.95016 -27.1323" Rotation="-0.643303 0.122465 2.85039" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 23 268435560">
-                <UserVariables>
-                    <Var ObjectId="268435560" Name="Note" Value="" />
-                    <Var ObjectId="268435560" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435560" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435560" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435560" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435560" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435560" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435560" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435560" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435560" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435561" Name="darkworld_root_plant_01_static_1" CreStamp="1605310643" ModStamp="1605312747" WorldPos="-19.7934 7.55202 -23.5956" Rotation="0.0586818 0.426194 0.140716" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 24 268435561">
-                <UserVariables>
-                    <Var ObjectId="268435561" Name="Note" Value="" />
-                    <Var ObjectId="268435561" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435561" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435561" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435561" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435561" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435561" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435561" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435561" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435561" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435562" Name="pool_root_long_rigged_1" CreStamp="1605310661" ModStamp="1605311677" WorldPos="-26.7667 3.5 -18.4583" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 22 268435562">
-                <UserVariables>
-                    <Var ObjectId="268435562" Name="Note" Value="" />
-                    <Var ObjectId="268435562" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435562" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435562" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435562" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435562" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435562" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435562" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435562" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435562" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435563" Name="pool_root_short_rigged_1" CreStamp="1605310677" ModStamp="1605311677" WorldPos="-27.8198 4.69648 -19.693" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="31" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 21 268435563">
-                <UserVariables>
-                    <Var ObjectId="268435563" Name="Note" Value="" />
-                    <Var ObjectId="268435563" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435563" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435563" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435563" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435563" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435563" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435563" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435563" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435563" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435564" Name="tree_acacia_dry_3" CreStamp="1605310713" ModStamp="1605310746" WorldPos="-36.9108 6.30359 -27.1323" Rotation="-2.21099 0.734224 0.532681" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 19 268435564">
-                <UserVariables>
-                    <Var ObjectId="268435564" Name="Note" Value="" />
-                    <Var ObjectId="268435564" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435564" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435564" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435564" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435564" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435564" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435564" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435564" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435564" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435565" Name="tree_acacia_dry_4" CreStamp="1605310777" ModStamp="1605310841" WorldPos="-36.2674 8.61245 -27.1323" Rotation="-3.07274 -0.562062 0.0159753" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 20 268435565">
-                <UserVariables>
-                    <Var ObjectId="268435565" Name="Note" Value="" />
-                    <Var ObjectId="268435565" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435565" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435565" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435565" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435565" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435565" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435565" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435565" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435565" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435566" Name="tree_acacia_2" CreStamp="1605310867" ModStamp="1605310904" WorldPos="-36.3105 8.26896 -27.113" Rotation="-0.499809 -1.27145 0.519175" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 18 268435566">
-                <UserVariables>
-                    <Var ObjectId="268435566" Name="Note" Value="" />
-                    <Var ObjectId="268435566" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435566" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435566" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435566" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435566" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435566" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435566" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435566" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435566" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435574" Name="tree_acacia_dry_5" CreStamp="1605311574" ModStamp="1605311587" WorldPos="-17 5.70322 -22.9978" Rotation="0.768067 -1.2027 -0.802729" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 10 268435574">
-                <UserVariables>
-                    <Var ObjectId="268435574" Name="Note" Value="" />
-                    <Var ObjectId="268435574" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435574" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435574" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435574" Name="UserVar" Value="" />
+                    <Var ObjectId="268435574" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435574" Name="EffectsActive" Value="true" />
+                    <Var ObjectId="268435574" Name="AutoDisableWhenOutOfSight" Value="false" />
+                    <Var ObjectId="268435574" Name="AutoDisableWhenOutOfSightMinDist" Value="10" />
+                    <Var ObjectId="268435574" Name="AutoDisableCallback" Value="" />
                     <Var ObjectId="268435574" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435574" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435574" Name="UpdateWhenInvisible" Value="false" />
                     <Var ObjectId="268435574" Name="IllumColor" Value="1 1 1 1" />
                     <Var ObjectId="268435574" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435574" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435574" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435574" Name="RenderLayer" Value="0" />
+                    <Var ObjectId="268435574" Name="SensesActive" Value="false" />
+                    <Var ObjectId="268435574" Name="ConnectionStateChangeCallback" Value="" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435574" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435574" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435574" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435574" Name="PlayerInteractLeaveCallback" Value="" />
+                    <Var ObjectId="268435574" Name="PlayerInteractLeaveCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435574" Name="RecieveMessageCallback" Value="" />
+                    <Var ObjectId="268435574" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435574" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435574" Name="ConnectedEntity" Value="" />
+                    <Var ObjectId="268435574" Name="ConnectedEntityInvertState" Value="false" />
+                    <Var ObjectId="268435574" Name="ConnectedEntityStatesUsed" Value="0" />
+                    <Var ObjectId="268435574" Name="HearingMul" Value=".5" />
+                    <Var ObjectId="268435574" Name="SightMul" Value="1" />
+                    <Var ObjectId="268435574" Name="RetreatAreas" Value="" />
+                    <Var ObjectId="268435574" Name="HoleNetwork" Value="" />
+                    <Var ObjectId="268435574" Name="PlayerPath" Value="" />
+                    <Var ObjectId="268435574" Name="HoleConnections" Value="" />
+                    <Var ObjectId="268435574" Name="UseVoice" Value="true" />
+                    <Var ObjectId="268435574" Name="VoiceCharacter" Value="" />
+                    <Var ObjectId="268435574" Name="AlertSubject" Value="" />
+                    <Var ObjectId="268435574" Name="RetreatSubject" Value="" />
+                    <Var ObjectId="268435574" Name="EmergeSubject" Value="" />
+                    <Var ObjectId="268435574" Name="SmellSubject" Value="" />
+                    <Var ObjectId="268435574" Name="EndSearchSubject" Value="" />
+                    <Var ObjectId="268435574" Name="CheckLastKnownPositionSubject" Value="" />
+                    <Var ObjectId="268435574" Name="HitByObjectSubject" Value="" />
+                    <Var ObjectId="268435574" Name="WanderSubject" Value="" />
+                    <Var ObjectId="268435574" Name="WanderMinMaxTime" Value="10 15" />
+                    <Var ObjectId="268435574" Name="SearchSubject" Value="" />
+                    <Var ObjectId="268435574" Name="SearchMinMaxTime" Value="10 15" />
+                    <Var ObjectId="268435574" Name="EatMeatSubject" Value="" />
+                    <Var ObjectId="268435574" Name="EatMeatMinMaxTime" Value="10 15" />
+                    <Var ObjectId="268435574" Name="HeadTracker_TargetEntity" Value="" />
+                    <Var ObjectId="268435574" Name="HeadTracker_Active" Value="true" />
+                    <Var ObjectId="268435574" Name="Listener_Active" Value="true" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435575" Name="tree_acacia_dry_6" CreStamp="1605311592" ModStamp="1605311619" WorldPos="-15.1945 6.29359 -15.5022" Rotation="-1.02271 -1.05098 1.08357" Scale="1.19699 1.19699 1.19699" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 11 268435575">
-                <UserVariables>
-                    <Var ObjectId="268435575" Name="Note" Value="" />
-                    <Var ObjectId="268435575" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435575" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435575" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435575" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435575" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435575" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435575" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435575" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435575" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435576" Name="tree_acacia_dry_7" CreStamp="1605311625" ModStamp="1605311663" WorldPos="-17.3622 6.29359 -14.2943" Rotation="-2.47381 -0.81668 2.74565" Scale="1.19699 1.19699 1.19699" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 13 268435576">
-                <UserVariables>
-                    <Var ObjectId="268435576" Name="Note" Value="" />
-                    <Var ObjectId="268435576" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435576" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435576" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435576" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435576" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435576" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435576" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435576" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435576" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435577" Name="tree_acacia_dry_8" CreStamp="1605311625" ModStamp="1605311663" WorldPos="-19.1676 5.70322 -21.7899" Rotation="-2.28131 1.90689 -2.37912" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 12 268435577">
+            <Entity ID="268435577" Name="moss_float05_sway_9" CreStamp="1605314393" ModStamp="1605314395" WorldPos="-39.0457 3.5 -38.848" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="22" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 132 268435577">
                 <UserVariables>
                     <Var ObjectId="268435577" Name="Note" Value="" />
                     <Var ObjectId="268435577" Name="CastShadows" Value="true" />
@@ -1099,7 +1286,7 @@
                     <Var ObjectId="268435577" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435578" Name="pool_root_long_rigged_2" CreStamp="1605311685" ModStamp="1605311962" WorldPos="-24.817 4.44249 -21.2254" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 8 268435578">
+            <Entity ID="268435578" Name="moss_float06_sway_8" CreStamp="1605314393" ModStamp="1605314395" WorldPos="-40.2957 3.5 -38.848" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 133 268435578">
                 <UserVariables>
                     <Var ObjectId="268435578" Name="Note" Value="" />
                     <Var ObjectId="268435578" Name="CastShadows" Value="true" />
@@ -1112,9 +1299,8 @@
                     <Var ObjectId="268435578" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435578" Name="RenderLayer" Value="0" />
                 </UserVariables>
-                <Pose Hash="1904903895">0.38307 0.442305 0.795201 0.158997 0.000191 0.000048 -3.125 0.99487 -0.002989 0.096284 0.03088 99.999786 -0.000015 0 0.986829 0 -0.161769 -0 100 0.000275 0.000244 0.97782 -0.006281 0.207243 -0.029633 100.000114 0.000092 0 0.985847 -0.008252 0.159486 -0.051007 99.999878 0.000168 0.000488 0.935942 -0.024066 -0.237107 -0.259255 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 0 0 0 -3.125 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 0 -0 0 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
             </Entity>
-            <Entity ID="268435579" Name="pool_root_long_rigged_3" CreStamp="1605312311" ModStamp="1605312483" WorldPos="-19.4022 3.5852 -19.0455" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 9 268435579">
+            <Entity ID="268435579" Name="moss_float06_sway_9" CreStamp="1605314400" ModStamp="1605314402" WorldPos="-38.7214 3.5 -37.5791" Rotation="0 -0.261799 0" Scale="1 1 1" FileIndex="23" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 131 268435579">
                 <UserVariables>
                     <Var ObjectId="268435579" Name="Note" Value="" />
                     <Var ObjectId="268435579" Name="CastShadows" Value="true" />
@@ -1127,38 +1313,8 @@
                     <Var ObjectId="268435579" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435579" Name="RenderLayer" Value="0" />
                 </UserVariables>
-                <Pose Hash="1904903895">0.404058 0.304993 0.857296 0.093591 0 0.000024 -3.125096 0.960166 0.006051 0.188358 0.206314 99.999634 -0.000061 0.000244 0.946679 0.249439 0.113228 0.169583 100.000366 0.000122 0 0.994321 -0.01461 -0.100954 -0.030346 99.999878 0.000244 0.000244 0.960798 -0.002299 0.272393 -0.051619 100 0 0.000244 0.89459 0.006778 -0.238229 -0.378035 100 0.000244 0.000366 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 0 0 0 -3.125 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 0 -0 0 100 -0.000061 0.000244 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
             </Entity>
-            <Entity ID="268435580" Name="pool_root_long_rigged_4" CreStamp="1605312504" ModStamp="1605312665" WorldPos="-37.0278 4.08981 -29.8641" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 5 268435580">
-                <UserVariables>
-                    <Var ObjectId="268435580" Name="Note" Value="" />
-                    <Var ObjectId="268435580" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435580" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435580" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435580" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435580" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435580" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435580" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435580" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435580" Name="RenderLayer" Value="0" />
-                </UserVariables>
-                <Pose Hash="1904903895">0 -0.943026 -0.332719 0 0 0 -3.125191 0.963621 0.018808 0.105023 -0.245052 100 0 -0.000244 0.981547 0.005359 -0.18911 -0.027817 100.000122 0.000244 0.000244 0.971092 0.019593 0.221913 0.08574 99.999756 -0.000488 -0.000488 0.955287 -0.028555 -0.277382 0.09834 99.999756 0.000732 0.000244 0.973998 -0 0 0.226558 99.999756 -0.000244 0.000732 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 0 0 0 -3.125 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 1 -0 -0 -0 100 0.000004 0 0 -0.707107 -0.707107 -0 100.000031 0.000004 0 0.707107 -0.707107 -0 -0 -3209.999756 0 -191.951004</Pose>
-            </Entity>
-            <Entity ID="268435581" Name="darkworld_root_plant_01_static_2" CreStamp="1605312748" ModStamp="1605312772" WorldPos="-18.1384 7.55202 -23.6992" Rotation="-0.155522 4.02319 -0.0724588" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 6 268435581">
-                <UserVariables>
-                    <Var ObjectId="268435581" Name="Note" Value="" />
-                    <Var ObjectId="268435581" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435581" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435581" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435581" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435581" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435581" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435581" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435581" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435581" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435582" Name="pool_root_long_rigged_5" CreStamp="1605312840" ModStamp="1605313006" WorldPos="-33.975 3.32748 -29.8208" Rotation="0 -1.309 0" Scale="1 1 1" FileIndex="30" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 7 268435582">
+            <Entity ID="268435582" Name="deskplate_02_1" CreStamp="1605314660" ModStamp="1605314907" WorldPos="-39.1189 4 -31.3216" Rotation="0 0.576139 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 148 268435582">
                 <UserVariables>
                     <Var ObjectId="268435582" Name="Note" Value="" />
                     <Var ObjectId="268435582" Name="CastShadows" Value="true" />
@@ -1171,7 +1327,114 @@
                     <Var ObjectId="268435582" Name="CollideGroup" Value="" />
                     <Var ObjectId="268435582" Name="RenderLayer" Value="0" />
                 </UserVariables>
-                <Pose Hash="1904903895">0.545352 -0.696545 -0.450102 -0.121758 9.938051 -7.321096 3.620148 0.960011 0.033196 -0.245943 -0.129576 99.999786 0 -0.000061 0.968156 0.028419 -0.1296 0.212298 99.999878 -0.000488 0.000122 0.989529 -0.008044 0.064196 -0.129018 100.000092 0.000977 0 0.98128 -0.003507 0.017952 0.191715 99.999939 -0.000488 0.000061 0.9617 0.026177 0.099015 -0.254252 99.999817 0.000488 -0.00061 0 -0.707107 -0.707107 -0 99.999878 -0.000244 0 0.707107 -0.707107 -0 0 -3210.000244 0.000024 -191.95137 1 -0 -0 -0 0 0 0 0 -0.707107 -0.707107 0 0.000244 0 -3.125244 1 0 -0 -0 99.999939 0.000244 -0.000244 1 -0 -0 -0 99.999969 -0.000488 0 1 -0 -0 -0 100.000061 0.000244 -0.000244 1 0 -0 -0 99.999939 -0.000488 0 1 -0 -0 -0 99.999939 0.000244 -0.000244 0 -0.707107 -0.707107 -0 99.999878 -0.000244 0 0.707107 -0.707107 -0 0 -3210 0 -191.951416</Pose>
+            </Entity>
+            <Entity ID="268435595" Name="deskplate_02_2" CreStamp="1605314858" ModStamp="1605314905" WorldPos="-36.6305 4 -32.1661" Rotation="0 0.0676916 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 147 268435595">
+                <UserVariables>
+                    <Var ObjectId="268435595" Name="Note" Value="" />
+                    <Var ObjectId="268435595" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435595" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435595" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435595" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435595" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435595" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435595" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435595" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435595" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435597" Name="deskplate_02_3" CreStamp="1605314925" ModStamp="1605314953" WorldPos="-38.0146 4.08165 -32.1062" Rotation="0 0.394927 0" Scale="0.785794 0.785794 0.785794" FileIndex="35" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 163 268435597">
+                <UserVariables>
+                    <Var ObjectId="268435597" Name="Note" Value="" />
+                    <Var ObjectId="268435597" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435597" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435597" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435597" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435597" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435597" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435597" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435597" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435597" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435598" Name="tree_cypress_3" CreStamp="1605315052" ModStamp="1605315099" WorldPos="-32.1294 3.72953 -33.7665" Rotation="-0.255158 1.80898 0.00338324" Scale="1 1 1" FileIndex="7" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 178 268435598">
+                <UserVariables>
+                    <Var ObjectId="268435598" Name="Note" Value="" />
+                    <Var ObjectId="268435598" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435598" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435598" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435598" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435598" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435598" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435598" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435598" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435598" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435599" Name="archaeology_tool_hammer_1" CreStamp="1605315187" ModStamp="1605315280" WorldPos="-30.8796 4.16572 -32.5802" Rotation="-0.0219465 0.00918068 0.396138" Scale="1 1 1" FileIndex="37" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 177 268435599">
+                <UserVariables>
+                    <Var ObjectId="268435599" Name="Note" Value="" />
+                    <Var ObjectId="268435599" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435599" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435599" Name="UserVar" Value="" />
+                    <Var ObjectId="268435599" Name="DisableBreakable" Value="false" />
+                    <Var ObjectId="268435599" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435599" Name="StaticPhysics" Value="false" />
+                    <Var ObjectId="268435599" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435599" Name="EffectsActive" Value="true" />
+                    <Var ObjectId="268435599" Name="InteractionDisabled" Value="false" />
+                    <Var ObjectId="268435599" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435599" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435599" Name="EffectColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435599" Name="EffectBrightnessMul" Value="1" />
+                    <Var ObjectId="268435599" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435599" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435599" Name="IsAffectedByDecal" Value="false" />
+                    <Var ObjectId="268435599" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435599" Name="UpdateBonesWhenCulled" Value="false" />
+                    <Var ObjectId="268435599" Name="OnBreakCallbackFunc" Value="" />
+                    <Var ObjectId="268435599" Name="ConnectionStateChangeCallback" Value="" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435599" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435599" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435599" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435599" Name="PlayerInteractLeaveCallback" Value="" />
+                    <Var ObjectId="268435599" Name="PlayerInteractLeaveCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435599" Name="RecieveMessageCallback" Value="" />
+                    <Var ObjectId="268435599" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435599" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435599" Name="ConnectedEntity" Value="" />
+                    <Var ObjectId="268435599" Name="ConnectedEntityInvertState" Value="false" />
+                    <Var ObjectId="268435599" Name="ConnectedEntityStatesUsed" Value="0" />
+                    <Var ObjectId="268435599" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435599" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435599" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435599" Name="ParentAttachSocket" Value="" />
+                    <Var ObjectId="268435599" Name="ParentAttachSnap" Value="false" />
+                    <Var ObjectId="268435599" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435599" Name="ConnectedLight" Value="" />
+                    <Var ObjectId="268435599" Name="ConnectionLightAmount" Value="1" />
+                    <Var ObjectId="268435599" Name="ConnectionLightUseOnColor" Value="true" />
+                    <Var ObjectId="268435599" Name="ConnectionLightUseSpec" Value="false" />
+                    <Var ObjectId="268435599" Name="ConnectionLightType" Value="Mul" />
+                    <Var ObjectId="268435599" Name="ExtraConnectedLight" Value="" />
+                    <Var ObjectId="268435599" Name="ExtraConnectionLightAmount" Value="1" />
+                    <Var ObjectId="268435599" Name="ExtraConnectionLightUseOnColor" Value="true" />
+                    <Var ObjectId="268435599" Name="ExtraConnectionLightUseSpec" Value="false" />
+                    <Var ObjectId="268435599" Name="ExtraConnectionLightType" Value="Mul" />
+                    <Var ObjectId="268435599" Name="InteractDisablesStaticPhysics" Value="false" />
+                    <Var ObjectId="268435599" Name="ScaryObject_Enabled" Value="false" />
+                    <Var ObjectId="268435599" Name="ScaryObject_BaseFearRateMultiplier" Value="1.0" />
+                    <Var ObjectId="268435599" Name="ScaryObject_ActivationCallback" Value="" />
+                    <Var ObjectId="268435599" Name="ScaryObject_DeactivationCallback" Value="" />
+                    <Var ObjectId="268435599" Name="Threat_Enabled" Value="false" />
+                    <Var ObjectId="268435599" Name="Threat_BaseFearRateMultiplier" Value="1.0" />
+                    <Var ObjectId="268435599" Name="Threat_ActivationCallback" Value="" />
+                    <Var ObjectId="268435599" Name="Threat_DeactivationCallback" Value="" />
+                </UserVariables>
             </Entity>
         </Objects>
     </Section>

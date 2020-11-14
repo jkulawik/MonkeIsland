@@ -37,7 +37,7 @@ class cScrMap : iScrMap
 		// Put display name entry in english.lang / Levels
 		PlayerBody_SetActive(true);
 		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
-		
+		Entity_SetActive("ghoul", true);
 		// Set up color grading etc.
 	}
 	
