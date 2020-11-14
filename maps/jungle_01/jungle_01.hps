@@ -10,6 +10,8 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
+#include "custom/helpers/helper_agent.hps"
+//#include "custom/agents/agent_ghoul.hps"
 
 //--------------------------------------------------
  
@@ -37,7 +39,10 @@ class cScrMap : iScrMap
 		// Put display name entry in english.lang / Levels
 		PlayerBody_SetActive(true);
 		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
-		Entity_SetActive("ghoul", true);
+		
+		Game_AutoSave();
+
+		
 		// Set up color grading etc.
 	}
 	
@@ -79,7 +84,16 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
-		Game_AutoSave();
+		//*
+		Entity_SetActive("ghoul", true);
+		Ghoul_ModePatrol_ClearNodes("ghoul");
+		Ghoul_ModePatrol_Setup("ghoul", false, eGhoulSpeed_Walk);
+		Ghoul_ModePatrol_AddNode("ghoul", "PathNodePatrol_7", 3.0, 5.0, "", false);
+		Ghoul_ModePatrol_AddNode("ghoul", "PathNodePatrol_1", 3.0, 5.0, "", false);
+		Ghoul_ModePatrol_AddNode("ghoul", "PathNodePatrol_2", 3.0, 5.0, "", false);
+		Ghoul_Mode_Set("ghoul", eGhoulMode_Patrol, false);
+		
+		//*/
 	}
 
 	//-------------------------------------------------------

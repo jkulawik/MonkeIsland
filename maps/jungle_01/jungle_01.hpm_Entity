@@ -1,6 +1,6 @@
 <HPLMapTrack_Entity ID="254C5B97C4C1285F566AA2F6610DA8F11CA04B77" MajorVersion="1" MinorVersion="1">
     <Section Name="13804122162549422590">
-        <FileIndex_Entities NumOfFiles="59">
+        <FileIndex_Entities NumOfFiles="60">
             <File Id="0" Path="entities/desert/organic/tree_acacia/tree_acacia.ent" />
             <File Id="1" Path="entities/desert/organic/tree_acacia_dry/tree_acacia_dry.ent" />
             <File Id="2" Path="entities/desert/organic/tree_acacia_dry/tree_acacia_dry_highwind.ent" />
@@ -60,6 +60,7 @@
             <File Id="56" Path="entities/nonexclusive/weapons/revolver/Revolver.ent" />
             <File Id="57" Path="entities/paris_ending/npc/parisian_woman/parisian_woman.ent" />
             <File Id="58" Path="entities/tribal/ornaments/bowl_pilgrim/bowl_pilgrim.ent" />
+            <File Id="59" Path="entities/technical/block_box/block_box_platform.ent" />
         </FileIndex_Entities>
         <Objects>
             <Entity ID="268435461" Name="tree_acacia_1" CreStamp="1605138933" ModStamp="1605138936" WorldPos="8 5.25 1.75" Rotation="0 0 0" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 45 268435461">
@@ -1229,7 +1230,7 @@
                     <Var ObjectId="268435543" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435544" Name="ghoul" CreStamp="1605313816" ModStamp="1605378155" WorldPos="-38.6863 4.12442 -31.6296" Rotation="-0 3.31976 -0" Scale="1 1 1" FileIndex="32" Active="false" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 2 268435544">
+            <Entity ID="268435544" Name="ghoul" CreStamp="1605313816" ModStamp="1605379180" WorldPos="-38.6068 4.34179 -37.4069" Rotation="0 0.250522 0" Scale="1 1 1" FileIndex="32" Active="false" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 2 268435544">
                 <UserVariables>
                     <Var ObjectId="268435544" Name="EventInstanceTag" Value="" />
                     <Var ObjectId="268435544" Name="UserVar" Value="" />
@@ -1328,7 +1329,7 @@
                     <Var ObjectId="268435547" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435548" Name="deskplate_02_1" CreStamp="1605314660" ModStamp="1605314907" WorldPos="-39.1189 4 -31.3216" Rotation="0 0.576139 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 148 268435548">
+            <Entity ID="268435548" Name="deskplate_02_1" CreStamp="1605314660" ModStamp="1605379046" WorldPos="-39.0395 4.21737 -37.0989" Rotation="0 0.576139 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 148 268435548">
                 <UserVariables>
                     <Var ObjectId="268435548" Name="Note" Value="" />
                     <Var ObjectId="268435548" Name="CastShadows" Value="true" />
@@ -1342,7 +1343,7 @@
                     <Var ObjectId="268435548" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435549" Name="deskplate_02_2" CreStamp="1605314858" ModStamp="1605314905" WorldPos="-36.6305 4 -32.1661" Rotation="0 0.0676916 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 147 268435549">
+            <Entity ID="268435549" Name="deskplate_02_2" CreStamp="1605314858" ModStamp="1605379046" WorldPos="-36.5511 4.21737 -37.9434" Rotation="0 0.0676916 0" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 147 268435549">
                 <UserVariables>
                     <Var ObjectId="268435549" Name="Note" Value="" />
                     <Var ObjectId="268435549" Name="CastShadows" Value="true" />
@@ -1356,7 +1357,7 @@
                     <Var ObjectId="268435549" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435550" Name="deskplate_02_3" CreStamp="1605314925" ModStamp="1605314953" WorldPos="-38.0146 4.08165 -32.1062" Rotation="0 0.394927 0" Scale="0.785794 0.785794 0.785794" FileIndex="35" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 163 268435550">
+            <Entity ID="268435550" Name="deskplate_02_3" CreStamp="1605314925" ModStamp="1605379046" WorldPos="-37.9352 4.29902 -37.8835" Rotation="0 0.394927 0" Scale="0.785794 0.785794 0.785794" FileIndex="35" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 163 268435550">
                 <UserVariables>
                     <Var ObjectId="268435550" Name="Note" Value="" />
                     <Var ObjectId="268435550" Name="CastShadows" Value="true" />
@@ -1370,21 +1371,7 @@
                     <Var ObjectId="268435550" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435551" Name="tree_cypress_3" CreStamp="1605315052" ModStamp="1605315099" WorldPos="-32.1294 3.72953 -33.7665" Rotation="-0.255158 1.80898 0.00338324" Scale="1 1 1" FileIndex="7" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 178 268435551">
-                <UserVariables>
-                    <Var ObjectId="268435551" Name="Note" Value="" />
-                    <Var ObjectId="268435551" Name="CastShadows" Value="true" />
-                    <Var ObjectId="268435551" Name="IsAffectedByDecal" Value="true" />
-                    <Var ObjectId="268435551" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="268435551" Name="ColorBrightness" Value="1" />
-                    <Var ObjectId="268435551" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="268435551" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="268435551" Name="IsOccluder" Value="false" />
-                    <Var ObjectId="268435551" Name="CollideGroup" Value="" />
-                    <Var ObjectId="268435551" Name="RenderLayer" Value="0" />
-                </UserVariables>
-            </Entity>
-            <Entity ID="268435591" Name="chained_closet_1" CreStamp="1605369790" ModStamp="1605369790" WorldPos="-34.75 3.25 -1.5" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="45" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 193 268435591">
+            <Entity ID="268435591" Name="chained_closet_1" CreStamp="1605369790" ModStamp="1605385959" WorldPos="-23.2198 3.25 7.85637" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="45" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 193 268435591">
                 <UserVariables>
                     <Var ObjectId="268435591" Name="Note" Value="" />
                     <Var ObjectId="268435591" Name="CastShadows" Value="true" />
@@ -1398,7 +1385,7 @@
                     <Var ObjectId="268435591" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435596" Name="tribal_food_bowl_01_1" CreStamp="1605371900" ModStamp="1605377996" WorldPos="-38.4016 3.25 -36.5351" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="47" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 188 268435596">
+            <Entity ID="268435596" Name="tribal_food_bowl_01_1" CreStamp="1605371900" ModStamp="1605384176" WorldPos="-37.0843 3.25 -35.3038" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="47" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 188 268435596">
                 <UserVariables>
                     <Var ObjectId="268435596" Name="Note" Value="" />
                     <Var ObjectId="268435596" Name="EventInstanceTag" Value="" />
@@ -1530,7 +1517,7 @@
                     <Var ObjectId="268435610" Name="Threat_DeactivationCallback" Value="" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435611" Name="tribal_food_bowl_01_2" CreStamp="1605377998" ModStamp="1605377999" WorldPos="-38.2835 3.25 -37.9556" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="47" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 192 268435611">
+            <Entity ID="268435611" Name="tribal_food_bowl_01_2" CreStamp="1605377998" ModStamp="1605384170" WorldPos="-36.6156 3.25 -35.9404" Rotation="0 1.5708 0" Scale="1 1 1" FileIndex="47" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 192 268435611">
                 <UserVariables>
                     <Var ObjectId="268435611" Name="Note" Value="" />
                     <Var ObjectId="268435611" Name="EventInstanceTag" Value="" />
@@ -1660,6 +1647,76 @@
                     <Var ObjectId="268435612" Name="Threat_BaseFearRateMultiplier" Value="1.0" />
                     <Var ObjectId="268435612" Name="Threat_ActivationCallback" Value="" />
                     <Var ObjectId="268435612" Name="Threat_DeactivationCallback" Value="" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435617" Name="deskplate_02_4" CreStamp="1605380521" ModStamp="1605380562" WorldPos="-34.1875 4.14984 -38.1172" Rotation="-0.00912716 0.0670744 -0.135348" Scale="1 1 1" FileIndex="35" Active="true" Important="false" Static="true" CulledByDistance="true" CulledByFog="true" UID="16 223 268435617">
+                <UserVariables>
+                    <Var ObjectId="268435617" Name="Note" Value="" />
+                    <Var ObjectId="268435617" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435617" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435617" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435617" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435617" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435617" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435617" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435617" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435617" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435625" Name="tree_acacia_dry_9" CreStamp="1605385986" ModStamp="1605386006" WorldPos="-22.1398 6.56748 19.2762" Rotation="-3.10836 -0.450684 -0.655412" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 250 268435625">
+                <UserVariables>
+                    <Var ObjectId="268435625" Name="Note" Value="" />
+                    <Var ObjectId="268435625" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435625" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435625" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435625" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435625" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435625" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435625" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435625" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435625" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435626" Name="tree_acacia_dry_10" CreStamp="1605386007" ModStamp="1605386018" WorldPos="-29.1762 6.56748 16.4894" Rotation="1.38875 -1.11797 2.5753" Scale="1 1 1" FileIndex="1" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 249 268435626">
+                <UserVariables>
+                    <Var ObjectId="268435626" Name="Note" Value="" />
+                    <Var ObjectId="268435626" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435626" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435626" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435626" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435626" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435626" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435626" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435626" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435626" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435627" Name="darkworld_root_plant_01_static_3" CreStamp="1605386026" ModStamp="1605386043" WorldPos="-28.0175 3.47807 17.4305" Rotation="0.178261 -0.184831 -0.453356" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 248 268435627">
+                <UserVariables>
+                    <Var ObjectId="268435627" Name="Note" Value="" />
+                    <Var ObjectId="268435627" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435627" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435627" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435627" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435627" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435627" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435627" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435627" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435627" Name="RenderLayer" Value="0" />
+                </UserVariables>
+            </Entity>
+            <Entity ID="268435628" Name="darkworld_root_plant_01_static_4" CreStamp="1605386055" ModStamp="1605386064" WorldPos="-23.1361 3.13316 18.1587" Rotation="-0.0231162 -0.255056 0.413514" Scale="3.46624 3.46624 3.46624" FileIndex="29" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 247 268435628">
+                <UserVariables>
+                    <Var ObjectId="268435628" Name="Note" Value="" />
+                    <Var ObjectId="268435628" Name="CastShadows" Value="true" />
+                    <Var ObjectId="268435628" Name="IsAffectedByDecal" Value="true" />
+                    <Var ObjectId="268435628" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435628" Name="ColorBrightness" Value="1" />
+                    <Var ObjectId="268435628" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435628" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435628" Name="IsOccluder" Value="false" />
+                    <Var ObjectId="268435628" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435628" Name="RenderLayer" Value="0" />
                 </UserVariables>
             </Entity>
         </Objects>
