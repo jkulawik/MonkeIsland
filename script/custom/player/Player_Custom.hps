@@ -343,12 +343,12 @@ class cScrPlayerCustom : cScrPlayer
 		///////////////////////
 		// Create screen effect if hurt
 		// TODO: Commented out this since everything would be red all of the time when health is zero which is default
-		//if (fHealth < 1.f && mlHealthRegen_ScreenId == -1)
-		//{
-			//float fAspect = mBaseObj.GetCamera().GetAspect();
-			//float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
-			//mlHealthRegen_ScreenId = Effect_Screen_Start("player_health_screen.mat", cVector2f(0.5f, 0.5f), cVector2f(fBaseSize * fAspect, fBaseSize));
-		//}
+		if (fHealth < 1.f && mlHealthRegen_ScreenId == -1)
+		{
+			float fAspect = mBaseObj.GetCamera().GetAspect();
+			float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
+			mlHealthRegen_ScreenId = Effect_Screen_Start("player_health_screen.mat", cVector2f(0.5f, 0.5f), cVector2f(fBaseSize * fAspect, fBaseSize));
+		}
 			
 		if (mfHealthRegen_TimeSinceDamage < 999999.f)
 			mfHealthRegen_TimeSinceDamage += afTimeStep;
@@ -423,7 +423,7 @@ class cScrPlayerCustom : cScrPlayer
 	{
 		if(Player_GetHealth() <= 0.f )
 		{
-			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
 			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
 			Death_Start("");
 			
@@ -448,7 +448,7 @@ class cScrPlayerCustom : cScrPlayer
 			
 			if (bDead == false)
 			{
-				Sound_PlayGui("player/vocalisations/hurt/player_pain_med", 1.0f, eSoundEntryType_GuiWorld);
+				Sound_PlayGui("monke/Player/reaction/air/hurt", 1.0f, eSoundEntryType_GuiWorld);
 				
 				if (PlayerBody_IsActive() &&
 					aType == eDamageType_FallBig &&
@@ -463,11 +463,7 @@ class cScrPlayerCustom : cScrPlayer
 		{			
 			if (bDead == false && bPlayerSpeaking)
 			{
-				tString sVocalization = "small";
-				if (afAmount >= 0.75) 		sVocalization = "big";
-				else if (afAmount >= 0.5)	sVocalization = "med";
-				
-				Sound_PlayGui("player/vocalisations/hurt/player_pain_"+ sVocalization + Player_GetReactionSoundSuffix(),1);
+				Sound_PlayGui("monke/Player/reaction/air/hurt_" + Player_GetReactionSoundSuffix(),1);
 			}
 		}
 
@@ -587,7 +583,7 @@ class cScrPlayerCustom : cScrPlayer
 	{
 		if (cLux_GetPlayer().IsActive() && cLux_GetPlayer().GetCanDie())
 		{            
-			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
 			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
 			Death_Start(asSource);
 		}
@@ -2072,7 +2068,7 @@ class cScrPlayerCustom : cScrPlayer
 			if (Voice_AnySceneIsActive())
 				return;
 			
-			Voice_PlayDelayed("Global_Lantern_TryButLost", 0.5f);
+			//Voice_PlayDelayed("Global_Lantern_TryButLost", 0.5f);
 		}
 	}
 		

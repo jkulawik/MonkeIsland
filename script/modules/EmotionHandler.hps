@@ -1,0 +1,745 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "modules/ModuleInterfaces.hps"
+
+//---------------------------------------------------
+
+cVector2f[] gfBGBreathGapLength = {
+	cVector2f(3.75, 0.85),
+	cVector2f(3.25, 1.2)
+};
+
+float gfUnderwaterSuitSoundGap = 16.0f;
+
+//---------------------------------------------------
+
+class cBackgroundBreathInstance
+{
+	cBackgroundBreathInstance()
+	{
+		mfCount =0;
+		mbMuted = false;
+	}
+	
+	int mlId;
+	int mlPrio;
+	
+	float mfFadeInSpeed;
+	float mfFadeOutSpeed;
+	float mfDuration; //<0 = forever.
+	
+	float mfCount;
+	
+	bool mbMuted;
+	
+	eBreathType mType;
+	float mfStrength;
+}
+
+//---------------------------------------------------
+
+class cHeartbeatInstance
+{
+	int mlId;
+	int mlPrio;	
+	
+	float mfFadeInSpeed;
+	float mfFadeOutSpeed;
+	float mfDuration; //<0 = forever.
+	
+	float mfCount=0;
+		
+	float mfVolume;
+	float mfTimeBetweenBeats;
+}
+
+//---------------------------------------------------
+
+class cBreathSound
+{
+	tString msSound;
+	float mfStrength;
+	bool mbPutInQueue;
+	float mfCount;
+}
+
+//---------------------------------------------------
+
+class cScrEmotionHandler : iScrUserModule, iScrUserModule_Interface, iScrEmotionHandler_Interface
+{
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		mDefaultBackground.mType = 	eBreathType_Normal;
+		mDefaultBackground.mfStrength =0;
+		mDefaultBackground.mfFadeInSpeed =-1;
+		mDefaultBackground.mfFadeOutSpeed =-1;
+	}
+	
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	//MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		@mpBreathSound = null;
+	}
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		mvBackgroundBreaths.resize(0);
+		mvHeartbeats.resize(0);
+		
+		mfHeartBeat_PrevVolume=0;
+		mfHeartBeat_PrevGapTime=1;
+		mfHeartBeat_CurrentVolume=0;
+		mfHeartBeat_CurrentGapTime=1;
+		mlHeartBeat_CurrentID=-1;
+		mfHeartBeat_CurrentFadeInSpeed=1;
+		mfHeartBeat_CurrentFadeOutSpeed=1;
+		mfHeartBeat_Amount =0;
+		
+		mfBreath_CurrentStrength=0;
+		mfBreath_CurrentFadeInSpeed=1;
+		mfBreath_CurrentFadeOutSpeed=1;
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap)
+	{
+	}
+	
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// BREATHING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	int StartHeartbeat(float afTimeBetweenBeats, float afVolume, int alPrio, float afDuration=-1, float afFadeInTime=3, float afFadeOutTime=3)
+	{
+		cHeartbeatInstance heartBeat;
+		heartBeat.mlPrio = alPrio;
+		heartBeat.mlId = mlIdCount++;
+		
+		heartBeat.mfTimeBetweenBeats = afTimeBetweenBeats;
+		heartBeat.mfVolume = afVolume;
+		heartBeat.mfDuration = afDuration;
+		heartBeat.mfFadeInSpeed = afFadeInTime>0 ? 1.0f/ afFadeInTime : 99999.0f;
+		heartBeat.mfFadeOutSpeed = afFadeOutTime>0 ? 1.0f/ afFadeOutTime : 99999.0f;
+		
+		mvHeartbeats.push_back(heartBeat);
+		
+		if(mlIdCount>200000) mlIdCount=0;
+		
+		return heartBeat.mlId;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetHeartbeatProperties(int alId, float afTimeBetweenBeats, float afVolume)
+	{
+		for(int i=0; i<mvHeartbeats.size(); ++i)
+		{
+			if(mvHeartbeats[i].mlId == alId)
+			{
+				mvHeartbeats[i].mfTimeBetweenBeats = afTimeBetweenBeats;
+				mvHeartbeats[i].mfVolume = afVolume;
+				return;
+			}
+		}
+		Error("Could not find emotion heartbeat with id "+alId);
+	}
+	
+	//------------------------------------------------------------
+	
+	void StopHeartbeat(int alId)
+	{
+		for(int i=0; i<mvHeartbeats.size(); ++i)
+		{
+			if(mvHeartbeats[i].mlId == alId)
+			{
+				mvHeartbeats[i] = mvHeartbeats[mvHeartbeats.size()-1];
+				mvHeartbeats.pop_back();
+				return;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	int StartBackgroundBreath(eBreathType aType, float afStrength, int alPrio, float afDuration=-1, float afFadeInSpeed=0.2f, float afFadeOutSpeed=0.2f)
+	{
+		cBackgroundBreathInstance bgInstance;
+		bgInstance.mlPrio = alPrio;
+		bgInstance.mlId = mlIdCount++;
+		bgInstance.mType = aType;
+		bgInstance.mfStrength = afStrength;
+		
+		bgInstance.mfFadeInSpeed = afFadeInSpeed;
+		bgInstance.mfFadeOutSpeed = afFadeOutSpeed;
+		bgInstance.mfDuration = afDuration;
+		
+		mvBackgroundBreaths.push_back(bgInstance);
+		
+		if(mlIdCount>200000) mlIdCount=0;
+		
+		return bgInstance.mlId;
+	}
+			
+	//------------------------------------------------------------
+	
+	void SetBackgroundBreathMuted(int alId, bool abX)
+	{
+		if(alId == -1)
+		{
+			mDefaultBackground.mbMuted = abX;
+			return;
+		}
+		
+		for(int i=0; i<mvBackgroundBreaths.size(); ++i)
+		{
+			if(mvBackgroundBreaths[i].mlId == alId)
+			{
+				mvBackgroundBreaths[i].mbMuted = abX;
+			}
+		}
+	}
+	
+	
+	//------------------------------------------------------------
+	
+	void StopBackgroundBreath(int alId)
+	{
+		for(int i=0; i<mvBackgroundBreaths.size(); ++i)
+		{
+			if(mvBackgroundBreaths[i].mlId == alId)
+			{
+				mvBackgroundBreaths[i] = mvBackgroundBreaths[mvBackgroundBreaths.size()-1];
+				mvBackgroundBreaths.pop_back();
+				return;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void PlayEventBreath(const tString& in asSound, int alPrio)
+	{
+		///////////////////////////
+		// Check if any background breathing is happening
+		for(int i=0; i<mvBackgroundBreaths.size();++i)
+		{
+			if(mvBackgroundBreaths[i].mlPrio>alPrio) return;
+		}
+				
+		///////////////////////////
+		// Play the sound
+		if(PlayBreath(asSound, -1, true, alPrio))
+		{
+			mLastBreathType = eBreathType_LastEnum; 
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool PlayBreath(const tString& in asSound, float afStrength, bool abIsEvent, int alPrio)
+	{
+		///////////////////////////
+		// See if a breath sound is playing
+		if(mpBreathSound !is null && cSound_IsValid(mpBreathSound, mlBreathSoundId))
+		{
+			if(mbBreathSoundIsEvent==false || mlBreath_CurrentPrio < alPrio)
+			{
+				mpBreathSound.FadeOut(3.0f);
+			}
+			else
+			{
+					return false;
+			}
+		}
+		
+		//cLux_AddDebugMessage("Breath: "+asSound+" strength: "+afStrength);
+			
+		///////////////////////////
+		// Play the sound
+		cLuxSoundExtraData extraData;
+		if(cLux_PlayGuiSoundDataEx(asSound, eSoundEntryType_WorldClean, 1.0f, true, extraData))
+		{
+			if(afStrength>=0)
+				extraData.mpSoundEntry.SetParam("strength", afStrength);
+				
+			@mpBreathSound = extraData.mpSoundEntry;
+			mlBreathSoundId = mpBreathSound.GetId();
+			mbBreathSoundIsEvent = abIsEvent;
+			mlBreath_CurrentPrio = alPrio;			
+						
+			return true;
+		} 
+		else
+		{
+			return false;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+	
+	}
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	
+	}
+	//------------------------------------------------------------
+	
+	void Reset()
+	{
+		mlIdCount =0;
+		mfBreath_Count =0;
+		mlBreath_CurrentSoundId=-1;
+		
+		mfHeartbeat_Count =0;
+		
+		mfBreath_CurrentStrength=0;
+		mfBreath_CurrentFadeInSpeed=1;
+		mfBreath_CurrentFadeOutSpeed=1;
+		
+		mfHeartBeat_PrevVolume=0;
+		mfHeartBeat_PrevGapTime=10;
+		mfHeartBeat_CurrentVolume=0;
+		mfHeartBeat_CurrentGapTime=10;
+		mlHeartBeat_CurrentID=-1;
+		mfHeartBeat_CurrentFadeInSpeed=1;
+		mfHeartBeat_CurrentFadeOutSpeed=1;
+		mfHeartBeat_Amount =0;
+		
+		@mpBreathSound = null;
+		mlBreathSoundId =-1;
+		mbBreathSoundIsEvent = false;
+		
+		mvBackgroundBreaths.resize(0);
+		mvHeartbeats.resize(0);
+		
+		mLastBreathType = eBreathType_LastEnum;
+	}
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		UpdateHeartbeats(afTimeStep);
+		UpdateBreathing(afTimeStep);
+		UpdateSuitSounds(afTimeStep);
+	}
+
+	void VariableUpdate(float afDeltaTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateHeartbeats(float afTimeStep)
+	{
+		if(mvHeartbeats.size()==0 && mfHeartBeat_CurrentVolume <=0) return;
+		
+		/////////////////////////////////
+		// Update the heartbeat counter
+		mfHeartbeat_Count += afTimeStep;
+		if(mfHeartbeat_Count>100) mfHeartbeat_Count=0; //Not gonna be this far between breaths, so might just reset
+		
+		/////////////////////////////////
+		// Update the Beats
+		for(int i=0; i<mvHeartbeats.size();)
+		{
+			cHeartbeatInstance@ pBeat = @mvHeartbeats[i];
+			
+			if(pBeat.mfDuration<0)
+			{
+				++i;
+				continue;
+			} 
+			
+			pBeat.mfCount += afTimeStep;		
+
+			if(pBeat.mfDuration < pBeat.mfCount)
+			{
+				mvHeartbeats[i] = mvHeartbeats[mvHeartbeats.size()-1];
+				mvHeartbeats.pop_back();
+			}
+			else
+			{
+				++i;
+			}
+		}
+		
+		/////////////////////////////////
+		// Get the current heartbeat
+		int lBeat =-1;
+		int lHighestPrio = -999999;
+		for(int i=0; i<mvHeartbeats.size(); ++i)
+		{
+			cHeartbeatInstance@ pBeat = @mvHeartbeats[i];
+			if(pBeat.mlPrio > lHighestPrio)
+			{
+				lHighestPrio = pBeat.mlPrio;
+				lBeat = i;
+			}
+		}
+		
+		/////////////////////////////////
+		// Get Current Heart beat
+		cHeartbeatInstance@ pBeat = lBeat<0 ? null : mvHeartbeats[lBeat];
+		int lCurrentId = (pBeat is null) ? -1 : pBeat.mlId;
+		
+		/////////////////////////////////
+		// Set up variables
+		if(mlHeartBeat_CurrentID != lCurrentId)
+		{
+			mfHeartBeat_PrevGapTime = mfHeartBeat_CurrentGapTime;
+			mfHeartBeat_PrevVolume = mfHeartBeat_CurrentVolume;
+			
+			if(pBeat !is null)
+			{
+				mlHeartBeat_CurrentID = pBeat.mlId;
+				mfHeartBeat_CurrentFadeInSpeed = pBeat.mfFadeInSpeed;
+				mfHeartBeat_CurrentFadeOutSpeed = pBeat.mfFadeOutSpeed;
+			}
+			else
+			{
+				mlHeartBeat_CurrentID = -1;
+				mfHeartBeat_CurrentFadeInSpeed = mfHeartBeat_CurrentFadeOutSpeed;
+			}
+			
+			mfHeartBeat_Amount =0;
+		}
+		
+		/////////////////////////////////
+		// Get current values
+		mfHeartBeat_Amount += afTimeStep * mfHeartBeat_CurrentFadeInSpeed;
+		if(mfHeartBeat_Amount>1) mfHeartBeat_Amount =1;
+		
+		if(pBeat !is null)
+		{
+			mfHeartBeat_CurrentVolume = cMath_InterpolateLinear(mfHeartBeat_PrevVolume, pBeat.mfVolume, mfHeartBeat_Amount);
+			mfHeartBeat_CurrentGapTime = cMath_InterpolateLinear(mfHeartBeat_PrevGapTime, pBeat.mfTimeBetweenBeats, mfHeartBeat_Amount);
+		}
+		else
+		{
+			mfHeartBeat_CurrentVolume = cMath_InterpolateLinear(mfHeartBeat_PrevVolume, 0, mfHeartBeat_Amount);
+			mfHeartBeat_CurrentGapTime = cMath_InterpolateLinear(mfHeartBeat_PrevGapTime, 1, mfHeartBeat_Amount);
+		}
+		
+		//cLux_AddDebugMessage("Time: "+mfHeartBeat_CurrentGapTime+" Count:"+mfHeartbeat_Count);
+		/////////////////////////////////
+		// See if we want new beat
+		if(mfHeartbeat_Count >= mfHeartBeat_CurrentGapTime)
+		{
+			//SOUND TODO: Add proper heartbeat sound here.
+			cLux_PlayGuiSoundData("Player/UI/heartbeat", eSoundEntryType_WorldClean, mfHeartBeat_CurrentVolume, true);
+			
+			mfHeartbeat_Count=0;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateBreathing(float afTimeStep)
+	{
+		/////////////////////////////////
+		// See if the breath sound is still playing
+		if(mpBreathSound !is null && cSound_IsValid(mpBreathSound, mlBreathSoundId)==false)
+		{
+			@mpBreathSound = null;
+			mlBreath_CurrentPrio = -1;
+		}
+				
+		/////////////////////////////////
+		// Update the backgrounds
+		for(int i=0; i<mvBackgroundBreaths.size();)
+		{
+			cBackgroundBreathInstance@ pBg = @mvBackgroundBreaths[i];
+			
+			if(pBg.mfDuration<0)
+			{
+				++i;
+				continue;
+			} 
+				
+			pBg.mfCount += afTimeStep;		
+
+			if(pBg.mfDuration < pBg.mfCount)
+			{
+				mvBackgroundBreaths[i] = mvBackgroundBreaths[mvBackgroundBreaths.size()-1];
+				mvBackgroundBreaths.pop_back();
+			}
+			else
+			{
+				++i;
+			}
+		}
+		
+		/////////////////////////////////
+		// Get the current background
+		int lBg =-1;
+		int lHighestPrio = -999999;
+		for(int i=0; i<mvBackgroundBreaths.size(); ++i)
+		{
+			cBackgroundBreathInstance@ pBg = @mvBackgroundBreaths[i];
+			if(pBg.mlPrio > lHighestPrio)
+			{
+				lHighestPrio = pBg.mlPrio;
+				lBg = i;
+			}
+		}
+		
+		/////////////////////////////////
+		// Update the breath counter
+		mfBreath_Count += afTimeStep;
+		if(mfBreath_Count>100) mfBreath_Count=0; //Not gonna be this far between breaths, so might just reset
+		
+		/////////////////////////////////
+		// Update the background breathing
+		cBackgroundBreathInstance@ pBg = lBg<0 ? @mDefaultBackground : @mvBackgroundBreaths[lBg];
+		
+		if(pBg.mfFadeInSpeed >0)
+		{
+			mfBreath_CurrentFadeInSpeed = pBg.mfFadeInSpeed;
+			mfBreath_CurrentFadeOutSpeed = pBg.mfFadeOutSpeed;
+		}
+		else
+		{
+			mfBreath_CurrentFadeInSpeed = mfBreath_CurrentFadeOutSpeed;
+		}
+		
+		/////////////////////////
+		// Fade strength
+		if(mfBreath_CurrentStrength < pBg.mfStrength)
+		{
+			mfBreath_CurrentStrength += afTimeStep * mfBreath_CurrentFadeInSpeed;
+			if(mfBreath_CurrentStrength > pBg.mfStrength) mfBreath_CurrentStrength = pBg.mfStrength;
+		}
+		else if(mfBreath_CurrentStrength > pBg.mfStrength)
+		{
+			mfBreath_CurrentStrength -= afTimeStep * mfBreath_CurrentFadeInSpeed;
+			if(mfBreath_CurrentStrength < pBg.mfStrength) mfBreath_CurrentStrength = pBg.mfStrength;
+		}
+		
+		/////////////////////////
+		// Get time until next breath
+		cVector2f vMinMax = gfBGBreathGapLength[pBg.mType];
+		float fGapLength = cMath_Easing(eEasing_Linear, mfBreath_CurrentStrength, vMinMax.x, vMinMax.y);
+		
+		/////////////////////////
+		// Make fear slightly irregular
+		if(pBg.mType == eBreathType_Fear)
+			fGapLength + cMath_RandRectf(-fGapLength/4, fGapLength/4);
+		
+		/////////////////////////
+		// Play the breath
+		if(mfBreath_Count > fGapLength)
+		{
+			mfBreath_Count =0;
+			
+			/////////////////////////	
+			// Var setup
+			tString sName = "Monke/player/breaths/";	
+			
+			/////////////////////////	
+			// Get the base type
+			if(cLux_GetUnderwaterEffectsActive()) 	sName = sName + "underwater_";
+			else									sName = sName + "air_";
+			
+			/////////////////////////	
+			// Get the emotion type
+			bool bIsEvent = false;
+			if(pBg.mType == eBreathType_Fear)
+			{
+				//Transition
+				if(mLastBreathType == eBreathType_Normal)
+				{
+					sName = sName + "normal_to_fear";	
+					bIsEvent = true;
+				}
+				//Normal
+				else
+					sName = sName + "fear";
+			}
+			else
+			{
+				//Transition
+				if(mLastBreathType == eBreathType_Fear)
+				{
+					sName = sName + "fear_to_normal";	
+					bIsEvent = true;
+				}
+				//Normal
+				else
+					sName = sName + "normal";
+			}
+			
+			mLastBreathType = pBg.mType;
+			
+			/////////////////////////	
+			// Play the sound
+			if(cLux_GetVoiceHandler().CharacterIsSpeaking("Player")) return;
+			if(pBg.mbMuted) return;
+			
+			if(	cLux_GetUnderwaterEffectsActive() ||
+				pBg.mType != eBreathType_Normal || 
+				mfBreath_CurrentStrength>0.001f || 
+				bIsEvent)
+			{
+				PlayBreath(sName, mfBreath_CurrentStrength, bIsEvent, -1);
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateSuitSounds(float afTimeStep)
+	{
+		if(cLux_GetUnderwaterEffectsActive()==false)
+		{
+			mfSuitSound_Count=0;
+			return;
+		}
+		
+		mfSuitSound_Count+= afTimeStep;
+		if(mfSuitSound_Count >= gfUnderwaterSuitSoundGap)
+		{
+			cLux_PlayGuiSoundData("Player/breaths/underwater_suit_breath", eSoundEntryType_WorldClean,1 , true);
+			mfSuitSound_Count=0;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep){}
+		
+	//------------------------------------------------------------
+	
+	
+	void OnDraw(float afFrameTime)
+	{
+		
+	}
+	
+	//------------------------------------------------------------
+		
+	void OnPostRender(float afFrameTime)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+		
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	//------------------------------------------------------------
+	
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed){}
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount){}
+	void OnExitPressed(){}
+	void AppGotInputFocus(){}
+	void AppLostInputFocus(){}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPETIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	[nosave] cBackgroundBreathInstance mDefaultBackground;
+	
+	//------------------------------------------------------------
+	
+	[volatile] cSoundEntry@ mpBreathSound;
+	[nosave] int mlBreathSoundId;
+	[nosave] bool mbBreathSoundIsEvent;
+	
+	//------------------------------------------------------------
+		
+	array<cBackgroundBreathInstance> mvBackgroundBreaths;
+	array<cHeartbeatInstance> mvHeartbeats;
+	
+	int mlIdCount=0;
+	float mfBreath_Count=0;
+	float mfHeartbeat_Count=0;
+	
+	int mlBreath_CurrentSoundId=-1;
+	float mfBreath_CurrentStrength=0;
+	float mfBreath_CurrentFadeInSpeed=1;
+	float mfBreath_CurrentFadeOutSpeed=1;
+	int mlBreath_CurrentPrio=-1;
+	
+	float mfHeartBeat_PrevVolume=0;
+	float mfHeartBeat_PrevGapTime=0;
+	float mfHeartBeat_CurrentVolume=0;
+	float mfHeartBeat_CurrentGapTime=0;
+	int mlHeartBeat_CurrentID=-1;
+	float mfHeartBeat_CurrentFadeInSpeed=1;
+	float mfHeartBeat_CurrentFadeOutSpeed=1;
+	float mfHeartBeat_Amount=0;
+	
+	float mfSuitSound_Count=0;
+	
+	eBreathType mLastBreathType;
+	
+	//------------------------------------------------------------
+	
+		
+}

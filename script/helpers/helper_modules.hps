@@ -1,0 +1,2095 @@
+#include "modules/ModuleInterfaces.hps"
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// DESCRIPTIONS
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+int Description_AddExt(const tString &in asTextCat, const tString &in asTextEntry, float afTimeMul, bool abPutInQueueIfShowing, bool abConnectedToPrevious,
+					eDescEffect aEffect, float afEffectAmount, cColor aColor)
+{
+	iScrDescriptionHandler_Interface @pDescHandler = cast<iScrDescriptionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_DescriptionHandler) );
+	return pDescHandler.Add(asTextCat, asTextEntry, afTimeMul, abPutInQueueIfShowing, abConnectedToPrevious, aEffect, afEffectAmount, aColor);
+}
+
+int Description_Add(const tString &in asTextCat, const tString &in asTextEntry, float afTimeMul, bool abPutInQueueIfShowing)
+{
+	return Description_AddExt(asTextCat, asTextEntry, afTimeMul, abPutInQueueIfShowing, false, eDescEffect_None, 0, cColor(1,1));
+}
+
+//-------------------------------------------------
+
+bool Description_IsActive()
+{
+	iScrDescriptionHandler_Interface @pDescHandler = cast<iScrDescriptionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_DescriptionHandler) );
+	return pDescHandler.IsActive();
+}
+
+//-------------------------------------------------
+
+int Description_GetCurrentId()
+{
+	iScrDescriptionHandler_Interface @pDescHandler = cast<iScrDescriptionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_DescriptionHandler) );
+	return pDescHandler.GetCurrentId();
+}
+
+//-------------------------------------------------
+
+void Description_SetForceFading(bool abX)
+{
+	iScrDescriptionHandler_Interface @pDescHandler = cast<iScrDescriptionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_DescriptionHandler) );
+	pDescHandler.SetForceFading(abX);
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// TERRAIN PARTICLES
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Disables terrain particles, they have to be setup again to be started
+ **/
+void TerrainParticles_Disable()
+{
+	iScrTerrainParticleHandler_Interface @pTerrHandler = cast<iScrTerrainParticleHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_TerrainParticleHandler) );
+	pTerrHandler.Clear();
+}
+
+//-------------------------------------------------
+
+/**
+ * Sets up the maximum and minimum distance that the particles are visible
+ * Particles also wrap around the maximum distance, coming out on the other side if they get to far away
+ * This should be called before spawning particles to get the best spread
+ * 
+ * @param afRangeMinStart, particles closer than this value will not be visible
+ * @param afRangeMinEnd, particles between min start and min end will fade to fully visible
+ * @param afRangeMaxStart, particles further away then this value will start to fade out
+ * @param afRangeMaxEnd, particles further away then this will not be visible and will be spawned on the other side of the player
+ **/
+void TerrainParticles_SetupRange(float afRangeMinStart, float afRangeMinEnd, float afRangeMaxStart, float afRangeMaxEnd)
+{
+	iScrTerrainParticleHandler_Interface @pTerrHandler = cast<iScrTerrainParticleHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_TerrainParticleHandler) );
+	pTerrHandler.SetupRange(afRangeMinStart, afRangeMinEnd, afRangeMaxStart, afRangeMaxEnd);
+}
+
+//-------------------------------------------------
+
+/**
+ * Spawn particles that use the specified material
+ * There are two kind of particles. FixedAxis sprites follow the rotation of the surface. PointSprite always look at the player.
+ * 
+ * @param asMaterial, the mat file used by the particles
+ * @param alFixedAxisCount, the number of FixedAxis particles to spawn
+ * @param afFixedAxisSizeMin, smallest size of a FixedAxis particle
+ * @param afFixedAxisSizeMax, largest size of a FixedAxis particle
+ * @param avFixedColorMin, random color bound of the FixedAxis particle
+ * @param avFixedColorMax, random color bound of the FixedAxis particle
+ * @param alPointSpriteCount, the number of PointSprite particles to spawn
+ * @param afPointSpriteSizeMin, smallest size of a PointSprite particle
+ * @param afPointSpriteSizeMax, largest size of a PointSprite particle
+ * @param avPointColorMin, random color bound of the PointSprite particle
+ * @param avPointColorMax, random color bound of the PointSprite particle
+ **/
+void TerrainParticles_SetupParticles(const tString&in asMaterial, int alFixedAxisCount, float afFixedAxisSizeMin, float afFixedAxisSizeMax, cColor avFixedColorMin, cColor avFixedColorMax,
+														 int alPointSpriteCount, float afPointSpriteSizeMin, float afPointSpriteSizeMax, cColor avPointColorMin, cColor avPointColorMax)
+{
+	iScrTerrainParticleHandler_Interface @pTerrHandler = cast<iScrTerrainParticleHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_TerrainParticleHandler) );
+	pTerrHandler.SetupParticles(asMaterial, alFixedAxisCount, afFixedAxisSizeMin, afFixedAxisSizeMax, avFixedColorMin, avFixedColorMax,
+											alPointSpriteCount, afPointSpriteSizeMin, afPointSpriteSizeMax, avPointColorMin, avPointColorMax);
+}
+
+//-------------------------------------------------
+
+/**
+ * Setup forces that affect the particles
+ * 
+ * @param avVelocityLimit, limit to velocity of the particles
+ * @param afGravityAmount, how much gravity should affect the particles, value between 0.0-1.0
+ * @param afRandomDirectionForce, the amount of random force that should be appled to the particles, the direction of this force is based on position and changes over time
+ * @param afRandomDirectionFrequency, how fast the direction of the random force changes
+ **/
+void TerrainParticles_SetupForces(const cVector3f&in avVelocityLimit, float afGravityAmount, float afRandomDirectionForce, float afRandomDirectionFrequency)
+{
+	iScrTerrainParticleHandler_Interface @pTerrHandler = cast<iScrTerrainParticleHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_TerrainParticleHandler) );
+	pTerrHandler.SetupForces(avVelocityLimit, afGravityAmount, afRandomDirectionForce, afRandomDirectionFrequency);
+}
+
+//-------------------------------------------------
+
+/**
+ * Setup wind force that is applied to all particles
+ * 
+ * @param avWindForce, the force and direction of the wind, this is applied to all particles
+ **/
+void TerrainParticles_SetupWind(const cVector3f&in avWindForce)
+{
+	iScrTerrainParticleHandler_Interface @pTerrHandler = cast<iScrTerrainParticleHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_TerrainParticleHandler) );
+	pTerrHandler.SetupWind(avWindForce);
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// LIGHT FLASH
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Creates a flash of light at the postion of an entity. Returns id of the flash.
+ * 
+ * @param afTime, The time that light light stays at full intensity
+ * @param afFadeInTime, How long it takes to fade in
+ * @param afFadeOutTime, How long it takes to fade out
+ * @param asTargetEntity, Entity at which it will be created.
+ * @param aColor, The color of the light.
+ * @param afRadius, The radius of the light (this will NOT be faded, it starts with this radius, and then just color fades in)
+ * @param afBrightness, The brightness of the light.
+ **/
+int LightFlash_Add(	float afTime, float afFadeInTime, float afFadeOutTime, const tString& in asTargetEntity,
+					const cColor&in aColor, float afRadius, float afBrightness)
+{
+	iLuxEntity@ pEntity = cLux_GetCurrentMap().GetEntityByName(asTargetEntity, eLuxEntityType_LastEnum, "");
+	if(pEntity is null)
+	{
+		Error("Cannot find entity '"+asTargetEntity+"' be used used as target for LightFlash_Add\n");
+		return -1;
+	}
+	
+	return LightFlash_Add(afTime, afFadeInTime, afFadeOutTime, pEntity.GetPosition(), aColor, afRadius, afBrightness);
+}
+
+//-------------------------------------------------
+
+/**
+ * Creates a flash of light at the postion of an entity. Returns id of the flash.
+ * 
+ * @param afTime, The time that light light stays at full intensity
+ * @param afFadeInTime, How long it takes to fade in
+ * @param afFadeOutTime, How long it takes to fade out
+ * @param avTargetPos, Position at which it will be created.
+ * @param aColor, The color of the light.
+ * @param afRadius, The radius of the light (this will NOT be faded, it starts with this radius, and then just color fades in)
+ * @param afBrightness, The brightness of the light.
+ **/
+int LightFlash_Add(	float afTime, float afFadeInTime, float afFadeOutTime, const cVector3f& in avTargetPos,
+					const cColor&in aColor, float afRadius, float afBrightness)
+{	
+	iScrLightFlashHandler_Interface @LFHandler = cast<iScrLightFlashHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LightFlashHandler) );
+	return LFHandler.Add(afTime, afFadeInTime, afFadeOutTime, avTargetPos, aColor, afRadius, afBrightness);
+}
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
+// TOOL HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Checks if it is OK to use an item or picking one up. 
+ * Basically just wanna make sure the tool handler (or something else) is not playing an animation (apart form idle)
+ * 
+ **/
+bool ToolHandler_CanPickOrUseTool()
+{
+	iScrPlayerToolHandler_Interface @pToolHandler = cast<iScrPlayerToolHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_PlayerToolHandler) );
+	return pToolHandler.CanPickOrUseTool();
+}
+
+//-------------------------------------------------
+
+/**
+ * Meant for tool area. Does a check to see if it is OK to equip the tool in that area.
+ * 
+ **/
+bool ToolHandler_CanEquipToolAreaTool()
+{
+	iScrPlayerToolHandler_Interface @pToolHandler = cast<iScrPlayerToolHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_PlayerToolHandler) );
+	return pToolHandler.CanEquipToolAreaTool();
+}
+
+//-------------------------------------------------
+
+/**
+ * Checks if the player carries a tool that is heavy
+ * 
+ **/
+bool ToolHandler_GetPlayerCarriesHeavyTool()
+{
+	iScrPlayerToolHandler_Interface @pToolHandler = cast<iScrPlayerToolHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_PlayerToolHandler) );
+	return pToolHandler.GetPlayerCarriesHeavyTool();
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER DEATH
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+/**
+ * Starts the Game Over screen
+  **/
+void GameOver_Start(const tString& in asDeathSource)
+{
+	iScrGameOverHandler_Interface @pGOHandler = cast<iScrGameOverHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_GameOverHandler) );
+	pGOHandler.Start(asDeathSource);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Ends the Game Over screen
+ **/
+void GameOver_End()
+{
+	iScrGameOverHandler_Interface @pGOHandler = cast<iScrGameOverHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_GameOverHandler) );
+	pGOHandler.End();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Ends the Game Over screen
+ **/
+float GameOver_GetTimeSinceLastGameOver()
+{
+	iScrGameOverHandler_Interface @pGOHandler = cast<iScrGameOverHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_GameOverHandler) );
+	return pGOHandler.GetTimeSinceLastGameOver();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Sets the message that will be displayed before a checkpoint is loaded (after proper death):
+ **/
+void GameOver_SetCustomGameOverScreenText(const tString& in asCat, const tString& in asEntry)
+{
+	iScrGameOverHandler_Interface @pGOHandler = cast<iScrGameOverHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_GameOverHandler) );
+	pGOHandler.SetCustomGameOverScreenText(asCat, asEntry);
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+//HINT HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+void Hint_ShowHint(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	Hint_Show_Helper("Hint", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+int Hint_ShowHint_Hold(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true, float afAutoReleaseTime = -1.f)
+{
+	int lId = Hint_Show_Ext("HintHeaders", "Hint", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+	
+	if (afAutoReleaseTime > 0.f)
+		Hint_Release(lId, afAutoReleaseTime);
+	
+	return lId;
+}
+
+//-------------------------------------------------------
+
+void Hint_ShowInfo(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	Hint_Show_Helper("Info", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+int Hint_ShowInfo_Hold(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	return Hint_Show_Ext("HintHeaders", "Info", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+void Hint_ShowDanger(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	Hint_Show_Helper("Danger", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+int Hint_ShowDanger_Hold(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	return Hint_Show_Ext("HintHeaders", "Danger", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+void Hint_ShowAlert(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	Hint_Show_Helper("Alert", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+int Hint_ShowAlert_Hold(const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint=false, float afTimeMul=1.5f, bool abAddAsGiven=true)
+{
+	return Hint_Show_Ext("HintHeaders", "Alert", asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+void Hint_Show_Helper(const tString &in asHeaderEntry, const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint, const cColor &in aColor, float afTimeMul, bool abAddAsGiven)
+{
+	int lHintID = Hint_Show_Ext("HintHeaders", asHeaderEntry, asTextCat, asTextEntry, abIsInputHint, cColor_White, afTimeMul, abAddAsGiven);
+	if(lHintID>0)	Hint_Release(lHintID);
+}
+
+//-------------------------------------------------------
+
+int Hint_Show_Ext(const tString &in asHeaderCat, const tString &in asHeaderEntry, const tString &in asTextCat, const tString &in asTextEntry, bool abIsInputHint, const cColor &in aColor, float afTimeMul, bool abAddAsGiven)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	return pHintHandler.AddHintCandidate(asHeaderCat, asHeaderEntry, asTextCat, asTextEntry, abIsInputHint, aColor, afTimeMul, abAddAsGiven);
+}
+
+//-------------------------------------------------------
+
+void Hint_Release(int alID, float afTime = 0.f)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.RemoveHintCandidate(alID, afTime);
+}
+
+//-------------------------------------------------------
+
+void Hint_StopHint(float afDelay = 0.f)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.StopHint(afDelay);
+}
+
+//-------------------------------------------------------
+
+void Hint_SetPaused(bool abX)
+{
+	iScrHintHandler_Interface@ pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.SetPaused(abX);
+}
+
+//-------------------------------------------------------
+
+void Hint_SetCanShowHints(bool abX)
+{
+	iScrHintHandler_Interface@ pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.SetCanShowHints(abX);
+}
+
+//-------------------------------------------------------
+
+void Hint_AddAsGiven(int alID)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.AddHintAsGiven(alID);
+}
+
+//-------------------------------------------------------
+
+void Hint_AddAsGiven(const tString &in asCat, const tString &in asEntry)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.AddHintAsGiven(asCat, asEntry);
+}
+
+//-------------------------------------------------------
+
+void Hint_RemoveFromGiven(const tString &in asCat, const tString &in asEntry, float afTime = 0.f)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.RemoveHintFromGiven(asCat, asEntry, afTime);
+}
+
+//-------------------------------------------------------
+
+void Hint_DrawExplicit(const tString &in asCat, const tString &in asEntry, cVector3f avPos, cVector2f avSize, const cLuxScreenTextFormatParameters& in aFormatParams)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.DrawExplicitHint(asCat, asEntry, avPos, avSize, aFormatParams);
+}
+
+//-------------------------------------------------------
+
+void Hint_Block(const tString &in asCat, const tString &in asEntry)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.Block(asCat, asEntry);
+}
+
+//-------------------------------------------------------
+
+void Hint_Unblock(const tString &in asCat, const tString &in asEntry)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	pHintHandler.Unblock(asCat, asEntry);
+}
+
+//-------------------------------------------------------
+
+tString Hint_GetCurrentEntry()
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	return pHintHandler.GetCurrentHintEntry();
+}
+
+//-------------------------------------------------------
+
+bool Hint_IsGiven(const tString &in asCat, const tString &in asEntry)
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	return pHintHandler.HintIsGiven(asCat, asEntry);
+}
+
+//-------------------------------------------------------
+
+bool Hint_IsShowing()
+{
+	iScrHintHandler_Interface @pHintHandler = cast<iScrHintHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_HintHandler));
+	return pHintHandler.IsShowing();
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER HANDS
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+void PlayerHands_SetHandModel(const tString& in asFile)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetHandModel(asFile);
+}
+
+//-------------------------------------------------------
+
+void PlayerHands_PreloadHandModel(const tString& in asFile)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.PreloadHandModel(asFile);
+}
+
+void PlayerHands_PreloadHandModel_Human()
+{
+	PlayerHands_PreloadHandModel("character/player/hands/hands_human.ent");
+}
+
+void PlayerHands_PreloadHandModel_Diving()
+{
+	PlayerHands_PreloadHandModel("character/player/hands/hands_diving.ent");
+}
+
+void PlayerHands_PreloadHandModel_DeepSea()
+{
+	PlayerHands_PreloadHandModel("character/player/hands/hands_deepsea.ent");
+}
+
+void PlayerHands_PreloadHandModel_DeepSeaMutilated()
+{
+	PlayerHands_PreloadHandModel("character/player/hands/hands_deepsea_mutilated.ent");
+}
+
+//-------------------------------------------------------
+
+void PlayerHands_PlayAnimation(const tString &in asAnim, bool abLoop=false, bool abFullScaleModel=false, float afFadeTime=0.0f, const tString &in asAttachedProp="", bool abDisableWhenOver=true, float afSpeed=1, float afRelTimePos=-1, bool abRightHand = true, bool abUseParentBoneRotation = false)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		tString sSocket = "R_Hand";
+		ePlayerBodyAnimationLayer eLayer = ePlayerBodyAnimationLayer_RightArm;
+		if (abRightHand == false)
+		{
+			sSocket = "L_Hand";
+			eLayer = ePlayerBodyAnimationLayer_LeftArm;
+		}
+		
+		pBody.PlayAnimationInLayer(asAnim, eLayer, abLoop, false, abDisableWhenOver, afFadeTime, afSpeed, afRelTimePos);
+		if (asAttachedProp=="") pBody.FreeSocket(sSocket);
+		else					pBody.AttachProp(asAttachedProp, sSocket, abUseParentBoneRotation, true);
+		return;
+	}
+	
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.PlayAnimation(asAnim, abLoop, abFullScaleModel,afFadeTime, asAttachedProp, abDisableWhenOver, afSpeed, afRelTimePos);
+}
+
+//-------------------------------------------------------
+
+
+bool PlayerHands_GetAnimationPlaying()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		//return pBody.GetAnimationPlayingInLayer(ePlayerBodyAnimationLayer_Arms, true, true);
+		// TEMP FIX WHILE THE FALLING ANIMATIONS IS BUGGED AND LOOPING CONSTANTLY
+		return pBody.GetAnimationPlayingInLayer(ePlayerBodyAnimationLayer_RightArm, true, true, false);
+	}
+	
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.GetAnimationPlaying();
+}
+
+//-------------------------------------------------------
+
+
+void PlayerHands_SetActive(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return;
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetActive(abX);
+}
+
+//-------------------------------------------------------
+
+bool PlayerHands_IsActive()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return true;
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.IsActive();
+}
+
+//-------------------------------------------------------
+
+void PlayerHands_SetUseCustomRotation(bool abX)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetUseCustomRotation(abX);
+}
+
+/*
+ * Warning: uses euler angles! XYZ order! Meant to work directly with camera angles (have to rotate 180 around y if you use entity transforms as base)
+ **/
+void PlayerHands_SetCustomRotation(const cVector3f& in avRot)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetCustomRotation(avRot);
+}
+
+void PlayerHands_SetCustomRotationFromEntity(const tString& in asEntityName)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '"+asEntityName+"' for PlayerHands_SetCustomRotationFromEntity");
+		return;
+	}
+	
+	cVector3f vAngles = cMath_MatrixToEulerAngles(pEntity.GetMatrix().GetRotation());
+	vAngles.y += cMath_Pi; //The custom rotation is based on camera angles, so need to adjust!
+	vAngles.x = -vAngles.x;
+	
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetCustomRotation(vAngles  );
+}
+
+
+//-------------------------------------------------------
+
+void PlayerHands_SetUseCustomPosition(bool abX)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetUseCustomPosition(abX);
+}
+
+void PlayerHands_SetCustomPosition(const cVector3f& in avPos, bool abUseBasicOffset)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetCustomPosition(avPos, abUseBasicOffset);
+}
+
+void PlayerHands_SetCustomPositionFromEntity(const tString& in asEntityName)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '"+asEntityName+"' for PlayerHands_SetCustomRotationFromEntity");
+		return;
+	}
+	
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	
+	if(pEntity.GetMeshEntity() is null)
+		pHands.SetCustomPosition(pEntity.GetPosition(), false);
+	else
+		pHands.SetCustomPosition(pEntity.GetMeshEntity().GetWorldPosition(), false);
+}
+
+//-------------------------------------------------------
+
+cBoneState@ PlayerHands_GetBoneState(const tString& in asBone)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return pBody.GetBoneState(asBone);
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.GetBoneState(asBone);
+}
+
+//-------------------------------------------------------
+
+cNode3D@ PlayerHands_GetSocket(const tString& in asSocket)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return pBody.GetSocket(asSocket);
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.GetSocket(asSocket);
+}
+
+
+//-------------------------------------------------------
+
+cAnimationState@ PlayerHands_GetCurrentAnimationState()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return pBody.GetLayerCurrentAnimationState(ePlayerBodyAnimationLayer_Arms);
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.GetCurrentAnimationState();
+}
+
+//-------------------------------------------------------
+
+/*
+ * Only works if both custom postion and rotation are used!
+ * Callback syntax: void f();
+ **/
+void PlayerHands_AttachCameraToSocket(	const tString& in asBoneName, float afFadeTime, const tString &in asFadeOverCallback,
+										bool abDisablePlayer=false, bool abAutoDetach=false, float afDetachTime=1.0f,
+										const cVector3f&in avPosOffset=0, const cVector3f&in avRotOffset=0)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.AttachCameraToSocket(asBoneName, afFadeTime,asFadeOverCallback, abDisablePlayer, abAutoDetach, afDetachTime, avPosOffset, avRotOffset);
+}
+
+//-------------------------------------------------------
+
+void PlayerHands_DetachCameraFromSocket(float afFadeTime)
+{
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.DetachCameraFromSocket(afFadeTime);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Function syntax: void f(const tString &in asAnimName)
+ **/
+void PlayerHands_SetAnimationOverCallback(const tString& in asFunction)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		pBody.SetLayerAnimationCallback(ePlayerBodyAnimationLayer_Arms, asFunction);
+		return;
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetAnimationOverCallback(asFunction);
+}
+
+//-------------------------------------------------------
+
+void PlayerHands_SetVisible(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		pBody.SetVisible(abX);
+		return;
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	pHands.SetVisible(abX);
+}
+
+//-------------------------------------------------------
+
+tString PlayerHands_GetEntityName()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	if (pBody.IsActive())
+	{
+		return pBody.GetEntityName();
+	}
+	iScrPlayerHandsHandler_Interface @pHands = cast<iScrPlayerHandsHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerHandsHandler));
+	return pHands.GetEntityName();
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER BODY
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+void PlayerBody_SetActive(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetActive(abX);
+}
+
+//-------------------------------------------------------
+
+bool PlayerBody_IsActive()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.IsActive();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetVisible(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetVisible(abX);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCoverageAmount(float afCoverage, bool abSmooth = true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetCoverageAmount(afCoverage, abSmooth);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetModel(const tString &in asFile)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetBodyModel(asFile);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_PreloadModel(const tString &in asFile)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PreloadBodyModel(asFile);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetArmLiquidAmount(float afLiquidAmount)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmLiquidAmount(afLiquidAmount);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_PlayAnimation(const tString &in asAnim, ePlayerBodyAnimationLayer aLayer, bool abLoop, bool abIdle, bool abReturnToIdleAfterAnim, float afFadeTime=0.3f, float afSpeed=1.0f, float afRelTimePos=0.0f, bool abFadeWeights = true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayAnimationInLayer(asAnim, aLayer, abLoop, abIdle, abReturnToIdleAfterAnim, afFadeTime, afSpeed, afRelTimePos, true, abFadeWeights);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_PlayAdditativeAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, float afSpeed, float afRelTimePos)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayAdditativeAnimation(asAnim, abLoop, afFadeTime, afSpeed, afRelTimePos);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetAnimationSet(const tString&in asAnimSet)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetAnimationSet(asAnimSet);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetMinRunSpeedMul(float afMul)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetMinRunSpeedMul(afMul);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Plays a player body animation.
+ * @param asAnim, the name of the anim.
+ * @param abLoop, if the anim should loop.
+ * @param afFadeTime, fade time of the anim.
+ * @param asCallback, callback when the animation ends. Syntax: void Func(const tString &in asAnimName)
+ * @param afSpeed, the speed at which the anim should play.
+ * @param afRelTimePos, the relative position (from 0 to 1) at which the anim should start playing.
+ * @param abGlobalSpace, if the animation should be played in global space.
+ * @param avPos, the position to play the animation at.
+ * @param afAngle, angle to play the animation in.
+ */
+void PlayerBody_PlayCutsceneAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, const tString &in asCallback="", 
+									  float afSpeed = 1, float afRelTimePos = 0, bool abGlobalSpace = false, 
+									  const cVector3f &in avPos = 0, float afAngle = 0, bool abFadeSpeed = false, bool abIgnoreYaw = false)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayCutsceneAnimation(asAnim, abLoop, afFadeTime, asCallback, afSpeed, afRelTimePos, abGlobalSpace, avPos, afAngle, abFadeSpeed, abIgnoreYaw);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Plays a player body animation at the center of mass of a specified entity. NOTE: Use empty area as a workaround.
+ * @param asAnim, the name of the anim.
+ * @param asEntityName, the name of the entity to play the animation at.
+ * @param abLoop, if the anim should loop.
+ * @param afFadeTime, fade time of the anim.
+ * @param asCallback, callback when the animation ends. Syntax: void Func(const tString &in asAnimName)
+ * @param afSpeed, the speed at which the anim should play.
+ * @param afRelTimePos, the relative position (from 0 to 1) at which the anim should start playing.
+ * @param avOffsetPos, offset position at which the anim should play.
+ * @param avOffsetAngle, offset angle at which the anim should play.
+ * @param abOffsetLocally, if the offsets should be local.
+ */
+void PlayerBody_PlayCutsceneAtEntity(const tString &in asAnim, const tString &in asEntityName, bool abLoop, float afFadeTime, 
+									 const tString &in asCallback="", float afSpeed = 1, float afRelTimePos = 0, 
+									 const cVector3f &in avOffsetPos = 0, float afOffsetAngle = 0, bool abOffsetLocally = true, bool abFadeSpeed = false, bool abIgnoreYaw = false)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '"+asEntityName+"' for PlayerBody_PlayCutsceneAtEntity");
+		return;
+	}
+	
+	cMatrixf mtxEnt = pEntity.GetMatrix();
+	cVector3f vPos = abOffsetLocally ? 
+					 cMath_MatrixMul(mtxEnt, avOffsetPos) : 
+					 mtxEnt.GetTranslation()+avOffsetPos;
+	
+	cVector3f vFwd = mtxEnt.GetTranspose().GetForward();
+	float fYaw = cMath_ToRad(afOffsetAngle);
+	if (abOffsetLocally) fYaw -= cMath_ATan2(vFwd.x, -vFwd.z);
+	
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayCutsceneAnimation(asAnim, abLoop, afFadeTime, asCallback, afSpeed, afRelTimePos, true, vPos, fYaw, abFadeSpeed, abIgnoreYaw);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_PlayCutsceneAtSocket(const tString &in asAnim, const tString &in asEntityName, const tString &in asSocketName, bool abLoop, float afFadeTime, 
+									 const tString &in asCallback="", float afSpeed = 1, float afRelTimePos = 0, 
+									 const cVector3f &in avOffsetPos = 0, float afOffsetAngle = 0, bool abOffsetLocally = true, bool abFadeSpeed = false, bool abIgnoreYaw = false)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '"+asEntityName+"' for PlayerBody_PlayCutsceneAtSocket");
+		return;
+	}
+	
+	cNode3D@ pSocket = pEntity.GetMeshEntity().GetSocket(asSocketName);
+	if (pSocket is null)
+	{
+		Error("Could not find socket '"+asSocketName+"' for PlayerBody_PlayCutsceneAtSocket");
+		return;
+	}
+	
+	cMatrixf mtxEnt = pSocket.GetWorldMatrix();
+	cVector3f vPos = abOffsetLocally ? 
+					 cMath_MatrixMul(mtxEnt, avOffsetPos) : 
+					 mtxEnt.GetTranslation()+avOffsetPos;
+	
+	cVector3f vFwd = mtxEnt.GetTranspose().GetForward();
+	float fYaw = cMath_ToRad(afOffsetAngle);
+	if (abOffsetLocally) fYaw -= cMath_ATan2(vFwd.x, -vFwd.z);
+	
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayCutsceneAnimation(asAnim, abLoop, afFadeTime, asCallback, afSpeed, afRelTimePos, true, vPos, fYaw, abFadeSpeed, abIgnoreYaw);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Plays an interactive player body animation at the specified entity.
+ * @param asAnim, the name of the anim.
+ * @param asEntityName, the name of the entity to play the animation at.
+ * @param afFadeTime, fade time of the anim
+ * @param asCallback, callback when the animation ends. Syntax: void Func(const tString &in asAnimName, float afT)
+ * @param abExitAtStart, if you can exit the animation by reaching the start
+ * @param abExitAtEnd, if the animation ends when reaching the end
+ * @param abAutoReverse, if the animation should automatically reverse to the start if not interacting
+ * @param afSpeedAddRate, how much the player's input influences the animation speed
+ * @param abLoop, if the animation should loop
+ */
+void PlayerBody_PlayInteractiveAnimationAtEntity(const tString &in asAnim, const tString &in asEntityName, float afFadeTime, 
+												 const tString &in asCallback = "", bool abExitAtStart = false, bool abExitAtEnd = true,
+												 bool abAutoReverse = false, float afSpeedAddRate = 1.f, bool abFadeSpeed = false, bool abLoop = false, bool abIgnoreYaw = false, bool abAnyInputDir = false)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '" + asEntityName + "' for PlayerBody_PlayInteractiveAnimation");
+		return;
+	}
+	
+	cMatrixf mtxEnt = pEntity.GetMatrix();
+	cVector3f vPos = mtxEnt.GetTranslation();
+	
+	cVector3f vFwd = mtxEnt.GetTranspose().GetForward();
+	float fYaw = cMath_GetAngleFromPoints3D(0.f, vFwd).y;
+	
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayInteractiveAnimation(asAnim, afFadeTime, asCallback, true, vPos, fYaw, abAutoReverse, abExitAtStart, abExitAtEnd, afSpeedAddRate, abFadeSpeed, abLoop, abIgnoreYaw, abAnyInputDir);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Plays an interactive player body animation at the specified socket.
+ * @param asAnim, the name of the anim.
+ * @param asEntityName, the name of the entity to play the animation at.
+ * @param afFadeTime, fade time of the anim
+ * @param asCallback, callback when the animation ends. Syntax: void Func(const tString &in asAnimName, float afT)
+ * @param abExitAtStart, if you can exit the animation by reaching the start
+ * @param abExitAtEnd, if the animation ends when reaching the end
+ * @param abAutoReverse, if the animation should automatically reverse to the start if not interacting
+ * @param afSpeedAddRate, how much the player's input influences the animation speed
+ * @param abLoop, if the animation should loop
+ */
+void PlayerBody_PlayInteractiveAnimationAtSocket(const tString &in asAnim, const tString &in asEntityName, const tString &in asSocketName, float afFadeTime, 
+												 const tString &in asCallback = "", bool abExitAtStart = false, bool abExitAtEnd = true,
+												 bool abAutoReverse = false, float afSpeedAddRate = 1.f, bool abFadeSpeed = false, bool abLoop = false, bool abIgnoreYaw = false, bool abAnyInputDir = false)
+{
+	iLuxEntity @pEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName);
+	if(pEntity is null)
+	{
+		Error("Could not find entity '" + asEntityName + "' for PlayerBody_PlayInteractiveAnimation");
+		return;
+	}
+	
+	cNode3D@ pSocket = pEntity.GetMeshEntity().GetSocket(asSocketName);
+	if (pSocket is null)
+	{
+		Error("Could not find socket '"+asSocketName+"' for PlayerBody_PlayCutsceneAtEntity");
+		return;
+	}
+	
+	cMatrixf mtxEnt = pSocket.GetWorldMatrix();
+	cVector3f vPos = mtxEnt.GetTranslation();
+	
+	cVector3f vFwd = mtxEnt.GetTranspose().GetForward();
+	float fYaw = cMath_GetAngleFromPoints3D(0.f, vFwd).y;
+	
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayInteractiveAnimation(asAnim, afFadeTime, asCallback, true, vPos, fYaw, abAutoReverse, abExitAtStart, abExitAtEnd, afSpeedAddRate, abFadeSpeed, abLoop, abIgnoreYaw, abAnyInputDir);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Plays an interactive player body animation.
+ * @param asAnim, the name of the anim.
+ * @param afFadeTime, fade time of the anim
+ * @param asCallback, callback when the animation ends. Syntax: void Func(const tString &in asAnimName, float afT)
+ * @param abExitAtStart, if you can exit the animation by reaching the start
+ * @param abExitAtEnd, if the animation ends when reaching the end
+ * @param abAutoReverse, if the animation should automatically reverse to the start if not interacting
+ * @param afSpeedAddRate, how much the player's input influences the animation speed
+ * @param abGlobalSpace, if the animation should be played in global space.
+ * @param avPos, the position to play the animation at.
+ * @param afAngle, angle to play the animation in.
+ * @param abLoop, if the animation should loop
+ */
+void PlayerBody_PlayInteractiveAnimation(const tString &in asAnim, float afFadeTime, const tString &in asCallback = "", 
+										 bool abExitAtStart = false, bool abExitAtEnd = true, bool abAutoReverse = false, float afSpeedAddRate = 1.f, 
+										 bool abGlobalSpace = false, const cVector3f avPos = 0.f, float afAngle = 0.f, bool abFadeSpeed = false, bool abLoop = false, bool abIgnoreYaw = false, bool abAnyInputDir = false)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayInteractiveAnimation(asAnim, afFadeTime, asCallback, abGlobalSpace, avPos, afAngle, abAutoReverse, abExitAtStart, abExitAtEnd, afSpeedAddRate, abFadeSpeed, abLoop, abIgnoreYaw, abAnyInputDir);
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets the non-relative time range in which the next played interactive animation is interactive.
+ * @param afMin, the min time position.
+ * @param afMax, the max time positions.
+ * @param asCallback, callback called when the time position exceeds the max. Syntax: void Func(const tString &in asAnim)
+ */
+void PlayerBody_SetInteractiveAnimationRange(float afMin, float afMax, const tString &in asCallback = "")
+{	
+	cScript_SetGlobalArgFloat(0, afMin);
+	cScript_SetGlobalArgFloat(1, afMax);
+	cScript_SetGlobalArgString(2, asCallback);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetInteractiveRange");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets the specified entity to sync the specified animation with the next played interactive player one.
+ */
+void PlayerBody_SetInteractiveAnimationEntity(const tString &in asEntity, const tString &in asAnim)
+{
+	iLuxEntity@ pEntity = cLux_GetCurrentMap().GetEntityByName(asEntity);
+	if (pEntity is null)
+	{
+		Error("Could not find entity '" + asEntity + "' for PlayerBody_SetInteractiveAnimationEntity");
+		return;
+	}
+	
+	cScript_SetGlobalArgID(0, pEntity.GetID());
+	cScript_SetGlobalArgString(1, asAnim);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetAnimationEntity");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Adds a checkpoint to the animation that the animation will move toward if there's no player input.
+ */
+void PlayerBody_AddInteractiveAnimationCheckpoint(float afCheckpoint)
+{
+	cScript_SetGlobalArgFloat(0, afCheckpoint);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_AddCheckpoint");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets additive animations that can be manipulated by pressing left/right.
+ */
+void PlayerBody_SetInteractiveSideAnimations(const tString &in asLeftAnim, const tString &in asRightAnim)
+{
+	cScript_SetGlobalArgString(0, asLeftAnim);
+	cScript_SetGlobalArgString(1, asRightAnim);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetInteractiveSideAnimations");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets the callback to be called in the map script when interacting with something (syntax: void Func(const tString &in asEntity)
+ */
+void PlayerBody_SetInteractiveAnimationInteractCallback(const tString &in asCallback)
+{
+	cScript_SetGlobalArgString(0, asCallback);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetInteractCallback");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets the callback to be called in the map script when interacting with something (syntax: void Func(const tString &in asEntity)
+ */
+void PlayerBody_SetInteractiveAnimationOver()
+{
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetAnimationOver");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets the animation that will loop when the animation is at the start and abExitAtStart == false.
+ */
+void PlayerBody_SetInteractiveAnimationStartIdleAnimation(const tString &in asAnim)
+{
+	cScript_SetGlobalArgString(0, asAnim);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetStartIdleAnimation");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Enables/disables showing of the interactive animation hint. Defaults to true. 
+ * Reset whenever the player enters the state so has to be called after PlayInteractiveAnimation.
+ */
+void PlayerBody_SetInteractiveAnimationAllowHint(bool abX)
+{
+	cScript_SetGlobalArgBool(0, abX);
+	cScript_RunGlobalFunc("State_InteractiveCutsceneAnimation", "", "_Global_SetAllowHint");
+}
+
+//-------------------------------------------------------
+
+/*
+ * Sets if the cutscene should end once the animation has finished playing. Defaults to true. 
+ * NOTE: Value is reset when calling PlayCutscene* or PlayInteractiveCutscene*, so must be set AFTER these calls.
+ * @param abX, State to set
+ */
+void PlayerBody_SetCutsceneAutoEnd(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_SetAutoEnd(abX);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_ResetCutscenePitchYawLimits()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_ResetPitchYawLimits();
+}
+
+//-------------------------------------------------------]
+
+void PlayerBody_SetCutsceneMaxPitch(float afAmount)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_SetMaxPitch(cMath_ToRad(afAmount));
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCutsceneMaxYaw(float afAmount)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_SetMaxYaw(cMath_ToRad(afAmount));
+}
+
+//-------------------------------------------------------
+
+float PlayerBody_GetCutsceneMaxPitch()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.Cutscene_GetMaxPitch();
+}
+
+//-------------------------------------------------------
+
+float PlayerBody_GetCutsceneMaxYaw()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.Cutscene_GetMaxYaw();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCustomAnimCameraAdd(cVector3f avCamAdd)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetCustomAnimCameraAdd(avCamAdd);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCustomAnimCameraRot(cVector3f avCamRot)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetCustomAnimCameraRot(avCamRot);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_FadeCutsceneMaxPitch(float afTarget, float afTime)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_FadeMaxPitch(cMath_ToRad(afTarget), afTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_FadeCutsceneMaxYaw(float afTarget, float afTime)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_FadeMaxYaw(cMath_ToRad(afTarget), afTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCutsceneAutoResetCamera(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.Cutscene_AutoResetCamera(abX);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetAnimationControlledCamera(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetAnimationControlledCamera(abX);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_PlayLayerIdleAnimation(ePlayerBodyAnimationLayer aLayer, float afFadeTime = 0.3f)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.PlayLayerIdleAnimation(aLayer, afFadeTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_StopAnimation(const tString &in asAnim, float afFadeTime)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.StopAnimation(asAnim, afFadeTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_StopAnimationLayer(ePlayerBodyAnimationLayer aLayer, float afFadeTime)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.StopAnimationLayer(aLayer, afFadeTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetArmAnimationPitch(bool abX, bool abRight=true, bool abLeft=true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationPitch(abX, abRight, abLeft);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_AlignLowerBodyToCameraYaw(bool abInstant = false)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.AlignLowerBodyToCameraYaw(abInstant);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetArmAnimationPitchLimits(float afMin, float afMax)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationPitchLimits(cMath_ToRad(afMin), cMath_ToRad(afMax));
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_ResetArmAnimationPitchLimits()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationPitchLimits(cLux_GetPlayer().GetCamera().GetPitchMinLimit(), cLux_GetPlayer().GetCamera().GetPitchMaxLimit());
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetArmAnimationYaw(bool abX, bool abRight=true, bool abLeft=true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationYaw(abX, abRight, abLeft);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetArmAnimationYawLimits(float afMin, float afMax)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationYawLimits(afMin, afMax);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_ResetArmAnimationYawLimits()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetArmAnimationYawLimits(cLux_GetPlayer().GetCamera().GetYawMinLimit(), cLux_GetPlayer().GetCamera().GetYawMaxLimit());
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_AttachProp(const tString &in asProp, const tString &in asSocket, bool abUseParentBoneRotation = false, bool abReplacePrevProp = true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.AttachProp(asProp, asSocket, abUseParentBoneRotation, abReplacePrevProp);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_DetachProp(const tString &in asEntity)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.DetachProp(asEntity);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_FreeSocket(const tString &in asSocket)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.FreeSocket(asSocket);
+}
+
+//-------------------------------------------------------
+
+bool PlayerBody_GetAnimationIsPlayingInLayer(ePlayerBodyAnimationLayer aLayer, bool abCheckChildLayers=true, bool abCheckParentLayers=true)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetAnimationPlayingInLayer(aLayer, abCheckChildLayers, abCheckParentLayers, false);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetFeetYawOffset(float afOffset)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetFeetYawOffset(cMath_ToDeg(afOffset));
+}
+
+//-------------------------------------------------------
+
+cAnimationState@ PlayerBody_GetAnimationState(const tString &in asAnimation)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetAnimationState(asAnimation);
+}
+
+//-------------------------------------------------------
+
+tString PlayerBody_GetEntityName()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetEntityName();
+}
+
+//-------------------------------------------------------
+
+tString PlayerBody_GetRandomPermafailWakeUpAnim(bool abStanding)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetRandomPermafailWakeUpAnim(abStanding);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_ResetYaw()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.ResetYaw();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetAnimatedMoveStateActive(const bool abActive, const tString&in asAnimName="", const tString&in asAtEntity="", const float afAnimBlendInTime = 0.2f, const bool abLoop=true, const float afSpeed=1.f)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetAnimatedMoveStateActive(abActive, asAnimName, asAtEntity, afAnimBlendInTime, abLoop, afSpeed);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetAnimatedMoveBodyYaw(const float afAngle)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetAnimatedMoveBodyYaw(afAngle);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetUseLowerBonesYaw(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetUseLowerBonesYaw(abX);
+}
+
+//------------------------------------------------------------
+
+bool PlayerBody_GetUseLowerBonesYaw()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetUseLowerBonesYaw();
+}
+
+
+//-------------------------------------------------------
+
+cNode3D@ PlayerBody_GetSocket(const tString &in asSocket)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.GetSocket(asSocket);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_AttachToEntity(const tString &in asEntity, const tString &in asBody)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.AttachToEntity(asEntity, asBody);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_AttachToSocket(const tString &in asEntity, const tString &in asSocket)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.AttachToSocket(asEntity, asSocket);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_DetachFromEntity()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.DetachFromEntity();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCameraAnimationPositionAndYaw(bool abGlobal, const cVector3f &in avPos, float afAngle, float afFadeTime)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetCameraAnimationPositionAndYaw(abGlobal, avPos, afAngle, afFadeTime);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_StartCustomAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, bool abGlobal = false, const cVector3f &in avPos = 0.f, float afAngle = 0.f, bool abIgnoreYaw = false)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.StartCustomAnimation(asAnim, abLoop, afFadeTime, abGlobal, avPos, afAngle, abIgnoreYaw);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_StopCustomAnimation(const tString &in asAnim = "")
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.StopCustomAnimation(asAnim);
+}
+
+//-------------------------------------------------------
+
+float Playerbody_GetCutsceneYaw()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.Cutscene_GetYaw();
+}
+
+//-------------------------------------------------------
+
+float Playerbody_GetCutscenePitch()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	return pBody.Cutscene_GetPitch();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetCustomYawBoneAxis(const cVector3f &in avAxis)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetCustomYawBoneAxis(avAxis);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_ResetCustomYawBoneAxis()
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.ResetCustomYawBoneAxis();
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetReflectionVisibility(bool abVisible)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetBodyModelReflectionVisibility(abVisible);
+}
+
+//-------------------------------------------------------
+
+void PlayerBody_SetHeadModelShadowCasting(bool abX)
+{
+	iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+	pBody.SetHeadModelShadowCasting(abX);
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+//LOAD SCREEN HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+/**
+ * Sets if you want to force showing the background.
+  **/
+void LoadScreen_SetForceBackground(bool abX)
+{
+	cLux_LoadScreenSetForceBackground(abX);
+}
+
+ /*
+ * Returns if loadscreen is currently visible
+ **/
+bool LoadScreen_IsVisible()
+{
+	return cLux_IsLoadingScreenVisible();
+}
+
+/*
+* Show the small loading icon in the corner
+*
+* @param afTimeMax, max time that the icon will show (the icon will dissapear automatically after the map change is completed)
+**/
+void LoadScreen_ShowLoadingIcon(float afTimeMax=10.0f)
+{
+	cLux_LoadScreenShowLoadingIcon(afTimeMax);	
+}
+
+//-------------------------------------------------------
+
+tString LoadScreen_GetSketchFile()
+{
+	iScrLoadScreensHandler_Interface @pHandler = cast<iScrLoadScreensHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LoadScreensHandler) );
+	return pHandler.GetSketchFile();
+}
+
+//-------------------------------------------------------
+
+tString LoadScreen_GetVoiceFile()
+{
+	iScrLoadScreensHandler_Interface @pHandler = cast<iScrLoadScreensHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LoadScreensHandler) );
+	return pHandler.GetVoiceFile();
+}
+
+//-------------------------------------------------------
+
+void LoadScreen_ProgressStory()
+{
+	iScrLoadScreensHandler_Interface @pHandler = cast<iScrLoadScreensHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LoadScreensHandler) );
+	pHandler.ProgressStory();
+}
+
+//-------------------------------------------------------
+
+array<tString> LoadScreen_GetAllScreensShown()
+{
+	iScrLoadScreensHandler_Interface @pHandler = cast<iScrLoadScreensHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LoadScreensHandler) );
+	return pHandler.GetAllScreensShown();
+}
+
+//-------------------------------------------------------
+
+void LoadScreen_SetUseAltFadeColor(bool abX)
+{
+	iScrLoadScreensHandler_Interface @pHandler = cast<iScrLoadScreensHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_LoadScreensHandler) );
+	pHandler.SetUseAltFadeColor(abX);
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+//CREDITS HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+/**
+ * Starts the credits screen
+ * @param asCreditsEntry, path to the cfg file (XML) to read the credits from
+ * @param asCompleteCallback, Callback for when done - void Func()
+ * @param afRollSpeedStart, Starting speed for the credits rolling
+ * @param afRollSpeedGoal, Goal to fade the roll speed to from the starting speed
+ * @param afRollSpeedFadeTime, Time to fade the roll speed
+ * @param asBackgroundGfx, Background to draw. If empty, a black background will be used
+  **/
+void Credits_Start(const tString &in asCreditsFile, const tString &in asCompleteCallback="", const tString &in asBackgroundGfx="", cVector3f avZoomOffset = cVector3f_Zero, const tString &in asMusic="", float afRollSpeedStart=0.00f, float afRollSpeedGoal=0.5f, float afRollFadeTime=1.0f)
+{
+	iScrCreditsHandler_Interface @pCreditsHandler = cast<iScrCreditsHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_CreditsHandler) );
+	pCreditsHandler.StartCredits(asCreditsFile, asCompleteCallback, asBackgroundGfx, avZoomOffset, asMusic, afRollSpeedStart, afRollSpeedGoal, afRollFadeTime);
+}
+
+/**
+ * Changes rolling speed
+ * @param afGoal, Goal to fade the roll speed to from the current speed
+ * @param afFadeTime, Time to fade the roll speed
+  **/
+void Credits_SetRollSpeed(float afGoal, float afFadeTime)
+{
+	iScrCreditsHandler_Interface @pCreditsHandler = cast<iScrCreditsHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_CreditsHandler) );
+	pCreditsHandler.SetCreditsRollSpeed(afGoal, afFadeTime);
+}
+
+/**
+ * Dismisses the credits screen
+ * @param afFadeTime, Time to fade out
+  **/
+void Credits_Stop(float afFadeTime=0.0f)
+{
+	iScrCreditsHandler_Interface @pCreditsHandler = cast<iScrCreditsHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_CreditsHandler) );
+	pCreditsHandler.StopCredits(afFadeTime);
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// EYE TRACKER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+/**
+ * If EyeTracking shoudld be enabled
+  **/
+void EyeTracking_SetActive(bool abActive)
+{
+	iScrEyeTrackingHandler_Interface@ pEyeTrackingHandler = cast<iScrEyeTrackingHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_EyeTrackingHandler));
+	pEyeTrackingHandler.SetActive(abActive);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Registers an entity for eye tracking
+ * @param asName, Name of the entity
+  **/
+void EyeTracking_RegisterEntity(const tString &in asName)
+{
+	iScrEyeTrackingHandler_Interface@ pEyeTrackingHandler = cast<iScrEyeTrackingHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_EyeTrackingHandler));
+	pEyeTrackingHandler.RegisterEntity(asName);
+}
+
+//-------------------------------------------------------
+
+/**
+ * If the specified entity is being looked at
+ * @param asName, Name of the entity
+  **/
+bool EyeTracking_IsEntityBeingLookedAt(const tString &in asName)
+{
+	iScrEyeTrackingHandler_Interface@ pEyeTrackingHandler = cast<iScrEyeTrackingHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_EyeTrackingHandler));
+	return pEyeTrackingHandler.IsEntityBeingLookedAt(asName);
+}
+
+//-------------------------------------------------------
+
+/**
+ * If the specified area is being looked at
+ * @param aArea, Rectangular area to be checked
+ * @param asId, Unique id of the area
+  **/
+bool EyeTracking_IsAreaBeingLookedAt(cRect2f aArea, const tString &in asId)
+{
+	iScrEyeTrackingHandler_Interface@ pEyeTrackingHandler = cast<iScrEyeTrackingHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_EyeTrackingHandler));
+	return pEyeTrackingHandler.IsAreaBeingLookedAt(aArea, asId);
+}
+
+//-------------------------------------------------------
+
+
+/**
+ * If the specified GUI area is being looked at
+ * @param aArea, Rectangular area to be checked
+ * @param asId, Unique id of the area
+  **/
+bool EyeTracking_IsGuiAreaBeingLookedAt(cRect2f aArea, const tString &in asId)
+{
+	iScrEyeTrackingHandler_Interface@ pEyeTrackingHandler = cast<iScrEyeTrackingHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_EyeTrackingHandler));
+	return pEyeTrackingHandler.IsGuiAreaBeingLookedAt(aArea, asId);
+}
+
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// MOD EVENT HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+void ModEvent_Trigger(eModEvent eventID)
+{
+	iScrModEventHandler_Interface@ pHandler = cast<iScrModEventHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_ModEventHandler));
+	pHandler.TriggerEvent(eventID);
+}
+
+//-------------------------------------------------------
+
+void ModEvent_AddListener(int iModuleID)
+{
+	iScrModEventHandler_Interface@ pHandler = cast<iScrModEventHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_ModEventHandler));
+	pHandler.AddListener(iModuleID);
+}
+
+//-------------------------------------------------------
+
+/////////////////////////////////////////
+// DEBUG DRAW HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+/*  
+debug draw timed complex example
+ -this should happen once!
+
+		DebugDraw_BeginTimed(10.f); 										// Begin timed, 10.f is the time that this should be active
+
+		DebugDraw_PushDepthTest(false); 									// push depth test false so it renders through walls and stuff
+
+		Debug_DrawLine(cVector3f_Zero, cVector3f_Forward, cColor_Red * 5); 	// draws line
+
+		DebugDraw_PushMatrix(cLux_GetPlayer().GetCamera().GetMatrix()); 	// Push player camera world 
+		Debug_DrawLine(cVector3f_Zero, cVector3f_Forward, cColor_Red * 5); 	// draw line with same args as above
+		DebugDraw_PopMatrix(); 												// pop player camera matrix
+
+		DebugDraw_PopDepthTest(); 											// match with push depth test
+
+		DebugDraw_EndTimed(); 												// match with begin
+
+Debug draw each frame example
+- should happen each frame
+ 		
+		cVector3f vMassCenter = cMath_MatrixMul(pBody.GetWorldMatrix(), pBody.GetMassCenter());
+		Debug_DrawSphere(vMassCenter, 0.06f, cColor_Blue * 3);
+		
+		cVector3f v2D_X = cLux_GetPlayer().GetCamera().GetRight();
+		cVector3f v2D_Y = cLux_GetPlayer().GetCamera().GetUp();
+		
+		DebugDraw_PushDepthTest(false);
+		
+		Debug_DrawLine(vMassCenter, vMassCenter+v2D_X*0.2f, cColor(0.5f,0,0));
+		Debug_DrawLine(vMassCenter, vMassCenter+v2D_Y*0.2f, cColor(0,0.5f,0));
+		
+		Debug_DrawLine(vMassCenter, vMassCenter+v2DMoveDir*0.2f, cColor(0,0,5));
+		DebugDraw_PopDepthTest();
+		
+		Debug_DrawLine(vMassCenter, vMassCenter+vStickDir*0.2f, cColor(3,0,0));
+
+*/
+//-------------------------------------------------------
+
+/**
+ * Will start a timed container of commands, have to be matched with DebugDraw_EndTimed. DO NOT NEST THESE
+ * DebugDraw functions between Begin and End will be drawn for every frame until afTime has passed
+ * @param afTime
+  **/
+
+void DebugDraw_BeginTimed(float afTime)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.BeginTimed(afTime);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Will end a timed container of commands, have to be matched with DebugDraw_BeginTimed
+ * DebugDraw functions between Begin and End will be drawn for every frame until afTime has passed
+  **/
+void DebugDraw_EndTimed()
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.EndTimed();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Push a depth test state, should ideally be matched with PopDepthTest
+ * DebugDraw calls after this will be affected by change
+ * @param abX, state of depth testing
+  **/
+
+void DebugDraw_PushDepthTest(bool abX)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.PushDepthTest(abX);
+}
+
+/**
+ * Pops a depth test state, should ideally be matched with PushDepthTest
+ * DebugDraw calls after this will be affected by change
+  **/
+void DebugDraw_PopDepthTest()
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.PopDepthTest();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Push a matrix, should ideally be matched with PopMatrix
+ * DebugDraw calls after this will be local to aMtx
+ * @param aMtx, the new local space
+  **/
+
+void DebugDraw_PushMatrix(const cMatrixf&in aMtx)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.PushMatrix(aMtx);
+}
+
+
+/**
+ * Pops a matrix, should ideally be matched with PushMatrix
+ * DebugDraw calls after this will be local to whatever was previous on the stack, if nothing is there identity will be used
+ * @param aMtx, the new local space
+  **/
+void DebugDraw_PopMatrix()
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	pHandler.PopMatrix();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Draws a line between avStart and avEnd with color for time if it's specified
+ * @param avStart, start of line
+ * @param avEnd, end of line
+ * @param aColor, color of line
+ * @param afTime, the time that line will be drawn
+  **/
+
+void Debug_DrawLine(const cVector3f&in avStart, const cVector3f&in avEnd, const cColor&in aColor, float afTime = -1.f)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	
+	if(afTime>0.f)
+		pHandler.BeginTimed(afTime);
+
+	pHandler.DrawLine(avStart, avEnd, aColor);
+
+	if(afTime>0.f)
+		pHandler.EndTimed();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Draws a sphere at avPosition with afRadius with color for time if it's specified
+ * @param avPositiom, position of spheres center
+ * @param afRadius, radius of the sphere
+ * @param aColor, color of sphere
+ * @param afTime, the time that sphere will be drawn
+  **/
+
+void Debug_DrawSphere(const cVector3f&in avPosition, float afRadius, const cColor&in aColor, float afTime = -1.f)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	
+	if(afTime>0.f)
+		pHandler.BeginTimed(afTime);
+
+	pHandler.DrawSphere(avPosition, afRadius, aColor);
+
+	if(afTime>0.f)
+		pHandler.EndTimed();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Draws an AABB between avMin and avMax with color for time if it's specified
+ * @param avMin, max pos of aabb
+ * @param avMax, min pos of aabb
+ * @param aColor, color of sphere
+ * @param afTime, the time that sphere will be drawn
+  **/
+
+void Debug_DrawAABB(const cVector3f&in avMin, const cVector3f&in avMax, const cColor&in aColor, float afTime = -1.f)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	
+	if(afTime>0.f)
+		pHandler.BeginTimed(afTime);
+
+	pHandler.DrawAABB(avMin, avMax, aColor);
+
+	if(afTime>0.f)
+		pHandler.EndTimed();
+}
+
+//-------------------------------------------------------
+
+/**
+ * Draws a box with size in a_mtxTransform, with color and time if it's specified
+ * @param a_mtxTransform, transform matrix
+ * @param aColor, color of the box
+ * @param avSize, size of the box
+ * @param afTime, the time that sphere will be drawn
+  **/
+
+void Debug_DrawBox(const cMatrixf&in a_mtxTransform, const cColor&in aColor, const cVector3f&in avSize = cVector3f_One, float afTime = -1.f)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	
+	cVector3f vMin, vMax;
+	vMin = avSize / 2.f;
+	vMax = vMin * -1.f;
+	
+	if(afTime>0.f)
+		pHandler.BeginTimed(afTime);
+
+	pHandler.PushMatrix(a_mtxTransform);
+	pHandler.DrawAABB(vMin, vMax, aColor);
+	pHandler.PopMatrix();
+	
+	if(afTime>0.f)
+		pHandler.EndTimed();
+}
+
+
+//-------------------------------------------------------
+
+
+
+/**
+ * Draws a box with size in a_mtxTransform, with color and time if it's specified
+ * @param avMin, max pos of aabb
+ * @param avMax, min pos of aabb
+ * @param aColor, color of sphere
+ * @param afTime, the time that sphere will be drawn
+  **/
+
+void Debug_DrawMatrixAxis(const cMatrixf&in a_mtx, float afSizeMul = 1.f, float afColorMul = 1.f, float afTime = -1.f)
+{
+	iScrDebugDrawHandler_Interface@ pHandler = cast<iScrDebugDrawHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_DebugDrawHandler));
+	
+	if(afTime>0.f)
+		pHandler.BeginTimed(afTime);
+
+	pHandler.DrawMatrixAxis(a_mtx, afSizeMul, afColorMul);
+	
+	if(afTime>0.f)
+		pHandler.EndTimed();
+}
+
+/////////////////////////////////////////
+// EMOTION HANDLER
+/////////////////////////////////////////
+
+//-------------------------------------------------------
+
+/**
+ * Starts a new instance of heart beats
+ * 
+ * @param afTimeBetweenBeats The time between the beats
+ * @param afVolume Volume of the heart beats (0-1)
+ * @param alPrio The prio of instnace. Higher is played over low.er
+ * @param afDuration How long the heart beats lasts, -1 means until stopped.
+ * @param afFadeInTime The time it takes for this instance to fade in.
+ * @param afFadeOutTime The time it takes to fade out, only used if no instance is active.
+ **/
+int Emotion_StartHeartbeat(float afTimeBetweenBeats, float afVolume, int alPrio, float afDuration=-1, float afFadeInTime=3, float afFadeOutTime=3)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	return pEmotionHandler.StartHeartbeat(afTimeBetweenBeats, afVolume, alPrio, afDuration, afFadeInTime, afFadeOutTime);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Stops an instance of heart beats.
+ * 
+ * @param alId The ID of the instance
+ **/
+void Emotion_StopHeartbeat(int alId)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	pEmotionHandler.StopHeartbeat(alId);
+}
+
+
+//-------------------------------------------------------
+
+/**
+ * Changes the properties for heart beat instance
+ * 
+ * @param alId The ID of the instance
+ * @param afTimeBetweenBeats Time between beats
+ * @param afVolume Volume for the beat
+ **/
+void Emotion_SetHeartbeatProperties(int alId, float afTimeBetweenBeats, float afVolume)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	pEmotionHandler.SetHeartbeatProperties(alId, afTimeBetweenBeats, afVolume);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Starts a new instance of background breathing. Returns ID of the instnace.
+ * 
+ * @param aType The type of breath.
+ * @param afStrength The strength of the breaths. Must be 0 - 1.
+ * @param alPrio The prio of this instance. Higher is played over lower.
+ * @param afDuration How long the breathing lasts, -1 means until stopped.
+ * @param afFadeInSpeed the speed (note NOT time) that used when fading to this instance. If <0, the FadeOut from a previous instance is used.
+ * @param afFadeOutSpeed if going back to default breathing or the upcoming has<0 as FadeInSpeed, this it the speed (NOT time) used. Note that if another instance is taking over, its FadeInSpeed will be used instead.
+ **/
+int Emotion_StartBackgroundBreath(eBreathType aType, float afStrength, int alPrio, float afDuration=-1, float afFadeInSpeed=0.2f, float afFadeOutSpeed=0.2f)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	return pEmotionHandler.StartBackgroundBreath(aType, afStrength, alPrio, afDuration, afFadeInSpeed, afFadeOutSpeed);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Stops an instance of background breathing.
+ * 
+ * @param alID The ID of the instance
+ **/
+void Emotion_StopBackgroundBreath(int alID)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	pEmotionHandler.StopBackgroundBreath(alID);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Sets an instance of background breathing muted. Note that this muting only works if the is the top prio instnace and in that case no other instance will play either.
+ * 
+ * @param alID The ID of the instance
+ * @param abX If the instance is muted. -1 = the default breathing.
+ **/
+void Emotion_SetBackgroundBreathMuted(int alID, bool abX)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	pEmotionHandler.SetBackgroundBreathMuted(alID, abX);
+}
+
+//-------------------------------------------------------
+
+/**
+ * Plays an event breathing sound. 
+ * 
+ * @param asSound The name of the sound file/event to play.
+ * @param alPrio The prio of the sound, if a a breaht is already playing having higher prio overrides. 0 is lowest prio and usually used for non-critical stuff (such as breathing when crawling), so mostly use 1 or higher.
+ **/
+void Emotion_PlayEventBreath(const tString& in asSound, int alPrio=1)
+{
+	iScrEmotionHandler_Interface @pEmotionHandler = cast<iScrEmotionHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_EmotionHandler) );
+	pEmotionHandler.PlayEventBreath(asSound, alPrio);
+}

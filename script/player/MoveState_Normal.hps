@@ -182,11 +182,11 @@ class cScrMoveState_Normal : iScrMoveState, iScrMoveState_Interface
 	{
 		if(mlRunBreathingID>=0)
 		{
-			//Emotion_StopBackgroundBreath(mlRunBreathingID);
+			Emotion_StopBackgroundBreath(mlRunBreathingID);
 			mlRunBreathingID = -1;
 		}
 		
-		//Emotion_SetBackgroundBreathMuted(-1, false);
+		Emotion_SetBackgroundBreathMuted(-1, false);
 		
 		mbCrouching = false;
 		mbRunning = false;
@@ -376,18 +376,18 @@ class cScrMoveState_Normal : iScrMoveState, iScrMoveState_Interface
 		
 		if(bRunBreathing && mbRunBreathingDisabled==false)
 		{
-			/*if(mlRunBreathingID<0)
+			if(mlRunBreathingID<0)
 			{
 				mlRunBreathingID = Emotion_StartBackgroundBreath(eBreathType_Normal, 
 									gfRunBreathStrength, 0, -1, gfRunBreathFadeInSpeed, 
 									gfRunBreathFadeOutSpeed*fRunFadeOutMul);
-			}*/
+			}
 		}
 		else
 		{
 			if(mlRunBreathingID >=0)
 			{
-				//Emotion_StopBackgroundBreath(mlRunBreathingID);
+				Emotion_StopBackgroundBreath(mlRunBreathingID);
 				mlRunBreathingID = -1;
 			}
 		}
@@ -396,15 +396,15 @@ class cScrMoveState_Normal : iScrMoveState, iScrMoveState_Interface
 		// Mute while jumping
 		if(pCharBody.IsOnGround()==false && mbJumping)
 		{
-			//if(mlRunBreathingID>=0)
-			//	Emotion_SetBackgroundBreathMuted(mlRunBreathingID, true);
-			//Emotion_SetBackgroundBreathMuted(-1, true);
+			if(mlRunBreathingID>=0)
+				Emotion_SetBackgroundBreathMuted(mlRunBreathingID, true);
+			Emotion_SetBackgroundBreathMuted(-1, true);
 		}
 		else
 		{
-			//if(mlRunBreathingID>=0)
-			//	Emotion_SetBackgroundBreathMuted(mlRunBreathingID, false);
-			//Emotion_SetBackgroundBreathMuted(-1, false);
+			if(mlRunBreathingID>=0)
+				Emotion_SetBackgroundBreathMuted(mlRunBreathingID, false);
+			Emotion_SetBackgroundBreathMuted(-1, false);
 		}
 		
 		/////////////////////////////////////////////

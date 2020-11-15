@@ -1,0 +1,523 @@
+#include "interfaces/PlayerState_Interface.hps"
+#include "base/InputHandler_Types.hps"
+#include "player/Player_Types.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "helpers/helper_imgui.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_audio.hps"
+#include "custom/player/PlayerTypes_Custom.hps"
+#include "helpers/helper_imgui.hps"
+
+/////////////////////////////////////////
+// SETTINGS
+/////////////////////////////////////////
+
+//------------------------------------------------------------
+
+const tString gsMemoryCylinderSoundLoop = "player/UI/memory_cylinder/memory_cylinder_loop";
+const tString gsMemoryCylinderSoundEnd = "player/UI/memory_cylinder/memory_cylinder_end";
+float gfMemoryCylinderFadeInTime = 0.7f;
+
+const tString gsFont_MemoryCylinderBig = "MacondoSwash.fnt";
+const tString gsFont_MemoryCylinderSmall = "Macondo.fnt";
+const float gfFontSize_MemoryCylinderBig = 32;
+const float gfFontSize_MemoryCylinderSmall = 26;
+
+//------------------------------------------------------------
+
+class cScrPlayerState_ReadMemoryCylinder : iScrPlayerState, iScrPlayerState_Interface
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GLOBAL
+	/////////////////////////////////////////
+
+	//------------------------------------------------------------
+	
+	void _Global_ReadMemoryCylinder()
+	{
+		msCylinder = cScript_GetGlobalArgString(0);
+		msSubject = cScript_GetGlobalArgString(1);
+		msBackground = cScript_GetGlobalArgString(2);
+		
+		cLux_GetPlayer().ChangeState(ePlayerState_Custom_ReadMemoryCylinder);
+	}
+
+	//------------------------------------------------------------
+		
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init() 
+	{
+		mlPrevState = 0;
+		mlRadialBlurId = -1;
+		mlStage = 0;
+		mlLineId = -1;
+		mfAlpha = 0.f;
+		mfTextAlpha = 0.f;
+		mfBgAlpha = 0.f;
+		mfSmokeAlpha = 0.f;	
+		mbSwitchParagraph = false;
+		mbFadedMusic = false;
+		msSubject = "";
+		msCylinder = "";
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// USER SETTINGS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void LoadUserConfig() {}
+	void SaveUserConfig() {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ENTER MAP
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap) {}
+	void OnMapLeave(cLuxMap @apMap) {}
+	void CreateWorldEntities(cLuxMap @apMap) {}
+	void DestroyWorldEntities(cLuxMap @apMap) {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterState(int alPrevStateId)
+	{
+		mlPrevState = alPrevStateId;
+		mlStage = 0;
+		mlLineId = -1;
+		mfAlpha = 0.f;
+		mfTextAlpha = 0.f;
+		mfSmokeAlpha = 0.f;
+		mbFadedMusic = false;
+		
+		FearHandler_SetPaused(true);
+		
+		///////////////////////
+		// Make each voice line a paragraph	
+		mvParagraphs.resize(0);
+		cLux_GetVoiceHandler().GetSubjectLines(msSubject, mvParagraphs);
+		
+		//////////////////////
+		// Add the cylinder content to notes page
+		Sketchbook_AddMemoryCylinder(msSubject,"");
+		
+		///////////////////////
+		// Start effects
+        mlRadialBlurId = Effect_RadialBlur_Start(0.15f, 1.f, 0.6f, 3.f);			
+        Player_FadeFOVMulTo(0.5f, (1.0f / gfMemoryCylinderFadeInTime));
+		Player_FadeMoveSpeedMulTo(0.1f, gfMemoryCylinderFadeInTime, ePlayerMoveSpeedMulType_PlayerState);
+		Player_FadeLookSpeedMulTo(0.1f, gfMemoryCylinderFadeInTime);
+		Player_StartLookAt(msCylinder, 10.f, 1.f, 20.f);
+	}
+
+	//------------------------------------------------------------
+
+	void OnLeaveState(int alNextStateId)
+	{
+		FearHandler_SetPaused(false);
+		Music_FadeVolumeMul(1.f, 3.f);
+		Sound_FadeGlobalVolume(1.0f, 2.0f, eSoundEntryType_WorldAll);
+		
+		iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByName(msCylinder);
+		if (pEnt is null) return;
+		
+		cLuxProp@ pProp = cLux_ToProp(pEnt);
+		if (pProp is null) return;
+		
+		//Voice_PlayDelayed("Misc_DWCylinder_FirstTime", 1.0f);
+		
+		//////////////
+		// Interaction leave callback
+		if (pProp.HasPlayerInteractLeaveCallback())
+			pProp.RunPlayerInteractLeaveCallback();
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset() {}
+	void Update(float afTimeStep) {}
+	
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep) 
+	{
+		////////////////////////
+		// Set up fading when switching paragraph
+		int lId = cLux_GetVoiceHandler().GetCurrentSubjectLineIndex(msSubject);
+		if (mlLineId < lId && mbSwitchParagraph == false && cLux_GetVoiceHandler().SceneIsActive("MemoryCylinder"))
+		{						
+			mbSwitchParagraph = true;
+		}
+		
+		///////////////////////
+		// Fade music
+		if (mbFadedMusic == false)
+		{
+			Music_FadeVolumeMul(0.f, 2.f);
+			Sound_FadeGlobalVolume(0.2f, 2.0f, eSoundEntryType_WorldAll);
+			mbFadedMusic = true;
+		}
+		
+		///////////////////////
+		// Update stages
+		if (mlStage == 0)
+		{
+			if (Sound_GuiIsPlaying(gsMemoryCylinderSoundLoop) == false)
+				Sound_PlayGui(gsMemoryCylinderSoundLoop, 0.2f, eSoundEntryType_Gui);
+			
+			////////////////////////
+			// Fade in
+			mfAlpha += afTimeStep * (2.0f / gfMemoryCylinderFadeInTime*0.5f);
+			
+			if (mfAlpha > 1.f)
+			{
+				mfAlpha = 1.f;
+				mlStage = 1;
+			}
+		}
+		else if (mlStage == 1)
+		{
+			////////////////////////
+			// Fade in
+			mfBgAlpha += afTimeStep * (2.0f / gfMemoryCylinderFadeInTime*0.5f);
+			
+			if (mfBgAlpha > 1.f)
+			{
+				mfBgAlpha = 1.f;
+				mlStage = 2;
+				
+				cLux_GetVoiceHandler().Play(msSubject, -1, "", 0, false);
+			}
+		}
+		else if (mlStage == 2)
+		{
+			if (Sound_GuiIsPlaying(gsMemoryCylinderSoundLoop) == false)
+				Sound_PlayGui(gsMemoryCylinderSoundLoop, 0.2f, eSoundEntryType_Gui);
+			
+			mfSmokeAlpha = cMath_Clamp(mfSmokeAlpha + afTimeStep * 1.2f, 0.f, 1.f);
+			if (mfSmokeAlpha < 1.f)
+			{
+				cLux_GetVoiceHandler().SetPausedAll(true);
+				return;
+			}
+			
+			////////////////////////
+			// Fade to next paragraph
+			if (mbSwitchParagraph)
+			{
+				mlLineId++;
+				mfTextAlpha = 0.f;
+				mbSwitchParagraph = false;
+			}
+			else
+			{
+				mfTextAlpha = cMath_Clamp(mfTextAlpha + afTimeStep * 1.2f, 0.f, 1.f);
+				
+				if (mfTextAlpha >= 0.925f)
+					cLux_GetVoiceHandler().SetPausedAll(false);
+			}
+			
+			///////////////////////
+			// Voice over, prepare state exit
+			if (cLux_GetVoiceHandler().SceneIsActive("MemoryCylinder") == false)
+			{
+				Effect_RadialBlur_FadeOut(mlRadialBlurId, 1.f);
+				
+				Player_FadeFOVMulTo(1.f, (1.0f / gfMemoryCylinderFadeInTime));
+				Player_FadeMoveSpeedMulTo(1.f, 1.f, ePlayerMoveSpeedMulType_PlayerState);
+				Player_FadeLookSpeedMulTo(1.f, 1.f);
+				Player_StopLookAt(2.f);
+				
+				mlStage = 3;
+				
+				Sound_PlayGui(gsMemoryCylinderSoundEnd, 1.f);
+				Sound_StopGui(gsMemoryCylinderSoundLoop, 1.0f);
+			}
+		}
+		else if (mlStage == 3)
+		{
+			///////////////////////
+			// Leave state!
+			mfSmokeAlpha = cMath_Clamp(mfSmokeAlpha - afTimeStep * 1.0, 0.f, 1.f);
+			mfTextAlpha = cMath_Clamp(mfTextAlpha - afTimeStep * 1.0, 0.f, 1.f);
+			if (mfTextAlpha > 0.f) return;
+			
+			mfBgAlpha -= afTimeStep * (2.0f / gfMemoryCylinderFadeInTime);
+			if (mfBgAlpha <= 0.f)
+			{
+				mfBgAlpha = 0.f;
+				mlStage = 4;
+			}			
+		}
+		else if (mlStage == 4)
+		{
+			mfAlpha -= afTimeStep * (2.0f / gfMemoryCylinderFadeInTime);
+			if (mfAlpha <= 0.f)
+			{
+				mfAlpha = 0.f;
+				cLux_GetPlayer().ChangeState(mlPrevState);
+			}						
+		}
+	}
+	
+	//------------------------------------------------------------
+
+	void OnGui(float afTimeStep)
+	{
+		ImGui_SetModColorMul(cColor(1,1,1,mfAlpha));
+		ImGui_GroupBegin(ImGui_FullScreenPos(0), ImGui_FullScreenSize());
+				
+		// Black background
+		cImGuiGfx gfx;
+		gfx.mColor=cColor(1);
+		ImGui_DrawGfx(gfx, ImGui_FullScreenPos(5.f), ImGui_FullScreenSize(), cColor(0.f)*mfAlpha);
+		
+		// Image background, taken from cylinder editor settings. Pulsing slightly.
+		tString sBackgroundGfx = (msBackground == "") ? "cylinderbg_mask" : msBackground;
+		cImGuiGfx backgroundGfx(sBackgroundGfx, eImGuiGfx_TextureTemporary);
+		ImGui_SetModColorMul(cColor(1,1,1,mfBgAlpha*0.75f));
+		float sizeChange = 1.0f*(1.0f-mfAlpha) + mfAlpha*(0.9f+cMath_Sin(cEngine_GetGameTime()*0.5f)*0.05f);
+		cVector2f size = ImGui_NrmSizeGroup(cVector2f(1,1.28f)*sizeChange);
+		ImGui_DoImage(backgroundGfx, ImGui_NrmPosGroup(cVector3f(0.5f, 0.5f, 10.0f))-cVector3f(size.x*0.5f,size.y*0.5f,0.0f), size);
+	
+		// Vignette
+		cImGuiGfx maskGfx("memorycylinder_mask_test", eImGuiGfx_TextureTemporary);
+		ImGui_SetModColorMul(cColor(1,1,1,mfAlpha));
+		ImGui_DoImage(maskGfx, ImGui_NrmPosGroup(cVector3f(0, 0, 11.0f)), ImGui_NrmSizeGroup(cVector2f(1,1.75)));
+		
+		////////////////////////////////////
+		// Draw smoke
+		DoBackgroundSmoke("Smoke_1", "memorycylinder_cloud01_test.dds", cVector3f(-0.3f, 0.8f, 12.f), cVector3f(0.5f, 0.7f, 12.f), 20.f, 0.2f, eEasing_SineInOut);
+		DoBackgroundSmoke("Smoke_2", "memorycylinder_cloud02_test.dds", cVector3f(0.6f, -0.4f,12.f), cVector3f(-0.3f,-0.4f,12.f), 15.f, 0.7f, eEasing_QuadInOut);
+		DoBackgroundSmoke("Smoke_3", "memorycylinder_cloud03_test.dds", cVector3f(-0.2f, -0.4f,12.f), cVector3f(-0.1f, 0.5f,12.f), 17.f, 0.3f, eEasing_SineInOut);
+		DoBackgroundSmoke("Smoke_4", "memorycylinder_cloud03_test.dds", cVector3f(0.5f, 0.5f,12.f), cVector3f(0.6f, -0.3f,12.f), 17.f, 0.3f, eEasing_QuadInOut);
+		
+		////////////////////////////////////
+		// Setup text
+		cImGuiTextFrameData textData;
+		textData.mFont.SetFile(FontHandler_GetFont(eFontType_MemoryCylinder_Big,72));
+		textData.mFontAlign = eFontAlign_Left;
+		textData.mbUseBackgroundGfx = false;
+		
+		float fFontHeight = gfFontSize_MemoryCylinderBig;
+		textData.mFont.mvSize = cVector2f(fFontHeight);
+		
+		cVector2f vFrameSize = ImGui_NrmSizeGroup(cVector2f(0.6f, 0.5f));
+		
+		///////////////////////////
+		// Make sure the text fits the frame!
+		
+		ImGui_SetTransCategory("");
+		
+		float fFontSizeRequired = fFontHeight+1.0f;
+		array<float> vParaStartOffsets;
+		array<cVector2f> vParaSizes;
+		float fTextHeight = 0.0f;
+		
+		do
+		{
+			fFontSizeRequired-=1.0f;
+			
+			if (fFontSizeRequired<gfFontSize_MemoryCylinderSmall)
+				textData.mFont.SetFile(FontHandler_GetFont(eFontType_MemoryCylinder_Small,56));
+			textData.mFont.mvSize = cVector2f(fFontSizeRequired);	
+							
+			vParaStartOffsets.resize(0);
+			vParaSizes.resize(0);
+			fTextHeight = 0.0f;
+			array<tWString> vLines;
+			for(int i=0; i< mvParagraphs.size(); i++)
+			{
+				if (i>0)
+					fTextHeight += 1.0f * fFontSizeRequired;	// Spacing
+				vParaStartOffsets.insertLast(fTextHeight);
+				tWString sText = mvParagraphs[i];		
+				GetFontWordWrapRowsW(textData.mFont, 1.0f, sText, vFrameSize.x, vLines);
+				float fParaHeight = vLines.length()*fFontSizeRequired;
+				fTextHeight+=fParaHeight;
+				vParaSizes.insertLast(cVector2f(vFrameSize.x, fParaHeight+10.0f));
+			}
+		} while (fTextHeight>vFrameSize.y);
+		
+		///////////////////////////
+		// Draw current paragraph
+		cVector3f vLayoutPos = ImGui_NrmPosGroup(cVector3f(0.2f, 0.25f, 10.f));
+		
+		for (int i = 0; i <= mlLineId; i++)
+		{
+			///////////////////////////
+			// Fade alpha on current paragraph, or on all if we're exiting!
+			cColor col = cColor_White;
+			if (i == mlLineId || mlStage >= 3)
+				col = cColor_White * cMath_Easing(eEasing_SineInOut, mfTextAlpha);
+			
+			textData.mColorText = col;		
+			tWString sText = mvParagraphs[i];
+			ImGui_DoTextFrameExtW(sText, cVector2f(0.f), 0.f, 0.f, textData, 
+				cVector3f(vLayoutPos.x, vLayoutPos.y + vParaStartOffsets[i] + (vFrameSize.y-fTextHeight)*0.5f, 20.0f), vParaSizes[i]);			
+		}
+		
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoBackgroundSmoke(const tString &in asName, const tString &in aGfx, const cVector3f &in avStart, const cVector3f &in avEnd, float afTime, float afFadeMul, eEasing aEasing)
+	{		
+		cImGuiGfx gfxSmoke(aGfx, eImGuiGfx_TextureTemporary);
+		gfxSmoke.mColor = cColor(1.f) * cMath_Clamp(cMath_Sin(cEngine_GetGameTime() * afFadeMul)*0.25f+0.75f, 0.5f, 1.f) * mfAlpha;
+		
+		cVector3f vPos = ImGui_NrmPosGroup( ImGui_FadeOscillateVector3f(asName, avStart, avEnd, afTime, aEasing) + cVector3f(-0.5f,-0.5f,0.0f) );
+		vPos.z=12.0f;
+		
+		ImGui_SetModColorMul(cColor_White);
+		ImGui_SetModRotateAngle(cMath_Sin(cEngine_GetGameTime() * avStart.x*0.1f) * 90.f);
+		ImGui_DoImageCorrectAspect(gfxSmoke, vPos, ImGui_NrmSizeGroup(cVector2f(1.5f, 1.5f)));
+		ImGui_SetModRotateAngle(0.f);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool OnAction(int alAction, bool abPressed)
+	{
+		if (abPressed == false || mlStage <= 0) return false;
+		
+		///////////////////////
+		// Break out of state
+		if (alAction == eAction_InteractCancel)
+		{
+			cLux_GetVoiceHandler().Stop("MemoryCylinder");
+			
+			Effect_RadialBlur_FadeOut(mlRadialBlurId, 1.f);
+			
+			Player_FadeFOVMulTo(1.f, (1.0f / gfMemoryCylinderFadeInTime));
+			Player_FadeMoveSpeedMulTo(1.f, 1.f, ePlayerMoveSpeedMulType_PlayerState);
+			Player_FadeLookSpeedMulTo(1.f, 1.f);
+			Player_StopLookAt(2.f);
+			
+			mlStage = 3;
+			
+			Sound_PlayGui(gsMemoryCylinderSoundEnd, 1.f);
+			Sound_StopGui(gsMemoryCylinderSoundLoop, 1.0f);
+		}
+		
+		///////////////////////
+		// Skip to next paragraph
+		if ((alAction == eAction_Interact || alAction == eAction_MenuConfirm) && mbSwitchParagraph == false)
+		{
+			cLux_GetVoiceHandler().SkipCurrentLine("MemoryCylinder");
+			cLux_GetVoiceHandler().SetPausedAll(true);
+		}
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+		//////////////////////
+		// Allow movement at beginning and end
+		if (mlStage == 0 || mlStage >=3) 
+			return true;
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnExitPressed()
+	{
+		return true;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// BODY CALLBACKS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool AllowBuoyancy(iPhysicsBody @apBody)
+	{
+		return true;
+	}
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// CHARACTER CALLBACK
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void CharBody_GravityCollide(iCharacterBody@ apCharBody, iPhysicsBody@ apBody, cCollideData @apCollideData) {}
+	void CharBody_HitGround(iCharacterBody@ apCharBody,const cVector3f &in avVel) {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEBUG
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afStartY)
+	{
+		return afStartY;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	int mlPrevState;
+	int mlRadialBlurId;
+	int mlStage;
+	int mlLineId;
+	float mfAlpha;
+	float mfBgAlpha;
+	float mfTextAlpha;
+	float mfSmokeAlpha;	
+	bool mbSwitchParagraph;
+	[nosave] bool mbFadedMusic;
+	tString msSubject;
+	tString msCylinder;
+	tString msBackground="";
+	array<tWString> mvParagraphs;
+	
+	//------------------------------------------------------------		
+}

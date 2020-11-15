@@ -1,0 +1,596 @@
+/////////////////////////////////////////
+// ENUMS
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared enum eModuleType
+{
+	// Added in Modules.cfg
+	// Extend these for a game-specific stuff in custom/modules/ModuleInterfaces_Custom.hps.
+	eModuleType_HintHandler=0,
+	eModuleType_DescriptionHandler=1,
+	eModuleType_PlayerToolHandler=2,
+	eModuleType_PlayerPickupHandler=3,
+	eModuleType_TerrainParticleHandler=4,
+	eModuleType_DistortionEffectsHandler=5,
+	eModuleType_LightFlashHandler=6,
+	eModuleType_MapEffectsHandler=7,
+	eModuleType_DeathMeterHandler=8,
+	eModuleType_GameOverHandler=9,
+	eModuleType_EmotionHandler=10,
+	eModuleType_HighlightEffectHandler=11,
+	eModuleType_PlayerHandsHandler=12,
+	eModuleType_CreditsHandler=13,
+	eModuleType_FlashlightHandler=14,
+	eModuleType_PlayerBodyHandler=15,
+	eModuleType_EyeTrackingHandler=16,
+	eModuleType_ModEventHandler=17,
+	eModuleType_LoadScreensHandler=18,
+	eModuleType_DebugDrawHandler=19,
+	eModuleType_VerletAnimationHandler=20,
+	eModuleType_LastEnum
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// HINT
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrHintHandler_Interface
+{
+	int AddHintCandidate(const tString &in asHeaderCat, const tString &in asHeaderEntry, const tString &in asTextCat, const tString &in asTextEntry, bool abInputHint, const cColor &in aColor, float afTimeMul, bool abAddAsGiven);
+	void RemoveHintCandidate(int alHintID, float afTime);
+	void StopHint(float afDelay);
+	
+	void SetPaused(bool abX);
+	
+	void ForceEnabled(bool abX);
+	void SetCanShowHints(bool abX);
+	bool GetEnabled();
+	
+	tString GetCurrentHintEntry();
+	bool HintIsGiven(const tString &in asTextCat, const tString &in asTextEntry);
+	bool IsShowing();	
+	
+	void AddHintAsGiven(int alHintID);
+	void AddHintAsGiven(const tString &in asTextCat, const tString &in asTextEntry);
+	void RemoveHintFromGiven(const tString &in asTextCat, const tString &in asTextEntry, float afTime);
+	
+	void Block(const tString &in asTextCat, const tString &in asTextEntry);
+	void Unblock(const tString &in asTextCat, const tString &in asTextEntry);
+	
+	void DrawExplicitHint(const tString& in asTextCat, const tString& in asTextEntry, cVector3f avPos, cVector2f avSize, const cLuxScreenTextFormatParameters& in aFormatParams);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DESCRIPTION
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared enum eDescEffect
+{
+	eDescEffect_None,
+	eDescEffect_Shake,
+}
+
+//---------------------------------------------------
+
+shared interface iScrDescriptionHandler_Interface
+{
+	int Add(const tString &in asTextCat, const tString &in asTextEntry, float afTimeMul, bool abPutInQueueIfShowing, bool abConnectedToPrevious,
+			int aEffect, float afEffectAmount, cColor aColor);
+	bool IsActive();
+	int GetCurrentId();
+	void SetForceFading(bool abX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TOOL HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrPlayerToolHandler_Interface
+{
+	bool CanPickOrUseTool();
+	bool CanEquipToolAreaTool();
+	
+	bool GetPlayerCarriesHeavyTool();
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER PICKUP
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrPlayerPickupHandler_Interface
+{
+}
+
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// TERRAIN PARTICLES
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrTerrainParticleHandler_Interface
+{
+	void Clear();
+	
+	void SetupParticles(tString asMaterial, int alFixedAxisCount, float afFixedAxisSizeMin, float afFixedAxisSizeMax, cColor avFixedColorMin, cColor avFixedColorMax, int alPointSpriteCount, float afPointSpriteSizeMin, float afPointSpriteSizeMax, cColor avPointColorMin, cColor avPointColorMax);
+	void SetupRange(float afRangeMinStart, float afRangeMinEnd, float afRangeMaxStart, float afRangeMaxEnd);
+	void SetupForces(cVector3f avVelocityLimit, float afGravityAmount, float afRandomDirectionForce, float afRandomDirectionFrequency);
+	void SetupWind(cVector3f avWindForce);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DISTORTION EFFECT
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrDistortionEffectsHandler_Interface
+{
+	void AddInstance(tID a_idEntity, float afMaxDistance, float afMinDistance, float afMaxAmount, eEasing aEasing = eEasing_Linear);
+	void RemoveInstance(tID a_idEntity);
+}
+
+//---------------------------------------------------
+
+
+/////////////////////////////////////////
+// LIGHT FLASH
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrLightFlashHandler_Interface
+{
+	int Add(float afTime, float afFadeInTime, float afFadeOutTime, const cVector3f &in avPosition,
+			const cColor&in aColor, float afRadius, float afBrightness);
+}
+
+//---------------------------------------------------
+
+//////////////////////////////////////// 
+// MAP EFFECTS
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrMapEffectsHandler_Interface
+{
+	void FadeFogStart(float afX, float afTime);
+	void FadeFogEnd(float afX, float afTime);
+	void FadeFogColor(const cColor &in aCol, float afTime);
+	void FadeFogFalloffExp(float afX, float afTime);
+	void FadeEnvParticlesWindVel(const cVector3f avWindVel, float afTime, tString asName);
+	void FadeEnvParticlesColor(const cColor&in aColor, float afTime, tString asName);
+	void FadeEnvParticlesBrightness(float afX, float afTime, tString asName);
+
+	void PresetSetFog(tString asName, bool abActive, float afStart, float afEnd, float afFalloffExp, cColor aColor, float afBrightness, bool abUnderwater, bool abSkybox);
+	void PresetSetSecondaryFog(tString asName, bool abActive, float afStart, float afEnd, float afFalloffExp, cColor aColor, float afBrightness);
+	void PresetSetDepthOfField(tString asName, bool abActive, float afStart, float afEnd, float afFalloff);
+	void PresetSetBloom(tString asName, float afWidth, float afBrightPass, float afFalloff, cColor aTint);
+	void PresetSetDirLight(tString asName, bool abDirLightActive, float afDirLightBrightness, cVector3f avDirLightDir, cColor aDirLightGroundColor, cColor aDirLightSkyColor, cColor aDirLightDiffuseColor);
+	void PresetSetToneMapping(tString asName, float afToneMappingKey, float afToneMappingExposure, float afToneMappingWhiteCut);
+	void PresetSetColorGrading(tString asName, tString asColorGrading);
+	void PresetSetSkybox(tString asName, const cColor &in aColor, float afBrightness);
+	void FadePreset(tString asName, float afFadeTime);
+
+	void FadeToWorldSettings(cWorld@ apWorld, float afTime);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// GAME OVER HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrGameOverHandler_Interface
+{
+	void Start(const tString& in asDeathSource);
+	void End();
+		
+	void SetCustomGameOverScreenText(const tString& in asCat, const tString& in asEntry);
+	
+	float GetTimeSinceLastGameOver();
+}
+
+/////////////////////////////////////////
+// EMOTION HANDLER
+/////////////////////////////////////////
+
+//---------------------------------------------------
+
+shared enum eBreathType	
+{
+	eBreathType_Normal,
+	eBreathType_Fear,
+	eBreathType_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iScrEmotionHandler_Interface
+{
+	int StartHeartbeat(float afTimeBetweenBeats, float afVolume, int alPrio, float afDuration=-1, float afFadeInTime=3, float afFadeOutTime=3);
+	void StopHeartbeat(int alId);
+	void SetHeartbeatProperties(int alId, float afTimeBetweenBeats, float afVolume);
+	
+	int StartBackgroundBreath(eBreathType aType, float afStrength, int alPrio, float afDuration=-1, float afFadeInSpeed=0.2f, float afFadeOutSpeed=0.2f);
+	void StopBackgroundBreath(int alId);
+	void SetBackgroundBreathMuted(int alId, bool abX);
+	void PlayEventBreath(const tString& in asSound, int alPrio);
+}
+//---------------------------------------------------
+
+
+/////////////////////////////////////////
+// PLAYER HANDS HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrPlayerHandsHandler_Interface
+{
+	void SetHandModel(const tString& in asFile);
+	void PreloadHandModel(const tString& in asFile);
+	void PlayAnimation(const tString &in asAnim, bool abLoop, bool abFullScaleModel, float afFadeTime, const tString &in asAttachedProp, bool abDisableWhenOver, float afSpeed, float afRelTimePos);
+	bool GetAnimationPlaying();
+	void SetActive(bool abX);
+	bool IsActive();
+	void SetUseCustomRotation(bool abX);
+	void SetCustomRotation(const cVector3f& in avRot);
+	void SetUseCustomPosition(bool abX);
+	void SetCustomPosition(const cVector3f& in avPos, bool abUseBasicOffset);
+	cAnimationState@ GetCurrentAnimationState();
+	cBoneState@ GetBoneState(const tString& in asBone);
+	cNode3D@ GetSocket(const tString& in asSocket);
+	void AttachCameraToSocket(const tString& in asBoneName, float afFadeTime, const tString &in asFadeOverCallback,bool abDisablePlayer, bool abAutoDetach, float afDetachTime,const cVector3f&in avPosOffset, const cVector3f&in avRotOffset);
+	void DetachCameraFromSocket(float afFadeTime);
+	void SetAnimationOverCallback(const tString& in asFunction);
+	void SetVisible(bool abX);
+	tString GetEntityName();
+}
+
+//---------------------------------------------------
+	
+/////////////////////////////////////////
+// CREDITS HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrCreditsHandler_Interface
+{
+	bool IsActive();
+	
+	void StartCredits(const tString &in asCreditsEntry, const tString &in asCompleteCallback, const tString &in asBackgroundGfx, cVector3f avZoomOffset, const tString& in asMusic, float afRollSpeedStart, float afRollSpeedGoal, float afRollSpeedFadeTime);
+	void SetCreditsRollSpeed(float afRollSpeedGoal, float afRollSpeedFadeTime);
+	void StopCredits(float afFadeTime);
+	
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// FLASHLIGHT HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrFlashlightHandler_Interface
+{
+	void SetOn(bool abX, bool abSuppressSound = false);
+	bool IsOn();
+	float GetRange();
+	void SetFadeOut(float afSpeed, eEasing aEasing = eEasing_Linear);
+	void SetFadeIn(float afSpeed, eEasing aEasing = eEasing_Linear);
+	void SetEnabled(bool abEnabled);
+	void SetOnOffCallback(const tString &in asCallback);
+	void SetEnvParticleMul(float afMul);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// PLAYER BODY HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared enum ePlayerBodyAnimation
+{
+	ePlayerBodyAnimation_WalkFwd,
+	ePlayerBodyAnimation_WalkFwdRight,
+	ePlayerBodyAnimation_WalkRight,
+	ePlayerBodyAnimation_WalkBackRight,
+	ePlayerBodyAnimation_WalkBack,
+	ePlayerBodyAnimation_WalkBackLeft,
+	ePlayerBodyAnimation_WalkLeft,
+	ePlayerBodyAnimation_WalkFwdLeft,
+	
+	ePlayerBodyAnimation_CrouchWalkFwd,
+	ePlayerBodyAnimation_CrouchWalkFwdRight,
+	ePlayerBodyAnimation_CrouchWalkRight,
+	ePlayerBodyAnimation_CrouchWalkBackRight,
+	ePlayerBodyAnimation_CrouchWalkBack,
+	ePlayerBodyAnimation_CrouchWalkBackLeft,
+	ePlayerBodyAnimation_CrouchWalkLeft,
+	ePlayerBodyAnimation_CrouchWalkFwdLeft,
+	
+	ePlayerBodyAnimation_RunFwd,
+	ePlayerBodyAnimation_RunFwdRight,
+	ePlayerBodyAnimation_RunRight,
+	ePlayerBodyAnimation_RunBackRight, 	//NOT USED
+	ePlayerBodyAnimation_RunBack, 		//NOT USED
+	ePlayerBodyAnimation_RunBackLeft, 	//NOT USED
+	ePlayerBodyAnimation_RunLeft,
+	ePlayerBodyAnimation_RunFwdLeft,
+	
+	ePlayerBodyAnimation_Idle,
+	ePlayerBodyAnimation_TurnRight,
+	ePlayerBodyAnimation_TurnLeft,
+	ePlayerBodyAnimation_CrouchIdle,
+	ePlayerBodyAnimation_CrouchTurnRight,
+	ePlayerBodyAnimation_CrouchTurnLeft,
+	ePlayerBodyAnimation_Crouch,
+	ePlayerBodyAnimation_Stand,
+	ePlayerBodyAnimation_JumpLaunch,
+	ePlayerBodyAnimation_JumpFall,
+	ePlayerBodyAnimation_JumpLand,
+	
+	ePlayerBodyAnimation_LastEnum
+}
+
+//---------------------------------------------------
+
+shared enum ePlayerBodyAnimationLayer
+{
+	ePlayerBodyAnimationLayer_FullBody,
+	ePlayerBodyAnimationLayer_Body,
+	ePlayerBodyAnimationLayer_Arms,
+	ePlayerBodyAnimationLayer_LeftArm,
+	ePlayerBodyAnimationLayer_RightArm,
+	
+	ePlayerBodyAnimationLayer_LastEnum
+}
+	
+//---------------------------------------------------
+
+shared interface iScrPlayerBodyHandler_Interface
+{
+    void SetActive(bool abX);
+	bool IsActive();
+    void PreloadBodyModel(const tString& in asFile);
+	void SetBodyModel(const tString& in asFile);
+	void SetBodyModelReflectionVisibility(bool abVisible);
+	void SetHeadModelShadowCasting(bool abX);
+	void SetArmLiquidAmount(float afLiquidAmount);
+	void SetAnimationSet(const tString& in asAnimationSet);
+	tString GetEntityName();
+	void SetAnimation(ePlayerBodyAnimation aAnimationType, const tString &in asAnimation);
+	tString GetAnimation(ePlayerBodyAnimation aAnimationType);
+	void SetPermafailWakeUpAnims(const array<tString> &in avStandingAnims, const array<tString> &in avCrouchingAnims);
+	tString GetRandomPermafailWakeUpAnim(bool abStanding);
+	void SetYawBones(const array<tString> &in avBones, const array<float> &in avWeights, const array<cVector3f> &in avAxes);
+	void SetPitchBones(const array<tString> &in avBones, const array<float> &in avWeights, const array<cVector3f> &in avAxes);
+	void SetShakeBones(const array<tString> &in avBones, const array<float> &in avWeights, const array<cVector3f> &in avAxes);
+	void SetArmControlBones(const tString &in asLeftArmBone, const cVector3f &in avLeftArmPitchAxis, const cVector3f &in avLeftArmYawAxis, const tString &in asRightArmBone, const cVector3f &in avRightArmPitchAxis, const cVector3f &in avRightArmYawAxis);
+	void SetCustomYawBoneAxis(const cVector3f &in avAxis);
+	void ResetCustomYawBoneAxis();
+	void SetYawLimit(float afYawSoftLimit, float afYawHardLimit, float afCrouchYawSoftLimit, float afCrouchYawHardLimit);
+	float GetYawSoftLimit();
+	void SetMinRunSpeed(float afSpeed);
+	void SetMinRunSpeedMul(float afMul);
+	cBoneState@ GetBoneState(const tString& in asBone);
+	cNode3D@ GetSocket(const tString& in asSocket);
+	void SetCoverageAmount(float afCoverage, bool abSmooth = true);
+	void SetVisible(bool abX);
+	void PlayAnimationInLayer(ePlayerBodyAnimation aAnim, ePlayerBodyAnimationLayer aLayer, bool abLoop, bool abIdle, bool abReturnToIdleAfterAnim, float afFadeTime, float afSpeed, float afRelTimePos, bool abStopPreviousAnim=true, bool abFadeWeight=true);
+	void PlayAnimationInLayer(const tString &in asAnim, ePlayerBodyAnimationLayer aLayer, bool abLoop, bool abIdle, bool abReturnToIdleAfterAnim, float afFadeTime, float afSpeed, float afRelTimePos, bool abStopPreviousAnim=true, bool abFadeWeight=true);
+	void PlayAdditativeAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, float afSpeed, float afRelTimePos);
+	void PlayCutsceneAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, const tString &in asCallback, float afSpeed, float afRelTimePos, bool abGlobalSpace, const cVector3f &in avPos, float afAngle, bool abFadeSpeed, bool abIgnoreYaw);
+	void PlayInteractiveAnimation(const tString &in asAnim, float afFadeTime, const tString &in asCallback, bool abGlobalSpace, const cVector3f &in avPos, float afAngle, bool abAutoReverse, bool abExitAtStart, bool abExitAtEnd, float afSpeedAddRate, bool abFadeSpeed, bool abLoop, bool abIgnoreYaw, bool abAnyInputDir);
+	void Cutscene_AddPitch(float afAmount, bool abSlowDownAwayFromCenter=true);
+	void Cutscene_AddYaw(float afAmount, bool abSlowDownAwayFromCenter=true);
+	void Cutscene_SetMaxPitch(float afAmount);
+	void Cutscene_SetMaxYaw(float afAmount);
+	void Cutscene_FadeMaxPitch(float afTarget, float afTime);
+	void Cutscene_FadeMaxYaw(float afTarget, float afTime);
+	void Cutscene_AutoResetCamera(bool abX);
+	void Cutscene_SetAutoEnd(bool abX);
+	float Cutscene_GetYaw();
+	float Cutscene_GetPitch();
+	float Cutscene_GetMaxYaw();
+	float Cutscene_GetMaxPitch();
+	void Cutscene_ResetPitchYawLimits();
+	void PlayLayerIdleAnimation(ePlayerBodyAnimationLayer aLayer, float afFadeTime = 0.3f, bool abLoop = true, bool abFromStart = false);
+	void StopAnimation(const tString &in asAnim, float afFadeTime);
+	void StopAnimationLayer(ePlayerBodyAnimationLayer aLayer, float afFadeTime, bool abAllowReturnToIdle=true, bool abIdleOnly = false);
+	void SetArmAnimationPitch(bool abX, bool abRight, bool abLeft);
+	void SetArmAnimationPitchLimits(float afMin, float afMax);
+	void SetArmAnimationYaw(bool abX, bool abRight, bool abLeft);
+	void SetArmAnimationYawLimits(float afMin, float afMax);
+	void SetUseLowerBonesYaw(bool abX);
+	bool GetUseLowerBonesYaw();
+	void AttachProp(const tString &in asProp, const tString &in asSocket, bool abUseParentBoneRotation = false, bool abReplacePrevProp = true);
+	void DetachProp(const tString &in asEntity);
+	void FreeSocket(const tString &in asSocket);
+	void SetLayerAnimationCallback(ePlayerBodyAnimationLayer aLayer, const tString &in asCallback);
+	bool GetAnimationPlayingInLayer(ePlayerBodyAnimationLayer aLayer, bool abCheckChildLayers, bool abCheckParentLayers, bool abIncludeIfOver);
+	cAnimationState@ GetLayerCurrentAnimationState(ePlayerBodyAnimationLayer aLayer);
+	cAnimationState@ GetAnimationState(const tString &in asAnimation);
+	void SetFeetYawOffset(float afOffset);
+	void AlignLowerBodyToCameraYaw(bool abInstant=false);
+	void PlayJumpAnimation();
+	void PlayLandingAnimation();
+	void SetCrouch(bool abX, bool abInstant);
+	void SetLadderClimb(bool abX, float afAngle);
+	void SetCustomStateActive(bool abX);
+	void SetTargetLeanAmount(float afAmount);
+	void ClampLeanAmount(float afAmount);
+	void SetShakeAmount(const cVector3f &in avAmount);
+	void ResetYaw();
+	void SetYaw(float afYaw);
+	float GetYaw();
+    void SetAnimatedMoveStateActive(bool abActive, tString&in asAnimName, tString&in asAtEntity, float afAnimBlendInTime, bool abLoop, float afSpeed);
+    void SetAnimatedMoveBodyYaw(const float afAngle);
+	void SetAnimationControlledCamera(bool abX);
+	bool GetAnimationControlledCamera();
+	
+	void StartCustomAnimation(const tString &in asAnim, bool abLoop, float afFadeTime, bool abGlobal = false, const cVector3f &in avPos = 0.f, float afAngle = 0.f, bool abIgnoreYaw = false);
+	void StopCustomAnimation(const tString &in asAnim = "");
+	
+	void SetCameraAnimationPositionAndYaw(bool abGlobal, const cVector3f &in avPos, float afAngle, float afFadeTime);
+	
+	cVector3f GetCameraPos();
+	void AttachToEntity(const tString &in asEntity, const tString &in asBody);
+	void AttachToSocket(const tString &in asEntity, const tString &in asSocket);
+	void DetachFromEntity();
+	
+	void OnReceivePlayerBodyMessage(int alMessageId, cLuxEntityMessageData @apData);
+	void SetCustomAnimCameraAdd(cVector3f avCamAdd);
+	void SetCustomAnimCameraRot(cVector3f avCamRot);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// EYETRACKING HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrEyeTrackingHandler_Interface
+{
+	void SetActive(bool abActive);
+	void RegisterEntity(const tString &in asName);
+	bool IsEntityBeingLookedAt(const tString &in asName);
+	bool IsAreaBeingLookedAt(cRect2f aArea, const tString &in asId);
+	bool IsGuiAreaBeingLookedAt(cRect2f aArea, const tString &in asId);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// MOD EVENT HANDLER
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared enum eModEvent
+{
+	eModEvent_Fall_Start,
+	eModEvent_Fall_Small,
+	eModEvent_Fall_Medium,
+	eModEvent_Fall_Big,
+	eModEvent_Climb_Medium,
+	eModEvent_Climb_Medium_Done,
+	eModEvent_Climb_Long,
+	eModEvent_Climb_Long_Done,
+	eModEvent_Jump_Medium,
+	eModEvent_Jump_Long,
+	eModEvent_Run_Medium,
+	eModEvent_Run_Long,
+	eModEvent_Crawl_Medium,
+	eModEvent_Crawl_Long,
+	eModEvent_Push_Heavy,
+	eModEvent_Grab_Heavy,
+	eModEvent_Throw_Medium,
+	eModEvent_Throw_Heavy,
+	eModEvent_Hurt_Minor,
+	eModEvent_Hurt_Major,
+	eModEvent_Death,
+	
+	eModEvent_LastEnum
+}
+
+//---------------------------------------------------
+
+shared interface iModEventListener
+{
+	void OnModEvent(eModEvent eventID);
+}
+
+//---------------------------------------------------
+
+shared interface iScrModEventHandler_Interface
+{
+	void TriggerEvent(eModEvent eventID);
+	void AddListener(int iModuleID);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// HINT
+/////////////////////////////////////////
+	
+//---------------------------------------------------
+
+shared interface iScrLoadScreensHandler_Interface
+{
+	tString GetSketchFile();
+	tString GetVoiceFile();
+	void ProgressStory();
+	void SetLoadingScreen(tString level);
+	array<tString> GetAllScreensShown();
+	void SetUseAltFadeColor(bool abX);
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// DEBUG DRAW
+/////////////////////////////////////////
+	
+shared interface iScrDebugDrawHandler_Interface
+{
+	void BeginTimed(float afTime);
+	void EndTimed();
+	
+	void DrawLine(const cVector3f&in avStart, const cVector3f&in avEnd, const cColor&in aColor);
+	void DrawSphere(const cVector3f&in avPosition, float afRadius, const cColor&in aColor);
+	void DrawAABB(const cVector3f&in avMin, const cVector3f&in avMax, const cColor&in aColor);
+	void DrawMatrixAxis(const cMatrixf&in aMtx, float afSizeMul, float afColorMul);
+	
+	void PushDepthTest(bool abX);
+	void PopDepthTest();
+	void PushMatrix(const cMatrixf&in aMtx);
+	void PopMatrix();
+}
+
+//---------------------------------------------------
+
+/////////////////////////////////////////
+// VERLET ANIMATION
+/////////////////////////////////////////
+	
+shared interface iScrVerletAnimationHandler_Interface
+{
+	void SetupVerletTree(const tString &in asEntity, const tString &in asRootBone);
+	void Test(int x);
+}
+
+//---------------------------------------------------
