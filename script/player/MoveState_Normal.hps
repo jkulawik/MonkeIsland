@@ -1,0 +1,1947 @@
+#include "interfaces/MoveState_Interface.hps"
+#include "base/InputHandler_Types.hps"
+#include "player/Player_Types.hps"
+
+#include "helpers/helper_player.hps"
+#include "helpers/helper_player_custom.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_audio.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+
+/////////////////////////////////////////
+// SETTINGS
+/////////////////////////////////////////
+
+//------------------------------------------------------------
+
+////////////////////////////////////////
+// Jumping
+const float gfJumpDuration = 0.32f;
+const float gfJumpFatigueDelay = 0.7f; 
+
+const float gfJumpCrouchStartForce = 150;
+const float gfJumpStartForce = 200;
+
+const float gfJumpUnderwaterMul = 0.5;
+
+////////////////////////////////////////
+// Crouching
+const bool gbCrouchToggle = true;
+
+////////////////////////////////////////
+// Ground Bounce
+const float gfGroundBounceSize = 0.12;
+const float gfGroundBounceSpeed = 3.0;
+const float gfMinHitGroundBounceSpeed = 3.0;
+
+////////////////////////////////////////
+// Set sounds
+const float gfFootStepWaterPuddleHeightLimit = 0.2;
+const float gfFootStepWaterWadeHeightLimit = 0.6;
+const float gfMaxSoundRangeSneak = 2.5f;
+const float gfMaxSoundRangeWalk = 4.f;
+const float gfMaxSoundRangeRun = 8.f;
+const float gfMaxSoundRangeLanding = 16.f;
+const float gfMaxSoundRangeCrawl = 4.f;
+
+////////////////////////////////////////
+// Head Bob
+cVector2f gvCrouchBobMax = cVector2f(0.06, 0.04);
+cVector2f gvWalkBobMax = cVector2f(0.03, 0.03);
+cVector2f gvRunBobMax = cVector2f(0.05, 0.06);
+cVector2f gvCrawlBobMax = cVector2f(0.09, 0.03);
+			
+float gfCrouchMinBobSpeed = 0.2;
+float gfCrouchMaxBobSpeed = 1.2;
+	
+float gfWalkMinBobSpeed = 0.4;
+float gfWalkMaxBobSpeed = 1.8;
+	
+float gfRunMinBobSpeed = 0.5;
+float gfRunMaxBobSpeed = 2.5;
+
+float gfCrawlMinBobSpeed = 0.2;
+float gfCrawlMaxBobSpeed = 1.0;
+
+////////////////////////////////////////
+// Crawl
+float gfCrawlCameraHeightAdd = -0.565f;
+
+////////////////////////////////////////
+// Breathing
+float gfRunBreathStartTime=3.0f;
+float gfRunBreathStrength=1.0f;
+float gfRunBreathFadeInSpeed=0.6f;
+float gfRunBreathFadeOutSpeed=0.085f;
+
+float gfCrawlBreathStrength=0.6f;
+float gfCrawlBreathFadeInSpeed=1.0f;
+float gfCrawlBreathFadeOutSpeed=1.0f;
+
+////////////////////////////////////////
+// Step decal
+bool gbUseStepDecal=true;
+float gfStepDecalOffsetForward=0.25f;	//different based on speed?
+float gfStepDecalOffsetSide=0.125f;		
+cVector2f gvStepDecalSize = cVector2f(0.5f);
+cVector2l gvStepDecalUvSubDiv = cVector2l(1);
+tString gsStepDecalDirectory = "textures/decals/footsteps/player/";
+
+////////////////////////////////////////
+// Step Sound AI Events
+float gfCrawlAIRadius = 1.5f;
+int glCrawlAIPrio = -1;
+float gfSneakAIRadius = 2.0f;
+int glSneakAIPrio = -1;
+float gfWalkAIRadius = 3.0f;
+int glWalkAIPrio = 2;
+float gfRunAIRadius = 10.0f;
+int glRunAIPrio = 3;
+
+
+////////////////////////////////////////
+// Player wear sound modifiers
+
+
+//------------------------------------------------------------
+
+class cScrMoveState_Normal : iScrMoveState, iScrMoveState_Interface
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// FUNCTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		Reset();
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// FUNCTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		mbFootstepSoundsDisabled = false; //To make sure this does not get stuck!
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		if(cLux_MapChangeIsTransfer())
+		{
+			//////////////
+			// Map transfer in action, keep states
+			if(mlCrawlCount > 0)
+			{
+				// Keep crawling for 0.5 sec
+				mlCrawlCount = 1;
+				mfTemporaryCrawlCount = 0.5f;
+			}
+		}
+		else
+		{
+			/////////////
+			// Normal map leave
+			mbCrouching = false;
+			mbRunning = false;
+			mbCrawling = false;
+			mbForceCrawling=false;
+		
+			mbSlowStandupMotion = false;
+			mbAfterDamageCrawl = false;
+		
+			mlCrawlCount = 0;
+			mfTemporaryCrawlCount = 0;
+		
+			mlRunBreathingID = -1;
+			
+			mlCrawlAreaCount = 0;
+		}
+	}
+
+	//------------------------------------------------------------
+	
+	void OnEnterState(int alPrevStateId)
+	{
+		mlRunBreathingID = -1;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnLeaveState(int alNextStateId)
+	{
+		if(mlRunBreathingID>=0)
+		{
+			//Emotion_StopBackgroundBreath(mlRunBreathingID);
+			mlRunBreathingID = -1;
+		}
+		
+		//Emotion_SetBackgroundBreathMuted(-1, false);
+		
+		mbCrouching = false;
+		mbRunning = false;
+		mbCrawling = false;
+		mbForceCrawling=false;
+	}
+	
+	//------------------------------------------------------------
+	void Reset()
+	{
+		/*mfJumpCount = 0;
+		mlExtraJumpCount =0;
+		mbJumping = false;
+		mfJumpCount = 0;*/
+		mbJumpingDisabled = false;
+		mbCrouchingDisabled = false;
+		mfCrouchDisabledCount = -1.f;
+		
+		mbAllowHideMode = true;
+		
+		mbStandingDisabled = false;
+		mbCrouchActionDisabled = false;
+		mfJumpCount = gfJumpDuration;
+		mfJumpDelayCount = gfJumpFatigueDelay;
+
+		mbCrouching = false;
+		mbRunning = false;
+		mfShouldRunCount = 0.f;
+		mbAnalogRun = false;
+		mbStandingDisabled = false;
+		mbForceCrawling=false;
+		
+		mbSlowStandupMotion = false;
+		mbAfterDamageCrawl = false;
+		
+		mvHeadBob = cVector3f(0,0,0);
+		mfPrevHeadBobCount = 0;
+		mfHeadBobCount = 0;
+		mbBobbing = false;
+		
+		mbHeadGroundBounceActive = false;
+	
+		mvCurrentBobMax = cVector2f(0,0);
+		mvBobMaxGoal = cVector2f(0,0);
+		
+		mbHeadGroundBounceActive = false;
+		mfBounceSizeMul = 1.0f;
+		mfBounceSpeedMul = 1.0f;
+		mfHeadGroundBounce =0;
+		
+		mbDisableCrawling = false;
+		
+		msPlayerFootWear = "default";
+		msPlayerClothing = "default";
+		
+		SetHeadBobMul(1.0f);
+		
+		mfStepDecalFadeOutTime = -1.f;
+		
+		mlRunBreathingID = -1;
+		
+		mlCrawlCount = 0;
+		mlCrawlAreaCount = 0;
+		mfTemporaryCrawlCount = 0;
+
+		mfRunningBreathStartCount=0;
+	}
+
+	//------------------------------------------------------------
+
+	void Update(float afTimeStep)
+	{
+		/////////////////////////////////////////////
+		// Update Speed variables
+		mBaseObj.mfMaxForwardSpeed = 2.5;
+		mBaseObj.mfMaxBackwardSpeed = 2;
+		mBaseObj.mfMaxSidwaySpeed = 2.25;
+		mBaseObj.mfForwardAcc = 8;
+		mBaseObj.mfSidewayAcc = 8;
+		mBaseObj.mfForwardDeacc = 11;
+		mBaseObj.mfSidewayDeacc = 11;
+
+		mBaseObj.mfForwardOppositeDirAccMul  = 9;
+		mBaseObj.mfSidewayOppositeDirAccMul = 9;
+
+		mBaseObj.mfMaxForwardSpeedMul = 1;
+		mBaseObj.mfMaxBackwardSpeedMul = 1;
+		mBaseObj.mfMaxSidwaySpeedMul = 1;
+		
+		/////////////////////////////////////////////
+		// Get variables
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+				
+		/////////////////////////////////////////////
+		// Check if in conversation
+		bool bConversation = false;
+		if(mBaseObj.mpPlayer.GetCurrentStateId() == ePlayerState_Conversation)
+		{
+			bConversation = true;
+		}
+		
+		//////////////////////////////////////
+		// Falltime
+		if(pCharBody.IsOnGround())
+			mfFallTime=0;
+		else
+			mfFallTime+=afTimeStep;
+				
+		/////////////////////////////////////////////
+		// Check if crawling
+		if(mfTemporaryCrawlCount > 0)
+		{
+			mfTemporaryCrawlCount -= afTimeStep;
+			
+			if(mfTemporaryCrawlCount <= 0) _Global_DecCrawlCount();
+		}
+
+		bool bWasCrawling = mbCrawling;
+		if( ( (mlCrawlCount > 0 && mbCrouching) || mbForceCrawling) && mbDisableCrawling==false)
+			mbCrawling = true;
+		else
+			mbCrawling = false;
+			
+		if (mfCrouchDisabledCount > 0.f)
+			mfCrouchDisabledCount -= afTimeStep;
+		
+		/////////////////////////////////////////////
+		// Check if running		
+		bool bShouldRun = false;
+		
+		bool bTryingToRun = cInput_IsTriggered(eAction_Run) && Player_GetSpeed() > 0;
+		if (bTryingToRun)
+		{
+			// Allow crouch for 1 second if pressed while running (or longer if held)
+			if (cInput_IsTriggered(eAction_Crouch))
+				mfShouldRunCount = 1.f;
+			
+			mfShouldRunCount -= afTimeStep;			
+			if (mfShouldRunCount <= 0.f)
+				bShouldRun = true;
+		}
+		else
+		{
+			mfShouldRunCount = 0.f;
+		}
+		
+		if (mbCrawling == false &&
+			bConversation == false &&  
+			bShouldRun == true)
+		{
+			if (mbCrouching)
+				SetCrouching(false, false, false);
+			
+			cScript_RunGlobalFunc("LuxPlayer", "", "_Global_GetCanRun");
+			bool bCanRun = cScript_GetGlobalReturnBool();
+			
+			mbRunning = !mbCrouching && bCanRun; //If standing up failed, then don't run.
+		}
+		else
+		{
+			mbRunning = false;
+		}
+				
+		/////////////////////////////////////////////
+		// Run breathing
+		float fRunBreathStart = 3;
+		float fRunFadeOutMul=1;
+		
+		if(Player_GetHealth()<1)
+		{
+			fRunBreathStart -= Player_GetHealth()*3.0f;
+			fRunFadeOutMul = Player_GetHealth()*2.0f;
+		}
+		
+		if(mbRunning && pCharBody.GetMovedLastUpdate())
+		{
+			mfRunningBreathStartCount += afTimeStep;
+			if(mfRunningBreathStartCount>fRunBreathStart) mfRunningBreathStartCount = fRunBreathStart;
+		}
+		else
+		{
+			mfRunningBreathStartCount -= afTimeStep*5;
+			if(mfRunningBreathStartCount<0) mfRunningBreathStartCount = 0;
+		}
+		
+		bool bRunBreathing = mfRunningBreathStartCount>=fRunBreathStart;		
+		
+		if(bRunBreathing && mbRunBreathingDisabled==false)
+		{
+			/*if(mlRunBreathingID<0)
+			{
+				mlRunBreathingID = Emotion_StartBackgroundBreath(eBreathType_Normal, 
+									gfRunBreathStrength, 0, -1, gfRunBreathFadeInSpeed, 
+									gfRunBreathFadeOutSpeed*fRunFadeOutMul);
+			}*/
+		}
+		else
+		{
+			if(mlRunBreathingID >=0)
+			{
+				//Emotion_StopBackgroundBreath(mlRunBreathingID);
+				mlRunBreathingID = -1;
+			}
+		}
+		
+		/////////////////////////////////////////////
+		// Mute while jumping
+		if(pCharBody.IsOnGround()==false && mbJumping)
+		{
+			//if(mlRunBreathingID>=0)
+			//	Emotion_SetBackgroundBreathMuted(mlRunBreathingID, true);
+			//Emotion_SetBackgroundBreathMuted(-1, true);
+		}
+		else
+		{
+			//if(mlRunBreathingID>=0)
+			//	Emotion_SetBackgroundBreathMuted(mlRunBreathingID, false);
+			//Emotion_SetBackgroundBreathMuted(-1, false);
+		}
+		
+		/////////////////////////////////////////////
+		// Update speed muls
+		float fUnmodifiedMaxForwardSpeed = mBaseObj.mfMaxForwardSpeed; //Not affected by script multipliers
+		
+		if(pCharBody.IsOnGround())
+		{
+			if(mbRunning)
+			{				
+				fUnmodifiedMaxForwardSpeed += (mBaseObj.mfMaxForwardSpeed * 1.1);
+				
+				float fScriptRunMul = Player_GetRunSpeedMul();
+				//pCharBody.SetMoveSpeedMul(eCharDir_Forward,1);
+				//fScriptRunMul *= cScript_GetGlobalVarFloat("ToolRunSpeedMul");
+				mBaseObj.mfMaxForwardSpeed += (mBaseObj.mfMaxForwardSpeed * 1.1) * fScriptRunMul;
+				mBaseObj.mfMaxSidwaySpeed += (mBaseObj.mfMaxSidwaySpeed * 0.5) *  fScriptRunMul;
+			}
+			
+			if(mbCrouching)
+			{
+				mBaseObj.mfMaxForwardSpeed *= (0.55 * mfCrouchSpeedMul);
+				mBaseObj.mfMaxBackwardSpeed *= (0.55 * mfCrouchSpeedMul);
+				mBaseObj.mfMaxSidwaySpeed *= (0.55 * mfCrouchSpeedMul);
+				fUnmodifiedMaxForwardSpeed *= (0.55 * mfCrouchSpeedMul);
+			}
+			
+			if(mbCrawling)
+			{
+				mBaseObj.mfMaxForwardSpeed *= 0.25;
+				mBaseObj.mfMaxBackwardSpeed *= 0.25;
+				mBaseObj.mfMaxSidwaySpeed *= 0.25;
+				fUnmodifiedMaxForwardSpeed *= 0.25;
+			}
+
+		}
+		/////////////////////////////////////////////
+		// In Air Speed mul
+		else
+		{
+			mBaseObj.mfMaxForwardSpeed *= 0.75;
+			mBaseObj.mfMaxBackwardSpeed *= 0.75;
+			mBaseObj.mfMaxSidwaySpeed *= 0.75;
+			
+			fUnmodifiedMaxForwardSpeed *= 0.75;
+		}
+		
+		/////////////////////////////////////////////
+		// Conversation
+		if(bConversation)
+		{
+			float fMul = cScript_GetGlobalVarFloat("Conversation_SpeedMul");
+			
+			mBaseObj.mfMaxForwardSpeed *= 0.5*fMul;
+			mBaseObj.mfMaxBackwardSpeed *= 0.5*fMul;
+			mBaseObj.mfMaxSidwaySpeed *= 0.5*fMul;
+		}
+		
+		/////////////////////////////////////////////
+		// Underwater
+		if(Player_GetUnderwater())
+		{
+			mBaseObj.mfMaxForwardSpeed *= 0.8;
+			mBaseObj.mfMaxBackwardSpeed *= 0.9;
+			mBaseObj.mfMaxSidwaySpeed *= 0.9;
+			
+			fUnmodifiedMaxForwardSpeed *= 0.8;
+		}
+		
+		/////////////////////////////////////////////
+		// Heavy tool
+		float fToolMoveMul = 1;//cScript_GetGlobalVarFloat("ToolMoveSpeedMul");
+		if (fToolMoveMul==0.0f)
+			fToolMoveMul=1.0f;
+		mBaseObj.mfMaxForwardSpeed *= fToolMoveMul;
+		mBaseObj.mfMaxBackwardSpeed *= fToolMoveMul;
+		mBaseObj.mfMaxSidwaySpeed *= fToolMoveMul;
+		
+		/////////////////////////////////////////////
+		// Script
+		float fScriptMul = Player_GetTotalMoveSpeedMul();
+		
+		mBaseObj.mfMaxForwardSpeed *= fScriptMul;
+		mBaseObj.mfMaxBackwardSpeed *= fScriptMul;
+		mBaseObj.mfMaxSidwaySpeed *= fScriptMul;
+				
+		//////////////////////////////
+		// Set special mul
+		float fSpecialMul = cScript_GetGlobalVarFloat("InteractionMoveSpeedMul");
+		
+		mBaseObj.mfMaxForwardSpeed *= fSpecialMul;
+		mBaseObj.mfMaxBackwardSpeed *= fSpecialMul;
+		mBaseObj.mfMaxSidwaySpeed *= fSpecialMul;
+				
+		////////////////////////////////////////////
+		// Update Jump and Ground Check
+		UpdateJumping(afTimeStep);
+		
+		////////////////////////////////////////////
+		// Update Head Bob
+		UpdateHeadBob(afTimeStep, fUnmodifiedMaxForwardSpeed);
+				
+		/////////////////////////////////////////////
+		// Update Crawling
+		UpdateCrawling(afTimeStep);
+		
+		/////////////////////////
+		// Delayed crouch
+		if (mfShrinkCharBodyTimer > 0)
+		{
+			mfShrinkCharBodyTimer -= afTimeStep;
+			if (mfShrinkCharBodyTimer < 0)
+			{
+				iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+				if (pCharBody !is null) pCharBody.SetActiveSize(1);
+			}
+		}
+		
+		/////////////////////////////////////////////
+		// Check hiding input
+		int lCurrentState = mBaseObj.mpPlayer.GetCurrentStateId();
+		bool bInWater = mBaseObj.mpPlayer.IsInLiquid() && mBaseObj.mpPlayer.GetLiquidHeight() > 0.2f;
+		bool bEnterHide = mbAllowHideMode && mbCrouching && mbCrouchPressed && 
+						  bTryingToRun == false && lCurrentState == ePlayerState_Normal && 
+						  Player_GetUnderwater() == false && bInWater == false;
+		if (bEnterHide)
+		{
+			mfHideTimer += afTimeStep;
+			if (mfHideTimer >= 0.5f)
+			{
+				mBaseObj.mpPlayer.ChangeState(ePlayerState_Hide);
+				mbCrouchPressed = false;
+				mbCanToggleUncrouch = true;
+			}
+		}
+		
+		if (bEnterHide == false || lCurrentState == ePlayerState_Hide)
+		{
+			mfHideTimer = 0.0f;
+			mbCrouchPressed = false;
+		}
+		
+		/////////////////////////////////////////////
+		// Exertion
+		float fPrevExertion=mfExertion;
+		//cLux_AddDebugMessage("Exertion:"+mfExertion);	
+		
+		if (mbRunning&&pCharBody.GetMovedLastUpdate()&&!Player_IsInteracting())
+		{
+			mfExertion+=afTimeStep*1.25f;
+		}
+		else if (mbCrawling&&pCharBody.GetMovedLastUpdate()&&!Player_IsInteracting())
+		{
+			mfExertion+=afTimeStep*0.75f;
+		}
+		else
+		{
+			if (mfExertion>0.0f)
+			{
+				mfExertion-=10.f*afTimeStep;
+			}
+			else
+				mfExertion=0.0f;
+		}
+		
+		if (mfExertion>10.0f)
+			mfExertion=10.0f;
+		
+		// Passed a threshold?
+		if (mfExertion>=10.0f && fPrevExertion<10.0f)
+		{
+			if (mbRunning)
+				ModEvent_Trigger(eModEvent_Run_Medium);
+			else if (mbCrawling)
+				ModEvent_Trigger(eModEvent_Crawl_Medium);
+		}
+		else if (mfExertion>=20.0f && fPrevExertion<20.0f)
+		{
+			if (mbRunning)
+				ModEvent_Trigger(eModEvent_Run_Long);
+			if (mbCrawling)
+				ModEvent_Trigger(eModEvent_Crawl_Long);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnAction(int alAction, bool abPressed)
+	{
+		///////////////////////////
+		//Skip key up events
+		//if(abPressed==false) return true;
+		
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+				
+		switch(alAction)
+		{
+			///////////////////////////////////
+			// Jump
+			case eAction_Jump:
+			{
+				if(abPressed==false) return true;
+				if (mbJumpingDisabled || (mbCrawling))
+					return true;
+				
+				return Jump(true);
+			}
+			///////////////////////////////////
+			// Crouch
+			case eAction_Crouch:
+			{
+				if(mbCrouchActionDisabled) return true;
+				
+				if (gbCrouchToggle)
+				{
+					mbCrouchPressed = abPressed;
+					
+					if (abPressed && mbCrouching == false)
+					{
+						mbCanToggleUncrouch = false;
+						SetCrouching(true);
+					}
+					else if (abPressed == false && mbCanToggleUncrouch == false)
+					{
+						mbCanToggleUncrouch = true;
+					}
+					else if (abPressed == false && mbCanToggleUncrouch)
+					{
+						if (SetCrouching(false)) mbCanToggleUncrouch = false;
+					}
+				}
+				else
+				{
+					SetCrouching(abPressed);
+				}
+				
+				break;
+			}
+		}
+		return true; //Let other actions be used.
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+		if(alAnalogId == eAnalogType_GamepadMove)
+		{
+			////////////
+			// Run if the gamepad thumbstick almost fully tilted
+			//mbAnalogRun = avAmount.Length() > 0.95f;
+		}
+		
+		return true; //Let other actions be used.
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// CHARACTER CALLBACK
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void CharBody_GravityCollide(iCharacterBody@ apCharBody, iPhysicsBody@ apBody, cCollideData @apCollideData)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void CharBody_HitGround(iCharacterBody@ apCharBody,const cVector3f &in avVel)
+	{
+		// If we're in camera animation, ignore this!
+		int lCurrentState = cLux_GetPlayer().GetCurrentStateId();
+		if (lCurrentState == ePlayerState_InteractiveCameraAnimation ||
+			lCurrentState == ePlayerState_CutsceneAnimation ||
+			lCurrentState == ePlayerState_InteractiveCutsceneAnimation)
+			return;
+		
+		if(avVel.y < -gfMinHitGroundBounceSpeed && mfFallTime>0.3f)
+		{	
+			if(mbHeadGroundBounceActive == false)
+			{
+				mbHeadGroundBounceActive = true;
+				mfBounceSizeMul = 1.0f;
+				mfBounceSpeedMul = 1.0f;
+				
+				FootSound(eFootSound_Landing, cMath_Abs(avVel.y));
+			}
+		}
+		
+		iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+		pBody.PlayLandingAnimation();
+		
+		//////////////////////////////
+		//Reset some variables:
+		mlExtraJumpCount = 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPER FUNCTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void UpdateJumping(float afTimeStep)
+	{
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+
+		////////////////////////////
+		// Update Jump button is held down.
+		if(mbJumping)
+		{
+			mfJumpCount += afTimeStep;
+			if(mfJumpCount >= gfJumpDuration)
+			{
+				mfJumpCount = gfJumpDuration;
+				mbJumping = false;
+				mbWasJumping = true;
+			}
+
+			iPhysicsWorld @pPhysicsWorld = cLux_GetCurrentMap().GetPhysicsWorld();
+			cVector3f vGravity = pCharBody.GetCustomGravityActive() ?	pCharBody.GetCustomGravity() :  pPhysicsWorld.GetGravity();
+
+			//Remove some gravity and make jump last longer.
+			//NOTE: Using the the current mass (and not default) because want same behavior even if the player is temporarly lighter/heavier.
+			float fMul = 0.35f + 0.5f * (1 - mfJumpCount / gfJumpDuration);
+			//cLux_AddDebugMessage(""+mfJumpForceMul);
+			pCharBody.AddForce(cVector3f(0,-vGravity.y * pCharBody.GetMass() * fMul * mfJumpForceMul,0));
+		}
+
+		///////////
+		// Update jump fatigue delay
+		if(Player_GetUnderwater()) mfJumpDelayCount = cMath_Min(mfJumpDelayCount + afTimeStep * 0.45f, gfJumpFatigueDelay);
+		else					   mfJumpDelayCount = cMath_Min(mfJumpDelayCount + afTimeStep, gfJumpFatigueDelay);
+		
+		if (mbWasJumping&&pCharBody.IsOnGround())
+		{
+			mbWasJumping=false;
+			
+			cVector3f vJump = pCharBody.GetPosition()-mvJumpStart;
+			float fJumpDist = vJump.Length();
+			
+			if (fJumpDist>3.8f)
+			{
+				ModEvent_Trigger(eModEvent_Jump_Long);
+			}
+			else if (fJumpDist>2.0f)
+			{
+				ModEvent_Trigger(eModEvent_Jump_Medium);
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateHeadBob(float afTimeStep, float afMaxSpeed)
+	{
+		if (PlayerBody_IsActive())
+		{
+			mBaseObj.mpPlayer.SetCameraPosAdd(eCameraAddType_Bob, 0);
+			mBaseObj.mpPlayer.SetCameraRoll(ePlayerRoll_Move, 0);
+			return;
+		}
+		
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+	
+		///////////////////////////////////////
+		// Fade
+		mfHeadBobMul = cMath_IncreaseTo(mfHeadBobMul, mfHeadBobMulSpeed*afTimeStep, mfHeadBobMulTarget);
+		
+		///////////////////////////////////////
+		//Get the current bob max
+		mvBobMaxGoal = gvWalkBobMax;
+		float fMinBobSpeed = gfWalkMinBobSpeed;
+		float fMaxBobSpeed = gfWalkMaxBobSpeed;
+		
+		float fToolHeadBobMul = 1;//cScript_GetGlobalVarFloat("ToolHeadBobMul");
+			
+		if(mbCrawling)
+		{
+			mvBobMaxGoal = gvCrawlBobMax;
+			fMinBobSpeed = gfCrawlMinBobSpeed;
+			fMaxBobSpeed = gfCrawlMaxBobSpeed;
+		}
+		else if(mbCrouching)
+		{
+			mvBobMaxGoal = gvCrouchBobMax;
+			fMinBobSpeed = gfCrouchMinBobSpeed;
+			fMaxBobSpeed = gfCrouchMaxBobSpeed;
+		}
+		else if(mbRunning)
+		{
+			mvBobMaxGoal = gvRunBobMax;
+			fMinBobSpeed = gfRunMinBobSpeed;
+			fMaxBobSpeed = gfRunMaxBobSpeed;
+		}
+
+		float fPlayerSpeed = pCharBody.GetVelocity(afTimeStep).Length();
+		float fBobSpeed = fMinBobSpeed + (fPlayerSpeed/ cMath_Max(afMaxSpeed, 0.001f) ) * (fMaxBobSpeed - fMinBobSpeed);
+		
+		/////////////////////
+		// Check if moving
+		bool bMoving = pCharBody.IsOnGround() && pCharBody.GetMovedLastUpdate();
+
+		//If not moving fade size to 0 too.
+		if(bMoving==false)
+		{
+			mvBobMaxGoal = cVector2f(0);
+		}
+		
+		//Fade into the new max
+		float fAdd = 0.1f;
+		mvCurrentBobMax = cMath_Vector2IncreaseTo(mvCurrentBobMax, cVector2f(fAdd * afTimeStep), mvBobMaxGoal);
+		
+		/////////////////////////
+		//Player is not moving
+		if(bMoving==false)
+		{
+			//If the head is in a bob, move it back to the rest state (sin = 1)
+			if(mbBobbing)
+			{
+				//Wrap x between -90 and 270 and see where what direction to go
+				float fX = cMath_Wrap(mfHeadBobCount,cMath_ToRad(-90),cMath_ToRad(270) );
+				float fAdd;
+				if(fX <= cMath_ToRad(90)) 	fAdd = 1;
+				else						fAdd = -1;
+
+				float fDist = cMath_ToRad(90) - fX;
+				
+				mfPrevHeadBobCount = mfHeadBobCount;
+				mfHeadBobCount += afTimeStep * cMath_PiMul2 * fAdd * 11.0f * fDist * 0.05;
+			}
+		}
+		/////////////////////////
+		//Player moves
+		else
+		{
+			//Set and update variables
+			mbBobbing = true;
+			
+			mfPrevHeadBobCount = mfHeadBobCount;
+			mfHeadBobCount += fBobSpeed * afTimeStep * cMath_PiMul2;
+
+			//Footstep
+			float fPrevCos = cMath_Cos(mfPrevHeadBobCount);
+			float fCos = cMath_Cos(mfHeadBobCount);
+			float fSin = cMath_Sin(mfHeadBobCount);
+			
+			//Check if in lowest position
+			if(fSin < 0 && ((fCos <=0 && fPrevCos >= 0) || (fCos >=0 && fPrevCos <= 0)))
+			{
+				FootSound(eFootSound_Step,0);
+				FootDecal((mlFootstepNum++ % 2 == 0) ? -1 : 1); //todo correct foot handling
+			}
+		}
+		
+		if(mbBobbing)
+		{
+			mvHeadBob.x = cMath_Sin(mfHeadBobCount/2 - cMath_PiDiv4) * mvCurrentBobMax.x;
+			mvHeadBob.y = cMath_Sin(mfHeadBobCount) * mvCurrentBobMax.y - mvCurrentBobMax.y;
+		}
+		else
+		{
+			mvHeadBob = cVector3f(0);
+		}
+
+		/////////////////////////
+		//Ground bounce
+		if(mbHeadGroundBounceActive)
+		{
+			mfHeadGroundBounce += afTimeStep * gfGroundBounceSpeed * mfBounceSpeedMul;
+			
+			//Slow down on way down, and back up go slow, speed up and then slow.
+			if(mfHeadGroundBounce < 0.5f)
+				mvHeadBob.y += cMath_Sin(cMath_Pi + mfHeadGroundBounce * cMath_Pi) * gfGroundBounceSize * mfBounceSizeMul;
+			else
+				mvHeadBob.y += (cMath_SigmoidCurve( (mfHeadGroundBounce-0.5f)*2.0f )-1) * gfGroundBounceSize * mfBounceSizeMul;
+			
+			if(mfHeadGroundBounce >= 1)
+			{
+				mbHeadGroundBounceActive = false;
+				mfHeadGroundBounce = 0;
+				
+				mfBounceSizeMul = 1;
+				mfBounceSpeedMul = 1;
+			}
+		}
+
+		cVector3f vCustomExtraBob=cVector3f_Zero;
+		float fCustomExtraRoll=0.0f;
+		float fCustomMul=1.0f;
+		UpdateCustomHeadBob(vCustomExtraBob,fCustomExtraRoll, fCustomMul);
+		
+		////////////////////////
+		//Set The Camera Add Position
+		mBaseObj.mpPlayer.SetCameraPosAdd(eCameraAddType_Bob, mvHeadBob * mfHeadBobMul * fToolHeadBobMul * fCustomMul + 
+															  vCustomExtraBob * mfHeadBobMul * fToolHeadBobMul * fCustomMul);
+		mBaseObj.mpPlayer.SetCameraRoll(ePlayerRoll_Move, cMath_ToRad(3 * mvHeadBob.y * mfHeadBobMul * fCustomMul + 
+																	  fCustomExtraRoll * mfHeadBobMul * fCustomMul));
+	}
+	
+	//------------------------------------------------------------
+	
+	// Override this to do funky things
+	void UpdateCustomHeadBob(cVector3f &out avCustomExtraBob, float &out afCustomExtraRoll, float &out afCustomMul)
+	{
+		avCustomExtraBob = cVector3f_Zero;
+		afCustomExtraRoll = 0.0f;
+		afCustomMul = 1.0f;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool mbCrawlingWasMoving=false;
+	int mlCrawlingMoveDir=0;
+	
+	void UpdateCrawling(float afTimeStep)
+	{
+		return;//SKIPPING CRAWLING ANIMS FOR NOW
+		/*if(mbCrawling==false) return;
+		
+		/////////////////////////////////////
+		// Basic properties
+		cCamera @pCam = cLux_GetPlayer().GetCamera();
+		iCharacterBody @pCharBody = cLux_GetPlayer().GetCharacterBody();
+		float fPlayerSpeed = pCharBody.GetVelocity(afTimeStep).Length();
+		bool bMoving = fPlayerSpeed>0.05;
+		
+		//cLux_AddDebugMessage("Speed:"+fPlayerSpeed);
+		
+		if(bMoving)
+			mlCrawlingMoveDir = pCharBody.GetMoveSpeed(eCharDir_Forward)>0 ? 1 : -1;
+			
+		/////////////////////////////////////
+		// Hand setup
+		PlayerHands_SetCustomRotation(cVector3f(0,pCam.GetYaw(),0));
+		
+		/////////////////////////////////////
+		// Play animations
+		if(	PlayerHands_GetAnimationPlaying()==false || 
+			(mbCrawlingWasMoving && bMoving==false) || (mbCrawlingWasMoving==false && bMoving))
+		{
+			/////////////////////////////////////
+			// Variable Update
+			if(bMoving)
+			{
+				mlCurrentCrawlHand = mlCurrentCrawlHand*-1;
+			}
+			else
+			{
+				if(	PlayerHands_GetAnimationPlaying() &&
+					PlayerHands_GetCurrentAnimationState().GetRelativeTimePosition()<0.5)
+				{
+					mlCurrentCrawlHand = mlCurrentCrawlHand*-1;
+				}
+				
+				mbCrawlingWasMoving=false;
+			}
+			
+			/////////////////////////////////////
+			// Get the proper animation
+			tString sAnim;
+			if(mlCurrentCrawlHand==1)
+			{
+				sAnim = bMoving ? "crawl_move_right" : "crawl_idle_right";
+			}
+			else
+			{
+				sAnim = bMoving ? "crawl_move_left" : "crawl_idle_left";
+			}
+			
+			/////////////////////////////////////
+			// Play animation
+			if(bMoving)
+			{
+				float fTimePos = mlCrawlingMoveDir>0 ? 0 : 1;
+				PlayerHands_PlayAnimation(sAnim, false, false, "", false, mlCrawlingMoveDir, -1, 0.4f);
+			}
+			else
+				PlayerHands_PlayAnimation(sAnim, true, false, "", false, 1, -1, 0.4f);
+		}
+		
+		/////////////////////////////////////
+		// Set animation speed
+		if(bMoving)
+		{
+			mbCrawlingWasMoving = true;
+			PlayerHands_GetCurrentAnimationState().SetSpeed(fPlayerSpeed * mlCrawlingMoveDir*0.6f);
+		}*/
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetCrawlingStance(bool abCrawling)
+	{
+		if(abCrawling)
+		{
+			mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crawl, cVector3f(0,gfCrawlCameraHeightAdd,0), 2, 1, 0.05f);
+			
+			//SKIPPING CRAWLING ANIMS FOR NOW
+			/*
+			cCamera @pCam = cLux_GetPlayer().GetCamera();
+			
+			PlayerHands_SetActive(true);
+			PlayerHands_SetUseCustomPosition(false);
+			PlayerHands_SetUseCustomRotation(true);
+			PlayerHands_SetCustomRotation(cVector3f(0,pCam.GetYaw(),0));
+			PlayerHands_PlayAnimation("crawl_enter");
+			
+			mbCrawlingWasMoving=false;
+			mlCrawlingMoveDir=0;*/
+		}
+		else
+		{
+			//SKIPPING CRAWLING ANIMS FOR NOW
+			/*
+			if(mlCurrentCrawlHand==1)
+				PlayerHands_PlayAnimation("crawl_right_exit", false, false,"", true);
+			else
+				PlayerHands_PlayAnimation("crawl_left_exit", false, false,"", true);
+			*/
+			
+			if(mbSlowStandupMotion)
+				mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crawl, cVector3f(0,0,0), 2, 0.3f, 0.25f);
+			else
+				mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crawl, cVector3f(0,0,0), 4, 2, 0.05f);
+		}
+	}
+	
+	
+	//------------------------------------------------------------
+	
+	void _Global_Jump()
+	{
+		Jump(false);
+	}
+	
+	
+	bool Jump(bool abCheckIfOnGround)
+	{
+		//If there is a physical action waiting, do not jump
+		if(	cScript_GetGlobalVarBool("PlayerPhysicalActionAllowed") &&
+			cScript_GetGlobalVarInt("PlayerPhysicalAction")>=0)
+		{
+			return true;
+		}
+				
+		//////////////////////////
+		//Set up variables
+		iCharacterBody @pCharBody = cLux_GetPlayer().GetCharacterBody();
+		bool bUnderwater = Player_GetUnderwater();
+		
+		//////////////////////////
+		//Only allow jumping if player has feet on ground
+		if(abCheckIfOnGround && pCharBody.IsOnGround()==false)
+		{
+			return false;
+		}
+		
+		//
+		tString sPlayerClothing;
+
+		////////////////////////
+		//Underwater jump sound or regular jump sound
+		if(cLux_GetUnderwaterEffectsActive())	
+			sPlayerClothing = msPlayerClothing+"_underwater";
+		else
+			sPlayerClothing = msPlayerClothing;
+
+		float fStartForce = mbCrouching ? gfJumpCrouchStartForce : gfJumpStartForce;
+		
+		mbHeadGroundBounceActive = true;	//Test: doing a little viewbob when beginning jump.
+		
+		///////////
+		// Scale down the power of the jump if you just jumped
+		float fFatigue = cMath_Max(0.0f,  2.0f * mfJumpDelayCount / gfJumpFatigueDelay - 1.0f);
+		fStartForce *= fFatigue;
+		
+		/////////////////////////////////////////////
+		// Underwater
+		if(bUnderwater) fStartForce *= gfJumpUnderwaterMul;
+		
+		fStartForce = CustomJumpForceMod(fStartForce);
+		
+		if(fStartForce <= 0) return false;
+		if(SetCrouching(false) == false) return false;
+		//cLux_AddDebugMessage(""+mfJumpForceMul);
+		pCharBody.AddForce(cVector3f(0, fStartForce * gfPlayer_BodyDefaultMass * mfJumpForceMul,0));		
+		mbJumping = true;
+		mfJumpCount = 0;
+		mfJumpDelayCount = 0;
+		mlExtraJumpCount=0;
+		mvJumpStart = pCharBody.GetPosition();
+		
+		/////////
+		// Play jump sound
+		if (cLux_GetVoiceHandler().CharacterIsSpeaking("Player") == false)
+		{
+			tString sPlayerJumpSound= "player/foley/"+sPlayerClothing+"/pose_jump";
+			cLux_PlayGuiSoundData(sPlayerJumpSound, eSoundEntryType_World, 1.0f, true);
+			
+			
+			tString sBreathPrefix = "air_";
+			if(cLux_GetUnderwaterEffectsActive()) sBreathPrefix = "underwater_";
+			
+			PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, "monke/Player/breaths/" + sBreathPrefix + "jump");
+		}
+		
+		iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+		pBody.PlayJumpAnimation();
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	float CustomJumpForceMod(float afCurrentForce)
+	{
+		return afCurrentForce;
+	}
+	
+	//------------------------------------------------------------
+		
+	void _Global_GetHeadBob()
+	{
+		cScript_SetGlobalReturnVector3f(mvHeadBob);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetRunning()
+	{
+		cScript_SetGlobalReturnBool(mbRunning);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCrouching()
+	{
+		cScript_SetGlobalReturnBool(mbCrouching);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCrouching()
+	{
+		bool bCrouch = cScript_GetGlobalArgBool(0);
+		if (bCrouch)
+			mbCanToggleUncrouch = true;
+		SetCrouching(bCrouch, cScript_GetGlobalArgBool(1), cScript_GetGlobalArgBool(2), cScript_GetGlobalArgBool(3));
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetHiding()
+	{
+		cScript_SetGlobalReturnBool(mBaseObj.mpPlayer.GetCurrentStateId() == ePlayerState_Hide);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetAllowHideMode()
+	{
+		mbAllowHideMode = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCrouchSpeedMul()
+	{
+		mfCrouchSpeedMul =  cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool SetCrouching(bool abCrouching, bool abInstant = false, bool abSilent = false, bool abForce = false)
+	{
+		if ( (mbCrouching == abCrouching) && !abForce) return true;
+		
+		if(mbCrawling && abCrouching==false) return false;
+	
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+		if (pCharBody is null) return false;
+	
+		tString sPlayerClothing = msPlayerClothing;
+		
+		tString sSoundSuffix = "";
+		tString sBreathPrefix = "air_";
+		if(cLux_GetUnderwaterEffectsActive())
+		{ 
+			sSoundSuffix = "_underwater";
+			sBreathPrefix = "underwater_";
+		}
+		
+		//////////////////////
+		// Crouch
+		if(abCrouching)
+		{
+			if ((mbCrouchingDisabled || mfCrouchDisabledCount > 0.f) && !abForce)
+				return false;
+				
+//			pCharBody.SetActiveSize(1);
+			mfShrinkCharBodyTimer = 0.3f;
+			float fDiff = gvBodySize.y - gvBodyCrouchSize.y;
+			if (PlayerBody_IsActive()==false)
+			{
+				if (abInstant)
+					mBaseObj.mpPlayer.SetCameraPosAdd(eCameraAddType_Crouch, cVector3f(0,-fDiff, 0));
+				else
+					mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crouch, cVector3f(0,-fDiff, 0), 10, 3, 0.2);
+			}
+			else
+			{
+				iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+				pBody.SetCrouch(true, abInstant);
+			}
+			
+			if (!abSilent)
+			{
+				tString sPlayerCrouchSound = "player/foley/"+sPlayerClothing+sSoundSuffix+"/pose_crouch";
+				cLux_PlayGuiSoundData(sPlayerCrouchSound, eSoundEntryType_World, 1.0f, true);
+			
+				// TODO: Add crouching breath sounds
+				//Emotion_PlayEventBreath("player/breaths/"+sBreathPrefix+"crouch");
+			}
+
+			mbCrouching = true;
+		}
+		//////////////////////
+		// Stand
+		else 
+		{
+			if(mbStandingDisabled && !abForce)
+				return false;
+				
+			cVector3f[] vPosTestAdd= {	cVector3f(0,0.001f,0), 
+										cVector3f(0.05f,0.001f,0), cVector3f(-0.05f,0.001f,0),
+										cVector3f(0,0.001f,0.05f), cVector3f(0,0.001f,-0.05f) };
+			const int lNumOfPostTests = 5;
+
+			////////////////////////////////////////
+			// Iterate through some positions to see if player will fit there
+			bool bFits = false;
+			cVector3f vTempOutVec;
+			for(int lCurrentFitTest =0; lCurrentFitTest<lNumOfPostTests; ++lCurrentFitTest)
+			{
+				if(pCharBody.CheckCharacterFits(pCharBody.GetFeetPosition()+vPosTestAdd[lCurrentFitTest],true, 0,vTempOutVec))
+				{
+					bFits = true;
+					break;
+				}
+			}
+			
+			// Always allow setting crouch to false if dead/in anim
+			int lState = cLux_GetPlayer().GetCurrentStateId();
+			if (lState == ePlayerState_Dead || 
+				lState == ePlayerState_CutsceneAnimation || 
+				lState == ePlayerState_InteractiveCutsceneAnimation)
+				bFits = true;
+		
+			////////////////////////////////////////
+			// Change to standing position
+			if(bFits)
+			{
+				/////////////////////////////////
+				// Fade the camera position
+				mfShrinkCharBodyTimer = -1;
+				pCharBody.SetActiveSize(0);
+				if (PlayerBody_IsActive()==false)
+				{
+					if (abInstant)
+						mBaseObj.mpPlayer.SetCameraPosAdd(eCameraAddType_Crouch, cVector3f(0,0,0));
+					if (mbSlowStandupMotion)
+						mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crouch, cVector3f(0,0,0), 4, 0.25, 0.55);
+					else
+						mBaseObj.mpPlayer.MoveCameraPosAdd(eCameraAddType_Crouch, cVector3f(0,0,0), 10, 3, 0.2);
+				}
+				else
+				{
+					iScrPlayerBodyHandler_Interface @pBody = cast<iScrPlayerBodyHandler_Interface>(cLux_GetUserModuleFromID(eModuleType_PlayerBodyHandler));
+					pBody.SetCrouch(false, abInstant);
+				}
+				
+				/////////////////////////////////
+				// Play sound
+				if (!abSilent)
+				{
+					tString sPlayerStandSound;
+					tString sPlayerStandBreath;
+					
+					if(mbSlowStandupMotion)
+					{
+						sPlayerStandSound = "player/foley/"+sPlayerClothing+sSoundSuffix+"/pose_stand_slow";
+						sPlayerStandBreath = "player/breaths/"+sBreathPrefix+"stand_slow";
+					}
+					else
+					{
+						sPlayerStandSound = "player/foley/"+sPlayerClothing+sSoundSuffix+"/pose_stand";
+						sPlayerStandBreath = "player/breaths/"+sBreathPrefix+"stand";
+					}
+					
+					cLux_PlayGuiSoundData(sPlayerStandSound, eSoundEntryType_World, 1.0f, true);
+					// TODO: Add standing breath sounds
+					//Emotion_PlayEventBreath(sPlayerStandBreath);
+				}
+				
+				/////////////////////////////////
+				// Variable set up
+				mbCrouching = false;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		/////////////////
+		// Map callback
+		cLuxMap@ pMap = cLux_GetCurrentMap();
+		if (pMap !is null)
+		{
+			tString sCallback = "void OnPlayerCrouch(bool abCrouching)";
+			if (pMap.ScriptMethodExists(sCallback) && pMap.ScriptPrepare(sCallback))
+			{
+				pMap.SetArgBool(0, mbCrouching);
+				pMap.ScriptExecute();
+			}
+		}
+		
+		return true;	
+	}
+
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetAfterDamageCrawl()
+	{
+		mbAfterDamageCrawl = cScript_GetGlobalArgBool(0);
+	}
+	
+	void _Global_SetDisableCrawling()
+	{
+		mbDisableCrawling = cScript_GetGlobalArgBool(0);
+		
+		if(mbDisableCrawling)
+		{
+			mbCrawling=false;
+			SetCrawlingStance(false);
+		}
+	}
+	
+	void _Global_SetForceCrawling()
+	{
+		mbForceCrawling = cScript_GetGlobalArgBool(0);
+		
+		if(mbForceCrawling)
+			SetCrawlingStance(true);
+		else if(mlCrawlCount<=0)
+			SetCrawlingStance(false);
+	}
+	
+	void _Global_SetSlowStandupMotion()
+	{
+		mbSlowStandupMotion = cScript_GetGlobalArgBool(0);
+	}
+		
+	void _Global_IncCrawlCount()
+	{
+		mlCrawlCount++;
+		if(mlCrawlCount==1)
+		{
+			SetCrawlingStance(true);
+		}
+	}
+	
+	void _Global_DecCrawlCount()
+	{
+		mlCrawlCount--;
+		if(mlCrawlCount==0)
+		{
+			SetCrawlingStance(false);
+		}
+	}
+	
+	void _Global_GetCrawlCount()
+	{
+		cScript_SetGlobalReturnInt(mlCrawlCount);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCrawlAreaCount()
+	{
+		cScript_SetGlobalReturnInt(mlCrawlAreaCount);
+	}
+	
+	void _Global_IncCrawlAreaCount()
+	{
+		mlCrawlAreaCount++;
+	}
+	
+	void _Global_DecCrawlAreaCount()
+	{
+		mlCrawlAreaCount = cMath_Max(--mlCrawlAreaCount, 0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetJumpDisabled()
+	{
+		mbJumpingDisabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetJumpForceMul()
+	{
+		mfJumpForceMul = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_CancelJump()
+	{
+		mbJumping = false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCrouchActionDisabled()
+	{
+		mbCrouchActionDisabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCrouchDisabled()
+	{
+		mbCrouchingDisabled = cScript_GetGlobalArgBool(0);
+		
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCrouchDisabledTime()
+	{
+		mfCrouchDisabledCount = cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetStandDisabled()
+	{
+		mbStandingDisabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetFootWear()
+	{
+		SetFootWear(cScript_GetGlobalArgString(0));
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetFootWear(tString &in asType)
+	{
+		msPlayerFootWear = asType;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetClothing()
+	{
+		SetClothing(cScript_GetGlobalArgString(0));
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetClothing(tString &in asType)
+	{
+		msPlayerClothing = asType;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetHeadBobMul(float afMul)
+	{
+		mfHeadBobMulTarget = afMul;
+		mfHeadBobMul = afMul;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FadeHeadBobMul()
+	{
+		mfHeadBobMulTarget = cScript_GetGlobalArgFloat(0);
+		float afTime = cScript_GetGlobalArgFloat(1);
+		if (afTime==0.0f)
+		{
+			SetHeadBobMul(mfHeadBobMulTarget);
+			return;
+		}
+		mfHeadBobMulSpeed = cMath_Abs(mfHeadBobMulTarget-mfHeadBobMul)/afTime;
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetHeadBobMul()
+	{
+		cScript_SetGlobalReturnFloat(mfHeadBobMulTarget);
+	}
+		
+	//------------------------------------------------------------
+	
+	void _Global_SetFootstepSoundsDisabled()
+	{
+		mbFootstepSoundsDisabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetRunBreathingDisabled()
+	{
+		mbRunBreathingDisabled = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FootSound()
+	{
+		FootSound(eFootSound(cScript_GetGlobalArgInt(0)),cScript_GetGlobalArgFloat(1));
+	}
+	
+	//------------------------------------------------------------
+
+	void FootSound(eFootSound aType, float afSpeed)
+	{
+		if(mbFootstepSoundsDisabled) return;
+		
+		///////////////////////
+		//Get Material
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+		iPhysicsMaterial @pGravityMat = pCharBody.GetGravityCollideMaterial();
+		
+		tString sMaterialStep = "none";
+		tString sStepDecalMat;
+		
+		//cLux_AddDebugMessage("Step: "+sMaterialStep +" mat:"+ pGravityMat.GetName(), false);
+		
+		if(cLux_GetPlayer().IsInLiquid() && cLux_GetUnderwaterEffectsActive()==false)
+		{
+			//cLux_AddDebugMessage("IN WATER STEP!!");
+			
+			if(cLux_GetPlayer().GetLiquidHeight() > gfFootStepWaterWadeHeightLimit)
+				sMaterialStep = "water";
+			else if(cLux_GetPlayer().GetLiquidHeight() > gfFootStepWaterPuddleHeightLimit)
+				sMaterialStep = "water_wade";
+			else
+				sMaterialStep = "water_puddle";
+		}
+		else
+		{
+			//cLux_AddDebugMessage("GravityMat: "+pGravityMat.GetName(),false);
+			if(pGravityMat !is null && pGravityMat.GetSurfaceData()!is null)
+			{
+				sMaterialStep = pGravityMat.GetSurfaceData().GetStepType();
+				if (sMaterialStep=="")
+					Warning("No step type specified for material "+pGravityMat.GetName());
+
+				sStepDecalMat = pGravityMat.GetSurfaceData().GetStepDecal();
+			}
+			else
+			{
+				return;
+			}
+		}
+		
+		////////////////////////
+		//Extra sound if landing
+		if(aType == eFootSound_Landing)
+		{
+			tString sLandingSound = "player/landing/";
+			
+			if(cLux_GetUnderwaterEffectsActive())
+				sLandingSound += "underwater";
+			else
+				sLandingSound += "default";
+					
+			cLuxSoundExtraData extraData;
+			if(cLux_PlayGuiSoundDataEx(sLandingSound, eSoundEntryType_World, 1.0f, true, extraData))
+			{
+				extraData.mpSoundEntry.SetParam(0, afSpeed);
+			}
+			
+			tString sBreathPrefix = "air_";
+			if(cLux_GetUnderwaterEffectsActive()) sBreathPrefix = "underwater_";
+			////////////////////////
+			//Land breathing is in FMOD sound itself	
+			//PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, "monke/Player/landing/default");
+		}
+		
+		////////////////////////
+		//Check underwater
+		bool bUnderwater = cLux_GetUnderwaterEffectsActive();
+		tString sPlayerFootWear;
+		
+		if(bUnderwater)	
+			sPlayerFootWear += msPlayerFootWear+"_underwater";
+		else
+			sPlayerFootWear = msPlayerFootWear;
+			
+		///////////////////////
+		//Move type and distance
+		tString sSoundDataName = "";
+		eFootMoveType moveType = eFootMoveType_Walk;
+		float fMaxDist = gfMaxSoundRangeWalk;
+				
+		if(aType == eFootSound_Step)
+		{
+			///////////////////////
+			// Running
+			if(mbRunning && cLux_GetPlayer().GetCharacterBody().GetMoveSpeed(eCharDir_Forward) >= 0.0f)
+			{ 
+				moveType = eFootMoveType_Run;
+				fMaxDist = gfMaxSoundRangeRun;
+			}
+			///////////////////////
+			// Crawling
+			else if(mbCrawling)
+			{
+				moveType = eFootMoveType_LastEnum;
+				fMaxDist = gfMaxSoundRangeCrawl;
+			}
+			///////////////////////
+			// Sneaking
+			else if(mbCrouching)
+			{
+				moveType = eFootMoveType_Sneak;
+				fMaxDist = gfMaxSoundRangeSneak;
+			}
+		}
+		else if(aType == eFootSound_Landing)
+		{
+			moveType = eFootMoveType_Run;
+			fMaxDist = gfMaxSoundRangeLanding;
+		}
+		
+		//////////////////////
+		// Category
+		tString sCategory = "footsteps";
+		if(mbCrawling) sCategory = "crawl";
+		
+		//////////////////////
+		// Prefix
+		tString sPrefix = "";
+		if(mbCrawling==false)
+			sPrefix = cLux_GetSoundscapeHandler().GetCurrentSoundPrefix();
+		
+		//////////////////////
+		// Generate Name
+		if(mbAfterDamageCrawl)
+		{
+			if(bUnderwater)
+				sSoundDataName = "player/crawl/death_crawl_underwater";
+			else
+				sSoundDataName = "player/crawl/death_crawl";
+		}
+		else if (sMaterialStep == "")
+			return;
+		else if(sPrefix == "")
+			sSoundDataName = "player/"+sCategory+"/"+sPlayerFootWear+"/"+sMaterialStep;
+		else
+			sSoundDataName = "player/"+sCategory+"/"+sPlayerFootWear+"/"+sPrefix+"/"+sMaterialStep;
+		
+		///////////////////////
+		//Play sound
+		cLuxSoundExtraData extraData;
+		if(cLux_PlayGuiSoundDataEx(sSoundDataName, eSoundEntryType_World, 1.0f, true, extraData))
+		{
+			if(moveType != eFootMoveType_LastEnum)
+				extraData.mpSoundEntry.SetParam("movement", moveType);
+		}
+		
+		///////////////////////
+		//Broadcast as an AI event
+		int lAIPrio=0;
+		float fAIRadius=0;
+		switch(moveType)
+		{
+			case eFootMoveType_Walk:
+				lAIPrio = glWalkAIPrio;
+				fAIRadius = gfWalkAIRadius;
+				break;
+			case eFootMoveType_Run:
+				lAIPrio = glRunAIPrio;
+				fAIRadius = gfRunAIRadius;
+				break;
+			case eFootMoveType_Sneak:
+				lAIPrio = glSneakAIPrio;
+				fAIRadius = gfSneakAIRadius;
+				break;
+			case eFootMoveType_LastEnum:
+				lAIPrio = glCrawlAIPrio;
+				fAIRadius = gfCrawlAIRadius;
+				break;
+		}
+		if(aType==eFootSound_Landing) fAIRadius*=1.2f;
+		
+		tString sSoundName = "Footstep";
+		if(aType==eFootSound_Landing) sSoundName = "FootstepLand";
+		
+		cLux_GetCurrentMap().BroadcastSoundHeardEvent(sSoundName,
+														pCharBody.GetFeetPosition()+cVector3f(0,0.1f, 0), 
+														fAIRadius, lAIPrio); 
+														
+		//////////////////////
+		// Extra
+		if(mbCrawling)
+		{
+			//Emotion_PlayEventBreath("player/breaths/crawl_step", 0);
+		}
+		
+		//////////////////////
+		// Callback to player
+		cScript_SetGlobalArgString(0, pGravityMat.GetName());
+		cScript_RunGlobalFunc("LuxPlayer", "", "_Global_OnFootstep");
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_FootDecal()
+	{
+		FootDecal(cScript_GetGlobalArgInt(0), cScript_GetGlobalArgMatrix(1));
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetFootStepDecalFadeOutTime()
+	{
+		mfStepDecalFadeOutTime = 1.f / cScript_GetGlobalArgFloat(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void FootDecal(int alFoot, const cMatrixf &in a_mtxTransform = cMatrixf_Identity)
+	{
+		if(gbUseStepDecal==false) return;
+		cWorld@ pWorld = cLux_GetCurrentMap().GetWorld();
+		cTerrain@ pTerrain = pWorld.GetTerrain();
+		if(pWorld.GetTerrainActive() == false || pTerrain is null) return;
+	
+		///////////////////////
+		//Get Material
+		iCharacterBody @pCharBody = mBaseObj.mpPlayer.GetCharacterBody();
+
+		if(pCharBody is null || pCharBody.IsOnGround() == false || pCharBody.GetGroundCollideType() != eCollideShapeType_HeightMap) return;
+
+		iPhysicsMaterial @pGravityMat = pCharBody.GetGravityCollideMaterial();
+		
+		tString sStepDecalMat;
+		
+		//cLux_AddDebugMessage("Step: "+sMaterialStep +" mat:"+ pGravityMat.GetName(), false);
+		
+		if(cLux_GetPlayer().IsInLiquid() && cLux_GetUnderwaterEffectsActive()==false)
+		{
+			return; //no footstep while in water?
+		}
+		else
+		{
+			if(pGravityMat !is null && pGravityMat.GetSurfaceData()!is null)
+			{
+				sStepDecalMat = pGravityMat.GetSurfaceData().GetStepDecal();
+			}
+			else
+			{
+				return;
+			}
+		}
+		
+		if(sStepDecalMat.length() == 0) return;
+
+		///////////////////////
+		// mbCrawling
+		if(mbCrawling)
+		{ 
+			return; //todo hand/foot prints?
+		}
+		///////////////////////
+		// Running/walking/sneaking
+		else
+		{	
+			float fRot = 0.f;
+			cVector3f vPos = 0.f;
+			
+			if (a_mtxTransform == cMatrixf_Identity)
+			{
+				cVector3f vForward = pCharBody.GetForward();
+				cVector3f vRight = pCharBody.GetRight();
+				cVector3f vDir = vForward; vDir.y = 0; vDir.Normalize();
+				fRot = cMath_ATan2(vDir.x, vDir.z);
+				
+				cVector3f vVelocity = pCharBody.GetVelocity(1.0f); vVelocity.Normalize();
+				cVector3f vOffset = vForward * gfStepDecalOffsetForward * cMath_Vector3Dot(vVelocity, vForward) + vRight * alFoot * gfStepDecalOffsetSide;
+				vPos = pCharBody.GetFeetPosition() + vOffset;
+			}
+			else
+			{
+				cVector3f vForward = a_mtxTransform.GetTranspose().GetForward();
+				cVector3f vDir = vForward; vDir.y = 0; vDir.Normalize();
+				fRot = cMath_ATan2(vDir.x, vDir.z);
+				
+				vPos = a_mtxTransform.GetTranslation();
+			}
+			
+			cVector2f vSubUvSize = cVector2f(1) / cVector2f(gvStepDecalUvSubDiv.x, gvStepDecalUvSubDiv.y);
+			cVector2f vSubUv = cVector2f(cMath_RandRectl(0, gvStepDecalUvSubDiv.x), cMath_RandRectl(0, gvStepDecalUvSubDiv.y));
+			cVector2f vUvMin = vSubUv * vSubUvSize;
+			cVector2f vUvMax = vUvMin + vSubUvSize;
+
+			if(alFoot == -1)
+			{
+				// flip decal for left foot
+				float t = vUvMin.x;
+				vUvMin.x = vUvMax.x;
+				vUvMax.x = t;
+			}			
+			
+			pTerrain.AddDynamicDecal(gsStepDecalDirectory + sStepDecalMat, vPos, fRot, gvStepDecalSize, 
+									 gvStepDecalSize.Length() + 0.1f, 1, vUvMin, vUvMax, mfStepDecalFadeOutTime);
+		}
+	}
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEBUG
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afStartY)
+	{
+		apSet.DrawFont(tWString("ExtraJumCount:"+mlExtraJumpCount), apFont, cVector3f(5,afStartY,0), cVector2f(14), cColor(1,1) );
+		afStartY += 14;
+		
+		return afStartY;
+	}
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbForceCrawling;
+	bool mbCrouching;
+	bool mbCrouchPressed = false;
+	bool mbCanToggleUncrouch = false;
+	float mfHideTimer = 0.0f;
+	bool mbAllowHideMode = true;
+	bool mbRunning;
+	float mfShouldRunCount;
+	bool mbCrawling;
+	float mfShrinkCharBodyTimer = 0;
+	
+	bool mbDisableCrawling=false;
+	
+	bool mbSlowStandupMotion;
+	bool mbAfterDamageCrawl;
+	
+	float mfRunningBreathStartCount;
+
+	bool mbAnalogRun;
+	
+	tString msPlayerFootWear;
+	tString msPlayerClothing;
+	
+	bool mbJumping;
+	float mfJumpCount;
+	float mfJumpDelayCount;
+	float mfJumpForceMul=1.0f;
+	int mlExtraJumpCount;
+	cVector3f mvJumpStart;
+	bool mbWasJumping = false;
+	float mfExertion=0.0f;
+	
+	float mfHeadBobMul=1.0f;
+	float mfHeadBobMulSpeed=0.0f;
+	float mfHeadBobMulTarget=1.0f;
+	
+	bool mbCrouchActionDisabled;
+	bool mbCrouchingDisabled;
+	float mfCrouchDisabledCount = -1.f;
+	
+	bool mbJumpingDisabled;
+	bool mbStandingDisabled;
+	
+	bool mbHeadBobActive=true;
+
+	int mlFootstepNum=0;
+	
+	float mfStepDecalFadeOutTime;
+	
+	cVector3f mvHeadBob;
+	float mfPrevHeadBobCount;
+	float mfHeadBobCount;
+	bool mbBobbing;
+	
+	int mlCrawlCount;
+	int mlCrawlAreaCount;
+	float mfTemporaryCrawlCount;
+	
+	cVector2f mvCurrentBobMax;
+	cVector2f mvBobMaxGoal;
+	
+	bool mbFootstepSoundsDisabled=false;
+	
+	float mfFallTime=0;
+	
+	bool mbHeadGroundBounceActive;
+	float mfBounceSizeMul;
+	float mfBounceSpeedMul;
+	float mfHeadGroundBounce;
+	
+	int mlRunBreathingID;
+	bool mbRunBreathingDisabled=false;
+	
+	int mlCurrentCrawlHand=1;
+	
+	float mfCrouchSpeedMul = 1.f;
+	
+	//------------------------------------------------------------
+		
+}
