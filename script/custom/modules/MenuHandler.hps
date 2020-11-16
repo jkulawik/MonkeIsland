@@ -421,8 +421,6 @@ class cLastTimeOnGameScreen
 				Music_StopAll(2.0f);
                 Sound_Stop("MenuBGNoise",2.0f);
 				cSound_PlayGuiStream("loadscreen_background", true, 0.15f, cVector3f(0,0,0), eSoundEntryType_Safe);
-				//cSound_GetEntry("loadscreen_background").FadeIn(0.15f, 1.0f/3.0f);
-				//Music_PlayExt("loadscreen_background", true, 0.15f, 1.0f, 3.0f, 0.0f, eMusicPrio_BgAmb, true);
 			}
 			
 			/////////////////////////////////////

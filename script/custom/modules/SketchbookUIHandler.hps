@@ -1,0 +1,5175 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "base/Player_Types.hps"
+#include "base/PlayerTypes_Custom.hps"
+#include "helpers/helper_player.hps"
+
+#include "custom/helpers/helper_menu.hps"
+#include "base/InputHandler_Types.hps"
+#include "helpers/helper_effects.hps"
+#include "custom/helpers/helper_effects_custom.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_modules.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_items.hps"
+#include "helpers/helper_game.hps"
+#include "base/AchievementHandler_Types.hps"
+
+//----------------------------------------------------------------------------------------
+
+const tString gsFont_Sketchbook = "architect_56.fnt";
+const tString gsFont_Overlay = "work_72.fnt";
+const float gfFontSize_SketchbookTabs = 28;
+const float gfFontSize_SketchbookNoteText = 28;
+const float gfFontSize_SketchbookNoteCategory = 28;
+const float gfFontSize_SketchbookNoteSubCategory = 28;
+const float gfFontSize_SketchbookItemLabel = 32;
+const float gfFontSize_SketchbookItemDescription = 28;
+const float gfFontSize_SketchbookItemCount = 28; // This is currently associated to a mul. Needs fixing!
+const float gfFontSize_SketchbookIdeaOverlay = 24;
+
+const float gfIdeaNotifyCountDisplayTime = 4.0f;
+const float gfIdeaNotifyCountFadeInTime = 0.3f;
+const float gfIdeaNotifyCountFadeOutTime = 1.0f;
+
+const bool gbInvItemUseMultiplyBlendMode = false;
+
+const tString gsInventoryFocusItemSound = "special_fx/notepad/notebook_select";
+const tString gsNotesListFocusItemSound = "special_fx/notepad/notebook_select";
+const tString gsNotesListCategoryFold = "special_fx/notepad/notebook_draw";
+const tString gsNoteSelecItemSound = "special_fx/notepad/notebook_item_combine";
+
+const bool gbAllowFlashbackSkip = true;
+const float gfFlashbackSkipTimeout = 2.0f;
+const float gfFlashbackSkipPromptTime = 1.0f;
+
+//------------------------------------------------------------
+
+enum eInvMode
+{
+	eInvMode_Select,
+	eInvMode_Combine,
+	eInvMode_CombineDrag
+};
+
+//------------------------------------------------------------
+
+const float gfSketchbookTabsDepth = 1;
+const float gfSketchbookBgDepth = 2;
+const float gfInvSlotsDepth = 3;
+const float gfSketchbookImgDepth = 4;
+const float gfSketchbookTextDepth = 5;
+
+//------------------------------------------------------------
+
+const int DEV_TIME = 486000;
+
+
+/////////////
+// CYLINDERS
+/////////////
+
+const tString NONSENSE = "Are own design entire former get should Advantages boisterous day excellence boy Out between our two waiting wishing Pursuit he he garrets greater towards amiable so placing Nothing off how norland delight Abode shy shade she hours forth its use Up whole of fancy ye quiet do Justice fortune no to is if winding morning forming She exposed painted fifteen are noisier mistake led waiting Surprise not wandered speedily husbands although yet end Are court tiled cease young built fat one man taken We highest ye friends is exposed equally in Ignorant had too strictly followed Astonished as travelling assistance or unreserved oh pianoforte ye Five with seen put need tore add neat Bringing it is he returned received raptures Gave read use way make spot how nor In daughter goodness an likewise oh consider at procured wandered Songs words wrong by me hills heard timed Happy eat may doors songs Be ignorant so of suitable dissuade weddings together Least whole timed we is An smallness deficient discourse do newspaper be an eagerness continued Mr my ready guest ye after short at In to am attended desirous raptures declared diverted confined at Collected instantly remaining up certainly to necessary as Over walk dull into son boy door went new At or happiness commanded daughters as Is handsome an declared at received in extended vicinity subjects Into miss on he over been late pain an Only week bore boy what fat case left use Match round scale now sex style far times Your me past an much in";
+
+const int STYLE_ANGELIC = 1;
+const int STYLE_APOLLONIAN = 2;
+const int STYLE_ENOCH = 3;
+const int STYLE_FLEUVE = 4;
+
+////////
+// NOTES
+////////
+
+//------------------------------------------------------------
+
+const int glMaxNoteListElementsCount = 14;
+const int glMaxNoteTextRowsCount = 14;
+
+//------------------------------------------------------------
+
+class cNoteEntry
+{
+	tString msID="";
+	tString msName="";
+	tString msVoiceEntry;
+	tString msFrontEntry="";
+	tString msBackEntry="";
+	tString msImageEntry="";
+	tString msCategoryID="";
+	tString msCategoryName="";
+	float mfYPosition;
+	int mlElementCount=0;
+	bool mbAddToSketchbook=false;
+	bool mbIsMemoryCylinder=false;
+	int mlMemoryCylinderLinesCount=0;
+	
+	cNoteEntry(){}
+	
+	cNoteEntry(const tString&in asID, const tString&in asName, const tString&in asVoiceEntry, const tString&in asFrontEntry, 
+		const tString&in asBackEntry, const tString&in asImageEntry, const tString&in asCategoryID, const tString&in asCategoryName,
+		bool abAddToSketchbook, bool abIsMemoryCylinder, int alMemCylLinesCount)
+	{
+		msID = asID;
+		msName = asName;
+		msVoiceEntry = asVoiceEntry;
+		msFrontEntry = asFrontEntry;
+		msBackEntry = asBackEntry;
+		msImageEntry = asImageEntry;
+		msCategoryID = asCategoryID;
+		msCategoryName = asCategoryName;
+		mbAddToSketchbook = abAddToSketchbook;
+		mbIsMemoryCylinder = abIsMemoryCylinder;
+		mlMemoryCylinderLinesCount = alMemCylLinesCount;
+	}
+}
+
+//------------------------------------------------------------
+
+class cNoteCategoryEntry
+{
+	tString msID="";
+	tString msName="";
+	array<cNoteEntry> mvCollectedNotes;
+	bool mbCategoryNoteSelected=false;
+	bool mbExpanded=false;
+	float mfYPosition;
+	int mlElementCount=0;
+	
+	cNoteCategoryEntry()
+	{
+		mvCollectedNotes.resize(0);
+	}
+	
+	cNoteCategoryEntry(const tString&in asID, const tString&in asName)
+	{
+		mvCollectedNotes.resize(0);
+		msID = asID;
+		msName = asName;
+	}
+	
+	void AddNote(cNoteEntry@ apNote)
+	{
+		mvCollectedNotes.push_back(apNote);
+	}
+	
+	void AddNote(const tString&in asID, const tString&in asName, const tString&in asVoiceEntry, const tString&in asFrontEntry, 
+		const tString&in asBackEntry, const tString&in asImageEntry, const tString&in asCategoryID, const tString&in asCategoryName,
+		const bool abAddToSketchbook, bool abIsMemoryCylinder, int alMemCylLinesCount)
+	{
+		cNoteEntry@ pNote = cNoteEntry(asID, asName, asVoiceEntry, asFrontEntry, asBackEntry, asImageEntry, asCategoryID, asCategoryName, abAddToSketchbook, abIsMemoryCylinder, alMemCylLinesCount);
+		mvCollectedNotes.push_back(pNote);
+	}
+	
+	cNoteEntry@ GetNoteByID(const tString&in asNoteID)
+	{
+		if (mvCollectedNotes.size()<=0) return null;
+		
+		for (int i=0; mvCollectedNotes.size()>0 && i<mvCollectedNotes.size(); ++i)
+		{
+			if (mvCollectedNotes[i].msID!=asNoteID) continue;
+			return mvCollectedNotes[i];
+		}
+		
+		return null;
+	}
+	
+	int GetNotesCount()
+	{
+		return mvCollectedNotes.length();
+	}
+}
+
+//------------------------------------------------------------
+
+///////////
+// MEMORIES
+///////////
+
+//------------------------------------------------------------
+
+enum eFlashbackState
+{
+	eFlashbackState_None,
+	eFlashbackState_PreBegin,
+	eFlashbackState_Begin,
+	eFlashbackState_FlashBlurred,
+	eFlashbackState_Flash,
+	eFlashbackState_FlashSkipBlur,
+	eFlashbackState_PreEnd,
+	eFlashbackState_End
+}
+
+//------------------------------------------------------------
+
+class cMemoryEntry
+{
+	tString msMemoryID="";
+	tString msMemoryName="";
+	tString msImageFileClear="";
+	tString msImageFileAbstract="";
+	
+	tString msVoiceRef="";
+	cVector2f mvPosition = cVector2f(0);
+	float mfSize = 1.f;
+	bool mbIsLocked = true;
+	bool mbUnblurred = false;
+	float mfAlpha = 0;
+	float mfUnblurDelay = 1.f;
+	float mfUnblurFadeTime = 2.f;
+	bool mbCrewMemory = false;
+	float mfDuckAudioTo = 0.5f;
+	
+	cMemoryEntry(){}
+	
+	cMemoryEntry(const tString&in asMemoryID, const tString&in asMemoryName, const tString&in asImageFileClear, const tString&in asImageFileAbstract, 
+			float afUnblurDelay, float afUnblurFadeTime, const tString&in asVoiceFile, const cVector2f&in avPosition, const float afSize, const float afDuckAudioTo)
+	{
+		msMemoryID = asMemoryID;
+		msMemoryName = asMemoryName;
+		msImageFileClear = asImageFileClear;
+		msImageFileAbstract = asImageFileAbstract;
+		mfUnblurDelay = afUnblurDelay;
+		mfUnblurFadeTime = afUnblurFadeTime;
+		msVoiceRef = asVoiceFile;
+		mvPosition = avPosition;
+		mfSize = afSize;
+		mbCrewMemory = false;
+		mfDuckAudioTo = afDuckAudioTo;
+	}
+	
+	// Crew memory
+	cMemoryEntry(const tString& in asMemoryID)
+	{
+		msMemoryID = asMemoryID;
+		mbCrewMemory = true;
+		mbIsLocked = false;
+	}
+	
+	tString GetImageFile(const bool abAbstract=false)
+	{
+		return abAbstract ? msImageFileAbstract : msImageFileClear;
+	}
+
+	void UpdateAlpha(float afTimeStep)
+	{
+		const float kfFadeSpeed = 1;
+
+		if(mbIsLocked)
+		{
+			mfAlpha -= afTimeStep * kfFadeSpeed;
+		}
+		else
+		{
+			mfAlpha += afTimeStep * kfFadeSpeed;
+		}
+
+		mfAlpha = cMath_Clamp(mfAlpha, 0.0f, 1.0f);
+	}
+	
+	tString GetActiveImageFile() {return GetImageFile(mbIsLocked);}
+	void SetMemoryLock(const bool abLocked) {mbIsLocked=abLocked;}
+	bool GetIsLocked() {return mbIsLocked;}
+	cVector2f GetPosition() {return mvPosition;}
+	float GetSize() {return mfSize;}
+	tString GetVoiceRef() {return msVoiceRef;}
+	float GetAlpha() {return mfAlpha;}
+	bool IsCrewMemory() {return mbCrewMemory;}
+}
+
+/*//------------------------------------------------------------
+
+class cScrMemory
+{
+	tString msName;
+	tString msSketchSubject;
+	array<cScrMemory_SketchSegment> mvSegments;
+	
+	int mlSketchNum = 0;
+}*/
+
+//------------------------------------------------------------
+
+/*class cScrMemory_SketchSegment
+{
+	tString msFile;
+	float mfDrawSpeed;
+	float mfDrawProgress = 0;
+}*/
+
+////////////
+// REMINDERS
+////////////
+
+class cIdeaEntry
+{
+	tString msName="";
+	tString msFile="";
+	tString msPage="";
+	float mfNrmX=0.0f;
+	float mfNrmY=0.0f;
+	float mfNrmSizeX=0.0f;
+	float mfNrmSizeY=0.0f;
+	float mfAlpha=0.0f;
+	int mlPageNumber;
+	int mlHintID=-1.0f;
+	bool mbHasText=false;
+	float mfNrmTextX=0.0f;
+	float mfNrmTextY=0.0f;
+	bool mbMarkedComplete=false;
+	
+	//-------------------------------------------------
+	
+	cIdeaEntry(){}
+	
+	cIdeaEntry(cXmlElement@ aXML)
+	{
+		Setup(aXML);
+	}
+	
+	//-------------------------------------------------
+	
+	void Setup(cXmlElement@ aXML)
+	{
+		if (aXML is null)
+		{
+			Error("Null XML in Sketchbook UI handler");
+			return;
+		}
+			
+		msName = aXML.GetAttributeString("Name","");
+		msFile = aXML.GetAttributeString("Filename","");
+		msPage = aXML.GetParent().ToElement().GetAttributeString("Name","");
+		mfNrmX = aXML.GetAttributeFloat("NormX",0.0f);
+		mfNrmY = aXML.GetAttributeFloat("NormY",0.0f);
+		mfNrmSizeX = aXML.GetAttributeFloat("NormSizeX",0.0f);
+		mfNrmSizeY = aXML.GetAttributeFloat("NormSizeY",0.0f);
+		mbHasText = aXML.GetAttributeBool("HasText",false);
+		mfNrmTextX = aXML.GetAttributeFloat("NormTextX",0.0f);
+		mfNrmTextY = aXML.GetAttributeFloat("NormTextY",0.0f);
+		mlPageNumber = 0;
+	}
+
+	//-------------------------------------------------
+	
+	void ShowHint()
+	{
+		Hint_AddAsGiven(msPage,msName);
+	}
+	
+	//-------------------------------------------------
+	
+	bool ShouldBeRemoved()
+	{
+		return mbMarkedComplete && mfAlpha<=0;
+	}
+	
+	//-------------------------------------------------
+	
+	void Draw(bool abShowText, float afTimeStep)
+	{
+		const float fGoal = mbMarkedComplete ? 0 : 1;
+		mfAlpha = cMath_IncreaseTo(mfAlpha, afTimeStep,fGoal);
+		ImGui_SetModColorMul(cColor(1.0,1.0,1.0,mfAlpha*0.85f));
+		ImGui_DoImageCorrectAspect(cImGuiGfx(msFile, eGuiMaterial_Modulative, eImGuiGfx_TextureTemporary), ImGui_NrmPosGroup(mfNrmX,mfNrmY,gfSketchbookImgDepth), ImGui_NrmSizeGroup(mfNrmSizeX,mfNrmSizeY));
+		ImGui_SetModColorMul(cColor_White);
+		
+		///////////
+		// Draw txt
+		if (abShowText && mbHasText)
+		{
+			ImGui_SetTransCategory("Ideas");
+			cImGuiTextFrameData textData = ImGui_GetDefaultTextFrame();
+			textData.mbUseBackgroundGfx = false;
+			textData.mFont.SetFile(FontHandler_GetFont(eFontType_Readable, 56));
+			textData.mFont.mvSize = cVector2f(gfFontSize_SketchbookIdeaOverlay);
+			textData.mFont.mColor = cColor_White;
+			textData.mFontAlign = eFontAlign_Center;
+			
+			array<tWString> mvLines;
+			float fMaxWidth = 0;
+			GetFontWordWrapRows(textData.mFont,1,msName,900,mvLines);
+			
+			for (int i=0; i < mvLines.length(); i++)
+			{
+				float fWidth = GetFontLengthW(textData.mFont,1,mvLines[i]);
+				if (fWidth > fMaxWidth) fMaxWidth = fWidth;
+			}
+			
+			//Debug_Log("HUD Size: "+cLux_GetHudVirtualSize());
+			
+			float fFontSpacing = 5;
+			float fNrmFontSpacing = fFontSpacing/cLux_GetHudVirtualSize().y;
+			float fNrmBkgSizeX = fMaxWidth/cLux_GetHudVirtualSize().x; // TO DO: this will be too wide on 21:9
+			float fNrmBkgSizeY = textData.mFont.mvSize.y/cLux_GetHudVirtualSize().y+fNrmFontSpacing;
+			
+			
+			float fNrmCenterX = (mfNrmTextX == 0) ? mfNrmX+mfNrmSizeX/2 : mfNrmTextX;
+			float fNrmCenterY = (mfNrmTextY == 0) ? mfNrmY+mfNrmSizeY/2 : mfNrmTextY;
+			
+			float fPaddingX = textData.mFont.mvSize.x;
+			float fPaddingY = textData.mFont.mvSize.y*.7f;
+			float fNrmPaddingX = fPaddingX/cLux_GetHudVirtualSize().x;
+			float fNrmPaddingY = fPaddingY/cLux_GetHudVirtualSize().y;
+
+			//Debug_Log(msName+" - Image (Norm): "+mfNrmX+", "+mfNrmY+" - "+mfNrmSizeX+", "+mfNrmSizeY+" - Bkg (Norm)"+fNrmBkgSizeX+", "+fNrmBkgSizeY+" - Lines: "+mvLines.length());
+
+			ImGui_DrawReadableBackground(ImGui_NrmPosGroup(fNrmCenterX-fNrmBkgSizeX/2-fNrmPaddingX,fNrmCenterY-fNrmBkgSizeY*mvLines.length()/2-fNrmPaddingY,gfSketchbookTextDepth), ImGui_NrmSizeGroup(fNrmBkgSizeX+fNrmPaddingX*2,fNrmBkgSizeY*mvLines.length()+fNrmPaddingY*2), 1,true);
+			ImGui_DoTextFrameExt(msName, cVector2f_Zero, fFontSpacing, 0, textData, ImGui_NrmPosGroup(fNrmCenterX-fNrmBkgSizeX,fNrmCenterY-fNrmBkgSizeY*mvLines.length()/2,gfSketchbookTextDepth), ImGui_NrmSizeGroup(fNrmBkgSizeX*2,fNrmBkgSizeY*mvLines.length()));
+		}
+	}
+	
+	//-------------------------------------------------
+}
+
+class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSketchbookUIHandler_Interface
+{
+	
+	[nosave] iXmlDocument@ mpIdeasDoc;
+	[nosave] cXmlElement@ mpIdeasPageDefinitions;
+	array<tString> mvIdeasPageIdentifiers;
+	array<cIdeaEntry> mvIdeas;
+	
+	//------------------------------------------------------------
+	
+	bool LoadXMLIdeasData(const tString& in asXMLFile)
+	{
+		@mpIdeasDoc = cResources_LoadXmlDocument(asXMLFile);
+		if (mpIdeasDoc == null)
+		{
+			Error("[Sketchbook] Couldn't load ideas config!");
+			return false;
+		}
+		
+		@mpIdeasPageDefinitions = mpIdeasDoc.GetFirstElement("Pages");
+		
+		// Set up pages
+		if (mpIdeasPageDefinitions == null)
+		{
+			Error("[Sketchbook] Ideas page definitions is null.");
+			return false;
+		}
+		
+		int pageCount = mpIdeasPageDefinitions.GetAttributeInt("Count",0);
+		mvIdeasPageIdentifiers.resize(pageCount);
+		
+		cXmlNodeListIterator @it = mpIdeasPageDefinitions.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement @pElem = it.Next().ToElement();
+			tString sName = pElem.GetAttributeString("Name","");
+			int idx = pElem.GetAttributeInt("PageNumber",0);
+			if (idx >= mvIdeasPageIdentifiers.size())
+			{
+				Error("[Sketchbook] Ideas out of bounds -  suggestion, check that you have Count and Pagenumber set correctly in PlayerIdeas.cfg!");
+				return false;
+			}
+			
+			mvIdeasPageIdentifiers[idx] = sName;
+		}
+		
+		////////
+		// Debug
+		for	(uint i=0;i<mvIdeasPageIdentifiers.size();++i)
+		{
+			cLux_AddDebugMessage("[Sketchbook] - Ideas Page " + i + "/"+pageCount+" = '"+mvIdeasPageIdentifiers[i]+"'");
+		}
+		
+		cLux_AddDebugMessage("[Sketchbook] Ideas XML config loaded OK! Pages = " + mvIdeasPageIdentifiers.size());
+		return true;
+	}
+	
+	//--------------------------------------------------------------
+	
+	void AddAllIdeas(const bool abComplete)
+	{
+		if (mpIdeasDoc is null)
+		{
+			if (LoadXMLIdeasData("PlayerIdeas.cfg")==false)
+			{
+				Error("[Sketchbook] - Error loading ideas config");
+				return;
+			}
+		}
+						
+		cXmlNodeListIterator @it = mpIdeasPageDefinitions.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement@ pElem = it.Next().ToElement();
+			cXmlNodeListIterator @pageIt = pElem.GetChildIterator();
+			while(pageIt.HasNext())
+			{
+				cXmlElement@ pPageElem = pageIt.Next().ToElement();
+				if (pPageElem!=null)
+				{
+					tString sName = pPageElem.GetAttributeString("Name","");
+					bool bComplete = (cString_GetFirstStringPos(sName,"_complete") >= 0) ? true : false;
+					if (bComplete==abComplete)
+						AddIdeaNew(sName, "", false);
+				}
+			}
+		}
+	}
+	
+	//--------------------------------------------------------------
+	
+	void SetIdeaHintEnabled(bool abX)
+	{
+		mbIdeaHint = abX;
+	}
+	
+	//--------------------------------------------------------------
+	
+	cXmlElement@ FindImageElement(const tString& in asName)
+	{
+		if (mpIdeasDoc is null)
+		{
+			if (LoadXMLIdeasData("PlayerIdeas.cfg")==false)
+			{
+				Error("[Sketchbook] - Error loading ideas config");
+				return null;
+			}
+		}
+						
+		cXmlNodeListIterator @it = mpIdeasPageDefinitions.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement @pElem = it.Next().ToElement();
+			cXmlNodeListIterator @pageIt = pElem.GetChildIterator();
+			while(pageIt.HasNext())
+			{
+				cXmlElement @pPageElem = pageIt.Next().ToElement();
+				if (pPageElem.GetAttributeString("Name","")==asName)
+				{
+					return pPageElem;
+				}
+			}
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddIdeasPage()
+	{
+		mlMaxIdeasPage++;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void AddIdeaNew(const tString &in asName, const tString &in asIdeaToReplace = "", bool abNotify = true)
+	{
+		// Load XML document
+		if (mvIdeasPageIdentifiers.size() <= 0)
+		{
+			if (mpIdeasDoc is null)
+			{
+				if (LoadXMLIdeasData("PlayerIdeas.cfg")==false)
+				{
+					Error("[Sketchbook] - Error loading ideas config");
+					return;
+				}
+			}
+		}
+		
+		tString sIdeaName = asName;
+		cXmlElement@ pElem = FindImageElement(sIdeaName);
+		if (pElem == null)
+		{
+			Error("[Sketchbook] - Idea `"+sIdeaName+"` not found in cfg file");
+			return;
+		}
+		
+		// Set up the new objective object for adding in to our array.
+		cIdeaEntry newIdea;
+		newIdea.Setup(pElem);
+		//Debug_Log(newIdea.msName);
+		
+		// Are we replacing an old sketch?
+		if (asIdeaToReplace != "")
+		{
+			RemoveAndFadeIdea(asIdeaToReplace);
+			//RemoveIdea(asIdeaToReplace);
+			//newIdea.mfAlpha = 1.f;
+		}
+		
+		int lPage = mvIdeasPageIdentifiers.find(newIdea.msPage);
+
+		if (lPage != -1)
+			newIdea.mlPageNumber = lPage;
+
+		// Which page is the objective on?
+		int lIdeasPage = newIdea.mlPageNumber;
+		
+		// Expand number of pages if needed
+		mlMaxIdeasPage = cMath_Max(mlMaxIdeasPage, lIdeasPage);
+		
+		// Switch to the page with the objective on
+		mlIdeasPage = lIdeasPage;
+		
+		// Ensure it is not a duplicate
+		for (uint i=0; i<mvIdeas.size(); ++i)
+		{
+			if (mvIdeas[i].msName == newIdea.msName)
+			{
+				cLux_AddDebugMessage("[Sketchbook] - Not adding idea `"+newIdea.msName+"` since it already exist.");
+				return;	
+			}
+		}
+		
+		if (abNotify)
+			NotifyNewIdea();
+		
+		// Add to array
+		cLux_AddDebugMessage("[Sketchbook] - Added idea `"+newIdea.msName+"`");
+		mvIdeas.push_back(newIdea);
+		mlIdeasShown = mvIdeas.size();
+		
+		
+		mlJournalStateOnOpen = eSketchbookState_Ideas;
+		
+		// show hint for reminders if you've seen two without checking
+		if (mbIdeaHint && abNotify)
+		{
+			++mlIdeaHintCounter;
+			if (mlIdeaHintCounter == 1) mbCanCancelIdeaHint = true;
+			else if (mlIdeaHintCounter == 2)
+			{
+				Hint_ShowHint_Hold("Hints", "HintReminders", true, 1.5f, true, 10.f);
+				mbIdeaHint = false;
+				mbCanCancelIdeaHint = false;
+			}
+		}
+	}	
+	
+	//-------------------------------------------------------
+	
+	void NotifyNewIdea()
+	{
+		mbNotifyIdeas = true;
+		mfIdeaNotifyDisplayTimer = gfIdeaNotifyCountDisplayTime;
+		Sound_PlayGui(msSoundAddIdea, 0.8);		
+	}
+	
+	//-------------------------------------------------------
+	
+	void AddIdea(const tString &in asName, const tString &in asNameOfPage, bool abNotify = true, const tString &in asIdeaToReplace = "")
+	{
+		if (mvIdeasPageIdentifiers.size() <= 0)
+		{
+			// First we check that we have a loaded XML document for sanity!
+			if (mpIdeasDoc is null)
+			{
+				if (LoadXMLIdeasData("PlayerIdeas.cfg")==false)
+				{
+					Error("[Sketchbook] - Error loading ideas config");
+					return;
+				}
+			}	
+		}
+		
+		int lPage = mvIdeasPageIdentifiers.find(asNameOfPage);
+		AddIdeaEntry(asName, lPage, abNotify, asIdeaToReplace);
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddIdeaEntry(const tString &in asName, int alPage=-1, bool abNotify = true, const tString &in asIdeaToReplace = "")
+	{							
+		// Check that we have a loaded XML document for sanity!
+		if (mpIdeasDoc is null)
+		{
+			if (LoadXMLIdeasData("PlayerIdeas.cfg")==false)
+			{
+				Error("[Sketchbook] - Error loading ideas config");
+				return;
+			}
+		}
+		
+		// Now try to find the element we want to add
+		cIdeaEntry newIdea;
+		cXmlElement@ pElem = FindImageElement(asName);
+
+		// Report null if nothing found!
+		if (pElem is null)
+		{
+			Error("[Sketchbook] - Idea '"+asName+"' not found in FindImageElement");
+			return;
+		}
+		
+		// Set up the new objective object for adding in to our array and ensure it is not a duplicate
+		newIdea.Setup(pElem);
+		
+		Debug_Log("Idea parent: "+newIdea.msPage);
+		
+		// Are we replacing an old sketch?
+		if (asIdeaToReplace != "")
+		{
+			RemoveIdea(asIdeaToReplace);
+			newIdea.mfAlpha = 1.f;
+		}	
+
+		if (alPage != -1)
+		{
+			newIdea.mlPageNumber = alPage;
+		}	
+
+		// Which page is the objective on?
+		int lIdeasPage = newIdea.mlPageNumber;	
+		
+		// Expand number of pages if needed
+		mlMaxIdeasPage = cMath_Max(mlMaxIdeasPage, lIdeasPage);
+		
+		// Switch to the page with the objective on
+		mlIdeasPage = lIdeasPage;
+							 
+		for (uint i=0;i<mvIdeas.size();++i)
+		{
+			if (mvIdeas[i].msName == newIdea.msName)
+			{
+				cLux_AddDebugMessage("[Sketchbook] - Array already contains this idea... perhaps you want to remove it?");
+				return;	
+			}
+		}
+		
+		if (abNotify) NotifyNewIdea();
+		
+		// Add to array
+		mvIdeas.push_back(newIdea);
+		mlIdeasShown = mvIdeas.size();
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveIdea(const tString &in asName)
+	{
+		for (int i = 0; i < mvIdeas.size(); i++)
+		{
+			if (mvIdeas[i].msName != asName) continue;
+			mvIdeas.removeAt(i);
+			break;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveAndFadeIdea(const tString &in asName)
+	{
+		for (int i = 0; i < mvIdeas.size(); i++)
+		{
+			if (mvIdeas[i].msName!=asName) continue;
+			mvIdeas[i].mbMarkedComplete = true;
+			break;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	cIdeaEntry@ GetIdea(const tString&in asName)
+	{
+		for (int i=0; i<mvIdeas.size(); i++)
+		{
+			if (mvIdeas[i].msName != asName) continue;
+			return mvIdeas[i];
+		}
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveAllIdeas()
+	{
+		for (int i = 0; i < mvIdeas.size(); i++)
+		{			
+			mvIdeas[i] = mvIdeas[mvIdeas.size() - 1];
+			mvIdeas.pop_back();
+			i--;
+			break;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetIdeaActive(const tString &in asName)
+	{
+		for (int i = 0; i < mvIdeas.size(); i++)
+		{
+			if (mvIdeas[i].msName == asName)
+				return true;
+		}
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	// #### STEVE END ####
+	//------------------------------------------------------------
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init(){}
+	
+	//------------------------------------------------------------
+	
+	void LoadUserConfig() {}
+	void SaveUserConfig() {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERFACE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OpenSketchbook(const bool abPauseGame=true)
+	{
+		if (mbOpen) return;
+		if (Player_IsActive()==false) return;
+		
+		mbOpen = true;
+		
+		if (mBaseObj.Timer_Exists("PostSkethcbookIdleTime"))
+			mBaseObj.Timer_Remove("PostSkethcbookIdleTime");
+		
+		FearHandler_SetPaused(true);
+						
+		cLux_GetPlayer().ChangeState(ePlayerState_Custom_Inventory);
+		cLux_GetPlayer().GetCharacterBody().StopMovement();
+		
+		if (mlBlurID == -1)
+			mlBlurID = Effect_Blur_Start(1, 0);
+		
+		cLux_GetGuiHandler().SetGameHudInputFocus(true);
+		mbFirstFrameFlag=true;
+		
+		mInvMode = eInvMode_Select;
+		msCurrentItem="";
+		msCombineItem = "";
+		
+		////////////////////////////////
+		// Map callback
+		cLuxMap@ pMap = cLux_GetCurrentMap();
+		tString sCallback = "void OnSketchbookStateChange(int alState)";
+		if (pMap.ScriptMethodExists(sCallback) && pMap.ScriptPrepare(sCallback))
+		{
+			pMap.SetArgInt(0, 1);
+			pMap.ScriptExecute();
+		}
+		
+		//////////////////
+		// Deal with Hints
+		if (abPauseGame)
+		{
+			Hint_SetCanShowHints(false);
+		}
+		// Draw a hint to close the first time sketchbook is open
+		else if (mbOpenedFlag==false)
+		{
+			Hint_StopHint();
+			mBaseObj.Timer_Add("Timer_ShowCloseSkethcbookHint", 3, "OnTimer_ShowCloseSkethcbookHint");
+			mbOpenedFlag = true;
+		}
+		
+		/////////////////
+		// Pause the game
+		if (abPauseGame)
+			cLux_SetGamePaused(true, false, true, false);
+		
+		mbOpenSoundDelay = true;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_ShowCloseSkethcbookHint(uint64 aTimerID)
+	{
+		Hint_ShowHint("Hints", "HintCloseSketchbook", true, 1.5f);
+	}
+	
+	//------------------------------------------------------------
+	
+	void CloseSketchbook()
+	{
+		CancelFlashbackPlayback();
+		if (mbOpen==false) return;
+		
+		cLux_SetGamePaused(false, false, false, false);
+		mbOpen = false;
+		
+		////////////
+		// deal with hints
+		Sound_PlayGui("special_fx/notepad/notebook_draw", 0.2);
+		
+		if (Hint_GetCurrentEntry() == "HintCloseSketchbook")
+			Hint_StopHint();
+			
+		if (mBaseObj.Timer_Exists("Timer_ShowCloseSkethcbookHint"))
+			mBaseObj.Timer_Remove("Timer_ShowCloseSkethcbookHint");
+			
+		Hint_SetCanShowHints(true);
+		
+		///////////
+		// Update inventory
+		iScrItemHandler_Interface @pItemHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		pItemHandler.UpdateInventoryIcons();
+		
+		// Add a little delay before releasing the player input to avoid putting inventory items down when double clicking.
+		if (mBaseObj.Timer_Exists("PostSkethcbookIdleTime")==false)
+			mBaseObj.Timer_Add("PostSkethcbookIdleTime", 0.25f, "Timer_PostSkethcbookIdle");
+		
+		/////////
+		// Fade out effects
+		if (mlBlurID > -1)
+		{
+			Effect_Blur_FadeOut(mlBlurID, 0.125);
+			mlBlurID=-1;
+		}
+		
+		////////////////////////////////
+		// Map callback
+		cLuxMap@ pMap = cLux_GetCurrentMap();
+		tString sCallback = "void OnSketchbookStateChange(int alState)";
+		if (pMap.ScriptMethodExists(sCallback) && pMap.ScriptPrepare(sCallback))
+		{
+			pMap.SetArgInt(0, -1);
+			pMap.ScriptExecute();
+		}
+		
+		mbShowText = false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void Timer_PostSkethcbookIdle(uint64 aTimerID)
+	{
+		FearHandler_SetPaused(false);
+		cLux_GetGuiHandler().SetGameHudInputFocus(false);
+		
+		if (mBaseObj.Timer_Exists("PostSkethcbookIdleTime"))
+			mBaseObj.Timer_Remove("PostSkethcbookIdleTime");
+			
+		mbFirstFrameFlag = false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void ToggleJournal()
+	{
+		if (mbOpen)
+		{
+			if (mlSketchbookState!=mlJournalStateOnOpen)
+			{
+				SetSketchbookState(mlJournalStateOnOpen);
+				return;
+			}
+
+			CloseSketchbook();
+		}
+		else if (CanToggleSkethcbookOn())
+		{
+			SetSketchbookState(mlJournalStateOnOpen);
+			OpenSketchbook();
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void ToggleSkethcbookState(int alSketchbookState)
+	{
+		if (mbOpen==false)
+		{
+			if (CanToggleSkethcbookOn()==false) return;
+			SetSketchbookState(alSketchbookState);
+			OpenSketchbook();
+			return;
+		}
+		
+		if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed() && alSketchbookState!=eSketchbookState_Inventory) return;
+		
+		if (mlSketchbookState!=alSketchbookState && alSketchbookState!=eSketchbookState_Inventory)
+		{
+			SetSketchbookState(alSketchbookState);
+			return;
+		}
+		
+		CloseSketchbook();
+	}
+	
+	//------------------------------------------------------------
+	
+	bool CanToggleSkethcbookOn()
+	{
+		return cLux_GetPlayer().GetCurrentStateId()==ePlayerState_Normal && 
+				IsFlashbackActive()==false && 
+				DreamHandler_GetIsActive()==false && 
+				cLux_GetPlayer().GetCurrentMoveState().GetId()!=eMoveState_Swim && 
+				cLux_GetPlayer().GetCurrentMoveState().GetId()!=eMoveState_Animated;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool IsSketchbookOpen()
+	{
+		return mbOpen;
+	}
+	
+	//------------------------------------------------------------
+	
+	void CollectAllNotes()
+	{
+		for (int i=0; i<mvFullListOfNotes.size(); i++)
+		{
+			AddNoteByID(mvFullListOfNotes[i].msID);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddMemoryCylinder(const tString&in asSubject, const tString&in asText)
+	{
+		AddNoteByID(asSubject);
+	}
+	
+	//------------------------------------------------------------
+	
+	void GetNoteData(const tString&in asNoteID, tString&out asCategoryID, tString&out asVoiceEntry, tString&out asFrontEntry, tString&out asBackEntry)
+	{
+		for (int i=0; mvFullListOfNotes.size()>0 && i<mvFullListOfNotes.size(); i++)
+		{
+			cNoteEntry@ pNote = mvFullListOfNotes[i];
+			if (pNote==null) continue;
+			if (pNote.msID != asNoteID) continue;
+			
+			asCategoryID = pNote.msCategoryID;
+			asVoiceEntry = pNote.msVoiceEntry;
+			asFrontEntry = pNote.msFrontEntry;
+			asBackEntry = pNote.msBackEntry;
+		}
+	}
+	
+	//------------------------------------------------------------
+
+	void AddNoteByID(const tString&in asNoteID)
+	{
+		if (asNoteID=="")
+		{
+			cLux_AddDebugMessage("Note ID hasn't been defined! Can't add this note!");
+			return;
+		}
+		
+		////////////////////////////////
+		// Look at the full notes list for a note entry with the same ID
+		for (int i=0; mvFullListOfNotes.size()>0 && i<mvFullListOfNotes.size(); i++)
+		{
+			cNoteEntry@ pNote = mvFullListOfNotes[i];
+			if (pNote==null) continue;
+			if (pNote.msID != asNoteID) continue;
+			if (pNote.mbAddToSketchbook==false) continue;
+			
+			///////////////
+			// Add the note under a category
+			// If the category already exists add the note right away
+			tString sNoteCategoryID = pNote.msCategoryID;
+			int lExistingCategoryCount = mvUsedNoteCategories.size();
+			
+			for (int j=0; lExistingCategoryCount>0 && j<lExistingCategoryCount; j++)
+			{
+				cNoteCategoryEntry@ pExistingCategory = mvUsedNoteCategories[j];
+				
+				if (pExistingCategory==null) continue;
+				
+				if (pExistingCategory.msID==sNoteCategoryID)
+				{
+					/////////////////////
+					// If the note already exists abord
+					if (pExistingCategory.GetNoteByID(asNoteID)!=null) return;
+					
+					pExistingCategory.AddNote(pNote);
+					CheckNotesAmount();
+					ToggleLastNoteCollected(pExistingCategory, pNote);
+					return;
+				}
+			}
+			
+			//////////////
+			// Create a new category and add the note
+			cNoteCategoryEntry@ pNoteCategory = cNoteCategoryEntry(pNote.msCategoryID, pNote.msCategoryName);
+			if (pNoteCategory==null) continue;
+			
+			pNoteCategory.AddNote(pNote);
+			mvUsedNoteCategories.push_back(pNoteCategory);
+			
+			CheckNotesAmount();
+			ToggleLastNoteCollected(mvUsedNoteCategories[mvUsedNoteCategories.size()-1], pNote);
+		}
+	}
+
+	
+	//------------------------------------------------------- 
+	
+	int CheckNotesAmount()
+	{
+		int lCurrNotesAmount = 0;
+		int lCurrCrewNotesAmount = 0;
+		int lCurrCylindersAmount = 0;
+		
+		
+		int lExistingCategoryCount = mvUsedNoteCategories.size();
+			
+		for (int j=0; j<lExistingCategoryCount; j++)
+		{
+			cNoteCategoryEntry@ pExistingCategory = mvUsedNoteCategories[j];
+			
+			for (int i=0; pExistingCategory.mvCollectedNotes.size()>0 && i<pExistingCategory.mvCollectedNotes.size(); ++i)
+			{
+				lCurrNotesAmount++;	
+				if (pExistingCategory.mvCollectedNotes[i].mbIsMemoryCylinder) lCurrCylindersAmount++;								
+				if (cString_GetFirstStringPos(pExistingCategory.mvCollectedNotes[i].msID, "HanksNote_") == 0) lCurrCrewNotesAmount++;
+			}			
+		}
+		
+		cLux_AddDebugMessage("NOTES FOUND: "+lCurrNotesAmount+"/"+mlNotesAmount+" (CREW: "+lCurrCrewNotesAmount+"/"+mlCrewNotesAmount+" - CYLINDERS: "+lCurrCylindersAmount+"/"+mlCylindersAmount+")");
+		
+		if (lCurrCrewNotesAmount == mlCrewNotesAmount)
+			Achievement_Unlock(eAchievement_Crewmember);
+		
+		if (lCurrCylindersAmount == mlCylindersAmount)
+			Achievement_Unlock(eAchievement_Curator);
+		
+		if (lCurrNotesAmount == int(mlNotesAmount*0.75f))
+			Achievement_Unlock(eAchievement_Archivist);
+		
+		return lCurrNotesAmount;
+	}
+	
+	//------------------------------------------------------------
+	
+	cNoteCategoryEntry@ GetUsedNoteCategoryByID(const tString asID)
+	{
+		for (int i=0; i<mvUsedNoteCategories.size(); ++i)
+		{
+			if (mvUsedNoteCategories[i].msID!=asID) continue;
+			return mvUsedNoteCategories[i];
+		}
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	void ClearNotes()
+	{
+		mvUsedNoteCategories.resize(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	//////////////////////////
+	// FLASHBACKS AND MEMORIES
+	//////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void LoadXMLMemoryData()
+	{
+		///////////////////
+		// Add all memories
+		iXmlDocument@ mpMemoriesDoc;
+		@mpMemoriesDoc = cResources_LoadXmlDocument("memories.cfg");
+		if (mpMemoriesDoc is null)
+		{
+			Error("[SkethcbookHandler] Couldn't load memories.cfg!");
+			return;
+		}
+		
+		//mvMemories.resize(0);
+		
+		// Add Crew Memories first!
+		if (MemoryExists("CrewPage1")==false) AddCrewMemory("CrewPage1");
+		if (MemoryExists("CrewPage2")==false) AddCrewMemory("CrewPage2");
+		if (MemoryExists("CrewPage3")==false) AddCrewMemory("CrewPage3");
+		if (MemoryExists("CrewPage4")==false) AddCrewMemory("CrewPage4");
+		if (MemoryExists("CrewPage5")==false) AddCrewMemory("CrewPage5");
+		if (MemoryExists("CrewPage6")==false) AddCrewMemory("CrewPage6");
+		
+		//////////////////////
+		
+		cXmlNodeListIterator @pMemoryIt = mpMemoriesDoc.GetFirstElement("Memories").GetChildIterator();
+		if (pMemoryIt is null)
+		{
+			Error("[SketchbookHandler] memories.cfg's isn't setup correctly.");
+			return;
+		}
+		
+		while(pMemoryIt.HasNext())
+		{
+			cXmlElement @pMemoryElement = pMemoryIt.Next().ToElement();
+			tString sMemoryID = pMemoryElement.GetAttributeString("ID","");
+			if (sMemoryID=="")
+			{
+				Error("[SketchbookHandler] A Memory Page ID can't be "".");
+				return;
+			}
+			
+			///////////////////////////
+			// Memory ID must be unique
+			if (MemoryExists(sMemoryID))
+			{
+				Error("[SketchbookHandler] Memory "+sMemoryID+" can't be added because it already exists.");
+				return;
+			}
+			
+			tString sMemoryName = pMemoryElement.GetAttributeString("Name","");
+			tString sMemoryImageFileClear = pMemoryElement.GetAttributeString("ImageFileClear","");
+			tString sMemoryImageFileAbstract = pMemoryElement.GetAttributeString("ImageFileAbstract","");
+			float fMemoryUnblurDelay = pMemoryElement.GetAttributeFloat("UnblurDelay",1);
+			float fMemoryUnblurFadeTime = pMemoryElement.GetAttributeFloat("UnblurFadeTime",1);
+			tString sMemoryVoice = pMemoryElement.GetAttributeString("Voice","");
+			cVector2f vMemoryImagePos = pMemoryElement.GetAttributeVector2f("Position", cVector2f(0,0));
+			float fMemoryImageSize = pMemoryElement.GetAttributeFloat("Size", 1);
+			float fDuckAudioTo = pMemoryElement.GetAttributeFloat("DuckAudioTo", 0.0f);
+			AddMemory(sMemoryID, sMemoryName, sMemoryImageFileClear, sMemoryImageFileAbstract, fMemoryUnblurDelay, fMemoryUnblurFadeTime, sMemoryVoice, vMemoryImagePos, fMemoryImageSize, fDuckAudioTo);
+		}
+	}
+    
+	//------------------------------------------------------------
+	
+	bool MemoryExists(const tString&in asMemoryID)
+	{
+		for (int i=0; i<GetMemoriesCount(); ++i)
+		{
+			if (GetMemoryByID(asMemoryID)==null) continue;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetMemoriesCount()
+	{
+		return mvMemories.size();
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddMemory(const tString&in asMemoryID, const tString&in asMemoryName, const tString&in asImageFileClear, const tString&in asImageFileAbstract, 
+		float afUnblurDelay, float afUnblurFadeTime, const tString&in asVoiceFile, const cVector2f&in avPosition, const float afSize, const float afDuckAudioTo)
+	{
+		cMemoryEntry@ pMemory = cMemoryEntry(asMemoryID, asMemoryName, asImageFileClear, asImageFileAbstract, 
+												afUnblurDelay, afUnblurFadeTime, asVoiceFile, avPosition, afSize, afDuckAudioTo);
+		mvMemories.push_back(pMemory);
+	}
+	
+	//------------------------------------------------------------
+	
+	// Hijacking the memory pages, adding a bunch of initial pages with crew pictures on.
+	void AddCrewMemory(const tString& in asMemoryID)
+	{
+		cMemoryEntry@ pMemory = cMemoryEntry(asMemoryID);
+		mvMemories.push_back(pMemory);
+		mlMemoryPage = GetMemoriesCount()-1;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetLockForAllMemories(const bool abLocked)
+	{
+		if (GetMemoriesCount()<=0) return;
+		for (int i=0; i<GetMemoriesCount(); ++i)
+		{
+			mvMemories[i].SetMemoryLock(abLocked);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	cMemoryEntry@ GetMemoryByID(const tString&in asMemoryID, int&out alPageCountOut=0)
+	{
+		if (GetMemoriesCount()<=0) return null;
+		for (int i=0; i<GetMemoriesCount(); ++i)
+		{
+			if (mvMemories[i].msMemoryID != asMemoryID) continue;
+			alPageCountOut=i;
+			return mvMemories[i];
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+    void Microflash(const tString&in asSubject, const tString &in asCallback = "", int alLineId = -1, float afDuckAudioTo = 1.0f)
+    {
+		if (IsFlashbackActive()) return;
+		
+		mbMicroflashIsActive = true;
+        
+        Sound_CreateAtEntity("Sound_MicroflashWhisper", "player/UI/memory_sketch/whisper_flash", "player", 0.0f, false, 0.5f);
+        
+		Effect_ImageTrail_Start(0.2, 1.f, 2.0f, 1.0f);
+		Effect_Flash_Start(0.15f,0.05f,0.0f,0.2f);
+		
+		FearHandler_SetPaused(true);
+		
+        if (mlMicroflashRadialBlurID==-1)
+            mlMicroflashRadialBlurID = Effect_RadialBlur_Start(0.2f, 1.0f, 0.45f, 1.0f);
+			
+		Sound_FadeGlobalVolume(afDuckAudioTo, 3.0f, eSoundEntryType_WorldAll);
+            
+		msMicroflashSubject = asSubject;
+		mlMicroflashLineID = alLineId;
+		msMicroflashCallback = asCallback;
+		mbMicroFlashPrevPlayerCanRun = true;
+		
+		mBaseObj.Timer_Add("Timer_MicroflashWarmUp", 0.15f, "OnTimer_MicroflashWarmUp", true, false);
+	}
+		
+	//------------------------------------------------------------
+	
+	void OnTimer_MicroflashWarmUp(uint64 aTimerID)
+	{
+		Effect_Flash_Start(0.05f,0.05f,0.2f,0.75f);
+		Effect_Flash_Start(0.05f,0.05f,1.0f,0.5f);
+		
+		mbMicroFlashPrevPlayerCanRun = Player_GetCanRun();
+		Player_SetCanRun(false);
+		
+		mfMicroflashGrading = 0.8f;
+		Effect_ToneMapping_SetGradingTexture(100,"grading_microflash",mfMicroflashGrading);
+        
+		mBaseObj.Timer_Add("Timer_MicroflashVoice",1.0f, "OnTimer_MicroflashVoice", true, false);
+				
+		//cLux_AddDebugMessage("Microflash start");
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_MicroflashVoice(uint64 aTimerID)
+	{
+		Voice_Play(msMicroflashSubject, mlMicroflashLineID, msMicroflashCallback);
+        mBaseObj.Timer_Add("Timer_MicroflashUpdate", 0.1f, "OnTimer_MicroflashUpdate", true, false);
+    }
+    
+	//------------------------------------------------------------
+	
+	 void OnTimer_MicroflashUpdate(uint64 aTimerID)
+	 {
+		// cLux_AddDebugMessage("Microflash update:"+aTimerID);
+		 if (Voice_SubjectIsPlaying(msMicroflashSubject))
+		 {
+			 // Start the fadeout 3 secs before the actual voice end, because
+			 // there's a lot of echo processing on it.
+			 float timeLeft = Voice_GetTimeLeftOnLastLineOfPlayingSubject(msMicroflashSubject);
+			 if (timeLeft<0.0f||timeLeft>3.0f)
+			 {
+				mBaseObj.Timer_Add("Timer_MicroflashUpdate", 0.1f, "OnTimer_MicroflashUpdate", true, false);
+				return;
+			 }
+		 }
+		 
+		if (mfMicroflashGrading>0.0f)
+		 {
+			OnTimer_FadeOutMicroflashGrading(0);
+			mBaseObj.Timer_Add("Timer_MicroflashUpdate", 0.05f, "OnTimer_MicroflashUpdate", true, false);
+			return;
+		 }
+
+		Microflash_End();
+	 }
+	 
+	 //------------------------------------------------------------
+    
+	void StopMicroflashEffects()
+	{
+		if (mbMicroflashIsActive == false)
+			return;
+			
+		if (mlMicroflashRadialBlurID >= 0)
+        {
+            Effect_RadialBlur_FadeOut(mlMicroflashRadialBlurID, 1.f);
+            mlMicroflashRadialBlurID =- 1;
+        }
+		
+		OnTimer_FadeOutMicroflashGrading(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnTimer_FadeOutMicroflashGrading(uint64 alId)
+	{
+		if (mfMicroflashGrading <= 0.f)
+			return;
+		
+		mfMicroflashGrading -= 0.05f;
+		Effect_ToneMapping_SetGradingTexture(100, "grading_microflash", mfMicroflashGrading);
+		
+		mBaseObj.Timer_Add("Timer_FadeOutMicroflashGrading", 0.05f, "OnTimer_FadeOutMicroflashGrading", true, false);
+	}
+	
+	//------------------------------------------------------------
+	
+    void Microflash_End()
+    {
+		//cLux_AddDebugMessage("Microflash end");
+        if (Sound_Exists("Sound_MicroflashWhisper")) Sound_Stop("Sound_MicroflashWhisper", 2.f);
+		Sound_FadeGlobalVolume(1.0f, 2.0f, eSoundEntryType_WorldAll);
+		msMicroflashSubject="";
+		
+		// Just setting this to true. Worst case scenario: you can run while in push state/holding the radio.
+		Player_SetCanRun(true);//mbMicroFlashPrevPlayerCanRun);
+		mbMicroFlashPrevPlayerCanRun = true;
+		FearHandler_SetPaused(false);
+		
+		Effect_ToneMapping_RemoveGradingTexture("grading_microflash");
+        
+        if (mlMicroflashRadialBlurID>=0)
+        {
+            Effect_RadialBlur_FadeAlpha(mlMicroflashRadialBlurID, 0.f, 1.f);
+            Effect_RadialBlur_FadeSize(mlMicroflashRadialBlurID, 0.f, 1.f);
+            mlMicroflashRadialBlurID=-1;
+        }
+		
+		mBaseObj.Timer_Add("Timer_MicroflashReset", 1.f, "OnTimer_MicroflashReset", true, false);
+    }
+    
+	//------------------------------------------------------------
+	
+	void OnTimer_MicroflashReset(uint64 aTimerID)
+	{
+		mbMicroflashIsActive = false;
+	}
+	
+	//------------------------------------------------------------
+
+	void SetLockByMemoryID(const tString&in asMemoryID, const bool abLock, const bool abDoFlashback=true, const tString &in asCallback="", bool abAllowSkip=true)
+	{
+		if (GetMemoriesCount()<=0) return;
+			
+		if (abLock==false && IsFlashbackActive() && abDoFlashback)
+		{
+			cLux_AddTodoMessage("[SketchbookHandler] Another flashback is currently active. Flashbacks should not overlap.");
+			return;
+		}
+		
+		int lCurrPageCount = 0;
+		cMemoryEntry@ pMemory = GetMemoryByID(asMemoryID, lCurrPageCount);
+		if (pMemory == null) return;
+		
+		////////////////
+		// Lock & Unlock
+		if (abLock)
+		{
+			pMemory.SetMemoryLock(true);
+		}
+		else
+		{
+			if (pMemory.GetIsLocked()==false) return;
+			
+			/////////////////////////////
+			// If using flashback effects
+			if (abDoFlashback)
+			{		
+				ExecuteFlashback(pMemory, true);
+				if (mbOpen) CloseSketchbook();
+				msFlashbackCallback = asCallback;
+				mbFlashbackAllowSkip = abAllowSkip;
+			}
+			
+			cLux_AddDebugMessage("[SketchbookHandler] Memory Unlocked: "+asMemoryID);
+			mlJournalStateOnOpen = eSketchbookState_Memories;
+			pMemory.SetMemoryLock(false);
+			mlMemoryPage = lCurrPageCount;
+		}
+		
+		if (pMemory == null)
+			Error("[SketchbookHandler] Couldn't find Memory "+asMemoryID);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetIsMemoryUnlocked(const tString&in asMemoryID)
+	{
+		cMemoryEntry@ pMemory = GetMemoryByID(asMemoryID);
+		if (pMemory is null)
+		{
+			Error("[SketchbookHandler] Couldn't find Memory "+asMemoryID);
+			return false;
+		}
+		
+		return pMemory.GetIsLocked()==false;
+	}
+	
+	//------------------------------------------------------------
+
+	void DoMemoriesPage(float afTimeStep)
+	{
+		if (GetMemoriesCount()<=0) return;
+			
+		//////////////////
+		// Page navigation
+		if (mlMemoryPage>0)
+		{
+			if (DoLeftNavButton())
+				SwitchMemoryPage(false);
+		}
+		
+		if (mlMemoryPage < GetMemoriesCount()-1)
+		{
+			if (DoRightNavButton())
+				SwitchMemoryPage(true);
+		}
+		
+		////////////////
+		// Draw Memories
+		ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+		ImGui_GroupBegin(ImGui_NrmPosGroup(0,0,0), ImGui_NrmSizeGroup(1));
+		
+			cMemoryEntry@ pMemory = mvMemories[mlMemoryPage];
+			if (pMemory!=null)
+			{
+				bool bIsUsingGamepad = cLux_GetInputHandler().GetGamepadWasLastDeviceUsed();
+				
+				/////////////////////
+				// Update fade effect
+				pMemory.UpdateAlpha(afTimeStep);
+				
+				if (pMemory.IsCrewMemory())
+				{
+					ImGui_GroupBegin(ImGui_NrmPosGroup(0.15,0.12,0), ImGui_NrmSizeGroup(0.71,0.76));
+					RenderCrewSketchPageGUI(pMemory.msMemoryID, pMemory.GetAlpha());
+					ImGui_GroupEnd();
+				}
+				else
+				{
+					///////////////////
+					// Draw sharp image
+					cImGuiGfx gfxSharp;
+					gfxSharp = cImGuiGfx(pMemory.GetImageFile(false), eGuiMaterial_Additive, eImGuiGfx_TextureTemporary);
+					gfxSharp.mMaterial = eGuiMaterial_Custom0;
+					gfxSharp.mvAlphaLimit = cVector2f(pMemory.GetAlpha() * 1.1 - 0.1, -1.5);
+					
+					cVector3f vMemoryPos(pMemory.GetPosition().x, pMemory.GetPosition().y, gfSketchbookImgDepth);
+					
+					ImGui_DoImageCorrectAspect(gfxSharp, ImGui_NrmPosGroup(vMemoryPos), ImGui_NrmSizeGroupKeepRatio(pMemory.GetSize()));
+					
+					//////////////////
+					// Draw button with image and frame
+					//cImGuiGfx InFocuImage;
+					//InFocuImage.SetFile("sketchbook_memories_frame.tga");
+					
+					cImGuiButtonData MemorySlotButton;
+					MemorySlotButton.mbUseBackgroundGfx = true;
+					MemorySlotButton.mGfxBackground = cImGuiGfx(pMemory.GetImageFile(true), eImGuiGfx_TextureTemporary);
+					MemorySlotButton.mGfxBackground.mMaterial = eGuiMaterial_Custom0;
+					MemorySlotButton.mGfxBackground.mvAlphaLimit = cVector2f(-pMemory.GetAlpha(), 1);
+					MemorySlotButton.mFont.mColor = cColor(0, 1);
+					MemorySlotButton.mFont.mvSize = ImGui_NrmSizeGroupKeepRatio(0.05);
+					//MemorySlotButton.mGfxInFocus = InFocuImage;
+					//MemorySlotButton.mbUseInFocusGfx = !bIsUsingGamepad && !pMemory.GetIsLocked();
+					
+					/////////////////////////////////////
+					// Only show name if using temp image
+					tString sButtonName = " ";
+					if (cString_Sub(pMemory.GetActiveImageFile(), 0, 5) == "_Temp")
+						sButtonName = pMemory.GetIsLocked()?"Locked Memory":pMemory.msMemoryName;
+					
+					///////////////////////////
+					// Skethcbook memory button
+					cVector3f vCorrectAspectPos = ImGui_GetRatioCorrectPosByRect(gfxSharp, ImGui_NrmSizeGroupKeepRatio(pMemory.GetSize()), ImGui_NrmSizeGroupKeepRatio(pMemory.GetSize()), ImGui_NrmPosGroup(vMemoryPos));
+					cVector2f vCorrectAspectSize = ImGui_GetRatioCorrectSizeByRect(gfxSharp, ImGui_NrmSizeGroupKeepRatio(pMemory.GetSize()));
+					
+					if (ImGui_DoButtonExt("MemorySlotButton"+pMemory.msMemoryID, sButtonName, MemorySlotButton, vCorrectAspectPos, vCorrectAspectSize))
+					{
+						// Play flashback
+						if (pMemory.GetIsLocked()==false && IsFlashbackActive()==false)
+							ExecuteFlashback(pMemory);
+					}
+					
+					ImGui_SetAlignment(eImGuiAlign_TopLeft);
+					if (bIsUsingGamepad)
+					{
+						////////////////////
+						// Make sure that we focus on the right btn
+						ImGui_SetFocus("MemorySlotButton"+pMemory.msMemoryID);
+						
+						////////////////
+						// Playback hint
+						if (pMemory.GetIsLocked()==false && IsFlashbackActive()==false)
+						{
+							cLuxScreenTextFormatParameters formatParams;
+							CreateTextFormat(formatParams);
+							formatParams.mLabelText.mFontAlign = eFontAlign_Center;
+							formatParams.mfIconGamepadHeight = 30;
+							cVector3f vPromptPos = ImGui_NrmPosGroup(0.f, 0.815f, gfSketchbookTextDepth);
+							cVector2f vPromptSize = ImGui_NrmSizeGroup(1.f);
+							Hint_DrawExplicit("InventoryUI", "HintPlayMemory", vPromptPos, vPromptSize, formatParams);
+						}
+					}
+					else if (ImGui_PrevInFocus() && pMemory.GetIsLocked()==false)
+					{
+						cImGuiGfx gfxSelectionFrame("sketchbook_memories_frame.tga", eImGuiGfx_TextureTemporary);
+						ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+						ImGui_DoImageCorrectAspect(gfxSelectionFrame, ImGui_NrmPosGroup(0.515, 0.21, gfSketchbookImgDepth), ImGui_NrmSizeGroupKeepRatio(1.083f));
+					}
+				}
+			}
+			
+		ImGui_GroupEnd();
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+	}
+	
+	//-------------------------------------------------------
+	
+	void SwitchMemoryPage(const bool abForward)
+	{
+		if (IsFlashbackActive()) StopFlashback();
+		
+		if (abForward)
+		{
+			if (mlMemoryPage >= GetMemoriesCount()-1) return;
+			mlMemoryPage+=1;
+			Sound_PlayGui(msSoundPrevPage,1);
+			return;
+		}
+		
+		if (mlMemoryPage <= 0) return;
+		mlMemoryPage-=1;
+		Sound_PlayGui(msSoundPrevPage,1);
+	}
+	
+	//-------------------------------------------------------
+	
+	void ExecuteFlashback(cMemoryEntry@ apMemory, bool abDoFlashback=false)
+	{
+		////////////////////
+		// Setup flashback data to be pulled OnGui()
+		msFlashbackImage="";
+		msFlashbackBlurredImage="";
+		
+		if (abDoFlashback)
+		{
+			msFlashbackImage=apMemory.GetImageFile(false);
+			msFlashbackBlurredImage=apMemory.GetImageFile(true);
+		}
+		
+		msCurrentMemory=apMemory.msMemoryID;
+		mfFlashbackUnblurDelay=apMemory.mfUnblurDelay;
+		mfFlashbackUnblurFadeTime=apMemory.mfUnblurFadeTime;
+		mbFlashbackUnblurred=apMemory.mbUnblurred;
+		msFlashbackVoice=apMemory.GetVoiceRef();
+		mlFlashbackState=eFlashbackState_PreBegin;
+		mfFlashbackDuckAudioTo = apMemory.mfDuckAudioTo;
+		mfQuitFlashbackEarlyPrompt = 0.0f;
+		
+		////////////////////
+		// Pause hints
+		Hint_SetPaused(true);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoFlashBackImgBackground(const float afTransparency)
+	{
+		cImGuiGfx gfxWhiteBackground("");
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+		gfxWhiteBackground.mColor = cColor(0.8, 0.69, 0.60, afTransparency);
+		cVector3f vBackgroundImgPos = ImGui_FullScreenPos(0.8f);
+		const cVector2f vBackgroundImgSize = ImGui_FullScreenSize();
+		ImGui_DoImage(gfxWhiteBackground, vBackgroundImgPos, vBackgroundImgSize);
+		
+		cImGuiGfx gfxVignette("loading_vignette.dds", eImGuiGfx_Texture);
+		gfxVignette.mColor = cColor(1,1,1, afTransparency);
+		vBackgroundImgPos.z=10.0f;
+		ImGui_DoImage(gfxVignette, vBackgroundImgPos, vBackgroundImgSize);
+		
+		ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+	}
+
+	//------------------------------------------------------------
+	
+	bool ShouldDoFlashbackFx()
+	{
+		return msFlashbackBlurredImage!="";
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoFlashback()
+	{
+		// Patch addition - allow memory flash to be skipped.
+		if (gbAllowFlashbackSkip && mbFlashbackAllowSkip && (mfQuitFlashbackEarlyPrompt>0.0f) && mlFlashbackState!=eFlashbackState_End)
+		{	
+			float fPromptAlpha = cMath_Clamp(mfQuitFlashbackEarlyPrompt/gfFlashbackSkipPromptTime, 0.0f, 1.0f);
+			cLuxScreenTextFormatParameters formatParams;
+			formatParams.mLabelText.mColorBase = cColor(1,1,1,fPromptAlpha);
+			
+			formatParams.mLabelText.mFontAlign = eFontAlign_Left;
+			formatParams.mLabelText.mFont.mvSize = cVector2f(18);
+			formatParams.mLabelText.mFont.SetFile(FontHandler_GetFont(eFontType_Credits,56));
+			formatParams.mfIconGamepadHeight = 20.0f;
+			formatParams.mfIconKeyHeight = 20.0f;
+			formatParams.mfIconMouseHeight = 20.0f;
+			formatParams.mLabelText.mFontAlign = eFontAlign_Center;
+				
+			ImGui_GroupBegin(ImGui_NrmPosGroup(cVector3f(0,0,100)), ImGui_NrmSizeGroup(cVector2f(1,1)));
+			
+			cVector3f vPromptPos = ImGui_NrmPos(cVector3f(0.4f, 0.9f, 110.f));
+			cVector2f vPromptSize = ImGui_NrmSize(cVector2f(1.f));
+			ImGui_SetModColorMul(formatParams.mLabelText.mColorBase);
+			Hint_DrawExplicit("CreditsPrompts", "Skip", vPromptPos, vPromptSize, formatParams);
+			
+			ImGui_GroupEnd();
+		
+			ImGui_ResetModifiers();
+		}
+		
+		/////////////////
+		// Local Settings
+		const float fFlashbackFadeOutTime = 2.f;
+		const float fFlashbackFxFadeTime = 1.f;
+        const float fFlashbackDuration = 10.f;
+		const float fFlashbackBlurredFadeInTime = 3.f;
+		
+		const float fImageSize = 0.83f;
+		const float fImageScaleMul1 = 1.2f;
+		const float fImageScaleMul2 = 2.f;
+		
+		cVector3f vGroupPos(cLux_GetHudVirtualOffset() * -1);
+		vGroupPos.z=0.0;
+		cVector2f vGroupSize = ImGui_GetSize();
+		
+		////////////////
+		// Flashback img
+		cImGuiGfx gfxFlashbackImage(msFlashbackImage, eImGuiGfx_TextureTemporary);
+		gfxFlashbackImage.mMaterial = eGuiMaterial_Custom0;
+		gfxFlashbackImage.mvAlphaLimit = cVector2f(1.0f, -1.5f);
+		cImGuiGfx gfxFlashbackBlurredImage(msFlashbackBlurredImage, eImGuiGfx_TextureTemporary);
+		gfxFlashbackBlurredImage.mMaterial = eGuiMaterial_Custom0;
+		gfxFlashbackBlurredImage.mvAlphaLimit = cVector2f(1.0, -1.5f);
+		
+		const cVector2f vImageSize = ImGui_NrmSizeGroup(ImGui_GetStateFloat("ImageSize", fImageSize));
+		
+		const cVector3f vDrawImagePos = ImGui_NrmPosGroup(0.5f,0.5f,0.9f);
+		const cVector2f vDrawImageSize = ImGui_GetRatioCorrectSizeByRect(gfxFlashbackImage, vImageSize);
+		
+		//cLux_AddDebugMessage("FB Bkg Pos"+vBackgroundImgPos+" - Img: "+vDrawImagePos);
+        ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+		
+		switch(mlFlashbackState)
+		{
+			//////////////////////////
+			// Setup Flashback
+			case eFlashbackState_PreBegin:
+				
+				ImGui_AddTimer("FadeinFlashbackTimer", fFlashbackFxFadeTime);
+				
+				// Sound
+				Sound_PlayGui("player/UI/memory_sketch/whisper_flash", 1);
+				Sound_PlayGui("player/UI/memory_sketch/whisper_whoosh", 0.5f);
+				Music_FadeVolumeMul(0.2f, fFlashbackFxFadeTime);
+				Sound_FadeGlobalVolume(mfFlashbackDuckAudioTo, fFlashbackFxFadeTime, eSoundEntryType_WorldAll);
+				
+				// Fade effects
+				if (ShouldDoFlashbackFx())
+				{
+					mlIDImageTrail = Effect_ImageTrail_Start(0.2f, 1.f, -1, 0);
+					mlIDRadialBlur = Effect_RadialBlur_Start(0,0,0.45f,-1);
+					Effect_RadialBlur_FadeAlpha(mlIDRadialBlur, 0.3f, fFlashbackFxFadeTime);
+					Effect_RadialBlur_FadeSize(mlIDRadialBlur, 0.5f, fFlashbackFxFadeTime);
+				}
+				
+				// Player controls
+				mfInitLookSpeedMul = Player_GetLookSpeedMul();				
+                Player_FadeMoveSpeedMulTo(0.f, fFlashbackFxFadeTime, ePlayerMoveSpeedMulType_Sketchbook);
+                Player_FadeLookSpeedMulTo(0.f, fFlashbackFxFadeTime);
+				Player_SetCrouchDisabled(true);
+				Player_SetCrouchActionDisabled(true);
+				Player_SetJumpDisabled(true);
+				
+				Player_SetInteractionAllowed(false);
+				cLux_AddDebugMessage("[FLASHBACK] Change state to: Begin - Will wait until effects fade timer ["+fFlashbackFxFadeTime+"s] is over");
+				mlFlashbackState = eFlashbackState_Begin;
+				break;
+				
+			/////////////////
+			// Init Flashback
+			case eFlashbackState_Begin:
+				if (ImGui_TimerOver("FadeinFlashbackTimer")==false) return;
+				
+				Hint_SetCanShowHints(false);
+				
+				//////////////
+				// Disable FMS
+				mbIsFearPrevActive = FearHandler_GetIsActive();
+				FearHandler_SetActive(false);
+				
+				//////////////
+				// Voice lines
+				//Voice_StopAll();
+				if (ShouldDoFlashbackFx())
+					Voice_Play(msFlashbackVoice, -1, msFlashbackCallback, 10);
+				else
+					Voice_PlayWhilePaused(msFlashbackVoice, -1, msFlashbackCallback, 10);
+				
+				/////////////////////////////////
+				// Prepare for flashing the image
+				if (ShouldDoFlashbackFx())
+				{
+					// White background fade
+					
+					ImGui_SetStateFloat("FlashbackBackgroundAlpha", 0.f);
+					ImGui_FadeStateFloat("FlashbackBackgroundAlpha", 1.f, 0.25f);
+					Debug_Log("WILL FADE IN 0.25S");
+					ImGui_AddTimer("FlashbackBackgroundFadeDuration", 0.25f);
+					ImGui_AddTimer("FlashbackDurationTimer", fFlashbackDuration);
+					
+					if (mbFlashbackUnblurred == true)
+					{	
+						ImGui_SetStateFloat("FlashbackBlurredAlpha", 0.f);
+						ImGui_FadeStateFloat("FlashbackBlurredAlpha", 1.f, 1.f);
+						ImGui_SetStateFloat("FlashbackTrailAlpha", 0.f);
+						ImGui_FadeStateFloat("FlashbackTrailAlpha", 1.f, 0.5f);
+						ImGui_SetStateFloat("ImageSize", fImageSize*fImageScaleMul1);
+						ImGui_AddTimer("FlashbackUnblurDelay", 0.5f);
+						mlFlashbackState = eFlashbackState_FlashSkipBlur;
+						return;
+					}
+
+					// Blurred image fade and setup
+					ImGui_SetStateFloat("FlashbackBlurredAlpha", 0.f);
+					ImGui_FadeStateFloat("FlashbackBlurredAlpha", 1.f, fFlashbackBlurredFadeInTime);
+					ImGui_AddTimer("FlashbackUnblurDelay", mfFlashbackUnblurDelay);
+					
+					
+					// Trail fade
+					ImGui_SetStateFloat("FlashbackTrailAlpha", 0.f);
+					ImGui_FadeStateFloat("FlashbackTrailAlpha", 1.f, 0.5f);
+					
+					ImGui_FadeStateFloat("ImageSize", fImageSize*fImageScaleMul1, fFlashbackDuration);
+					
+					cLux_AddDebugMessage("[FLASHBACK] Show Blurred Image - Will stay blurred for: "+mfFlashbackUnblurDelay+"s");
+					mlFlashbackState = eFlashbackState_FlashBlurred;
+
+					break;
+				}
+				
+				// If image is null skip flashing it
+				mlFlashbackState = eFlashbackState_PreEnd;
+				break;
+				
+			//////////////////
+			// Fade blurred image
+			case eFlashbackState_FlashBlurred:
+				DoFlashBackImgBackground(ImGui_GetStateFloat("FlashbackBackgroundAlpha",1));
+				
+				//if (ImGui_TimerExists("FlashbackBackgroundFadeDuration")) return;
+				
+                // Draw blurred flashback image and trail
+				ImGui_GroupBegin(vGroupPos, vGroupSize);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/5);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*2.f);
+
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/3);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*1.5f);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackBlurredAlpha",1));
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize);
+				ImGui_GroupEnd();
+				
+				// Wait until blurred image and trail have reached target alpha
+				if (ImGui_IsFading("FlashbackBlurredAlpha") || ImGui_IsFading("FlashbackTrailAlpha")) return;
+				
+				ImGui_SetStateFloat("FlashbackBlurredAlpha", 1.f);
+				ImGui_SetStateFloat("FlashbackTrailAlpha", 1.f);
+				ImGui_SetStateFloat("FlashbackBackgroundAlpha", 1.f);
+				ImGui_SetStateVector3f("ImagePosition", vDrawImagePos);
+				ImGui_SetStateFloat("ImageSize", fImageSize*fImageScaleMul1);
+				
+				//////////////////////////////
+				// Keep the sketch until the unblur time
+				if (ImGui_TimerExists("FlashbackUnblurDelay")) return;
+				
+				ImGui_SetStateFloat("FlashbackAlpha", 0.f);
+				ImGui_FadeStateFloat("FlashbackAlpha", 1.f, mfFlashbackUnblurFadeTime);
+				ImGui_FadeStateFloat("FlashbackBlurredAlpha", 0.f, mfFlashbackUnblurFadeTime);
+				ImGui_FadeStateFloat("FlashbackTrailAlpha", 0.3f, mfFlashbackUnblurFadeTime*5);
+				
+				cLux_AddDebugMessage("[FLASHBACK] Change to: Show Clear Image - Unblur fade time: "+mfFlashbackUnblurFadeTime);
+				mlFlashbackState = eFlashbackState_Flash;
+				break;
+				
+			//////////////////
+			// Fade clear image
+			case eFlashbackState_Flash:
+				
+				//cLux_AddDebugMessage("[FLASH] Alpha: "+ImGui_GetStateFloat("FlashbackAlpha",1)+" - Bkg Alpha: "+ImGui_GetStateFloat("FlashbackBackgroundAlpha",1)+" - Blurred: "+ImGui_GetStateFloat("FlashbackBlurredAlpha",1)+" - Trail: "+ImGui_GetStateFloat("FlashbackTrailAlpha",1));
+				
+				
+				DoFlashBackImgBackground(ImGui_GetStateFloat("FlashbackBackgroundAlpha",1));
+				
+                // Draw clear flashback image and trail
+				ImGui_GroupBegin(vGroupPos, vGroupSize);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/5);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*2.f);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/3);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*1.5f);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackBlurredAlpha",1));
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize);
+					
+					gfxFlashbackImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackAlpha",1));
+					ImGui_DoImage(gfxFlashbackImage, vDrawImagePos, vDrawImageSize);
+				ImGui_GroupEnd();
+                
+				// wait until clear image has reached target alpha
+				if (ImGui_IsFading("FlashbackAlpha")) return;
+				
+				ImGui_SetStateFloat("FlashbackAlpha", 1.f);
+				ImGui_SetStateVector3f("ImagePosition", vDrawImagePos);
+				ImGui_SetStateFloat("ImageSize", fImageSize*fImageScaleMul1);
+                
+				// Wait for the generic flashback duration or as long as the voice is playing
+				if (ImGui_TimerExists("FlashbackDurationTimer") || Voice_SceneIsActive(Voice_GetSubjectSceneName(msFlashbackVoice))) return;
+					
+				// End sounds
+				if (Sound_GuiIsPlaying("player/UI/memory_sketch/whisper_flash"))
+					Sound_StopGui("player/UI/memory_sketch/whisper_flash",0);
+				Sound_PlayGui("player/UI/memory_sketch/whisper_flash", 1);
+                
+                // Prepare to fade out
+				ImGui_SetStateFloat("FlashbackBackgroundAlpha", 1.f);
+				ImGui_FadeStateFloat("FlashbackBackgroundAlpha", 0.f, fFlashbackFadeOutTime);
+				//ImGui_SetStateFloat("FlashbackTrailAlpha", 0.3f);
+				ImGui_FadeStateFloat("FlashbackTrailAlpha", 0.f, mfFlashbackUnblurFadeTime/2);
+				ImGui_FadeStateFloat("FlashbackAlpha", 0, fFlashbackFadeOutTime);
+				ImGui_FadeStateFloat("ImageSize", fImageSize*fImageScaleMul2, fFlashbackFadeOutTime*2);
+				
+				/////////////
+				// Resume FMS
+				FearHandler_SetActive(mbIsFearPrevActive);
+				
+				mlFlashbackState = eFlashbackState_PreEnd;
+				break;
+				
+			//////////////////
+			// Fade blurred image
+			case eFlashbackState_FlashSkipBlur:
+							
+                DoFlashBackImgBackground(ImGui_GetStateFloat("FlashbackBackgroundAlpha",1));
+				
+                // Draw blurred flashback image and trail
+				ImGui_GroupBegin(vGroupPos, vGroupSize);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/5);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*2.f);
+
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/3);
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*1.5f);
+					
+					gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackBlurredAlpha",1));
+					ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize);
+				ImGui_GroupEnd();
+
+				// Wait until blurred image and trail have reached target alpha
+				if (ImGui_IsFading("FlashbackBlurredAlpha") || ImGui_IsFading("FlashbackTrailAlpha")) return;
+				
+				ImGui_SetStateFloat("FlashbackBlurredAlpha", 1.f);
+				ImGui_SetStateFloat("FlashbackTrailAlpha", 1.f);
+				ImGui_SetStateFloat("FlashbackBackgroundAlpha", 1.f);
+				ImGui_SetStateVector3f("ImagePosition", vDrawImagePos);
+				ImGui_SetStateFloat("ImageSize", fImageSize*fImageScaleMul1);
+				
+				//////////////////////////////
+				// Keep the sketch until the unblur time
+				if (ImGui_TimerExists("FlashbackUnblurDelay")) return;
+				if (ImGui_TimerExists("FlashbackBackgroundFadeDuration")) return;
+				
+				ImGui_SetStateFloat("FlashbackAlpha", 0.f);
+				ImGui_FadeStateFloat("FlashbackAlpha", 1.f, mfFlashbackUnblurFadeTime);
+				ImGui_FadeStateFloat("FlashbackBlurredAlpha", 0.f, mfFlashbackUnblurFadeTime);
+				ImGui_FadeStateFloat("FlashbackTrailAlpha", 0.3f, mfFlashbackUnblurFadeTime*5);
+				
+				cLux_AddDebugMessage("[FLASHBACK] Change to: Show Clear Image - Unblur fade time: "+mfFlashbackUnblurFadeTime);
+				mlFlashbackState = eFlashbackState_Flash;
+				break;
+				
+			////////////////
+			// End Flashback
+			case eFlashbackState_PreEnd:
+				//cLux_AddDebugMessage("[PRE-END] Alpha: "+ImGui_GetStateFloat("FlashbackAlpha",1)+" - Bkg Alpha: "+ImGui_GetStateFloat("FlashbackBackgroundAlpha",1)+" - Blurred: "+ImGui_GetStateFloat("FlashbackBlurredAlpha",1)+" - Trail: "+ImGui_GetStateFloat("FlashbackTrailAlpha",1));
+                //////////////////////
+                // Allow slow movement
+				Player_FadeMoveSpeedMulTo(1.f, 1.5f, ePlayerMoveSpeedMulType_Sketchbook);
+				Player_FadeLookSpeedMulTo(cMath_Min(mfInitLookSpeedMul, 0.15f), 1.5f);
+                
+				if (msFlashbackImage!="")
+				{
+                   DoFlashBackImgBackground(ImGui_GetStateFloat("FlashbackBackgroundAlpha",1));
+                    
+                    // Draw clear flashback image
+					ImGui_GroupBegin(vGroupPos, vGroupSize);
+					
+						gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/5);
+						ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*2.f);
+						
+						gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackTrailAlpha",1)/3);
+						ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize*1.5f);
+						
+						gfxFlashbackBlurredImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackBlurredAlpha",1));
+						ImGui_DoImage(gfxFlashbackBlurredImage, vDrawImagePos, vDrawImageSize);
+
+						
+						gfxFlashbackImage.mColor = cColor(1,1,1, ImGui_GetStateFloat("FlashbackAlpha",1));
+						ImGui_DoImage(gfxFlashbackImage, vDrawImagePos, vDrawImageSize);						
+					ImGui_GroupEnd();
+					
+					if (ImGui_IsFading("FlashbackAlpha") || ImGui_IsFading("FlashbackBackgroundAlpha")) return;
+				}
+				
+				//////////////////////////////
+				// Wait for voice scene ending
+                if (Voice_SceneIsActive(Voice_GetSubjectSceneName(msFlashbackVoice))) return;
+				
+				mlFlashbackState = eFlashbackState_End;
+				break;
+				
+			/////////////////////////
+			// Stop Flashback Effects			
+			case eFlashbackState_End:
+			{
+				Hint_SetCanShowHints(true);
+				
+				//cLux_AddDebugMessage("[END] Alpha: "+ImGui_GetStateFloat("FlashbackAlpha",1)+" - Bkg Alpha: "+ImGui_GetStateFloat("FlashbackBackgroundAlpha",1)+" - Blurred: "+ImGui_GetStateFloat("FlashbackBlurredAlpha",1)+" - Trail: "+ImGui_GetStateFloat("FlashbackTrailAlpha",1));
+				/////////////
+				// Resume FMS
+				FearHandler_SetActive(mbIsFearPrevActive);
+				
+                // Stop flashback sound
+                Music_FadeVolumeMul(1.0f, fFlashbackFadeOutTime);
+				Sound_FadeGlobalVolume(1.0f, fFlashbackFadeOutTime, eSoundEntryType_WorldAll);
+				Sound_StopGui("player/UI/memory_sketch/whisper_flash", fFlashbackFadeOutTime, true);
+				Sound_StopGui("player/UI/memory_sketch/whisper_whoosh", fFlashbackFadeOutTime, true);
+                
+				///////////////
+				// Stop effects
+				if (mlIDRadialBlur >= 0)
+                {
+					Effect_RadialBlur_FadeOut(mlIDRadialBlur, fFlashbackFadeOutTime);
+                    mlIDRadialBlur=-1;
+                }
+				if (mlIDImageTrail >= 0)
+                {
+					Effect_ImageTrail_FadeOut(mlIDImageTrail, fFlashbackFadeOutTime);
+                    mlIDImageTrail=-1;
+                }
+                
+                ///////////////
+                // Reset player
+				Player_FadeMoveSpeedMulTo(1.f, fFlashbackFadeOutTime, ePlayerMoveSpeedMulType_Sketchbook);
+				Player_SetLookSpeedMul(mfInitLookSpeedMul);
+				Player_SetInteractionAllowed(true);
+				Player_SetCrouchDisabled(false);
+				Player_SetCrouchActionDisabled(false);
+				Player_SetJumpDisabled(false);
+                
+                //////////////////
+                // Reset image gui
+                ImGui_StopFade("FlashbackAlpha");
+                ImGui_SetStateFloat("FlashbackAlpha", 0);
+                ImGui_StopFade("ImagePosition");
+				ImGui_SetStateVector3f("ImagePosition", vDrawImagePos);
+                ImGui_StopFade("ImageSize");
+				ImGui_SetStateFloat("ImageSize", fImageSize);
+                msFlashbackImage="";
+				
+				cMemoryEntry@ pMemory = GetMemoryByID(msCurrentMemory);
+				if (pMemory!=null)
+				{
+					pMemory.mbUnblurred = true;
+					cLux_AddDebugMessage("[END] pMemory Unblurred: "+pMemory.mbUnblurred+" - mbFlashbackUnblurred: "+mbFlashbackUnblurred);
+				}
+
+				/////////////
+				// Stop voice
+                Voice_Stop(Voice_GetSubjectSceneName(msFlashbackVoice));
+                msFlashbackVoice="";
+				msFlashbackCallback="";
+				msCurrentMemory="";
+				mbFlashbackUnblurred=false;
+				
+				///////////
+				// Unpause hints
+				Hint_SetPaused(false);
+				
+				///////////
+				// All Done
+				ImGui_SetAlignment(eImGuiAlign_TopLeft);
+				mlFlashbackState = eFlashbackState_None;
+				break;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SwitchAlysPage(bool abForward)
+	{
+		int lLoadScreensCount = mvShownLoadScreens.length();
+		if (lLoadScreensCount <= 0) return;
+		
+		if (abForward)
+		{
+			if (mlAlysPage + 1 >= lLoadScreensCount) return;
+			mlAlysPage += 1;
+			Sound_PlayGui(msSoundPrevPage,1);
+			return;
+		}
+		
+		if (mlAlysPage <= 0) return;
+		mlAlysPage -= 1;
+		Sound_PlayGui(msSoundPrevPage,1);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoAlysPage()
+	{
+		int lLoadScreensCount = mvShownLoadScreens.length();
+		if (lLoadScreensCount<=0) return;
+			
+		//////////////////
+		// Page navigation
+		if (mlAlysPage > 0)
+		{
+			if (DoLeftNavButton())
+				SwitchAlysPage(false);
+		}
+		
+		if (mlAlysPage + 1 < lLoadScreensCount)
+		{
+			if (DoRightNavButton())
+				SwitchAlysPage(true);
+		}
+		
+		/////////////////
+		// Draw Sketches
+		ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+			tString sLoadScreenImg = "loadscreen_"+mvShownLoadScreens[mlAlysPage];
+			cImGuiGfx gfxLoadScreen(sLoadScreenImg, eImGuiGfx_TextureTemporary);
+			gfxLoadScreen.mMaterial = eGuiMaterial_Modulative;
+			ImGui_DoImageCorrectAspect(gfxLoadScreen, ImGui_NrmPosGroup(0.51,0.2,gfSketchbookImgDepth), ImGui_NrmSizeGroupKeepRatio(1.15));
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+	}
+    
+	//------------------------------------------------------------
+	
+	void CancelFlashbackPlayback()
+	{
+		bool bMemoryPlayback = IsFlashbackActive() && msFlashbackImage=="";
+		if (bMemoryPlayback)
+			StopFlashback();
+	}
+	
+	//------------------------------------------------------------
+	
+	void StopFlashback()
+	{
+		if (IsFlashbackActive()==false) return;
+		mlFlashbackState = eFlashbackState_End;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool IsFlashbackActive(bool abJustCheckSketchActive = false)
+	{
+		bool bIsFlashingSketchActive = mlFlashbackState > eFlashbackState_Begin && mlFlashbackState < eFlashbackState_PreEnd;
+		
+		return	IsMicroflashActive() || 
+				( abJustCheckSketchActive ? bIsFlashingSketchActive : mlFlashbackState != eFlashbackState_None );
+	}
+	
+	//------------------------------------------------------------
+	
+	bool IsMicroflashActive()
+	{
+		return mbMicroflashIsActive && msMicroflashSubject!="";
+	}
+	
+	//------------------------------------------------------------
+	
+	void StopAnyMemoryFlashes()
+	{
+		StopFlashback();
+		Microflash_End();
+		Voice_Stop("Memory");
+	}
+	
+	//------------------------------------------------------------
+    
+    ///////////////
+    // TEMP: Using Laudanum will later get an animation
+    // This behavior should be moved inside the item itself
+    void DoLaudanumFx()
+    {
+        if (mlLaudanumFxState==0)
+        {
+            ImGui_SetStateFloat("LaudanumFxAlpha", 0.f);
+            ImGui_FadeStateFloat("LaudanumFxAlpha", 0.5f, 0.5f, eEasing_Linear);
+            
+            ImGui_AddTimer("ImGuiTimer_NextStateDelay", 1.f);
+            
+            // Temp sound
+            Sound_CreateAtEntity("Drink", "player/tools/water_bottle/lake/water_drink", "player");
+            mlLaudanumFxState=1;
+        }
+        else if (mlLaudanumFxState==1 && ImGui_TimerOver("ImGuiTimer_NextStateDelay"))
+        {
+            Effect_DollyZoom_Stop();
+            Effect_DollyZoom_Start(0.1f, 0.f, 0.5f, 2.5f);
+            
+            // Stop temp sound
+            Sound_Stop("Drink", 0.2f);
+            Sound_CreateAtEntity("Relief", "player/vocalisations/actions/player_laudanum_relief", "player");
+            
+            mlLaudanumFxState=2;
+        }
+        else if (mlLaudanumFxState==2 && ImGui_IsFading("LaudanumFxAlpha")==false)
+        {
+            ImGui_SetStateFloat("LaudanumFxAlpha", 0.5f);
+            ImGui_FadeStateFloat("LaudanumFxAlpha", 0.f, 3.5f, eEasing_Linear);
+            mlLaudanumFxState=3;
+        }
+        else if (mlLaudanumFxState==3 && ImGui_IsFading("LaudanumFxAlpha")==false)
+        {
+            mlLaudanumFxState=0;
+            mbLaudanumFxActive=false;
+        }
+        
+		cImGuiGfx GfxBrightVignette("vignette_white_alpha", eImGuiGfx_Texture);
+		GfxBrightVignette.mColor = cColor(1,1,1,ImGui_GetStateFloat("LaudanumFxAlpha", 0.f));
+		ImGui_DoImage(GfxBrightVignette, ImGui_FullScreenPos(1.f), ImGui_FullScreenSize());
+    }
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		//////////////
+		// Get all shown loading images for Alys' Page.
+		mvShownLoadScreens.resize(0);
+		mvShownLoadScreens = LoadScreen_GetAllScreensShown();
+		
+		///////////////////
+		//Don't show the main menu loading screen
+		if (mvShownLoadScreens[0] == "mm")
+			mvShownLoadScreens.removeAt(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnMapLeave(cLuxMap @apMap) 
+	{
+		
+		mlGlobalTime += apMap.GetTimeStamp();
+		Game_LogStats(false);
+		
+		mbMicroFlashPrevPlayerCanRun = true;
+		if (mlMicroflashRadialBlurID!=-1)
+			 Effect_RadialBlur_FadeOut(mlMicroflashRadialBlurID, 0.f);
+		mlMicroflashRadialBlurID=-1;
+		Effect_ToneMapping_RemoveGradingTexture("grading_microflash");
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap) 
+	{
+		ImGui_PreloadImage("inventory_screen_selected");
+		ImGui_PreloadImage("inventory_screen_combine");
+		ImGui_PreloadImage("inventory_screen_combine_good");
+		ImGui_PreloadImage("inventory_screen_combine_bad");
+		ImGui_PreloadImage("inventory_screen_tab");
+		ImGui_PreloadImage("inventory_screen_tab_selected");
+		
+		array<tString> vTypes;
+		iScrItemHandler_Interface @pItemHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		pItemHandler.GetContentTypes(vTypes);
+		for (int i=0;i<vTypes.size();++i)
+		{
+			tString sType = vTypes[i];
+			ImGui_PreloadImage("container_"+cString_ToLowerCase(sType));
+		}
+		
+		LoadXMLNoteData();
+		LoadXMLMemoryData();
+	}
+	
+	void CreateWorldEntities(cLuxMap @apMap) {}
+	void DestroyWorldEntities(cLuxMap @apMap) {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer) {}
+	void OnLeaveContainer(const tString&in asNewContainer) {}
+	
+	void Update(float afTimeStep) 
+	{
+		if (mbOpen && cLux_GetPlayer().GetCurrentStateId()!=ePlayerState_Custom_Inventory)
+		{
+			CloseSketchbook();
+		}
+	}
+	
+	[nosave] float mfQuitFlashbackEarlyTimer = 0.0f;
+	[nosave] float mfQuitFlashbackEarlyPrompt = 0.0f;
+
+	void VariableUpdate(float afDeltaTime) 
+	{
+		// Patch addition - allow flashbacks to be skipped
+		if (!gbAllowFlashbackSkip||!mbFlashbackAllowSkip)
+			return;
+			
+		if (mlFlashbackState != eFlashbackState_None)
+		{
+			if (mfQuitFlashbackEarlyPrompt == 0.0f)
+			{
+				if ( 	cInput_IsTriggered(eAction_Interact) || cInput_IsTriggered(eAction_InteractCancel) ||
+						cInput_IsTriggered(eAction_Jump) || cInput_IsTriggered(eAction_Crouch) ||
+						cInput_IsTriggered(eAction_Flashlight)
+						)
+					mfQuitFlashbackEarlyPrompt += afDeltaTime;
+			}
+			else
+			{
+				mfQuitFlashbackEarlyPrompt += afDeltaTime;
+			}
+							
+				
+			if (cInput_IsTriggered(eAction_Interact))
+			{
+				mfQuitFlashbackEarlyTimer+=afDeltaTime;
+				if (mfQuitFlashbackEarlyTimer>gfFlashbackSkipTimeout)
+				{
+					StopFlashback();
+					return;
+				}
+			}
+			else
+			{
+				mfQuitFlashbackEarlyTimer = 0.0f;
+			}
+			//Debug_Log("Skip timer:"+mfQuitFlashbackEarlyTimer+" Prompt:"+mfQuitFlashbackEarlyPrompt);
+		}
+	}
+	
+	void PostUpdate(float afTimeStep) {}
+	
+	//------------------------------------------------------------
+	
+	void Reset() 
+	{
+		ClearNotes();
+		SetLockForAllMemories(true);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	void OnAction(int alAction,  bool abPressed) 
+	{
+		if (MainMenu_IsShowing()) return;
+		if (mbOpen==false && CanToggleSkethcbookOn()==false) return;
+			
+		if (mbFirstFrameFlag) return;
+		
+		//////////////////////////
+		// Toggle sketchbook pages
+		if (abPressed==false)
+		{
+			if (alAction == eAction_OpenIdeas)
+			{
+				if (mvIdeas.length()<=0) return;
+				ToggleSkethcbookState(eSketchbookState_Ideas);
+				return;
+			}
+			else if (alAction == eAction_OpenInventory || alAction == eAction_OpenInventoryAlt)
+			{
+				if (mbOpen==true && alAction == eAction_OpenInventoryAlt) return; //Using D-Pad Up
+				
+				if (mbInventoryEnabled==false) return;
+				ToggleSkethcbookState(eSketchbookState_Inventory);
+				return;
+			}
+			else if (alAction == eAction_OpenNotes)
+			{
+				if (mvUsedNoteCategories.length()<=0) return;
+				ToggleSkethcbookState(eSketchbookState_Notes);
+				mfNoteInFocusBlinkTime = 1;
+				return;
+			}
+		}
+			
+		if (mbOpen==false) return;
+		
+		if (abPressed && alAction == eAction_OpenMenu)
+			CloseSketchbook();
+		
+		if (abPressed)
+		{
+			////////////////
+			// Tab Switching
+			if (alAction == eAction_SketchbookNextTab)
+			{
+				SwitchTabs(true);
+				return;
+			}
+			else if (alAction == eAction_SketchbookPrevTab)
+			{
+				SwitchTabs(false);
+				return;
+			}
+			
+			/////////////////
+			// Show Ideas txt
+			if (alAction == eAction_ShowText && mlSketchbookState==eSketchbookState_Ideas)
+			{
+				mbShowText = !mbShowText;
+				return;
+			}
+		}
+		
+		if (abPressed==false && cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+		{
+			/////////////////
+			// Page Switching
+			if (alAction == eAction_MenuRight)
+				SwitchPages(true);
+			else if (alAction == eAction_MenuLeft)
+				SwitchPages(false);
+		}
+
+		if (mlSketchbookState == eSketchbookState_Inventory)
+			OnInventoryAction(alAction, abPressed);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnInventoryAction(int alAction,  bool abPressed)
+	{	
+		/////////////////////
+		// Normal select mode
+		if (mInvMode == eInvMode_Select)
+		{
+			// Gamepad
+			if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+			{
+                if (abPressed)
+                {
+                    if (alAction == eAction_InventoryCombine)
+                    {
+                        if (mbCanCombine)
+                        {
+                            StartCombine();
+                            return true;
+                        }
+                    }
+                    
+                    if (alAction == eAction_InventoryUse)
+                    {
+                        EquipItem(msCurrentItem);
+                        return true;
+                    }
+                }
+			}
+			// Mouse
+			else
+			{	
+				if (alAction == eAction_InventoryUse)
+				{
+					// Drag and drop?
+					if (abPressed)
+					{
+						if (msCurrentItem!="")
+						{	
+							cLux_AddDebugMessage("ITEM: "+msCurrentItem+" - TYPE: "+Item_GetEntityItemType(msCurrentItem));
+							StartDragDrop();
+							return true;
+						}
+					}
+				}
+			}
+		}
+		//////////////////////////
+		// Combining (pad version)
+		else if (mInvMode == eInvMode_Combine)
+		{
+			if (abPressed)
+			{
+				if (mbCanCombineWith && alAction == eAction_InventoryUse)
+					DoCombine();
+				
+				if (alAction == eAction_InventoryCombine)
+					CancelCombine();
+				
+				if (alAction == eAction_OpenMenu)
+					CancelCombine();
+					
+				return true;
+			}
+		}
+		////////////////////////////////////
+		// Combining (drag and drop version)
+		else if (mInvMode == eInvMode_CombineDrag)
+		{
+			if (alAction == eAction_InventoryUse)
+			{
+				if (!abPressed)
+				{
+					if (msCombineItem == msCurrentItem)
+					{
+						cVector3f vMove = (mpGui.GetMousePosition3D() - mvDragStart);
+						if (vMove.SqrLength()<1.0f)
+						{
+							StopDragDrop();
+							EquipItem(msCurrentItem);
+							return true;
+						}
+					}
+					
+					if (mbCanCombineWith)
+					{
+						DoCombine();
+						return true;
+					}
+					
+					StopDragDrop();
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnAnalogInput(int alAnalogId,  const cVector3f &in avAmount) 
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed() {}
+	void AppGotInputFocus() {}
+	void AppLostInputFocus() {}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+
+	//------------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+		if (mbOpenSoundDelay)
+		{
+			ImGui_AddTimer("Timer_OpenSfx", 0.05f);
+			mbOpenSoundDelay = false;
+		}
+		
+		if(ImGui_TimerOver("Timer_OpenSfx")) 
+		{
+			Sound_PlayGui("special_fx/notepad/notebook_draw", 1);
+		}
+		
+		if (mlFlashbackState!=eFlashbackState_None)
+			DoFlashback();
+      
+        if (mbLaudanumFxActive)
+            DoLaudanumFx();
+		
+		DoNotifyIdeas(afTimeStep);
+		
+		// cancel memories and microflashes only in script debug mode
+		/*if (cLux_ScriptDebugOn() && cInput_GetMouse().ButtonIsDown(eMouseButton_Right) && (IsFlashbackActive() || IsMicroflashActive()))
+		{
+			StopAnyMemoryFlashes();
+		}*/
+			
+		if (mbOpen==false) return;
+
+		// Need to save this for the drag & drop action
+		@mpGui = cLux_GetCurrentImGui();
+	
+		ImGui_SetTransCategory("");
+		ImGui_SetShowMouseAutomatically(true);
+		
+		ImGui_SetDefaultButton(CreateButton());
+		ImGui_SetDefaultLabel(CreateLabel());
+		ImGui_SetDefaultTextFrame(CreateTextFrame());
+		
+		if (ImGui_ActionTriggered(eImGuiAction_Cancel))
+		{
+			if (mInvMode == eInvMode_Combine)
+				CancelCombine();
+			else
+				CloseSketchbook();
+		}
+		
+		if (ImGui_ActionTriggered(eImGuiAction_Confirm) || cInput_GetMouse().ButtonIsDown(eMouseButton_Right))
+			CancelFlashbackPlayback();
+		
+		bool bIsUsingGamepad = cLux_GetInputHandler().GetGamepadWasLastDeviceUsed();
+		
+		//////////////////
+		// Adjust for 16:9
+		cVector3f vGroupPos;
+		vGroupPos.x = -cLux_GetHudVirtualOffset().x;	
+		vGroupPos.y = -cLux_GetHudVirtualOffset().y;	
+		vGroupPos.z = 0;
+		
+		cVector2f vSize = ImGui_GetSize();
+		cVector2f vGroupSize = vSize * 1.4; //Scale up
+		vGroupSize.x = vGroupSize.y / 9.0f * 16.0f;
+		vGroupSize *= cMath_Clamp(vSize.x / vGroupSize.x, 0.65f, 1.f);
+		vGroupSize *= cMath_Clamp(vSize.y / vGroupSize.y, 0.65f, 1.f);
+		vGroupPos.x -= (vGroupSize.x - vSize.x) * 0.5f;
+		vGroupPos.y -= (vGroupSize.y - vSize.y) * 0.5f;
+		
+		// Draw debug squares to check group size
+		/*ImGui_DoImage(cImGuiGfx(""), vGroupPos, vGroupSize);
+		ImGui_SetModColorMul(cColor_Red);
+		ImGui_DoImage(cImGuiGfx(""), vGroupPos+cVector3f(vGroupSize.x*0.05f, vGroupSize.y*0.05f, vGroupPos.z+1), vGroupSize*0.9f);
+		ImGui_ResetModifiers();*/
+		
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+		ImGui_GroupBegin(vGroupPos, vGroupSize);
+		
+			///////////////////////////////////////////////
+			// Master group to offset the entire sketchbook
+			float fSizeMul = 1.1f;
+			ImGui_GroupBegin(ImGui_NrmPosGroup((1.0f-fSizeMul)*0.5f,0.025+(1.0f-fSizeMul)*0.5f,0), ImGui_NrmSizeGroup(fSizeMul));
+			
+				///////////////////
+				// Setup Background
+				cImGuiGfx gfxBackground;
+				gfxBackground.mType = eImGuiGfx_Texture;
+				gfxBackground.SetFile("sketchbook_background_1");
+				
+				///////////
+				// Do Pages
+				switch(mlSketchbookState)
+				{
+					case eSketchbookState_Inventory:
+						cLux_ProfileStart("DoInventoryPage");
+						gfxBackground.SetFile("inventory_background");
+						DoInventoryPage();
+						cLux_ProfileEnd("DoInventoryPage");
+						break;
+						
+					case eSketchbookState_Ideas:
+						gfxBackground.SetFile("sketchbook_background_2");
+						DoIdeasPage(afTimeStep);
+						break;
+						
+					case eSketchbookState_Notes:
+						gfxBackground.SetFile("notespage_background");
+						DoNotesPage(afTimeStep);
+						break;
+					
+					case eSketchbookState_Memories:
+						gfxBackground.SetFile("sketchbook_background_0");
+						DoMemoriesPage(afTimeStep);
+						break;
+					
+					case eSketchbookState_Alys:
+						gfxBackground.SetFile("sketchbook_background_3");
+						DoAlysPage();
+						break;
+				}
+				
+				///////////////////
+				// Render Background
+				ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+				ImGui_DoImageCorrectAspect(gfxBackground, ImGui_NrmPosGroup(0.5,0.5,gfSketchbookBgDepth), ImGui_NrmSizeGroup(1));
+				ImGui_SetAlignment(eImGuiAlign_TopLeft);
+				
+				DoTabs();
+					
+				//////////////////////////////
+				// Dummy background img button
+				ImGui_SetModUseUIPos(false);
+				if (bIsUsingGamepad==false) // No need for dummy btns when using gamepad.
+				{
+					if (ImGui_DoButtonExt("BackgroundDummyButton", "dummy text", CreateDummyButton(), ImGui_NrmPosGroup(0.14,0.105,gfSketchbookTabsDepth), ImGui_NrmSizeGroup(0.72,0.77)))
+					{
+						// Do nothing when clicking on the background Gfx.
+						// Used for closing the inventory when clicking on the surrounding space using "BackgroundCloseButton".
+					}
+				}
+			
+			ImGui_GroupEnd();
+		ImGui_GroupEnd();
+		
+		//////////////////////////////
+		// Click outside the sketchbook to close it.
+		if (bIsUsingGamepad==false) // No need for dummy btns when using gamepad.
+		{
+			if (ImGui_DoButtonExt("BackgroundCloseButton", "dummy text", CreateDummyButton(), ImGui_NrmPos(0,0,0), ImGui_NrmSizeGroup(1,1)))
+				CloseSketchbook();
+		}
+			
+		///////////
+		// All done
+		mbFirstFrameFlag = false;
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnDraw(float afFrameTime) {}
+	
+	
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afStartY)
+	{
+/*		int lTime = mlGlobalTime+cLux_GetCurrentMap().GetTimeStamp();
+		
+		tString sTime = String_SecondsToClockDisplay(float(lTime) / 60.0f,true,true,true,true);
+		afStartY = cLux_DrawDebugText("PLAYTIME: "+sTime+" / "+String_SecondsToClockDisplay(float(DEV_TIME) / 60.0f,true,true,true,true), afStartY, 20, cColor_Green);*/
+		
+		return afStartY;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPostRender(float afFrameTime) {}
+	
+	//-------------------------------------------------------
+	
+	bool DoTabButton(const tString&in asName, const tString&in asText, const tString&in asBackgroundImg, cVector3f avPosition, const bool abSelected)
+	{
+		cImGuiButtonData tabBtn = CreateButton();
+		tabBtn.mbUseBackgroundGfx = true;
+		tabBtn.mGfxBackground = cImGuiGfx(asBackgroundImg);
+		tabBtn.mbUseInFocusGfx = true;
+		tabBtn.mGfxInFocus = cImGuiGfx("sketchbook_tab_highlight");
+		tabBtn.mGfxInFocus.mColor = cColor(0,0.8);
+		
+		float fHighlighterGfx_YPos = abSelected ? 12 : 0;
+		tabBtn.mGfxInFocus.mvOffset = cVector3f(0, fHighlighterGfx_YPos, avPosition.z);
+		
+		float fTabHeight = abSelected ? avPosition.y - 0.016f : avPosition.y;
+		return ImGui_DoButtonExt(asName, asText, tabBtn, ImGui_NrmPosGroup(avPosition.x, fTabHeight, avPosition.z), ImGui_NrmSizeGroup(0.1,0.085));
+	}
+	
+	//-------------------------------------------------------
+	
+	void DoTabs()
+	{
+		ImGui_GroupBegin(ImGui_NrmPosGroup(0.22,0,0), ImGui_NrmSizeGroup(1));
+			
+			float fTabHeight = 0.055f;
+			float fTabRenderDepth = gfSketchbookTabsDepth;
+
+			ImGui_SetTransCategory("InventoryUI");
+			
+			////////////////////////
+			// Disable tabs selection if using gamepad.
+			bool bUsingGamepad = cLux_GetInputHandler().GetGamepadWasLastDeviceUsed();
+			ImGui_SetModUseUIPos(bUsingGamepad==false);
+			
+			/////////////////////////////
+			// Tabs Nav hint with Gamepad
+			if (bUsingGamepad)
+			{
+				cLuxScreenTextFormatParameters formatParams;
+				CreateTextFormat(formatParams);
+				formatParams.mfIconGamepadHeight = 40.f;
+				Hint_DrawExplicit("InventoryUI", "HintPrevTab", ImGui_NrmPosGroup(-0.54f, 0.07f, gfSketchbookTabsDepth), ImGui_NrmSizeGroup(1.f), formatParams);
+				Hint_DrawExplicit("InventoryUI", "HintNextTab", ImGui_NrmPosGroup(0.09f, 0.07f, gfSketchbookTabsDepth), ImGui_NrmSizeGroup(1.f), formatParams);
+			}
+			
+			////////////
+			// Inventory
+			if (mbInventoryEnabled)
+			{
+				if (DoTabButton("TabInventory", "LabelInventory", "sketchbook_tab_1", cVector3f(0.f, fTabHeight, fTabRenderDepth), mlSketchbookState==eSketchbookState_Inventory))
+				{
+					SetSketchbookState(eSketchbookState_Inventory);
+					Sound_PlayGui(msSoundTab,1);
+				}
+			}
+			
+			////////
+			// Ideas
+			if (mlIdeasShown>0)
+			{
+				if (DoTabButton("TabLog", "LabelLog", "sketchbook_tab_2", cVector3f(0.11f, fTabHeight, fTabRenderDepth), mlSketchbookState==eSketchbookState_Ideas))
+				{
+					SetSketchbookState(eSketchbookState_Ideas);
+					Sound_PlayGui(msSoundTab,1);
+				}
+				
+				///////////////
+				//Notifications
+				if (mbNotifyIdeas && mbShowPopupIcons)
+				{
+					ImGui_FadeOscillateColor("NotifyIconColor", cColor(0.5, 0.5, 0.5, 1), cColor(0.83, 0.83, 0.83, 1), 1);
+					cImGuiGfx gfxNotification("sketchbook_notification", eImGuiGfx_Texture);
+					gfxNotification.mColor = ImGui_GetStateColor("NotifyIconColor", cColor_White);
+					ImGui_DoImageCorrectAspect(gfxNotification, ImGui_NrmPosGroup(0.187f, 0.08, fTabRenderDepth+0.1), ImGui_NrmSizeGroup(0.03));
+				}
+			}
+			
+			////////
+			// Notes
+			if (mvUsedNoteCategories.length()>0)
+			{
+				if (DoTabButton("TabNotes", "LabelNotes", "sketchbook_tab_1", cVector3f(0.22f, fTabHeight, fTabRenderDepth), mlSketchbookState==eSketchbookState_Notes))
+				{
+					SetSketchbookState(eSketchbookState_Notes);
+					Sound_PlayGui(msSoundTab,1);
+				}
+			}
+			
+			///////////
+			// Memories
+			if (mvMemories.length()>0)
+			{
+				if (DoTabButton("TabMemories", "LabelMemories", "sketchbook_tab_1", cVector3f(0.33f, fTabHeight, fTabRenderDepth), mlSketchbookState==eSketchbookState_Memories))
+				{
+					SetSketchbookState(eSketchbookState_Memories);
+					Sound_PlayGui(msSoundTab,1);
+				}
+			}
+			
+			///////
+			// Alys
+			if (mvShownLoadScreens.length()>0)
+			{
+				if (DoTabButton("TabAlys", "LabelAlys", "sketchbook_tab_2", cVector3f(0.44f, fTabHeight, 0.01f), mlSketchbookState==eSketchbookState_Alys))
+				{
+					SetSketchbookState(eSketchbookState_Alys);
+					Sound_PlayGui(msSoundTab,1);
+				}
+			}
+
+			ImGui_SetTransCategory("");
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------------
+	
+	void SwitchPages(bool abForward)
+	{
+		if (mlSketchbookState == eSketchbookState_Memories)
+			SwitchMemoryPage(abForward);
+		else if (mlSketchbookState == eSketchbookState_Ideas)
+			SwitchIdeasPage(abForward);
+		else if (mlSketchbookState == eSketchbookState_Notes)
+			SwitchNotePage(abForward);
+		else if (mlSketchbookState == eSketchbookState_Alys)
+			SwitchAlysPage(abForward);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SwitchTabs(bool abForward)
+	{
+		CancelFlashbackPlayback();
+		Sound_PlayGui(msSoundPrevPage,1);
+		
+		int lNextState = mlSketchbookState;
+		
+		///////
+		// Next
+		if (abForward)
+		{
+			do
+			{
+				lNextState++;
+				if (lNextState >= eSketchbookState_LastEnum) lNextState = 0;
+			}
+			while (SketchbookStateIsEmpty(lNextState));
+			
+			SetSketchbookState(lNextState);
+			return;
+		}
+		
+		///////
+		// Prev
+		do
+		{
+			lNextState--;
+			if (lNextState < 0) lNextState = eSketchbookState_Alys;
+		}
+		while (SketchbookStateIsEmpty(lNextState));
+		
+		SetSketchbookState(lNextState);
+	}
+	
+	//------------------------------------------------------------
+	
+	////////////////////////////////////////////////
+	//             Ideas Page
+	////////////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void DoNotifyIdeas(float afTimeStep)
+	{
+		if (GetPopupIconsEnabled() == false) return;
+		
+		const cVector3f vGroupPos(cLux_GetHudVirtualOffset() * -1.f);	
+		const cVector2f vSize(ImGui_GetSize());
+		ImGui_GroupBegin(vGroupPos, vSize);
+			
+			if (mfIdeaNotifyDisplayTimer > 0.f)
+			{
+				if (mfIdeaNotifyDisplayTimer >= 1.f)
+				{
+					mfIdeaNotofyAlpha += (1.f / gfIdeaNotifyCountFadeInTime) * afTimeStep;
+					if (mfIdeaNotofyAlpha > 1.f) mfIdeaNotofyAlpha = 1.f;
+				}
+				else
+				{
+					mfIdeaNotofyAlpha -= (1.f / gfIdeaNotifyCountFadeOutTime) * afTimeStep;
+					if (mfIdeaNotofyAlpha < 0.f) mfIdeaNotofyAlpha = 0.f;
+				}
+				
+				mfIdeaNotifyDisplayTimer -= afTimeStep;
+				
+				cImGuiGfx gfxNotification("sketchbook_icon", eImGuiGfx_Texture);
+				gfxNotification.mColor = cColor(1,1,1,mfIdeaNotofyAlpha);
+				ImGui_DoImageCorrectAspect(gfxNotification, ImGui_NrmPosGroup(cVector3f(0.87,0.825,1)), ImGui_NrmSizeGroupKeepRatio(0.083));
+			}
+		
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------------
+
+	tString msIdeasPage = "";
+	int mlIdeasPage = 0;
+	int mlMaxIdeasPage = 0;
+	
+	void DoIdeasPage(const float afTimeStep)
+	{
+		if (mbNotifyIdeas) mbNotifyIdeas=false;
+			
+		////////////
+		// Nav Btns
+		if (mlIdeasPage>0)
+		{
+			if (DoLeftNavButton())
+				SwitchIdeasPage(false);
+		}
+		
+		if (mlIdeasPage<mlMaxIdeasPage)
+		{
+			if (DoRightNavButton())
+				SwitchIdeasPage(true);
+		}
+		
+		////////
+		// Ideas
+		bool bShowTextPrompt = false;		
+		for	(int i=0;i<mvIdeas.size();++i)
+		{
+			if (mvIdeas[i].mlPageNumber == mlIdeasPage)
+			{
+				// Remove completed ideas.
+				if (mvIdeas[i].ShouldBeRemoved())
+					mvIdeas.removeAt(i);
+				
+				// draw img and text
+				mvIdeas[i].Draw(mbShowText, afTimeStep);
+				
+				if (mvIdeas[i].mbHasText)
+					bShowTextPrompt = true;
+			}
+		}
+		
+		//////////////
+		// Prompt
+		if (bShowTextPrompt)
+		{
+			cLuxScreenTextFormatParameters formatParams;
+			CreateTextFormat(formatParams);
+			formatParams.mLabelText.mFontAlign = eFontAlign_Center;
+			formatParams.mfIconKeyHeight = 40.f;
+			
+			cVector3f vPromptPos = ImGui_NrmPosGroup(0.f, 0.815f, gfSketchbookTextDepth);
+			cVector2f vPromptSize = ImGui_NrmSizeGroup(1.f);
+			
+			Hint_DrawExplicit("ReadablePrompts", "PromptToggleTextSketchbook", vPromptPos, vPromptSize, formatParams);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SwitchIdeasPage(const bool abForward)
+	{
+		if (abForward)
+		{
+			if (mlIdeasPage>=mlMaxIdeasPage) return;
+			mlIdeasPage+=1;
+			Sound_PlayGui(msSoundPrevPage,1);
+			return;
+		}
+		
+		if (mlIdeasPage<=0)
+		{
+			mlIdeasPage=0;
+			return;
+		}
+		mlIdeasPage-=1;
+		Sound_PlayGui(msSoundPrevPage,1);
+	}
+	
+	//------------------------------------------------------------
+	
+	/*void DoCross(cVector3f vPos, cVector2f vSize)
+	{
+		ImGui_DoImageCorrectAspect(cImGuiGfx("objective_cross"), vPos+cVector3f(0,0,1.0f), vSize);
+	}*/
+	
+	//------------------------------------------------------------
+	
+	////////////////////////////////////////////////
+	//             Notes
+	////////////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void LoadXMLNoteData()
+	{
+		iXmlDocument@ pNotesXML = cResources_LoadXmlDocument("readables.cfg");
+		
+		if (pNotesXML==null)
+		{
+			Error("[SkethcbookHandler] Couldn't load readables.cfg!");
+			return;
+		}
+		
+		mvFullListOfNotes.resize(0);
+		
+		cXmlElement@ pCategoriesList = pNotesXML.GetFirstElement("Categories");
+		cXmlNodeListIterator@ pCategoriesIter = pCategoriesList.GetChildIterator();
+		if (pCategoriesIter==null)
+		{
+			Error("[SketchbookHandler] readables.cfg isn't setup correctly.");
+			return;
+		}
+		
+		while(pCategoriesIter.HasNext())
+		{
+			cXmlElement@ pCategoryEntry = pCategoriesIter.Next().ToElement();
+			tString sCategoryID = pCategoryEntry.GetAttributeString("ID","");
+			if (sCategoryID=="")
+			{
+				Error("[SketchbookHandler] A category ID can't be null.");
+				return;
+			}
+			
+			cXmlElement@ pNotesList = pCategoryEntry.GetFirstElement("Notes");
+			cXmlNodeListIterator@ pNotesIter = pNotesList.GetChildIterator();
+			if (pNotesIter==null)
+			{
+				Error("[SketchbookHandler] readables.cfg isn't setup correctly.");
+				return;
+			}
+			
+			while(pNotesIter.HasNext())
+			{
+				cXmlElement @pNoteElement = pNotesIter.Next().ToElement();
+				tString sNoteID = pNoteElement.GetAttributeString("ID","");
+				
+				if (sNoteID=="")
+				{
+					Error("[SketchbookHandler] A note ID can't be null.");
+					return;
+				}
+				
+				for (int i=0; i<mvFullListOfNotes.size(); ++i)
+				{
+					if (mvFullListOfNotes[i].msID!=sNoteID) continue;
+					Error("[SketchbookHandler] Note "+sNoteID+" can't be added because it already exists.");
+					return;
+				}
+				
+				tString sNoteCategoryName = pCategoryEntry.GetAttributeString("Name",""); //sCategoryID + "_MapName";
+				//cLux_AddDebugMessage(sNoteCategoryName);
+				
+				tString sNoteFrontEntry = pNoteElement.GetAttributeString("FrontEntry","");
+				
+				bool bIsMemoryCylinder = pNoteElement.GetAttributeBool("IsMemoryCylinder", false);
+				int lMemCylLineCount = pNoteElement.GetAttributeInt("MemoryCylinderLinesCount", 1);
+				
+				tString sNoteName = bIsMemoryCylinder ? sNoteID : sNoteFrontEntry;
+				if (sNoteFrontEntry=="")
+					sNoteName = pNoteElement.GetAttributeString("BackEntry","");
+				sNoteName+="_Name";
+				
+				tString sNoteBackEntry = pNoteElement.GetAttributeString("BackEntry","");
+				
+				tString sVoiceEntry = pNoteElement.GetAttributeString("VoiceSubject","");
+				tString sNoteImageEntry = pNoteElement.GetAttributeString("ImageEntry","");
+				
+				bool bAddToSketchbook = pNoteElement.GetAttributeBool("AddToSketchbook", true);
+				
+				//////////////////
+				// Counters for achievements
+				
+				if (mbCountedNotes == false)
+				{
+					if (bAddToSketchbook)
+					{
+						if (bIsMemoryCylinder) mlCylindersAmount++;
+						else mlNotesAmount++;
+						
+						if (cString_GetFirstStringPos(sNoteID, "HanksNote_") == 0) mlCrewNotesAmount++;
+					}
+				}
+				
+				cNoteEntry@ pNote = cNoteEntry(sNoteID, sNoteName, sVoiceEntry, sNoteFrontEntry, sNoteBackEntry, sNoteImageEntry, sCategoryID, sNoteCategoryName, bAddToSketchbook, bIsMemoryCylinder, lMemCylLineCount);
+				mvFullListOfNotes.push_back(pNote);
+				
+			}
+		}
+		
+		// Skipping notes and cylinders that didn't make it into the game
+		if (mbCountedNotes == false)
+		{
+			mlNotesAmount -= 19;
+			mlCylindersAmount -= 3;
+		}
+		
+		mbCountedNotes = true;
+		
+		//cLux_AddDebugMessage("NOTES: "+mlNotesAmount+" - CREW: "+mlCrewNotesAmount+" - CYLINDERS: "+mlCylindersAmount);
+	}
+	
+	
+	
+	//------------------------------------------------------------
+	
+	void ToggleLastNoteCollected(cNoteCategoryEntry@ apNoteCategory, cNoteEntry@ apNote)
+	{
+		ToggleNoteCategoryEntry(apNoteCategory, true);
+		ToggleNoteEntry(apNote);
+		mlJournalStateOnOpen = eSketchbookState_Notes;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool DoNoteFileSystemBtn(const tString&in asName, const tString&in asLabel, cVector3f avPos, const bool abNoteCategory, const bool abCategoryNoteSelected, const bool abSelected, const bool abInFocus, const float afLabelAlpha=1.f)
+	{
+		cVector3f vGfx_Pos = avPos;
+		
+		////////
+		// Label
+		cImGuiLabelData label;
+		label.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,72));
+		label.mFont.mColor = (abSelected && abNoteCategory==false) ? cColor(1,1,1,afLabelAlpha) : cColor(0, afLabelAlpha);
+		label.mFont.mvSize = abNoteCategory ? cVector2f(gfFontSize_SketchbookNoteCategory) : cVector2f(gfFontSize_SketchbookNoteSubCategory);
+		
+		/////////////////
+		// Scale Settings
+		float fBtnLength = GetFontLengthW(label.mFont, 0.0007, asLabel);
+		fBtnLength+=0.03;
+		float fBtnHeight = 0.03f;
+		
+		cImGuiGfx dotImage("notespage_dot", eImGuiGfx_Image);
+		
+		////////////////////////
+		// Map category graphics
+		if (abNoteCategory)
+		{
+			cImGuiGfx arrowImage("notespage_arrow", eImGuiGfx_Image);
+			
+			if (abSelected) ImGui_SetModRotateAngle(90);
+			ImGui_DoImageCorrectAspect(arrowImage, ImGui_NrmPosGroup(vGfx_Pos.x, vGfx_Pos.y + 0.005f, vGfx_Pos.z), ImGui_NrmSizeGroup(0.02f));
+			ImGui_SetModRotateAngle(0);
+			
+			if (abSelected==false && abCategoryNoteSelected)
+				ImGui_DoImageCorrectAspect(dotImage, ImGui_NrmPosGroup(vGfx_Pos.x - 0.003, vGfx_Pos.y + 0.01f, vGfx_Pos.z), ImGui_NrmSizeGroup(0.01f));
+		}
+		/////////////////////
+		// Note list graphics
+		else
+		{
+			vGfx_Pos.x += 0.02f;
+			
+			ImGui_DoImageCorrectAspect(dotImage, ImGui_NrmPosGroup(vGfx_Pos.x, vGfx_Pos.y + 0.01f, vGfx_Pos.z), ImGui_NrmSizeGroup(0.01f));
+		
+			if (msSelectedNoteID!="" && abSelected)
+			{
+				cImGuiGfx selectionImage("notespage_selection", eImGuiGfx_Image);
+				ImGui_DoImage(selectionImage, ImGui_NrmPosGroup(vGfx_Pos.x + 0.01f, vGfx_Pos.y, vGfx_Pos.z), ImGui_NrmSizeGroup(fBtnLength - 0.025, 0.0283f));
+			}
+		}
+		
+		float fLabel_XPos = vGfx_Pos.x + (abNoteCategory ? 0.025 : 0.015);
+		ImGui_DoLabelExt(asLabel, label, ImGui_NrmPosGroup(fLabel_XPos, vGfx_Pos.y, vGfx_Pos.z), ImGui_NrmSize(fBtnLength, fBtnHeight));
+		
+		//////////////////
+		// Custom in Focus
+		if (abInFocus)
+		{
+			//img offset
+			float fGfxPosOffset = abNoteCategory ? -0.005 : 0.0075;
+			fGfxPosOffset += vGfx_Pos.x;
+			const float fGfxOffsetY =  0.035f;
+			
+			// blink
+			if (msLastNoteInFocus != asName)
+			{
+				mfNoteInFocusBlinkTime = 1;
+				msLastNoteInFocus = asName;
+			}
+			
+			if (mfNoteInFocusBlinkTime > 0 && cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+				ImGui_FadeOscillateFloat("note_hover_alpha"+asName, 1, 0.25, 0.25);
+			else
+				ImGui_SetStateFloat("note_hover_alpha"+asName, 1);
+			
+			// setup img
+			cImGuiGfx inFocusImage("notespage_hover_white", eImGuiGfx_Image);
+			const float fHoverAlpha = ImGui_GetStateFloat("note_hover_alpha"+asName, 1);
+			inFocusImage.mColor = abSelected && abNoteCategory==false ? cColor(1,1,1,fHoverAlpha) : cColor(0,0,0,fHoverAlpha);
+			ImGui_DoImageCorrectAspect(inFocusImage, ImGui_NrmPosGroup(fGfxPosOffset, vGfx_Pos.y - fGfxOffsetY, vGfx_Pos.z+0.1), ImGui_NrmSizeGroup(0.1f));
+			
+			// Sync between mouse and gamepad
+			if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed() )
+				ImGui_SetFocus(asName);
+		}
+	
+		//////
+		// btn
+		ImGui_SetModUseUIPos(cLux_GetInputHandler().GetGamepadWasLastDeviceUsed()==false);
+		cImGuiButtonData btnType;
+		btnType.mbUseFrame = false;
+		btnType.mbUseBackgroundGfx = false;
+		btnType.mbUseInFocusGfx = false;
+		bool toReturn = ImGui_DoButtonExt(asName, " ", btnType, ImGui_NrmPosGroup(vGfx_Pos), ImGui_NrmSize(fBtnLength, fBtnHeight));
+		return toReturn;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool DoNoteNavButton(const tString&in asName, const cVector3f avPos, const bool abScroll=false, const float afRotation=0)
+	{
+		ImGui_SetModUseUIPos(cLux_GetInputHandler().GetGamepadWasLastDeviceUsed()==false);
+		//ImGui_SetModUseUIPos(false);
+		
+		if (afRotation!=0)
+			ImGui_SetModRotateAngle(afRotation);
+			
+		cImGuiButtonData navBtn = CreateNavButton(abScroll);
+		float fSizeY = abScroll ? 0.045f : 0.06f;
+		float fSizeX = abScroll ? fSizeY * 2 : fSizeY;
+		bool bPressed = ImGui_DoButtonExt(asName, " ", navBtn, ImGui_NrmPosGroup(avPos), ImGui_NrmSizeGroup(fSizeX, fSizeY));
+		
+		ImGui_SetModRotateAngle(0);
+		
+		return bPressed;
+	}
+	
+	//------------------------------------------------------------
+	
+	void ToggleNoteCategoryEntry(cNoteCategoryEntry@ apNoteCategoryEntry, const bool abExpanded)
+	{
+		Sound_PlayGui(gsNotesListCategoryFold, 0.35);
+		
+		///////////////////
+		// Collapse if open
+		if (abExpanded==false)
+		{
+			apNoteCategoryEntry.mbExpanded = false;
+			return;
+		}
+		
+		////////////////////////////////
+		// Expand and collapse all other
+		for (int i=0; i<mvUsedNoteCategories.size(); i++)
+		{
+			if (mvUsedNoteCategories[i] is @apNoteCategoryEntry)
+			{
+				
+				mvUsedNoteCategories[i].mbExpanded = true;
+				continue;
+			}
+			
+			/////////////////////////
+			// Reset list view offset
+			if (mvUsedNoteCategories[i].mbExpanded==false) continue;
+			mvUsedNoteCategories[i].mbExpanded = false;
+
+			if (apNoteCategoryEntry.mlElementCount < mvUsedNoteCategories[i].mlElementCount) continue;
+			
+			int lNotesCollapsed = mvUsedNoteCategories[i].GetNotesCount();
+			mlNoteListLinesOffset = cMath_Max(0, mlNoteListLinesOffset - lNotesCollapsed);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void ToggleNoteEntry(cNoteEntry@ apNote)
+	{
+		//////////////
+		// init params
+		mfSelectedNoteTextHeight = 0;
+		mlSelectedNoteTextOffset=0;
+		msSelectedNoteText="";
+		msSelectedNoteImage="";
+		msSelectedNoteBackText="";
+		
+		////////////////////////////////
+		// Pass note data and get the localized txt.
+		msSelectedNoteID = apNote.msID;
+		
+		///////
+		//image
+		msSelectedNoteImage = apNote.msImageEntry;
+		
+		/////////////
+		// back entry
+		if (apNote.msBackEntry != "")
+			msSelectedNoteBackText = cLux_Translate(apNote.msCategoryID, apNote.msBackEntry);
+		
+		///////////////
+		// front entry
+		if (apNote.mbIsMemoryCylinder)
+		{
+			for (int i=1; i<=apNote.mlMemoryCylinderLinesCount; i++)
+			{
+				// Replace %d with 001, 002, 003 etc.
+				const tString sCurrLine = cString_ReplaceStringTo(apNote.msFrontEntry, "%d", cString_ToString(i, 3));
+				
+				const tWString swLineOfText = cLux_Translate("Voices_" + apNote.msCategoryID, sCurrLine);
+				msSelectedNoteText += swLineOfText;
+				
+				// Split voices to paragraphs
+				if (i<apNote.mlMemoryCylinderLinesCount)
+					msSelectedNoteText += cString_To16Char("\n\n");
+			}
+		}
+		else
+		{
+			msSelectedNoteText = cLux_Translate(apNote.msCategoryID, apNote.msFrontEntry);
+		}
+		
+		////////////////////
+		// Toggle a marker for the category including the note
+		cNoteCategoryEntry@ pNoteCategory = GetUsedNoteCategoryByID(apNote.msCategoryID);
+		if (pNoteCategory is null) return;
+		
+		pNoteCategory.mbCategoryNoteSelected = true;
+		
+		for (int i=0; i<mvUsedNoteCategories.size(); ++i)
+		{
+			cNoteCategoryEntry@ pCategory = mvUsedNoteCategories[i];
+			if (pCategory is null) continue;
+			if (pCategory is pNoteCategory) continue;
+			
+			pCategory.mbCategoryNoteSelected = false;
+		}
+		
+		// click!
+		Sound_PlayGui(gsNoteSelecItemSound, 0.5);
+	}
+	
+	//------------------------------------------------------------
+	
+	void ScrollThroughNotesWithGamePad(const bool abScrollDown)
+	{
+		if (mlSketchbookState != eSketchbookState_Notes) return;
+		
+		float fMinNoteCount=0;
+		
+		//////////////
+		// Scroll Down
+		if (abScrollDown)
+		{
+			const float fMaxNoteCount = (GetCurrentNotesListLinesCount() - 1);
+			
+			if (mlElementInFocus >= fMaxNoteCount)
+			{
+				mlNoteListLinesOffset=0;
+				SetElementInFocus(0);
+				return;
+			}
+				
+			SetElementInFocus(mlElementInFocus+1);
+			return;
+		}
+		
+		////////////
+		// Scroll Up
+		if (mlElementInFocus <= 0)
+		{
+			const int lCurrentListLinesCount = GetCurrentNotesListLinesCount();
+			const bool bNotesFitPage = lCurrentListLinesCount <= glMaxNoteListElementsCount;
+			const float fMaxOffset = bNotesFitPage ? 0 : lCurrentListLinesCount - glMaxNoteListElementsCount;
+			mlNoteListLinesOffset = fMaxOffset;
+
+			const float fMaxNoteCount = lCurrentListLinesCount - 1;
+			SetElementInFocus(fMaxNoteCount);
+			return;
+		}
+		
+		SetElementInFocus(mlElementInFocus-1);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetElementInFocus(const int alElement)
+	{
+		mlElementInFocus = alElement;
+		if (mlLastElementInFocus!=mlElementInFocus)
+		{
+			Sound_PlayGui(gsNotesListFocusItemSound, 1);
+			mlLastElementInFocus = mlElementInFocus;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SyncGamepadWidgetInfocus(const int alCurrElement)
+	{
+		// Update the gamepad widget nav system while using kbd & mouse.
+		if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed()==false && ImGui_PrevInFocus())
+			SetElementInFocus(alCurrElement);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetIfNotesListCanOffsetDown()
+	{
+		int lCurrentListLinesCount = GetCurrentNotesListLinesCount();
+		bool bListIsTooLargeForPage = lCurrentListLinesCount > glMaxNoteListElementsCount;
+		bool bCanScrollDown = mlNoteListLinesOffset < lCurrentListLinesCount - glMaxNoteListElementsCount;
+		return bListIsTooLargeForPage && bCanScrollDown;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetIfNotesListCanOffsetUp()
+	{
+		return mlNoteListLinesOffset > 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void AutoOffsetNotesListWithGamepad(const int alElementCount)
+	{
+		if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed()==false || mlElementInFocus!=alElementCount) return;
+		
+		if (GetIfNotesListCanOffsetDown())
+		{
+			bool bIsNearTheEndOfList = alElementCount >= glMaxNoteListElementsCount - 2 + mlNoteListLinesOffset;
+			if (bIsNearTheEndOfList)
+				OffsetNotesList(true);
+		}
+		
+		if (GetIfNotesListCanOffsetUp())
+		{
+			bool bIsNearStartOfList = alElementCount <= 1 + mlNoteListLinesOffset;
+			if (bIsNearStartOfList)
+				OffsetNotesList(false);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void OffsetNotesList(const bool abScrollDown)
+	{
+		////////////////////////////////
+		// Offset-scrolls the notes list
+		if (abScrollDown)
+		{
+			int lCurrentListLinesCount = GetCurrentNotesListLinesCount();
+			float fMaxOffset = lCurrentListLinesCount <= glMaxNoteListElementsCount ? 0 : lCurrentListLinesCount - glMaxNoteListElementsCount;
+			mlNoteListLinesOffset = cMath_Min(mlNoteListLinesOffset + 1.f, fMaxOffset);
+			return;
+		}
+		
+		mlNoteListLinesOffset = cMath_Max(mlNoteListLinesOffset-1, 0);
+	}
+	
+	//------------------------------------------------------------
+	
+	float GetNoteListTransparency(const int alElementCount)
+	{
+		float fAlpha = 1.f;
+		
+		if (GetIfNotesListCanOffsetDown())
+		{
+			if (alElementCount == glMaxNoteListElementsCount - 2 + mlNoteListLinesOffset)
+				fAlpha = 0.5f;
+			else if (alElementCount == glMaxNoteListElementsCount - 1 + mlNoteListLinesOffset)
+				fAlpha = 0.3f;
+		}
+		
+		if (GetIfNotesListCanOffsetUp())
+		{
+			if (alElementCount == 1 + mlNoteListLinesOffset)
+				fAlpha = 0.5f;
+			else if (alElementCount == 0 + mlNoteListLinesOffset)
+				fAlpha = 0.3f;
+		}
+			
+		return fAlpha;
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoNotesPage(const float afTimeStep)
+	{
+		ImGui_GroupBegin(ImGui_NrmPosGroup(0.19,0.12,0), ImGui_NrmSizeGroup(1));
+			
+			///////////////////
+			// Navigation panel
+			DoNotesFileSystem(afTimeStep);
+
+			/////////////
+			// Notes text
+			DoNotesContent();
+			
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------- 
+	
+	void DoNotesFileSystem(const float afTimeStep)
+	{
+		ImGui_GroupBegin(ImGui_NrmPosGroup(0,0.06,0.5), ImGui_NrmSizeGroup(1));
+			
+		//////////////////////////////
+		// Selection marker blink time
+		if (mfNoteInFocusBlinkTime > 0)
+			mfNoteInFocusBlinkTime = cMath_Max(0.f, mfNoteInFocusBlinkTime - afTimeStep);
+		
+		//////////////
+		// File System
+		const float fSpaceBetweenElements = 0.04f;
+		
+		for (int i=0; i<mvUsedNoteCategories.size(); i++)
+		{
+			//////////////////
+			// Categories list
+			cNoteCategoryEntry@ pCategoryEntry = mvUsedNoteCategories[i];
+			if (pCategoryEntry==null || pCategoryEntry.msID=="") continue;
+			
+			float fCategoryStartPos = 0;
+			pCategoryEntry.mlElementCount = 0;
+			
+			////////////////
+			//Define btn pos
+			if (i>0)
+			{
+				cNoteCategoryEntry@ pPrevCategoryEntry = mvUsedNoteCategories[i-1];
+				
+				if (pPrevCategoryEntry!=null && pPrevCategoryEntry.mvCollectedNotes.size()>0 && pPrevCategoryEntry.mbExpanded)
+				{
+					cNoteEntry@ pPrevCategoryLastNoteEntry = pPrevCategoryEntry.mvCollectedNotes[pPrevCategoryEntry.mvCollectedNotes.size()-1];
+					if (pPrevCategoryLastNoteEntry!=null)
+					{
+						fCategoryStartPos = pPrevCategoryLastNoteEntry.mfYPosition;
+						pCategoryEntry.mlElementCount = pPrevCategoryLastNoteEntry.mlElementCount+1;
+					}
+				}
+				else
+				{
+					fCategoryStartPos = pPrevCategoryEntry.mfYPosition;
+					pCategoryEntry.mlElementCount = pPrevCategoryEntry.mlElementCount+1;
+				}
+			}
+			
+			/////////////////////////////////////////
+			// Do a list btn only if it fits the page
+			if (pCategoryEntry.mlElementCount < mlNoteListLinesOffset + glMaxNoteListElementsCount && pCategoryEntry.mlElementCount >= mlNoteListLinesOffset)
+			{
+				if (pCategoryEntry.mlElementCount == mlNoteListLinesOffset)
+					fCategoryStartPos = 0;
+				
+				pCategoryEntry.mfYPosition = fCategoryStartPos + fSpaceBetweenElements;
+				
+				ImGui_SetTransCategory("Levels");
+				
+				bool bIsInFocus = mlElementInFocus==pCategoryEntry.mlElementCount;
+				float fBtnTransparency = GetNoteListTransparency(pCategoryEntry.mlElementCount);
+				if (DoNoteFileSystemBtn("MapListElement"+i, pCategoryEntry.msName, cVector3f(0.f, pCategoryEntry.mfYPosition, gfSketchbookTextDepth), true, pCategoryEntry.mbCategoryNoteSelected, pCategoryEntry.mbExpanded, bIsInFocus, fBtnTransparency))
+				{
+					ToggleNoteCategoryEntry(pCategoryEntry, !pCategoryEntry.mbExpanded);
+					SetElementInFocus(i);
+					//cLux_AddDebugMessage("i count: " + i);
+					//cLux_AddDebugMessage("element count: " + pCategoryEntry.mlElementCount);
+				}
+					
+				SyncGamepadWidgetInfocus(pCategoryEntry.mlElementCount);
+				AutoOffsetNotesListWithGamepad(pCategoryEntry.mlElementCount);
+			}
+			
+			/////////////
+			// Notes list
+			if (pCategoryEntry.mbExpanded)
+			{
+				for (int j=0; j<pCategoryEntry.mvCollectedNotes.size(); j++)
+				{
+					cNoteEntry@ pCurrentNoteEntry = pCategoryEntry.mvCollectedNotes[j];
+					if (pCurrentNoteEntry==null || pCurrentNoteEntry.msName=="") continue;
+					
+					////////////////
+					//Define btn pos
+					float fNoteListStartPos = pCategoryEntry.mfYPosition + 0.005f;
+					pCurrentNoteEntry.mlElementCount = pCategoryEntry.mlElementCount+1;
+					
+					if (j>0)
+					{
+						cNoteEntry@ pPreviousNoteEntry = pCategoryEntry.mvCollectedNotes[j-1];
+						if(pPreviousNoteEntry!=null)
+						{
+							fNoteListStartPos = pPreviousNoteEntry.mfYPosition;
+							pCurrentNoteEntry.mlElementCount = pPreviousNoteEntry.mlElementCount+1;
+						}
+					}
+					
+					////////////////////////////////////////////////
+					// Do a list btn only if it fits the page length
+					if (pCurrentNoteEntry.mlElementCount < mlNoteListLinesOffset + glMaxNoteListElementsCount && 
+						pCurrentNoteEntry.mlElementCount >= mlNoteListLinesOffset)
+					{
+						if (pCurrentNoteEntry.mlElementCount == mlNoteListLinesOffset)
+							fNoteListStartPos = 0;
+					
+						pCurrentNoteEntry.mfYPosition = fNoteListStartPos + fSpaceBetweenElements;
+						
+						ImGui_SetTransCategory(pCategoryEntry.msID);
+						
+						bool bIsInFocus = mlElementInFocus==pCurrentNoteEntry.mlElementCount;
+						float fBtnTransparency = GetNoteListTransparency(pCurrentNoteEntry.mlElementCount);
+						bool bNoteIsSelected = msSelectedNoteID == pCurrentNoteEntry.msID;
+						
+						if (DoNoteFileSystemBtn("Note"+j, pCurrentNoteEntry.msName, cVector3f(0, pCurrentNoteEntry.mfYPosition, gfSketchbookTextDepth), false, false, bNoteIsSelected, bIsInFocus, fBtnTransparency))
+							ToggleNoteEntry(pCurrentNoteEntry);
+							
+						SyncGamepadWidgetInfocus(pCurrentNoteEntry.mlElementCount);
+						AutoOffsetNotesListWithGamepad(pCurrentNoteEntry.mlElementCount);
+					}
+				}
+			}
+		}
+		
+		///////////////////////
+		// Notes list scrolling
+		ImGui_SetTransCategory("");
+		
+		if (GetCurrentNotesListLinesCount() > glMaxNoteListElementsCount)
+		{
+			const float fScrollBtn_XPos = 0.05f;
+			
+			if (DoNoteNavButton("Scroll_Down", cVector3f(fScrollBtn_XPos, 0.62f, gfSketchbookTextDepth), true))
+			{
+				if (GetIfNotesListCanOffsetDown())
+				{
+					Sound_PlayGui(gsNotesListFocusItemSound, 1);
+					OffsetNotesList(true);
+				}
+			}
+			else if (DoNoteNavButton("Scroll_Up", cVector3f(fScrollBtn_XPos, -0.025f, gfSketchbookTextDepth), true, 180))
+			{
+				if (GetIfNotesListCanOffsetUp())
+				{
+					Sound_PlayGui(gsNotesListFocusItemSound, 1);
+					OffsetNotesList(false);
+				}
+			}
+		}
+		
+		////////////////////////////////////////////////////////////////////
+		// Autoscroll through the notes list if gamepad nav btn is held down
+		if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+		{
+			// Start autoscrolling after 1 sec
+			if (mfTimeBeforeNotesAutoScroll <= 0)
+			{
+				if (cInput_IsTriggered(eAction_MenuDown))
+					ScrollThroughNotesWithGamePad(true);
+				else if (cInput_IsTriggered(eAction_MenuUp))
+					ScrollThroughNotesWithGamePad(false);
+			}
+			if (mfTimeBeforeNotesAutoScroll >= 0.5f)
+			{
+				// Wait 0.12s before the next move
+				if (mfTimeBeforeNotesAutoScroll >= 0.62f)
+				{
+					mfTimeBeforeNotesAutoScroll = 0.5f;
+					if (cInput_IsTriggered(eAction_MenuDown))
+						ScrollThroughNotesWithGamePad(true);
+					else if (cInput_IsTriggered(eAction_MenuUp))
+						ScrollThroughNotesWithGamePad(false);
+				}
+			}
+		}
+		
+		///////////////////
+		// Autoscroll timer
+		bool bGamepadNavBtnDown = cLux_GetInputHandler().GetGamepadWasLastDeviceUsed() && (cInput_IsTriggered(eAction_MenuDown) || cInput_IsTriggered(eAction_MenuUp));
+		mfTimeBeforeNotesAutoScroll = bGamepadNavBtnDown ? mfTimeBeforeNotesAutoScroll + afTimeStep : 0;
+		
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------- 
+	
+	void DoNotesContent()
+	{
+		ImGui_GroupBegin(ImGui_NrmPosGroup(0.03,0.02,0), ImGui_NrmSizeGroup(1));
+			
+		/////////////
+		// Note Image
+		if (msSelectedNoteImage!="")
+		{
+			cImGuiGfx noteImage(msSelectedNoteImage, eImGuiGfx_TextureTemporary);
+			ImGui_DoImageCorrectAspect(noteImage, ImGui_NrmPos(0.35f, 0.f, gfSketchbookTextDepth), ImGui_NrmSize(0.25, 0.5));
+		}
+			
+		/////////////////////
+		// Content text frame
+		const tWString swNullWStr = cString_To16Char("");
+		if (msSelectedNoteText == swNullWStr && msSelectedNoteBackText == swNullWStr)
+		{
+			ImGui_SetTransCategory("");
+			ImGui_GroupEnd();
+			return;
+		}
+		
+		cImGuiTextFrameData textData = ImGui_GetDefaultTextFrame();
+		textData.mbUseBackgroundGfx = false;
+		textData.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,72));
+		textData.mFont.mvSize = cVector2f(gfFontSize_SketchbookNoteText);
+		textData.mFont.mColor = cColor(0);
+		
+		const float fTextWidth = 0.32f;
+		const float fRowSpace = textData.mFont.mvSize.y/3.5f;
+		const float fMaxTextHeight = 0.6f * cLux_GetCurrentImGui().GetCurrentGroupSize().y;
+		
+		///////////////////////
+		// Front and back entry
+		if (msSelectedNoteText != swNullWStr)
+		{
+			//////////////////////
+			// Get number of pages
+			if (mfSelectedNoteTextHeight==0.f)
+			{
+				array<tWString> vRows;
+				GetFontWordWrapRowsW(textData.mFont, 1, msSelectedNoteText, fTextWidth*cLux_GetCurrentImGui().GetCurrentGroupSize().x, vRows);
+				float fTotalHeight = vRows.length() * (textData.mFont.mvSize.y + fRowSpace);
+				
+				cImGuiTextFrameData hiddenTextData = textData;
+				hiddenTextData.mFont.mColor = cColor(0,0,0,0);
+				
+				// Multiple Pages
+				if (fTotalHeight > fMaxTextHeight) 
+				{
+					mfSelectedNoteTextHeight = fMaxTextHeight / cLux_GetCurrentImGui().GetCurrentGroupSize().y;
+					mlSelectedNotePageCount = int(fTotalHeight / fMaxTextHeight);
+				}
+				// Single Page
+				else 
+				{
+					mfSelectedNoteTextHeight = fMaxTextHeight / cLux_GetCurrentImGui().GetCurrentGroupSize().y;
+					mlSelectedNotePageCount = 0;
+				}
+				
+				mlSelectedNotePage = 0;
+			}
+			
+			/////////////////////
+			// Text page swapping
+			int lBackTextPage = mlSelectedNotePageCount + 1;
+			if (mlSelectedNotePageCount > 0 || msSelectedNoteBackText != swNullWStr)
+			{
+				const float fNavBtn_YPos = 0.65f;
+				
+				bool bShowNextPageBtn = msSelectedNoteBackText != swNullWStr ? mlSelectedNotePage < lBackTextPage : mlSelectedNotePage < mlSelectedNotePageCount;
+				if (bShowNextPageBtn)
+				{
+					if (DoNoteNavButton("Page_Right", cVector3f(0.535f, fNavBtn_YPos, gfSketchbookTextDepth)))
+						SwitchNotePage(true);
+				}
+				
+				if (mlSelectedNotePage > 0)
+				{
+					if (DoNoteNavButton("Page_Left", cVector3f(0.25f, fNavBtn_YPos, gfSketchbookTextDepth), false, 180))
+						SwitchNotePage(false);
+				}
+			}
+			
+			// Keep the note's back entry text for the last page
+			tWString sTextToDraw = (msSelectedNoteBackText != swNullWStr) && (mlSelectedNotePage == lBackTextPage) ? msSelectedNoteBackText : msSelectedNoteText;
+			ImGui_DoTextFrameExtW(sTextToDraw, cVector2f_Zero, fRowSpace, mlSelectedNoteTextOffset, textData, ImGui_NrmPosGroup(0.25f, 0.03f, gfSketchbookTextDepth), ImGui_NrmSizeGroup(fTextWidth, mfSelectedNoteTextHeight));
+		}
+		//////////////////
+		// Back Entry only
+		else
+		{
+			int lBackTextPage = 1;
+			mlSelectedNotePage = lBackTextPage;
+			ImGui_DoTextFrameExtW(msSelectedNoteBackText, cVector2f_Zero, fRowSpace, 0, textData, ImGui_NrmPosGroup(0.25f, 0.03f, gfSketchbookTextDepth), ImGui_NrmSizeGroup(fTextWidth, fMaxTextHeight));
+		}
+		
+		ImGui_SetTransCategory("");
+		ImGui_GroupEnd();
+	}
+	
+	//------------------------------------------------------------
+	
+	void SwitchNotePage(const bool abForward)
+	{
+		int lBackTextPage = mlSelectedNotePageCount + 1;
+		
+		if (abForward)
+		{
+			int lLastPage = msSelectedNoteBackText != cString_To16Char("") ? lBackTextPage : mlSelectedNotePageCount;
+			
+			if (mlSelectedNotePage >= lLastPage) return;
+			Sound_PlayGui(msSoundNextPage, 1);
+			mlSelectedNotePage+=1;
+			mlSelectedNoteTextOffset = mlSelectedNotePage == lBackTextPage ? 0 : glMaxNoteTextRowsCount * mlSelectedNotePage;
+			return;
+		}
+		
+		if (mlSelectedNotePage <= 0) return;
+		Sound_PlayGui(msSoundPrevPage, 1);
+		mlSelectedNotePage-=1;
+		mlSelectedNoteTextOffset = mlSelectedNotePage == lBackTextPage ? 0 : glMaxNoteTextRowsCount * mlSelectedNotePage;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetCurrentNotesListLinesCount()
+	{
+		int lNoteListLinesCount = 0;
+		for (int i=0; i<mvUsedNoteCategories.size(); i++)
+		{
+			cNoteCategoryEntry@ pCategoryEntry = mvUsedNoteCategories[i];
+			if (pCategoryEntry==null) continue;
+			
+			lNoteListLinesCount+=1;
+			
+			if (pCategoryEntry.mbExpanded==false) continue;
+			
+			for (int j=0; j<pCategoryEntry.mvCollectedNotes.size(); j++)
+			{
+				lNoteListLinesCount+=1;
+			}
+		}
+		return lNoteListLinesCount;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetCurrentlyVisibleNotesCount()
+	{
+		return cMath_Clamp( (GetCurrentNotesListLinesCount() - mlNoteListLinesOffset), 0, glMaxNoteListElementsCount);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnReadNoteComplete()
+	{
+		Entity_Destroy("LogPageNote");
+		SetSketchbookState(eSketchbookState_Notes);
+		OpenSketchbook();
+	}
+	
+	//------------------------------------------------------------
+	
+	////////////////////////////////////////////////
+	//             Inventory
+	////////////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	void DoInventoryPage()
+	{
+		cLuxScreenTextFormatParameters formatParams;
+		CreateTextFormat(formatParams);
+
+		array<iScrItem@> InventoryItems;
+		
+		msCurrentItem="";
+		mbCanCombine = false;
+		mbCanCombineWith = false;
+		
+		iScrItemHandler_Interface @pItemHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		int nCount = pItemHandler.GetItemCount();
+		for (int i=0;i<nCount;++i)
+		{
+			iScrItem@ pItem = pItemHandler.GetItem(i);
+			if (pItem.GetHidden()) continue;
+			InventoryItems.push_back(pItem);
+		}
+		
+		iScrItem@ pCombineItem = null;
+		if (mInvMode==eInvMode_Combine||mInvMode==eInvMode_CombineDrag)
+			@pCombineItem = pItemHandler.GetByID(msCombineItem);
+
+		for (int i=0; i<mvInvSlots.size(); i++)
+		{
+			iScrItem@ pItem=null;
+
+			if (i<InventoryItems.size())
+				@pItem = InventoryItems[i];
+			
+			if (pItem==null) continue;
+			if (pItem.GetTypeID()=="Match") continue;
+			
+			tString sIconFile = pItem.GetActiveInventoryIcon();			
+			tString sName = pItem.GetID();
+			cVector3f vIconPos = ImGui_NrmPosGroup(mvInvSlots[i]);
+			cVector3f vDragMove = ImGui_GetMousePosition3D()-mvDragStart;
+			const float fButtonSize = 0.12;
+			
+			// Drag and drop icon
+			if (mInvMode==eInvMode_CombineDrag && msCombineItem==pItem.GetID())
+				vIconPos += vDragMove+cVector3f(0,0,0.83);
+			
+			if (sIconFile!="")
+			{
+				sName=" ";
+				
+				// use colored empty icon for shadow flesh injector
+				if (pItem.GetType().GetID() == "ShadowFleshCanister" && pItem.GetAmount() == 0) sIconFile = "inventory_item_shadow_flesh_injector";
+				
+				cImGuiGfx gfxItemIcon = cImGuiGfx(sIconFile, eImGuiGfx_TextureTemporary);
+				if (gbInvItemUseMultiplyBlendMode)
+					gfxItemIcon.mMaterial = eGuiMaterial_Modulative;
+				
+				ImGui_DoImageCorrectAspect(gfxItemIcon, vIconPos, ImGui_NrmSizeGroupKeepRatio(fButtonSize));
+			}
+				
+			/////////
+			// Amount
+			if (pItem.IsContainer())
+				DoContainerLevel(pItem, vIconPos+ImGui_NrmPosGroup(0.05f,0.1f,0.5f), 1.25f);
+			else if (pItem.GetAmount()>=0 && pItem.GetMaxAmount()>1)
+				DoStackCount(pItem, vIconPos+ImGui_NrmPosGroup(0.05f,0.1f,0.5f), 1.25f);
+				
+			bool bCombineWith = false;
+			
+			cImGuiButtonData slotButton = CreateInventorySlot();
+			
+			if (mInvMode == eInvMode_Combine || mInvMode == eInvMode_CombineDrag)
+			{
+				bCombineWith = pCombineItem.CanCombineWith(pItem);
+				slotButton.mbUseBackgroundGfx = false;
+				
+				if (pItem.GetID()==msCombineItem)
+				{
+					if (mInvMode == eInvMode_Combine || vDragMove.SqrLength()>1.f )
+						slotButton.mGfxInFocus = cImGuiGfx("inventory_screen_combine_bad");
+					else
+						slotButton.mGfxInFocus = cImGuiGfx("inventory_selection");
+					
+					if (mInvMode == eInvMode_Combine)
+					{
+						slotButton.mGfxBackground = cImGuiGfx("inventory_screen_combine");
+						slotButton.mbUseBackgroundGfx = true;
+					}
+				}
+				else
+				{
+					slotButton.mbUseBackgroundGfx = false;
+					if (bCombineWith)
+						slotButton.mGfxInFocus = cImGuiGfx("inventory_screen_combine_good");
+					else
+						slotButton.mGfxInFocus = cImGuiGfx("inventory_screen_combine_bad");
+				}
+			}
+			
+			if (ImGui_DoButtonExt("SlotButton"+i, sName, slotButton, ImGui_NrmPosGroup(mvInvSlots[i]), ImGui_NrmSizeGroupKeepRatio(fButtonSize)))
+			{
+				// Handled by OnAction()
+			}
+			
+			if (ImGui_PrevInFocus())
+			{
+				msCurrentItem = pItem.GetID();
+				
+				if (mInvMode == eInvMode_Select)
+				{
+					mbCanCombine = (nCount>1)&&(pItem.CanCombine());
+				}
+				else
+				{
+					mbCanCombineWith = bCombineWith;
+				}
+				
+				ImGui_SetTransCategory("Inventory");
+				
+				///////////////
+				// Title & Desc
+				ImGui_GroupBegin(ImGui_NrmPosGroup(0.60,0.0,1), ImGui_NrmSizeGroup(1,1));
+				
+					cVector3f vHintPos(0.f,0.66f,gfSketchbookTextDepth);
+					cVector2f vHintSize = cVector2f(0.205,-1.0f);
+				
+					////////////
+					// Item Name
+					cImGuiLabelData label = CreateLabel();
+					label.mFontAlign = eFontAlign_Center;
+					ImGui_DoLabelExt(pItem.GetType().GetNameID(), label, ImGui_NrmPosGroup(0.0,0.535,gfSketchbookTextDepth), ImGui_NrmSizeGroup(0.205,-1.0f));
+					
+					////////////
+					// Item Desc
+					cImGuiTextFrameData text = CreateTextFrame();
+					text.mFont.mvSize = cVector2f(gfFontSize_SketchbookItemDescription); // ImGui_NrmSizeGroupKeepRatio(0.025);
+					text.mFontAlign = eFontAlign_Center;
+					ImGui_DoTextFrameExt(pItem.GetType().GetDescID(), 0, 0, 0, text, ImGui_NrmPosGroup(0.0,0.575,gfSketchbookTextDepth), ImGui_NrmSizeGroup(0.205,0.14));
+					
+					////////////
+					// Item Icon
+					if (sIconFile!="")
+					{
+						ImGui_DoImageCorrectAspect(cImGuiGfx(sIconFile, eImGuiGfx_TextureTemporary), ImGui_NrmPosGroup(0.0,0.22f,gfSketchbookImgDepth), ImGui_NrmSizeGroup(0.205f,0.27f));
+					}
+					
+					////////
+					// Hints
+					ImGui_GroupBegin(ImGui_NrmPosGroup(0.0,0.1,0), ImGui_NrmSizeGroup(1,1));
+					
+						if (mInvMode == eInvMode_Select)
+						{
+							if (Item_GetHeld(eItemHandlerHand_Right)==pItem.GetID()||Item_GetHeld(eItemHandlerHand_Left)==pItem.GetID())
+                            {
+								Hint_DrawExplicit("InventoryUI", "HintInventoryPutAway", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
+                            else if (cString_GetFirstStringPos(msCurrentItem, "Oil") >= 0)
+							{
+								Hint_DrawExplicit("InventoryUI", "HintInventoryUseOil", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
+							else if (cString_GetFirstStringPos(msCurrentItem, "ShadowFleshVial") >= 0 && ItemType_GetFirstInInventory("ShadowFleshCanister") != "")
+							{
+								Hint_DrawExplicit("InventoryUI", "HintInventoryUseCapsule", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
+							else if ( (pItem.GetType().CanUseOnWorld() || 
+									pItem.GetType().CanUseOnSelf() || 
+									cString_GetFirstStringPos(msCurrentItem, "Matchbook") >= 0) && 
+									cString_GetFirstStringPos(msCurrentItem, "Radio") < 0)
+							{
+								Hint_DrawExplicit("InventoryUI", "HintInventoryUse", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
+							
+							//////////
+							// Combine
+							ImGui_SetModColorMul(cColor(1.0f,1.0f,1.0f,(mbCanCombine?1.0f:0.25f)));
+                            if (cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+                                Hint_DrawExplicit("InventoryUI", "HintInventoryStartCombine", ImGui_NrmPosGroup(vHintPos + cVector3f(0,0.03,0)), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							ImGui_ResetModifiers();
+						}
+						else if (mInvMode == eInvMode_Combine && cLux_GetInputHandler().GetGamepadWasLastDeviceUsed())
+						{
+							/////////////////////
+							// End/Cancel Combine
+							ImGui_SetModColorMul(cColor(1.0f,1.0f,1.0f,(mbCanCombineWith?1.0f:0.25f)));
+							Hint_DrawExplicit("InventoryUI", "HintInventoryEndCombine", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							ImGui_ResetModifiers();
+							
+							Hint_DrawExplicit("InventoryUI", "HintInventoryCancelCombine", ImGui_NrmPosGroup(vHintPos + cVector3f(0,0.03,0)), ImGui_NrmSizeGroup(vHintSize), formatParams);
+						}
+						
+						ImGui_SetTransCategory("");
+					
+					ImGui_GroupEnd();
+				ImGui_GroupEnd();
+				
+				///////////////////
+				// Play hover sound
+				if (msPrevInvItemInFocus != "SlotButton"+i)
+				{
+					Sound_PlayGui(gsInventoryFocusItemSound, 1);
+					msPrevInvItemInFocus = "SlotButton"+i;
+				}
+			}
+		}
+		
+		
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+	
+	void EquipItem(tString asItemID)
+	{
+		if (asItemID=="") return;
+		
+		if (mInvMode == eInvMode_CombineDrag) return;
+		
+		//Item_GetEntityItemType(msCurrentItem);
+		
+	
+		if (Item_GetHeld(eItemHandlerHand_Left)==asItemID)
+		{
+			Item_PutAway(eItemHandlerHand_Left);
+			CloseSketchbook();
+			return;
+		}
+		
+		if (Item_GetHeld(eItemHandlerHand_Right)==asItemID)
+		{
+			Item_PutAway(eItemHandlerHand_Right);
+			CloseSketchbook();
+			return;
+		}
+		
+		iScrItemHandler_Interface @pHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		iScrItem@ pItem=pHandler.GetByID(asItemID);
+		
+		if (pItem is null) return;
+		
+        /////////////////
+        // Oil Management
+		if (cString_GetFirstStringPos(asItemID, "Oil") > 0)
+		{
+			Item_Combine(msCurrentItem, ItemType_GetFirstInInventory("Lantern"));
+			return;
+		}
+		
+		/////////////////
+        // Shadow flesh vials
+		if (cString_GetFirstStringPos(asItemID, "ShadowFleshVial") >= 0)
+		{
+			Item_Combine(msCurrentItem, ItemType_GetFirstInInventory("ShadowFleshCanister"));
+			return;
+		}
+		
+        //////////////////////
+        // Laudanum Management
+        // TEMP: Using Laudanum will later get an animation
+		// TODO: This behavior should be moved inside the item itself
+        if (cString_Sub(asItemID, 0, 8)=="Laudanum" && mbLaudanumFxActive==false)
+		{
+            mBaseObj.Timer_Add("Timer_LaudanumReducefear", 1.f, "OnTimer_LaudanumReducefear");
+            Item_RemoveFromInventory(ItemType_GetFirstInInventory("Laudanum"));
+            mbLaudanumFxActive=true;
+            CloseSketchbook();
+			return;
+		}
+		
+		//////////////////////
+		if (pItem.GetType().CanUseOnWorld()==false)
+		{			
+			if (cString_GetFirstStringPos(asItemID, "Matchbook") == 0)
+			{
+				if (Player_GetCanUseLightSource())
+				{
+					Item_ToggleMatch();
+					CloseSketchbook();
+				}
+				return;
+			}
+			else if (cString_Sub(asItemID, 0, 5)=="Flare")
+			{
+			}
+			else
+			{
+				cLux_AddDebugMessage("[Sketchbook] Can't equip "+asItemID+" because 'UseOnWorld' in inventory.cfg is set to 'false'.");
+				return;
+			}
+		}
+		else
+		{
+			if (cString_GetFirstStringPos(asItemID, "Lantern_") == 0)
+			{
+				if (Player_GetCanUseLightSource()==false) return;
+			}
+			else if (cString_Sub(asItemID, 0, 5)=="Radio")
+			{
+				cLux_AddDebugMessage("Radio can only be auto-equipped!");
+				return;
+			}
+		}
+
+		CloseSketchbook();
+		Item_Equip(asItemID);
+	}
+	
+	//------------------------------------------------------------
+    
+    ///////////////
+    // TEMP: Using Laudanum will later get an animation
+    // This behavior will be moved inside the item itself
+    void OnTimer_LaudanumReducefear(uint64 alID)
+    {
+        float fCurrFearLevel = FearHandler_GetLevel();
+        fCurrFearLevel = fCurrFearLevel - 0.33f;
+        FearHandler_FadeLevelTo(fCurrFearLevel, 1.5f, true);
+    }
+    
+	//------------------------------------------------------------
+	
+	void StartCombine()
+	{
+		mInvMode = eInvMode_Combine;
+		msCombineItem = msCurrentItem;
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoCombine()
+	{
+		iScrItemHandler_Interface @pItemHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		iScrItem @pItem=pItemHandler.GetByID(msCurrentItem);
+		iScrItem @pCombineItem=pItemHandler.GetByID(msCombineItem);
+		if ((pItem!=null)&&(pCombineItem!=null))
+		{
+			Item_Combine(pCombineItem.GetID(), pItem.GetID());
+			mInvMode = eInvMode_Select;
+			msCombineItem = "";
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void CancelCombine()
+	{
+		mInvMode = eInvMode_Select;
+		msCombineItem = "";
+	}
+	
+	//------------------------------------------------------------
+	
+	void StartDragDrop()
+	{
+		cLux_AddDebugMessage("Start drag & drop");
+		mInvMode = eInvMode_CombineDrag;
+		msCombineItem = msCurrentItem;
+		mvDragStart = mpGui.GetMousePosition3D();
+	}
+	
+	//------------------------------------------------------------
+	
+	void StopDragDrop()
+	{
+		cLux_AddDebugMessage("Stop drag drop");
+		mInvMode = eInvMode_Select;
+		msCombineItem="";
+	}
+	
+	//-------------------------------------------------------
+	
+	int GetUsedMatchesCounter()
+	{
+		return mlMatchesUsed;
+	}
+	
+	//------------------------------------------------------- 
+
+	void IncreaseUsedMatchesCounter()
+	{
+		mlMatchesUsed++;
+
+		cLux_AddDebugMessage("MATCHES USED: "+mlMatchesUsed+"/"+mlMatchesUsedTarget);
+		if (mlMatchesUsed == mlMatchesUsedTarget)
+			Achievement_Unlock(eAchievement_Lightbringer);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoStackCount(iScrItem@ pItem, const cVector3f vPos, float afScale=1.0f)
+	{
+		int lCount = pItem.GetAmount();
+		
+		cImGuiLabelData labelData;
+		labelData.mColorBase = cColor(0.0f,0.0f,0.0f, 1.0f);
+		//labelData.mColorBase = cColor(1.0f,1.0f,1.0f, 1.0f);
+		labelData.mFontAlign = eFontAlign_Center;
+		labelData.mFont.mvSize = cVector2f(gfFontSize_SketchbookItemCount)*afScale;
+		labelData.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,72));
+		
+		float fBgScale = afScale*0.87;
+		cVector2f vStackBgSize = ImGui_NrmSizeGroupKeepRatio(0.06f,0.06f)*fBgScale;
+		cVector3f vStackPos = vPos;
+		cVector3f vTextPos = vPos;
+		cVector2f vOffs = ImGui_NrmSizeGroup(0.1f,0.0175f)*fBgScale;
+		vTextPos.y-=vOffs.y;
+		vTextPos.x-=vOffs.x;
+		vTextPos.z+=0.1f;
+		vTextPos += cVector3f(8,13,0);
+		//ImGui_DoImage(cImGuiGfx("stack_background"), vStackPos-cVector3f(vStackBgSize.x*0.5f,vStackBgSize.y*0.5f,0.0f), vStackBgSize);
+		ImGui_SetTransCategory("");
+		tWString sOut;
+		sOut = lCount + "/" + pItem.GetMaxAmount();
+		ImGui_SetTextOverride(sOut);
+		ImGui_DoLabelExt("", labelData, vTextPos,cVector2f(vOffs.x*2.0f,-1.0f), 1.0f);
+		
+		//DoLabelExt_Shadow("", labelData, vTextPos,cVector2f(vOffs.x*2.0f,-1.0f), 1.0f);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoContainerLevel(iScrItem@ pItem, const cVector3f vPos, float afScale=1.0f, float afAdditionalProgress=0.0f)
+	{
+		int lCount = pItem.GetAmount();
+		tString sSubType = pItem.GetContentType();
+		
+		cImGuiLabelData labelData;
+		labelData.mColorBase = cColor(0.0f,0.0f,0.0f, 1.0f);
+		labelData.mFontAlign = eFontAlign_Center;
+		labelData.mFont.mvSize = cVector2f(gfFontSize_SketchbookItemCount)*afScale;
+		labelData.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,72));
+			
+		cVector2f vStackBgSize = ImGui_NrmSizeGroupKeepRatio(0.06f,0.06f)*afScale;
+		//cVector3f vStackPos = vPos;
+		cVector3f vTextPos = vPos;
+		cVector2f vOffs = ImGui_NrmSizeGroup(0.1f,0.015f)*afScale;
+		vTextPos.y-=vOffs.y;
+		vTextPos.x-=vOffs.x;
+		vTextPos.z+=0.1f;
+		vTextPos += cVector3f(8,13,0);
+		
+		tString sBackgroundImg = (lCount == 0) ? "container_background_empty" : "container_background";
+		/*ImGui_DoImage(cImGuiGfx(sBackgroundImg), vStackPos-cVector3f(vStackBgSize.x*0.5f,vStackBgSize.y*0.5f,0.0f), vStackBgSize);
+		if (lCount>0)
+		{
+			float fHeightScale = lCount/(pItem.GetType().GetAmountMax()*1.0f);
+			fHeightScale+=afAdditionalProgress/pItem.GetType().GetAmountMax();
+			fHeightScale = 0.05f+0.85f*fHeightScale;
+			float fFullHeight = vStackBgSize.y;
+			float fYOffs = fFullHeight*(1.0f-fHeightScale);
+			vStackBgSize.y=fFullHeight*fHeightScale;
+			cImGuiGfx fill("container_"+cString_ToLowerCase(sSubType));
+			fill.mvUVMin.y=1.0f-fHeightScale;
+			fill.mvUVMax.y=1;
+			ImGui_DoImage(fill, vStackPos-cVector3f(vStackBgSize.x*0.5f,fFullHeight*0.5f,-0.1f)+cVector3f(0,fYOffs,0), vStackBgSize);
+		}*/
+		ImGui_SetTransCategory("");
+		//tWString sStack = cResources_Translate("InventoryUI", "Container");
+		//tWString sOut = cString_ReplaceStringToW(sStack, tWString("%n"), cString_ToStringW(lCount,0));
+		
+		tWString sOut = lCount + "/" + pItem.GetMaxAmount();
+		
+		ImGui_SetTextOverride(sOut);
+		ImGui_DoLabelExt("", labelData, vTextPos,cVector2f(vOffs.x*2.0f,-1.0f), 1.0f);
+	}
+	
+	//------------------------------------------------------------
+	
+	// This is probably temp, just for showing levels while drinking etc.
+	void DrawContainerLevelGui(tString asItemID, const cVector3f avPos, float afScale=1.0f, float afAdditionalProgress=0.0f)
+	{
+		iScrItemHandler_Interface @pHandler = cast<iScrItemHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_ItemHandler) );
+		iScrItem@ pItem=pHandler.GetByID(asItemID);
+		if (!pItem.IsContainer())
+			return;
+		DoContainerLevel(pItem, avPos, afScale, afAdditionalProgress);
+	}
+	
+	//------------------------------------------------------------
+	
+	void DoLabelExt_Shadow(const tString&in asText, const cImGuiLabelData &in aData, const cVector3f&in avPos=cVector3f_Zero, const cVector2f&in avSize=cVector2f_MinusOne, float afFontSizeMul=1, cColor aCol=cColor_White)
+	{
+		cLux_GetCurrentImGui().DoLabel(_ImGui_GetTextString(asText), aData, avPos, avSize, afFontSizeMul);
+		aCol.r = 0.0f;
+		aCol.g = 0.0f;
+		aCol.b = 0.0f;
+		ImGui_SetModColorMul(aCol);
+		cLux_GetCurrentImGui().DoLabel(_ImGui_GetTextString(asText), aData, avPos+cVector3f(1.0f,1.0f,-0.05f), avSize, afFontSizeMul);
+		ImGui_ResetModifiers();
+	}
+
+	//------------------------------------------------------------
+	
+	void DoLabelExt_Shadow(const tWString&in asText, const cImGuiLabelData &in aData, const cVector3f&in avPos=cVector3f_Zero, const cVector2f&in avSize=cVector2f_MinusOne, float afFontSizeMul=1, cColor aCol=cColor_White)
+	{
+		cLux_GetCurrentImGui().DoLabel(asText, aData, avPos, avSize, afFontSizeMul);
+		aCol.r = 0.0f;
+		aCol.g = 0.0f;
+		aCol.b = 0.0f;
+		ImGui_SetModColorMul(aCol);
+		cLux_GetCurrentImGui().DoLabel(asText, aData, avPos+cVector3f(1.0f,1.0f,-0.05f), avSize, afFontSizeMul);
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+	
+	void DrawHint_Shadow(const tString &in asCat, const tString &in asEntry, cVector3f avPos, cVector2f avSize, const cLuxScreenTextFormatParameters& in aFormatParams, cColor aCol=cColor_White)
+	{
+		Hint_DrawExplicit(asCat, asEntry, avPos, cVector2f(0.1f,-1.0f), aFormatParams);
+		aCol.r = 0.0f;
+		aCol.g = 0.0f;
+		aCol.b = 0.0f;
+		ImGui_SetModColorMul(aCol);
+		Hint_DrawExplicit(asCat, asEntry, avPos+cVector3f(1.0f,1.0f,-1.0f), cVector2f(0.1f,-1.0f), aFormatParams);
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+
+	cImGuiButtonData CreateInventorySlot()
+	{
+		cImGuiButtonData toReturn = ImGui_GetDefaultButton();
+		toReturn.mbUseBackgroundGfx = false;
+		toReturn.mbUseTriggeredGfx = false;
+		toReturn.mGfxInFocus = cImGuiGfx("inventory_selection");
+		toReturn.mFont.mColor = cColor(0, 1);
+		toReturn.mFont.mvSize = ImGui_NrmSizeGroupKeepRatio(0.03);
+		return toReturn;
+	}
+	
+	//------------------------------------------------------------
+	
+	cImGuiButtonData CreateDummyButton()
+	{
+		cImGuiButtonData toReturn;
+		toReturn.mbUseBackgroundGfx = false;
+		toReturn.mbUseTriggeredGfx = false;
+		toReturn.mFont.mColor = cColor(0,0,0,0);
+		return toReturn;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool DoLeftNavButton()
+	{
+		return DoNavButton("LeftNavButton", cVector3f(0.17, 0.78, gfSketchbookTextDepth), 180);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool DoRightNavButton()
+	{
+		return DoNavButton("RightNavButton", cVector3f(0.76, 0.78, gfSketchbookTextDepth));
+	}
+	
+	//------------------------------------------------------------
+	
+	bool DoNavButton(const tString&in asName, const cVector3f avPosition, const float afRotAngle=0)
+	{
+		ImGui_SetModUseUIPos(cLux_GetInputHandler().GetGamepadWasLastDeviceUsed()==false);
+			
+		if (afRotAngle!=0)
+			ImGui_SetModRotateAngle(afRotAngle);
+			
+		cImGuiButtonData navBtn = CreateNavButton();
+		bool bPressed = ImGui_DoButtonExt(asName, " ", navBtn, ImGui_NrmPosGroup(avPosition), ImGui_NrmSizeGroup(0.08));
+		
+		ImGui_SetModRotateAngle(0);
+		return bPressed;
+	}
+	
+	//------------------------------------------------------------
+	
+	cImGuiButtonData CreateNavButton(const bool abScroll=false)
+	{
+		cImGuiButtonData navBtn = ImGui_GetDefaultButton();
+		navBtn.mbUseBackgroundGfx = true;
+		tString sImgFile = abScroll ? "notespage_arrow_scroll" : "sketchbook_arrow";
+		navBtn.mGfxBackground = cImGuiGfx(sImgFile);
+		navBtn.mbUseTriggeredGfx = false;
+		navBtn.mGfxInFocus = cImGuiGfx(sImgFile + "_selected");
+		return navBtn;
+	}
+	
+	//------------------------------------------------------------
+	
+	cImGuiButtonData CreateButton()
+	{
+		// Sketchbook tabs
+		cImGuiButtonData toReturn = ImGui_GetDefaultButton();
+		toReturn.mbUseBackgroundGfx = false;
+		toReturn.mbUseTriggeredGfx = false;
+		toReturn.mGfxInFocus = cImGuiGfx("inventory_screen_selected");
+		toReturn.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,72));
+		toReturn.mFont.mColor = cColor(0, 1);
+		toReturn.mFont.mvSize = gfFontSize_SketchbookTabs;
+		return toReturn;
+	}
+	
+	cImGuiLabelData CreateLabel()
+	{
+		// Item name
+		cImGuiLabelData label;
+		label.mColorBase = cColor(0.3,0.1,0.1, 1);
+		label.mFont.mvSize = cVector2f(gfFontSize_SketchbookItemLabel);
+		label.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,56));
+		return label;
+	}
+	
+	cImGuiTextFrameData CreateTextFrame()
+	{
+		cImGuiTextFrameData text;
+		text.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,56));
+		text.mFont.mvSize = 24;
+		text.mFont.mColor = cColor(0, 1);
+		text.mbUseBackgroundGfx = false;
+		return text;
+	}
+	
+	void CreateTextFormat(cLuxScreenTextFormatParameters@ formatParams)
+	{
+		// Inventory interact control label
+		formatParams.mLabelText.mColorBase = cColor(0, 1);
+		formatParams.mLabelText.mFontAlign = eFontAlign_Left;
+		formatParams.mLabelText.mFont.mvSize = cVector2f(28);
+		formatParams.mLabelText.mFont.SetFile(FontHandler_GetFont(eFontType_Sketchbook,56));
+		formatParams.mfIconGamepadHeight = 20.0f;
+		formatParams.mfIconKeyHeight = 20.0f;
+		formatParams.mfIconMouseHeight = 20.0f;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetInventoryEnabled(bool abX)
+	{
+		mbInventoryEnabled = abX;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool NotifyIdeasStateActive()
+	{
+		return mfIdeaNotifyDisplayTimer>0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetSketchbookState(int alState)
+	{
+		if (alState != eSketchbookState_Inventory)
+		{
+			mlJournalStateOnOpen = alState;
+			if (alState==eSketchbookState_Notes)
+			{
+				// Used for lang update
+				for (int i=0; i<mvFullListOfNotes.size(); i++)
+				{
+					cNoteEntry@ pNote = mvFullListOfNotes[i];
+					if (pNote==null) continue;
+					if (pNote.msID != msSelectedNoteID) continue;
+					
+					ToggleNoteEntry(pNote);
+				}
+			}
+		}
+		
+		// cancel reminder hint
+		if (mbCanCancelIdeaHint && alState == eSketchbookState_Ideas)
+		{
+			mbIdeaHint = false;
+			mlIdeaHintCounter = 0;
+		}
+			
+		mlSketchbookState = alState;
+	}
+	
+	//------------------------------------------------------------
+	
+	bool SketchbookStateIsEmpty(int alState)
+	{
+		switch (alState)
+		{
+			case eSketchbookState_LastEnum:
+				return false;
+				
+			case eSketchbookState_Inventory:
+				return mbInventoryEnabled==false;
+				
+			case eSketchbookState_Alys:
+				return mvShownLoadScreens.length()<=0;
+				
+			case eSketchbookState_Memories:
+				return mvMemories.length()<=0;
+				
+			case eSketchbookState_Notes:
+				return mvUsedNoteCategories.length()<=0;
+			
+			case eSketchbookState_Ideas:
+				return mlIdeasShown<=0;
+		}
+		Warning("SketchbookStateIsEmpty not implemented for sketchbook state "+alState+"!");
+		return true;
+	}
+	
+	//------------------------------------------------------------
+	// Font import: https://wiki.frictionalgames.com/hpl3/tutorials/adding_fonts
+	
+	void RenderDWNoteGUI(const tString& in asEntity, float afTimeStep)
+	{
+		cLux_ProfileStart("DWNote_Gui");
+		// Is this the HUD version or the original?
+		bool isHudVersion = Entity_GetVarBool(asEntity, "IsHUDVersion");
+		
+		// We're pulling as much info as possible from the non-HUD version so as to 
+		// not have to copy everything around.
+		tString sSourceEntity = asEntity;
+		if (isHudVersion)
+			sSourceEntity = cString_Sub(sSourceEntity,0,sSourceEntity.length()-5);
+			
+		// Data from the original prop.
+		tString sNoteID = Entity_GetVarString(sSourceEntity, "DWReadableID");
+		float fTextScale = Entity_GetVarFloat(sSourceEntity, "DWTextScale");
+		
+		tWString sDisplayText = cString_To16Char("");
+		tString sTextCategory = "";
+		tString sText;
+		
+		// Set up on the original prop for the first time (this
+		// will only ever be called on the original object).
+		if (!Entity_GetVarBool(sSourceEntity, "DWReadableSetup"))
+		{
+			//cLux_ProfileStart("Setup");
+			
+			Entity_SetVarBool(sSourceEntity, "DWReadableSetup", true);
+			
+
+			if (sNoteID!="")
+			{
+				tString sDummy;
+				GetNoteData(sNoteID, sTextCategory, sDummy, sText, sDummy);
+				sDisplayText = cLux_Translate(sTextCategory, sText+"_En");
+			}
+			
+			Entity_SetVarString(sSourceEntity, "DWCategory", sTextCategory);
+			Entity_SetVarString(sSourceEntity, "DWTextID", sText);
+			
+			// The junk text should be roughly the same length as the real text
+			int nJunkLength = cMath_RandRectl(400,600);
+			if (sNoteID!="")
+				nJunkLength = sDisplayText.length();
+			// Decide where to grab the junk text from.
+			Entity_SetVarInt(sSourceEntity, "DWJunkStart", nJunkLength);
+			Entity_SetVarInt(sSourceEntity, "DWJunkLength", nJunkLength);
+			
+			// Figure out which font/text style to use for the original text.
+			Entity_SetVarInt(sSourceEntity, "DWStyle", cMath_RandRectl(1,4));
+			
+			Entity_SetVarInt(sSourceEntity, "DWDummyCount", 0);
+			
+			//cLux_ProfileEnd("Setup");
+		}
+		
+		sTextCategory = Entity_GetVarString(sSourceEntity, "DWCategory");
+		sText = Entity_GetVarString(sSourceEntity, "DWTextID");
+	
+		// This is set every time the HUD entity is opened
+		if (Entity_GetVarBool(asEntity, "DWJustOpened"))
+		{
+			Entity_SetVarBool(asEntity, "DWJustOpened", false);
+			
+			Entity_SetVarFloat(sSourceEntity, "DWStartTime", ImGui_GetTimeCount());
+		}
+		
+		//cLux_ProfileStart("Prep");
+		
+		float alpha = 1.0f;
+		bool showJunk = true;
+		float alphaFlicker=0.05;
+		
+		// If this is the HUD version, gradually fade out the junk text and fade in the
+		// English text.
+		if (isHudVersion&&sNoteID!="")
+		{
+			float fTimeElapsed = ImGui_GetTimeCount()-Entity_GetVarFloat(sSourceEntity, "DWStartTime");
+			
+			float fadeWaitTime = 1.5f; // Time to keep showing the junk text
+			float fadeOutTime = 0.5f; // Take this time to fade out the junk
+			float fadeInTime = 0.5f; // Take this time to fade in the English
+			
+			if (fTimeElapsed<fadeWaitTime)
+			{
+				
+			}
+			else if (fTimeElapsed<fadeWaitTime+fadeOutTime)	// Fading out junk
+			{
+				// Just changed? Play sound!
+				if ((fTimeElapsed - afTimeStep)<fadeWaitTime+fadeOutTime)
+				{
+					const tString gsTabletSound_TextChange = "player/foley/action/pickup/readable_tablet_text_morph";
+					Sound_CreateAtEntity("Sound_TabletTextChange", gsTabletSound_TextChange, asEntity);
+				}
+			
+				alpha = 1.0f-((fTimeElapsed-fadeWaitTime)/fadeOutTime);
+			}
+			else if (fTimeElapsed<fadeWaitTime+fadeOutTime+fadeInTime)	// Fading in English
+			{
+				showJunk = false;
+				alpha = (fTimeElapsed-fadeWaitTime-fadeOutTime)/fadeInTime;
+			}
+			else
+			{
+				showJunk = false;
+			}
+		}
+		else if (isHudVersion)
+		{
+			// Garble the text of the broken tablet every few frames.
+			int nDummyCount = Entity_GetVarInt(sSourceEntity, "DWDummyCount");
+			if (nDummyCount>=10)
+			{
+				nDummyCount = 0;
+				Entity_SetVarInt(sSourceEntity, "DWJunkStart", cMath_RandRectl(400,600));
+				Entity_SetVarInt(sSourceEntity, "DWStyle", cMath_RandRectl(1,4));
+			}
+			Entity_SetVarInt(sSourceEntity, "DWDummyCount", nDummyCount+1);
+		}
+		
+		tString sFont = "megrim.fnt";
+		float fSize = 26.0f;
+		eFontAlign align = eFontAlign_Center;
+		float fRowSpace = 1.0f;
+		
+		if (showJunk||sNoteID=="")
+		{
+			Entity_SetVarBool(asEntity, "SuppressText", true);
+			
+			int nStyle = Entity_GetVarInt(sSourceEntity, "DWStyle");
+		
+			sDisplayText = cString_To16Char(cString_Sub(NONSENSE,Entity_GetVarInt(sSourceEntity, "DWJunkStart"), Entity_GetVarInt(sSourceEntity, "DWJunkLength")));
+			sTextCategory = "";
+			if (nStyle == STYLE_APOLLONIAN)
+			{
+				sFont = "apollonian.fnt";
+				fSize = 23.0f;
+			}
+			else if (nStyle == STYLE_ENOCH)
+			{
+				sFont = "enoch.fnt";
+				fSize = 23.0f;
+				align = eFontAlign_Right;
+			}
+			else if (nStyle== STYLE_FLEUVE)
+			{
+				sFont = "fleuve.fnt";
+				fSize = 28.0f;
+			}
+			else if (nStyle== STYLE_ANGELIC)
+			{
+				sFont = "angelic.fnt";
+				fSize = 20.0f;
+				fRowSpace = 3.0f;
+			}
+		}
+		else
+		{
+			Entity_SetVarBool(asEntity, "SuppressText", false);
+			sDisplayText = cLux_Translate(sTextCategory, sText+"_En");
+		}
+		
+		if (sNoteID=="")
+		{
+			alpha=0.3f;
+			alphaFlicker=0.3f;
+		}
+		
+		if (!isHudVersion)
+		{
+			alphaFlicker=0.0f;
+			alpha*=0.7f;
+		}
+		
+		//cLux_ProfileEnd("Prep");
+		
+		//cLux_ProfileStart("Render");
+		ImGui_SetTransCategory("");
+		
+		cImGuiTextFrameData textData = ImGui_GetDefaultTextFrame();
+		textData.mbUseBackgroundGfx = false;
+		textData.mFont.SetFile(sFont);
+		textData.mFont.mvSize = cVector2f(fSize)*fTextScale;
+		textData.mFontAlign = align;
+		if (sNoteID!="")
+			textData.mFont.mColor = cColor(0.4,1.0,0.9,alpha+cMath_RandRectf(-alphaFlicker,alphaFlicker));
+		else
+			textData.mFont.mColor = cColor(0.8,0.4,0.0,alpha+cMath_RandRectf(-alphaFlicker,alphaFlicker));
+			
+		ImGui_DoTextFrameExtW(sDisplayText, ImGui_NrmSizeGroup(cVector2f(0.05f, 0.05f)), fRowSpace, 0.0f, textData, 
+			ImGui_NrmPosGroup(cVector3f(0.0f, 0.0f, 10.0f)),
+			ImGui_NrmSizeGroup(cVector2f(1.0f, 1.0f)));
+		//cLux_ProfileEnd("Render");
+	}
+	
+	//------------------------------------------------------------
+	// We need these screens in both the sketch book and the game intro, so let's do it only once.
+	
+	float mfCrewFontScale = 1.0f;
+	
+	void RenderCrewSketchPageGUI(const tString& in asPageID, float afAlpha, float afFontScale=1.0f, bool abShowText=true)
+	{
+		// This is to fix a bug where the intro sketchbook UI is the
+		// wrong size/shape
+		mfCrewFontScale = afFontScale;
+		
+		ImGui_SetModColorMul(cColor(1,afAlpha*0.85f));
+		
+		//cImGuiGfx gfxBlack;
+		//gfxBlack.mColor = cColor(1,0.5);
+		//ImGui_DoImage(gfxBlack, ImGui_NrmPosGroup(0.5f, 0.5f, 10.0f), ImGui_NrmSizeGroup(1.0f, 1.0f));
+		
+		ImGui_SetTransCategory("Sketchbook");
+				
+		cImGuiLabelData label = CreateLabel();
+		label.mFontAlign = eFontAlign_Center;
+		
+		if (asPageID=="CrewPage1")
+		{
+			RenderCrewImage("crew_sterling_fairchild.dds", 0.04f, 0.45f, 0.83f);
+			RenderCrewImage("crew_hank_rachael.dds", 0.65f, 0.39f, 0.95f);
+			
+			if (abShowText)
+			{
+				RenderCrewLabel("Page1_Sterling1", label, 0.15f, 0.88f, 0.8f);
+				RenderCrewLabel("Page1_Sterling2", label, 0.15f, 0.92f, 0.7f);
+				RenderCrewLabel("Page1_Fairchild1", label, 0.36f, 0.88f, 0.8f);
+				RenderCrewLabel("Page1_Fairchild2", label, 0.36f, 0.92f, 0.7f);
+				
+				RenderCrewLabel("Page1_Hank1", label, 0.57f, 0.88f, 0.8f);
+				RenderCrewLabel("Page1_Hank2", label, 0.57f, 0.92f, 0.7f);
+				RenderCrewLabel("Page1_Rachael1", label, 0.76f, 0.88f, 0.8f);
+				RenderCrewLabel("Page1_Rachael2", label, 0.76f, 0.92f, 0.7f);
+			}
+		}
+		else if (asPageID=="CrewPage2")
+		{
+			RenderCrewImage("crew_doctor_leon_malick.dds", 0.5f, 0.37f, 1.0f);
+			
+			if (abShowText)
+			{
+				RenderCrewLabel("Page2_Doctor1", label, 0.28f, 0.91f, 0.8f);
+				RenderCrewLabel("Page2_Doctor2", label, 0.28f, 0.95f, 0.7f);
+				
+				RenderCrewLabel("Page2_Leon1", label, 0.475f, 0.91f, 0.8f);
+				RenderCrewLabel("Page2_Leon2", label, 0.475f, 0.95f, 0.7f);
+				
+				RenderCrewLabel("Page2_Malick1", label, 0.65f, 0.91f, 0.8f);
+				RenderCrewLabel("Page2_Malick2", label, 0.65f, 0.95f, 0.7f);
+			}
+		}
+		else if (asPageID=="CrewPage3")
+		{
+			RenderCrewImage("crew_webber_eva_lukas.dds", 0.5f, 0.37f, 1.05f);
+			
+			if (abShowText)
+			{
+				RenderCrewLabel("Page3_Webber1", label, 0.42f, 0.91f, 0.8f);
+				RenderCrewLabel("Page3_Webber2", label, 0.42f, 0.95f, 0.7f);
+				
+				RenderCrewLabel("Page3_Eva1", label, 0.6f, 0.91f, 0.8f);
+				RenderCrewLabel("Page3_Eva2", label, 0.6f, 0.95f, 0.7f);
+				
+				RenderCrewLabel("Page3_Lukas1", label, 0.73f, 0.91f, 0.8f);
+				RenderCrewLabel("Page3_Lukas2", label, 0.73f, 0.95f, 0.7f);
+			}
+		}
+		else if (asPageID=="CrewPage4")
+		{
+			RenderCrewImage("crew_masson_yasmin.dds", 0.5f, 0.40f, 0.90f);
+			
+			if (abShowText)
+			{
+				RenderCrewLabel("Page4_Masson1", label, 0.38f, 0.88f, 0.8f);
+				RenderCrewLabel("Page4_Masson2", label, 0.38f, 0.92f, 0.7f);
+				
+				RenderCrewLabel("Page4_Yasmin1", label, 0.575f, 0.88f, 0.8f);
+				RenderCrewLabel("Page4_Yasmin2", label, 0.575f, 0.92f, 0.7f);
+			}
+		}
+		else if (asPageID=="CrewPage5")
+		{
+			if (!abShowText)
+			{
+				RenderCrewImage("crew_salim_tasi.dds", 0.5f, 0.40f, 0.90f);
+			}
+			else if (abShowText)
+			{
+				RenderCrewImage("find_salim", 0.5f, 0.40f, 0.90f);
+				
+				RenderCrewLabel("Page5_Salim1", label, 0.35f, 0.88f, 0.8f);
+				RenderCrewLabel("Page5_Salim2", label, 0.35f, 0.92f, 0.7f);
+				
+				RenderCrewLabel("Page5_Tasi1", label, 0.6f, 0.88f, 0.8f);
+				RenderCrewLabel("Page5_Tasi2", label, 0.6f, 0.92f, 0.7f);
+			}
+		}
+		else if (asPageID=="CrewPage6")
+		{
+			RenderCrewImage("loadscreen_1aa", 0.51f, 0.4f, 0.93f);
+		}
+
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+	
+	void RenderCrewLabel(const tString& in asText, cImGuiLabelData &in aLabel, float x, float y, 
+							float scale=0.8f, eFontAlign aAlign = eFontAlign_Center)
+	{
+		const float textZ = gfSketchbookTextDepth;
+		const tWString aswText = cLux_Translate("Sketchbook", asText);
+		float width = GetFontLengthW(aLabel.mFont,  scale*mfCrewFontScale,  aswText);
+		cVector3f pos = ImGui_NrmPosGroup(x,y,textZ);
+		if (aAlign==eFontAlign_Left)
+			pos.x+=width*0.5f;
+		else if (aAlign==eFontAlign_Right)
+			pos.x-=width*0.5f;
+		cLux_GetCurrentImGui().DoLabel(aswText, aLabel, 
+				pos, 
+				cVector2f(-1.0f,-1.0f), scale*mfCrewFontScale);
+	}
+
+	//------------------------------------------------------------
+	
+	void RenderCrewImage(const tString& in asImage, float x, float y, float scale)
+	{
+		const float imageZ = gfSketchbookImgDepth;
+		cImGuiGfx image(asImage, eGuiMaterial_Modulative, eImGuiGfx_TextureTemporary);
+		ImGui_DoImageCorrectAspect(image, 
+				ImGui_NrmPosGroup(x,y,imageZ), ImGui_NrmSizeGroup(scale,scale));
+	}
+	
+	//------------------------------------------------------------
+	
+	void RenderBookCoverLabel(float afFontScale=1.0f)
+	{
+		// This is to fix a bug where the intro sketchbook UI is the
+		// wrong size/shape
+		mfCrewFontScale = afFontScale;
+		ImGui_SetTransCategory("Sketchbook");
+		cImGuiLabelData label = CreateLabel();
+		label.mFontAlign = eFontAlign_Center;
+		
+		RenderCrewLabel("Cover_Line1", label, 0.5f, 0.2f, 0.7f);
+		RenderCrewLabel("Cover_Line2", label, 0.5f, 0.39f, 0.65f);
+		RenderCrewLabel("Cover_Line3", label, 0.5f, 0.58f, 0.7f);
+		RenderCrewLabel("Cover_Line4", label, 0.5f, 0.8f, 0.8f);
+	}
+	
+	//------------------------------------------------------- 
+	
+	bool GetPopupIconsEnabled()
+	{
+		return mbShowPopupIcons;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void _Global_SetPopupIconsEnabled()
+	{
+		mbShowPopupIcons = cScript_GetGlobalArgBool(0);
+	}
+	
+	//-------------------------------------------------------
+	
+	int GetPlaytime(bool abAddCurrent=false)
+	{
+		return (abAddCurrent) ? mlGlobalTime+cLux_GetCurrentMap().GetTimeStamp() : mlGlobalTime;
+	}
+	
+	//-------------------------------------------------------
+	
+	void ResetPlaytime()
+	{
+		mlGlobalTime = 0;
+	}
+	
+	//-------------------------------------------------------
+	
+	bool BeatenDevPlaytime()
+	{
+		mlGlobalTime += cLux_GetCurrentMap().GetTimeStamp();
+		
+		tString sEndTime = String_SecondsToClockDisplay(float(mlGlobalTime) / 60.0f,true,true,true,false);
+		tString sEndMessage = "GAME END TIME: "+sEndTime;
+		cLux_AddDebugMessage(sEndMessage);
+		Log(sEndMessage+"\n");
+		
+		return (mlGlobalTime < DEV_TIME);
+	}
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbOpen = false;
+	bool mbOpenedFlag = false;
+	bool mbFirstFrameFlag = false;
+	int mlSketchbookState = eSketchbookState_Inventory;
+	int mlJournalStateOnOpen = eSketchbookState_Inventory;
+	[nosave] cImGui@ mpGui;
+	int mlBlurID=-1;
+	bool mbOpenSoundDelay = false;
+	
+	////////
+	// Notes
+	array<cNoteEntry> mvFullListOfNotes;
+	array<cNoteCategoryEntry> mvUsedNoteCategories;
+	tString msSelectedNoteID="";
+	tWString msSelectedNoteText;
+	tWString msSelectedNoteBackText;
+	tString msSelectedNoteImage="";
+	int mlSelectedNoteTextOffset=0;
+	int mlNoteListLinesOffset=0;
+	float mfSelectedNoteTextHeight = 0.f;
+	int mlSelectedNotePageCount = 0;
+	int mlSelectedNotePage = 0;
+	int mlElementInFocus = 0;
+	int mlLastElementInFocus = 0;
+	
+	int mlNotesAmount = 0;
+	int mlCrewNotesAmount = 0;
+	int mlCylindersAmount = 0;
+	
+	bool mbCountedNotes = false;
+	
+	tString msLastNoteInFocus;
+	float mfNoteInFocusBlinkTime = 0;
+	
+	float mfTimeBeforeNotesAutoScroll = 0;
+	
+	/////////////
+	// Ideas
+	array<bool> mvIdeasShown;
+	array<bool> mvIdeasComplete;
+	int mlIdeasShown=0;
+	bool mbNotifyIdeas = false;
+	bool mbShowText = false;
+	float mfIdeaNotifyDisplayTimer = 0;
+	float mfIdeaNotofyAlpha = 0;
+	int mlIdeaHintCounter = 0;
+	bool mbIdeaHint = false;
+	bool mbCanCancelIdeaHint = false;
+	
+	////////////
+	// Inventory
+	array<cVector3f> mvInvSlots = 
+	{
+		cVector3f(0.218,0.221,gfInvSlotsDepth),
+		cVector3f(0.300,0.221,gfInvSlotsDepth),
+		cVector3f(0.382,0.221,gfInvSlotsDepth),
+		cVector3f(0.464,0.221,gfInvSlotsDepth),
+		
+		cVector3f(0.218,0.367,gfInvSlotsDepth),
+		cVector3f(0.300,0.367,gfInvSlotsDepth),
+		cVector3f(0.382,0.367,gfInvSlotsDepth),
+		cVector3f(0.464,0.367,gfInvSlotsDepth),
+		
+		cVector3f(0.218,0.513,gfInvSlotsDepth),
+		cVector3f(0.300,0.513,gfInvSlotsDepth),
+		cVector3f(0.382,0.513,gfInvSlotsDepth),
+		cVector3f(0.464,0.513,gfInvSlotsDepth),
+		
+		cVector3f(0.218,0.659,gfInvSlotsDepth),
+		cVector3f(0.300,0.659,gfInvSlotsDepth),
+		cVector3f(0.382,0.659,gfInvSlotsDepth),
+		cVector3f(0.464,0.659,gfInvSlotsDepth)
+	};
+	
+	bool mbShowPopupIcons = true;
+	
+	tString msCurrentItem="";
+	bool mbCanCombine = false;
+	bool mbCanCombineWith = false;
+	eInvMode mInvMode = eInvMode_Select;
+	tString msCombineItem="";
+	cVector3f mvDragStart=cVector3f_Zero;
+	bool mbInventoryEnabled = true;
+	
+	int mlMatchesUsed = 0;
+	int mlMatchesUsedTarget = 120;
+	
+	int mlGlobalTime = 0;
+	
+	tString msPrevInvItemInFocus="";
+	
+	///////////
+	// Memories
+	array<cMemoryEntry> mvMemories;
+	int mlFlashbackState = eFlashbackState_None;
+	tString msCurrentMemory="";
+	tString msFlashbackImage="";
+	tString msFlashbackBlurredImage="";
+	bool mbFlashbackUnblurred=false;
+	float mfFlashbackUnblurDelay=1.f;
+	float mfFlashbackUnblurFadeTime=2.f;
+	float mfFlashbackDuckAudioTo = 0.5f;
+	tString msFlashbackVoice="";
+	tString msFlashbackCallback="";
+	[nosave] bool mbFlashbackAllowSkip = true;
+	int mlMemoryPage=0;
+	int mlIDRadialBlur = -1;
+	int mlIDImageTrail = -1;
+    int mlMicroflashRadialBlurID=-1;
+	tString msMicroflashSubject="";
+	int mlMicroflashLineID = -1;
+	tString msMicroflashCallback = "";
+	float mfMicroflashGrading=0.0f;
+	bool mbMicroFlashPrevPlayerCanRun = true;
+	bool mbMicroflashIsActive = false;
+	float mfInitLookSpeedMul = 1.f;
+	bool mbIsFearPrevActive = false;
+	
+	///////////
+	// Alys
+	int mlAlysPage = 0;
+	array<tString> mvShownLoadScreens;
+    
+    //////////////
+	// Laudanum FX
+    bool mbLaudanumFxActive = false;
+    int mlLaudanumFxState = 0;
+	
+	//////////////
+	// Sfx
+	tString msSoundTab = "player/foley/action/pickup/readable_paper_putdown";
+	tString msSoundNextPage = "player/foley/action/pickup/readable_paper_putdown";
+	tString msSoundPrevPage = "player/foley/action/pickup/readable_paper_putdown";
+	tString msSoundAddIdea = "player/tools/sketchbook/write_short";
+	tString msSoundDrawIdea = "player/tools/sketchbook/write_long";
+	
+	//------------------------------------------------------------
+}

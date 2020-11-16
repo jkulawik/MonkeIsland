@@ -1,0 +1,98 @@
+#include "custom/props/Prop_Pickup.hps"
+#include "custom/player/PlayerState_Normal_Custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "helpers/helper_player.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "helpers/helper_modules.hps"
+
+//------------------------------------------------------------
+
+const float gfBananaHealthIncreaseAmount = 0.2f;
+
+//------------------------------------------------------------
+
+class cScrPropBanana : cScrPropPickup
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnUpdate(float afTimeStep)
+	{
+		cScrPropPickup::OnUpdate(afTimeStep);
+	}
+	
+	void OnTimer_BananaIncreaseHealth(uint64 alID)
+	{
+		Player_AddHealth(gfBananaHealthIncreaseAmount);
+		
+		Sound_CreateAtEntity("Eat", "player/tools/water_bottle/lake/water_drink", "player");
+    }
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GLOBAL
+	/////////////////////////////////////////
+
+	
+	//------------------------------------------------------------
+	
+	void _Global_CopyFromItemEntity() override
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_OnItemTakenOut() override
+	{
+	}
+	
+	void _Global_Eat()
+	{
+		cLux_AddDebugMessage("Eating Banana");
+		
+		if (Player_GetHealth() < 1.0f)
+		{
+			Item_RemoveFromInventory(ItemType_GetFirstInInventory("Banana"));
+			
+			mBaseObj.Timer_Add("BananaIncreaseHealth", 1.f, "OnTimer_BananaIncreaseHealth");
+		}
+	}
+	
+	//------------------------------------------------------------
+			
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	
+	//------------------------------------------------------------
+}	
