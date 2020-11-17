@@ -132,8 +132,7 @@ class cScrPlayerCustom : cScrPlayer
 		ResetNightVision();
 		
 		// TODO: Move these!!
-		mBaseObj.SetCanDie(false);
-		mBaseObj.SetHealth(0.f);
+		mBaseObj.SetCanDie(true);
 		
 		// TODO: Fix this with the new health thingies
 		// Commented out this since the player moves too slow since zero health is default, 
@@ -326,11 +325,12 @@ class cScrPlayerCustom : cScrPlayer
 	
 	void UpdateHealth(float afTimeStep)
 	{
-		float fHealth = mBaseObj.GetHealth();
+		if(mBaseObj.IsDead()) return;
+        
+        float fHealth = mBaseObj.GetHealth();
 
 		///////////////////////
 		// Health speed mul
-	
 		if (mbHealthSpeedMulActive && fHealth < 0.45f)
 		{
 			mfHealthSpeedMul = 0.5f+(fHealth/0.45f)*0.5f;
@@ -342,13 +342,12 @@ class cScrPlayerCustom : cScrPlayer
 		
 		///////////////////////
 		// Create screen effect if hurt
-		// TODO: Commented out this since everything would be red all of the time when health is zero which is default
-		//if (fHealth < 1.f && mlHealthRegen_ScreenId == -1)
-		//{
-			//float fAspect = mBaseObj.GetCamera().GetAspect();
-			//float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
-			//mlHealthRegen_ScreenId = Effect_Screen_Start("player_health_screen.mat", cVector2f(0.5f, 0.5f), cVector2f(fBaseSize * fAspect, fBaseSize));
-		//}
+		if (fHealth < 1.f && mlHealthRegen_ScreenId == -1)
+		{
+			float fAspect = mBaseObj.GetCamera().GetAspect();
+			float fBaseSize = 0.945f - (0.383f * (fAspect - 1.333f));
+			mlHealthRegen_ScreenId = Effect_Screen_Start("player_health_screen.mat", cVector2f(0.5f, 0.5f), cVector2f(fBaseSize * fAspect, fBaseSize));
+		}
 			
 		if (mfHealthRegen_TimeSinceDamage < 999999.f)
 			mfHealthRegen_TimeSinceDamage += afTimeStep;
@@ -360,14 +359,16 @@ class cScrPlayerCustom : cScrPlayer
 						lState != ePlayerState_Custom_Struggle && 
 						lState != ePlayerState_Custom_ReadMemoryCylinder;
 						
-		const float fTimeLimit = 60.f * 3.f;
+		const float fTimeLimit = 60.f;
 		bool bHealthOK = fHealth < 1.f && mfHealthRegen_TimeSinceDamage > fTimeLimit;
 		
 		if (bStateOK && bHealthOK && mbHealthRegen_Active)
 		{
-			float fHealthShield = (FearHandler_GetLevel() - 0.5f) / 0.5f;
-			fHealthShield = cMath_Clamp(fHealthShield, 0.f, 1.f);
-			mBaseObj.SetHealth(fHealthShield);
+            float fSpeed = fHealth<0.17 ? (0.35f / 90.0f) : (0.35f / 140.0f);
+            if(fHealth > 0.4) fSpeed *= 0.75f;
+            
+            fHealth = cMath_IncreaseTo(fHealth, fSpeed*afTimeStep, 0.45f);
+            mBaseObj.SetHealth(fHealth);
 		}
 		
 		///////////////////////
@@ -376,7 +377,9 @@ class cScrPlayerCustom : cScrPlayer
 		{
 			float fAlpha = 1.f - cMath_Clamp(fHealth, 0.f, 1.f);
 			Effect_Screen_SetAlpha(mlHealthRegen_ScreenId, fAlpha * 0.3f);
-		}		
+		}
+		
+		//cLux_AddDebugMessage(fHealth + "");
 	}
 	
 	//------------------------------------------------------------
@@ -421,15 +424,6 @@ class cScrPlayerCustom : cScrPlayer
 	
 	void OnDamageTaken(float afAmount, int aType, tID a_idSource) override
 	{
-		if(Player_GetHealth() <= 0.f )
-		{
-			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
-			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
-			Death_Start("");
-			
-			return;
-		}
-		
 		////////////////
 		// Setup
 		tString sSource = "";
@@ -448,7 +442,7 @@ class cScrPlayerCustom : cScrPlayer
 			
 			if (bDead == false)
 			{
-				Sound_PlayGui("player/vocalisations/hurt/player_pain_med", 1.0f, eSoundEntryType_GuiWorld);
+				Sound_PlayGui("monke/Player/reaction/air/hurt", 1.0f, eSoundEntryType_GuiWorld);
 				
 				if (PlayerBody_IsActive() &&
 					aType == eDamageType_FallBig &&
@@ -463,11 +457,7 @@ class cScrPlayerCustom : cScrPlayer
 		{			
 			if (bDead == false && bPlayerSpeaking)
 			{
-				tString sVocalization = "small";
-				if (afAmount >= 0.75) 		sVocalization = "big";
-				else if (afAmount >= 0.5)	sVocalization = "med";
-				
-				Sound_PlayGui("player/vocalisations/hurt/player_pain_"+ sVocalization + Player_GetReactionSoundSuffix(),1);
+				Sound_PlayGui("monke/Player/reaction/air/hurt_" + Player_GetReactionSoundSuffix(),1);
 			}
 		}
 
@@ -498,26 +488,7 @@ class cScrPlayerCustom : cScrPlayer
 			else if (afAmount>=0.1f)
 				ModEvent_Trigger(eModEvent_Hurt_Minor);
 		}
-				
-		////////////////
-		// Add fear if any
-		if (Player_GetHealth() <= 0.f && afAmount > 0.f)
-		{			
-			float fFear = FearHandler_GetLevel();
-			float fTotalFear = fFear + afAmount;
-						
-			if (fFear <= mfDamage_MaxFearLevel)
-			{
-				if (fTotalFear > mfDamage_MaxFearLevel)
-					afAmount -= fTotalFear - mfDamage_MaxFearLevel;
-				
-				FearHandler_IncreaseLevel(afAmount, sSource, false, true);
-			}
-		}
 		
-		mfDamage_MaxFearLevel = 1.f;
-		
-		FearHandler_DoTentacleBoost();
 		
 		////////////////
 		// Map callback
@@ -587,7 +558,7 @@ class cScrPlayerCustom : cScrPlayer
 	{
 		if (cLux_GetPlayer().IsActive() && cLux_GetPlayer().GetCanDie())
 		{            
-			Sound_PlayGui("player/vocalisations/hurt/player_death" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
 			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
 			Death_Start(asSource);
 		}
@@ -2072,7 +2043,7 @@ class cScrPlayerCustom : cScrPlayer
 			if (Voice_AnySceneIsActive())
 				return;
 			
-			Voice_PlayDelayed("Global_Lantern_TryButLost", 0.5f);
+			//Voice_PlayDelayed("Global_Lantern_TryButLost", 0.5f);
 		}
 	}
 		

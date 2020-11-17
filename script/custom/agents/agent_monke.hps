@@ -720,7 +720,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 
 		mpAttackDamage.AddType(1,"CloseAttackL");
 		mpAttackDamage.SetType_Damage(0.4, 0.4);
-		mpAttackDamage.SetType_DamageType(eDamageType_Silent);
+		mpAttackDamage.SetType_DamageType(eDamageType_FallBig);
 		mpAttackDamage.SetType_Affects(true, false, true);
 		mpAttackDamage.SetType_Force(fAttackForce, 1);
 		mpAttackDamage.SetType_AddShapeAtSocket("socket_lefthand_damage",0, fCloseAttackRadius);
@@ -728,7 +728,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 		
 		mpAttackDamage.AddType(2,"CloseAttackR");
 		mpAttackDamage.SetType_Damage(0.4, 0.4);
-		mpAttackDamage.SetType_DamageType(eDamageType_Silent);
+		mpAttackDamage.SetType_DamageType(eDamageType_FallBig);
 		mpAttackDamage.SetType_Affects(true, false, true);
 		mpAttackDamage.SetType_Force(fAttackForce, 1);
 		mpAttackDamage.SetType_AddShapeAtSocket("socket_righthand_damage",0, fCloseAttackRadius);
@@ -736,7 +736,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 		
 		mpAttackDamage.AddType(3,"WeakAttackLeft");
 		mpAttackDamage.SetType_Damage(0.125, 0.3);
-		mpAttackDamage.SetType_DamageType(eDamageType_Silent);
+		mpAttackDamage.SetType_DamageType(eDamageType_Default);
 		mpAttackDamage.SetType_Force(fAttackForce * 0.75, 1);
 		mpAttackDamage.SetType_Affects(true, false, true);
 		mpAttackDamage.SetType_AddShapeAtSocket("socket_lefthand_damage",0, fCloseAttackRadius);
@@ -2265,8 +2265,6 @@ class cScrAgentMonke : cScrAgentHumanoid
 					if (mbAttack_InstantKill) Player_GiveDamage(1, 1.f, eDamageType_Thrown, mBaseObj.GetName());
 					else Player_GiveDamage(mfThrowPlayer_Damage, 1.f, eDamageType_Thrown, mBaseObj.GetName()); 
 					
-					// TODO: temp
-//					if (fFearAfterHit >= 1) FearHandler_TriggerPermaFail(true, mBaseObj.GetName());
 					Player_GiveDamage(0.0f, 1.0f, eDamageType_Silent, mBaseObj.GetName());
 					
 					break;
@@ -10029,7 +10027,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 	bool mbThrowPlayer_AnimationOverCallbackAutoRemove = false;
 	tString msThrowPlayer_AnimationOverCallback = "";
 	tString msThrowPlayer_AnimState = "";
-	float mfThrowPlayer_Damage = 0.35f;
+	float mfThrowPlayer_Damage = 0.25f;
 
 	//------------------------------------------------------------
 	
