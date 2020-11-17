@@ -66,8 +66,7 @@ tString gsFearSoundParam_FearAreaMusic_1 = "FearLevel";
 tString gsFearSoundParam_FearAreaMusic_2 = "FearRate";
 
 tString gsFearSound_Crouch = "player/vocalisations/fear/fear_crouch";
-tString gsFearSound_Gasp = "player/vocalisations/fear/fear_scare";
-tString gsFearSound_GaspAlt = "player/emotes/scare";
+tString gsFearSound_Gasp = "monke/Player/breaths/air_fear";
 
 bool gbFearSound_Crackling_Active = true;
 tString gsFearSound_Crackling = "player/UI/sanity/sanity_loop";
@@ -539,11 +538,7 @@ class cScrFearHandler : iScrUserModule, iScrUserModule_Interface, iScrFearHandle
 	
 	void OnTimer_PlayFearGasp(uint64 alID)
 	{
-		// Add a few more last-minute variants - IT
-		if (cMath_RandRectf(0.0f,10.0f)>5.0f)
-			PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, gsFearSound_GaspAlt, -1, 0.1, 1);
-		else
-			PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, gsFearSound_Gasp, -1, 0.1, 1);
+		PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, gsFearSound_Gasp, -1, 0.1, 1);
 	}
 	
 	//------------------------------------------------------------

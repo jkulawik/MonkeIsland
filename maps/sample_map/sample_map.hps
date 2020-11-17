@@ -59,10 +59,14 @@ class cScrMap : iScrMap
 	void OnEnter()
 	{
 		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
-		Pregnancy_SetBarksActive(false);
+		
 		PlayerBody_SetActive(true);
+		
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
+		
+		Pregnancy_SetBarksActive(false);
 				
 		Entity_SetActive("monke", true);
 		Monke_SetSmellingActive("monke", true);
@@ -85,6 +89,11 @@ class cScrMap : iScrMap
 	{
 	
 	}
+	
+	bool OnDeath(const tString &in asSource)
+	{
+		return false;
+	}
 
 	//-------------------------------------------------------
 
@@ -96,7 +105,10 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			cLux_AddDebugMessage(Player_GetHealth() + "");
+		}
+		if(alAction == eAction_Test2)
+		{
+			Sketchbook_AddAllIdeas(true);
 		}
 	}
 

@@ -583,14 +583,11 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 		// Set up the new objective object for adding in to our array.
 		cIdeaEntry newIdea;
 		newIdea.Setup(pElem);
-		//Debug_Log(newIdea.msName);
 		
 		// Are we replacing an old sketch?
 		if (asIdeaToReplace != "")
 		{
 			RemoveAndFadeIdea(asIdeaToReplace);
-			//RemoveIdea(asIdeaToReplace);
-			//newIdea.mfAlpha = 1.f;
 		}
 		
 		int lPage = mvIdeasPageIdentifiers.find(newIdea.msPage);
@@ -828,7 +825,7 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 	
 	//------------------------------------------------------------
 	
-	void OpenSketchbook(const bool abPauseGame=true)
+	void OpenSketchbook(const bool abPauseGame=false)
 	{
 		if (mbOpen) return;
 		if (Player_IsActive()==false) return;
@@ -1187,16 +1184,6 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 			Error("[SkethcbookHandler] Couldn't load memories.cfg!");
 			return;
 		}
-		
-		//mvMemories.resize(0);
-		
-		// Add Crew Memories first!
-		if (MemoryExists("CrewPage1")==false) AddCrewMemory("CrewPage1");
-		if (MemoryExists("CrewPage2")==false) AddCrewMemory("CrewPage2");
-		if (MemoryExists("CrewPage3")==false) AddCrewMemory("CrewPage3");
-		if (MemoryExists("CrewPage4")==false) AddCrewMemory("CrewPage4");
-		if (MemoryExists("CrewPage5")==false) AddCrewMemory("CrewPage5");
-		if (MemoryExists("CrewPage6")==false) AddCrewMemory("CrewPage6");
 		
 		//////////////////////
 		
@@ -4083,6 +4070,10 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 							{
 								Hint_DrawExplicit("InventoryUI", "HintInventoryUseOil", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
 							}
+							else if(cString_Sub(msCurrentItem, 0, 6) == "Banana")
+							{
+								Hint_DrawExplicit("InventoryUI", "HintInventoryUseBanana", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
 							else if (cString_GetFirstStringPos(msCurrentItem, "ShadowFleshVial") >= 0 && ItemType_GetFirstInInventory("ShadowFleshCanister") != "")
 							{
 								Hint_DrawExplicit("InventoryUI", "HintInventoryUseCapsule", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
@@ -4162,11 +4153,26 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 		
 		if (pItem is null) return;
 		
-        /////////////////
-        // Oil Management
+		/////////////////
+		// Oil Management
 		if (cString_GetFirstStringPos(asItemID, "Oil") > 0)
 		{
 			Item_Combine(msCurrentItem, ItemType_GetFirstInInventory("Lantern"));
+			return;
+		}
+		
+        /////////////////
+        // Banana Management
+		if (cString_Sub(asItemID, 0, 6) == "Banana")
+		{
+			if (Player_GetHealth() < 1.0f)
+			{
+				Item_RemoveFromInventory(ItemType_GetFirstInInventory("Banana"));
+				CloseSketchbook();
+				
+				mBaseObj.Timer_Add("BananaIncreaseHealth", 0.5f, "OnTimer_BananaIncreaseHealth");
+			}
+			
 			return;
 		}
 		
@@ -4239,6 +4245,14 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
         float fCurrFearLevel = FearHandler_GetLevel();
         fCurrFearLevel = fCurrFearLevel - 0.33f;
         FearHandler_FadeLevelTo(fCurrFearLevel, 1.5f, true);
+    }
+	
+	void OnTimer_BananaIncreaseHealth(uint64 alID)
+	{
+		Player_AddHealth(0.2f);
+		
+		cLux_AddTodoMessage("Add Banana Eating sfx");
+		//Sound_CreateAtEntity("Eat", "", "player");
     }
     
 	//------------------------------------------------------------
@@ -4364,23 +4378,7 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 		vTextPos += cVector3f(8,13,0);
 		
 		tString sBackgroundImg = (lCount == 0) ? "container_background_empty" : "container_background";
-		/*ImGui_DoImage(cImGuiGfx(sBackgroundImg), vStackPos-cVector3f(vStackBgSize.x*0.5f,vStackBgSize.y*0.5f,0.0f), vStackBgSize);
-		if (lCount>0)
-		{
-			float fHeightScale = lCount/(pItem.GetType().GetAmountMax()*1.0f);
-			fHeightScale+=afAdditionalProgress/pItem.GetType().GetAmountMax();
-			fHeightScale = 0.05f+0.85f*fHeightScale;
-			float fFullHeight = vStackBgSize.y;
-			float fYOffs = fFullHeight*(1.0f-fHeightScale);
-			vStackBgSize.y=fFullHeight*fHeightScale;
-			cImGuiGfx fill("container_"+cString_ToLowerCase(sSubType));
-			fill.mvUVMin.y=1.0f-fHeightScale;
-			fill.mvUVMax.y=1;
-			ImGui_DoImage(fill, vStackPos-cVector3f(vStackBgSize.x*0.5f,fFullHeight*0.5f,-0.1f)+cVector3f(0,fYOffs,0), vStackBgSize);
-		}*/
 		ImGui_SetTransCategory("");
-		//tWString sStack = cResources_Translate("InventoryUI", "Container");
-		//tWString sOut = cString_ReplaceStringToW(sStack, tWString("%n"), cString_ToStringW(lCount,0));
 		
 		tWString sOut = lCount + "/" + pItem.GetMaxAmount();
 		

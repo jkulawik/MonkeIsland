@@ -48,6 +48,7 @@ const float gfSafePositionMaxBuffer = 5.0f;
 const float gfSmallFallDistance = 1.0f;
 const float gfMediumFallDistance = 3.5f;
 const float gfBigFallDistance = 6.0f;
+const float gfDeathFallDistance = 11.0f;
 
 //------------------------------------------------------------
 
@@ -146,6 +147,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 		mfSmallFallDistance = gfSmallFallDistance;
 		mfMediumFallDistance = gfMediumFallDistance;
 		mfBigFallDistance = gfBigFallDistance;
+		mfDeathFallDistance = gfDeathFallDistance;
 	}
 	
 	//------------------------------------------------------------
@@ -1387,8 +1389,14 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 			// Larger distances required if landing on sand
 			if (mbLandSofterOnSand && cScript_GetGlobalVarBool("PlayerOnSand"))
 				fFallDistance *= 0.7f;
-			
-			if (fFallDistance > mfBigFallDistance)									lFallType = 2;
+						
+			if (fFallDistance > mfDeathFallDistance)
+			{
+				mBaseObj.GiveDamage(1.0f, 1, eDamageType_FallBig, 0, tID_Invalid, -1);
+				
+				return;
+			}
+			else if (fFallDistance > mfBigFallDistance)								lFallType = 2;
 			else if (fFallDistance > mfMediumFallDistance)							lFallType = 1;
 			else if (fFallDistance > mfSmallFallDistance && mbFallJumped == false)	lFallType = 0;
 						
@@ -1401,6 +1409,9 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 			if (lFallType == 0)
 			{
 				ModEvent_Trigger(eModEvent_Fall_Small);
+				
+				Sound_PlayGui("player/foley/damage/player_fall_damage" + Player_GetReactionSoundSuffix(), 0.5f);
+				Sound_PlayGui("monke/Player/landing/default" + Player_GetReactionSoundSuffix(), 1);
 			}
 			else if (lFallType == 1)
 			{
@@ -1481,6 +1492,10 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 		mlFallDamageTimesCount++;
 		
 		cLux_AddDebugMessage("mlFallDamageTimesCount: " + mlFallDamageTimesCount);
+		
+		// DISABLED REMINDER HINT
+/*		if (mlFallDamageTimesCount==2 || mlFallDamageTimesCount==7)
+			Hint_ShowHint_Hold("Hints", "HintCrouchFall", true, 1.5f, false, 10.f);*/
 	}
 	
 	//------------------------------------------------------------
@@ -2213,6 +2228,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	float mfSmallFallDistance = gfSmallFallDistance;
 	float mfMediumFallDistance = gfMediumFallDistance;
 	float mfBigFallDistance = gfBigFallDistance;
+	float mfDeathFallDistance = gfDeathFallDistance;
 	
 	bool mbShowFallDmgHints = false;
 	[nosave] int mlFallDamageTimesCount = 0;
