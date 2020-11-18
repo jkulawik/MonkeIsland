@@ -134,7 +134,6 @@ class cScrPlayerCustom : cScrPlayer
 		// TODO: Move these!!
 		mBaseObj.SetCanDie(true);
 		
-		// TODO: Fix this with the new health thingies
 		// Commented out this since the player moves too slow since zero health is default, 
 		// might want to change this depending on fear instead
 		mbHealthSpeedMulActive = false;
@@ -424,6 +423,28 @@ class cScrPlayerCustom : cScrPlayer
 	
 	void OnDamageTaken(float afAmount, int aType, tID a_idSource) override
 	{
+		cLux_AddDebugMessage(Player_GetHealth() +  "");
+		
+		if (cLux_GetPlayer().IsActive() && Player_GetHealth() <= 0)
+		{
+			Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
+			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
+			
+			tString sSource = "";
+			
+			iLuxEntity@ pEnt = cLux_GetCurrentMap().GetEntityByID(a_idSource);
+			if (pEnt !is null)
+			{
+				sSource = pEnt.GetName();
+			}
+			
+			Death_Start(sSource);
+			
+			mBaseObj.SetCanDie(true);
+			
+			return;
+		}
+		
 		////////////////
 		// Setup
 		tString sSource = "";

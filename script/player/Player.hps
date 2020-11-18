@@ -1392,6 +1392,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 						
 			if (fFallDistance > mfDeathFallDistance)
 			{
+				ModEvent_Trigger(eModEvent_Fall_Big);
 				mBaseObj.GiveDamage(1.0f, 1, eDamageType_FallBig, 0, tID_Invalid, -1);
 				
 				return;
