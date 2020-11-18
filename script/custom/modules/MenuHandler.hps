@@ -421,8 +421,6 @@ class cLastTimeOnGameScreen
 				Music_StopAll(2.0f);
                 Sound_Stop("MenuBGNoise",2.0f);
 				cSound_PlayGuiStream("loadscreen_background", true, 0.15f, cVector3f(0,0,0), eSoundEntryType_Safe);
-				//cSound_GetEntry("loadscreen_background").FadeIn(0.15f, 1.0f/3.0f);
-				//Music_PlayExt("loadscreen_background", true, 0.15f, 1.0f, 3.0f, 0.0f, eMusicPrio_BgAmb, true);
 			}
 			
 			/////////////////////////////////////
@@ -2026,8 +2024,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 	void ClickNewGame()
 	{
 		//New game sting
-		cLux_AddTodoMessage("Sound: New game stinger");
-		//Sound_PlayGui("special_fx/frontend/new_game_sting", 1.0f, eSoundEntryType_Gui);
         Sound_Stop("MenuBGNoise", mfFadeLength);
 		
 		// No continue or load button, no need to confirm
@@ -2037,7 +2033,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		//Fade out music quickly to stop the new game stinger from being out of key with the music
 		Music_StopAll(1.0f);
 		
-		Sound_PlayGui("special_fx/frontend/new_game_sting", 1.0f, eSoundEntryType_Gui);
+		Sound_PlayGui("monke/UI/menu_button", 1.0f, eSoundEntryType_Gui);
 		
 		cLux_GetGuiHandler().SetGameHudInputFocus(false);
 		mbShowNewGame = false;
@@ -2071,7 +2067,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 					mlClickedMainMenuButton = eMainMenuButtonID_Continue;
 					Sound_Stop("MenuBGNoise", 2.0f);
 					Music_StopAll(2.0f);
-					Sound_PlayGui("special_fx/frontend/new_game_sting", 1.0f, eSoundEntryType_Gui);
+					Sound_PlayGui("monke/UI/menu_button", 1.0f, eSoundEntryType_Gui);
 				}
 					
 				msSelectedMainMenuButton = OptionMenu_UpdateFocus("Continue", msSelectedMainMenuButton);

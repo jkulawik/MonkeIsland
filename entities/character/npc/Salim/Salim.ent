@@ -1,0 +1,245 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="entities/character/npc/Salim/Salim.fbx">
+            <SubMesh ID="148" Name="Salim_Hair" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="5586" Material="" Static="true" />
+            <SubMesh ID="149" Name="Salim_Skin" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="11462" Material="" Static="true" />
+            <SubMesh ID="150" Name="Salim_Clothes" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="8239" Material="" Static="true" />
+        </Mesh>
+        <Bones>
+            <Bone ID="151" Name="j_Root" />
+            <Bone ID="152" Name="j_L_Hip" />
+            <Bone ID="153" Name="j_L_Leg_1" />
+            <Bone ID="154" Name="j_L_Leg_2" />
+            <Bone ID="155" Name="j_L_Leg_3" />
+            <Bone ID="156" Name="j_L_Leg_4" />
+            <Bone ID="157" Name="j_L_Leg_5" />
+            <Bone ID="158" Name="j_L_Leg_6" />
+            <Bone ID="159" Name="j_L_Foot" />
+            <Bone ID="160" Name="j_L_Ball" />
+            <Bone ID="161" Name="j_bag1" />
+            <Bone ID="162" Name="j_bag2" />
+            <Bone ID="163" Name="j_R_Hip" />
+            <Bone ID="164" Name="j_R_Leg_1" />
+            <Bone ID="165" Name="j_R_Leg_2" />
+            <Bone ID="166" Name="j_R_Leg_3" />
+            <Bone ID="167" Name="j_R_Leg_4" />
+            <Bone ID="168" Name="j_R_Leg_5" />
+            <Bone ID="169" Name="j_R_Leg_6" />
+            <Bone ID="170" Name="j_R_Foot" />
+            <Bone ID="171" Name="j_R_Ball" />
+            <Bone ID="172" Name="j_Spine_1" />
+            <Bone ID="173" Name="j_Spine_2" />
+            <Bone ID="174" Name="j_Spine_3" />
+            <Bone ID="175" Name="j_L_Clavicle" />
+            <Bone ID="176" Name="j_L_Arm_1" />
+            <Bone ID="177" Name="j_L_Arm_2" />
+            <Bone ID="178" Name="j_L_Arm_3" />
+            <Bone ID="179" Name="j_L_Arm_4" />
+            <Bone ID="180" Name="j_L_Arm_5" />
+            <Bone ID="181" Name="j_L_Arm_6" />
+            <Bone ID="182" Name="j_L_Wrist" />
+            <Bone ID="183" Name="j_L_Thumb_0" />
+            <Bone ID="184" Name="j_L_Thumb_1" />
+            <Bone ID="185" Name="j_L_Thumb_2" />
+            <Bone ID="186" Name="j_L_Index_0" />
+            <Bone ID="187" Name="j_L_Index_1" />
+            <Bone ID="188" Name="j_L_Index_2" />
+            <Bone ID="189" Name="j_L_Index_3" />
+            <Bone ID="190" Name="j_L_Mid_0" />
+            <Bone ID="191" Name="j_L_Mid_1" />
+            <Bone ID="192" Name="j_L_Mid_2" />
+            <Bone ID="193" Name="j_L_Mid_3" />
+            <Bone ID="194" Name="j_L_Ring_0" />
+            <Bone ID="195" Name="j_L_Ring_1">
+                <Sockets>
+                    <Socket ID="313" Name="RingSocket" CreStamp="0" ModStamp="1591620741" WorldPos="0.56668 0.951286 0.154875" Rotation="0 0 0" Scale="1 1 1" SourceBoneName="" />
+                </Sockets>
+            </Bone>
+            <Bone ID="196" Name="j_L_Ring_2" />
+            <Bone ID="197" Name="j_L_Ring_3" />
+            <Bone ID="198" Name="j_L_Pinky_0" />
+            <Bone ID="199" Name="j_L_Pinky_1" />
+            <Bone ID="200" Name="j_L_Pinky_2" />
+            <Bone ID="201" Name="j_L_Pinky_3" />
+            <Bone ID="202" Name="j_L_HandSocket" />
+            <Bone ID="203" Name="j_Neck" />
+            <Bone ID="204" Name="j_Head" />
+            <Bone ID="205" Name="j_Head_Jaw" />
+            <Bone ID="206" Name="j_Head_Chin" />
+            <Bone ID="207" Name="j_L_LowerLip" />
+            <Bone ID="208" Name="j_Mid_LowerLip" />
+            <Bone ID="209" Name="j_R_LowerLip" />
+            <Bone ID="210" Name="j_L_LowerCheek2" />
+            <Bone ID="211" Name="j_R_LowerCheek2" />
+            <Bone ID="212" Name="j_Tongue_1" />
+            <Bone ID="213" Name="j_Tongue_2" />
+            <Bone ID="214" Name="j_Tongue_3" />
+            <Bone ID="215" Name="j_L_Eye" />
+            <Bone ID="216" Name="j_R_Eye" />
+            <Bone ID="217" Name="j_L_UpperLip" />
+            <Bone ID="218" Name="j_Mid_UpperLip" />
+            <Bone ID="219" Name="j_L_Mouthcorner" />
+            <Bone ID="220" Name="j_R_UpperLip" />
+            <Bone ID="221" Name="j_R_Mouthcorner" />
+            <Bone ID="222" Name="j_Nose_1" />
+            <Bone ID="223" Name="j_Nose_2" />
+            <Bone ID="224" Name="j_L_Nostril" />
+            <Bone ID="225" Name="j_R_Nostril" />
+            <Bone ID="226" Name="j_L_UpperEyelid1" />
+            <Bone ID="227" Name="j_L_UpperEyelid2" />
+            <Bone ID="228" Name="j_L_LowerEyelid1" />
+            <Bone ID="229" Name="j_L_LowerEyelid2" />
+            <Bone ID="230" Name="j_L_UpperCheek1" />
+            <Bone ID="231" Name="j_L_UpperCheek2" />
+            <Bone ID="232" Name="j_R_UpperCheek1" />
+            <Bone ID="233" Name="j_R_UpperCheek2" />
+            <Bone ID="234" Name="j_R_Forehead" />
+            <Bone ID="235" Name="j_Mid_Forehead" />
+            <Bone ID="236" Name="j_L_Forehead" />
+            <Bone ID="237" Name="j_L_Eyebrow1" />
+            <Bone ID="238" Name="j_L_Eyebrow2" />
+            <Bone ID="239" Name="j_L_Eyebrow3" />
+            <Bone ID="240" Name="j_L_Hair_0" />
+            <Bone ID="241" Name="j_L_Hair_1" />
+            <Bone ID="242" Name="j_L_Hair_2" />
+            <Bone ID="243" Name="j_L_Hair_3" />
+            <Bone ID="244" Name="j_L_Hair_4" />
+            <Bone ID="245" Name="j_Mid_Hair_0" />
+            <Bone ID="246" Name="j_Mid_Hair_1" />
+            <Bone ID="247" Name="j_Mid_Hair_2" />
+            <Bone ID="248" Name="j_Mid_Hair_3" />
+            <Bone ID="249" Name="j_Mid_Hair_4" />
+            <Bone ID="250" Name="j_R_Hair_0" />
+            <Bone ID="251" Name="j_R_Hair_1" />
+            <Bone ID="252" Name="j_R_Hair_2" />
+            <Bone ID="253" Name="j_R_Hair_3" />
+            <Bone ID="254" Name="j_R_Hair_4" />
+            <Bone ID="255" Name="j_L_LowerCheek1" />
+            <Bone ID="256" Name="j_R_LowerCheek1" />
+            <Bone ID="257" Name="j_R_UpperEyelid1" />
+            <Bone ID="258" Name="j_R_UpperEyelid2" />
+            <Bone ID="259" Name="j_R_LowerEyelid1" />
+            <Bone ID="260" Name="j_R_LowerEyelid2" />
+            <Bone ID="261" Name="j_R_Eyebrow1" />
+            <Bone ID="262" Name="j_R_Eyebrow2" />
+            <Bone ID="263" Name="j_R_Eyebrow3" />
+            <Bone ID="264" Name="j_R_Clavicle" />
+            <Bone ID="265" Name="j_R_Arm_1" />
+            <Bone ID="266" Name="j_R_Arm_2" />
+            <Bone ID="267" Name="j_R_Arm_3" />
+            <Bone ID="268" Name="j_R_Arm_4" />
+            <Bone ID="269" Name="j_R_Arm_5" />
+            <Bone ID="270" Name="j_R_Arm_6" />
+            <Bone ID="271" Name="j_R_Wrist" />
+            <Bone ID="272" Name="j_R_Thumb_0" />
+            <Bone ID="273" Name="j_R_Thumb_1" />
+            <Bone ID="274" Name="j_R_Thumb_2" />
+            <Bone ID="275" Name="j_R_Ring_0" />
+            <Bone ID="276" Name="j_R_Ring_1" />
+            <Bone ID="277" Name="j_R_Ring_2" />
+            <Bone ID="278" Name="j_R_Ring_3" />
+            <Bone ID="279" Name="j_R_Pinky_0" />
+            <Bone ID="280" Name="j_R_Pinky_1" />
+            <Bone ID="281" Name="j_R_Pinky_2" />
+            <Bone ID="282" Name="j_R_Pinky_3" />
+            <Bone ID="283" Name="j_R_HandSocket" />
+            <Bone ID="284" Name="j_R_Mid_0" />
+            <Bone ID="285" Name="j_R_Mid_1" />
+            <Bone ID="286" Name="j_R_Mid_2" />
+            <Bone ID="287" Name="j_R_Mid_3" />
+            <Bone ID="288" Name="j_R_Index_0" />
+            <Bone ID="289" Name="j_R_Index_1" />
+            <Bone ID="290" Name="j_R_Index_2" />
+            <Bone ID="291" Name="j_R_Index_3" />
+            <Bone ID="292" Name="j_collar" />
+            <Bone ID="293" Name="j_L_scarf_1" />
+            <Bone ID="294" Name="j_L_scarf_2" />
+            <Bone ID="295" Name="j_R_scarf_1" />
+            <Bone ID="296" Name="j_R_scarf_2" />
+            <Bone ID="297" Name="j_R_scarf_3" />
+            <Bone ID="298" Name="j_Char_root" />
+            <Bone ID="299" Name="j_belt_1" />
+            <Bone ID="300" Name="j_belt_2" />
+            <Bone ID="301" Name="Rig_Grp" />
+            <Bone ID="302" Name="Data_Grp" />
+            <Bone ID="303" Name="Static_Grp" />
+            <Bone ID="304" Name="Spine_Grp" />
+            <Bone ID="305" Name="Spine_Rbn_RibbonJoint_Grp" />
+            <Bone ID="306" Name="Spine_RbnPos0_Grp" />
+            <Bone ID="307" Name="Spine_RbnJoint0_Grp" />
+            <Bone ID="308" Name="Spine_Rbn0_Jnt" />
+            <Bone ID="309" Name="Salim_Mesh" />
+            <Bone ID="310" Name="Salim_Hair" />
+            <Bone ID="311" Name="Salim_Skin" />
+            <Bone ID="312" Name="Salim_Clothes" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations>
+            <Animation Name="salim_encounter_pose_1" File="entities/character/npc/Salim/Animations/salim_encounter_pose_1.fbx" Layer="Default" Speed="1" />
+            <Animation Name="salim_encounter_pose_2" File="entities/character/npc/Salim/Animations/salim_encounter_pose_2.fbx" Layer="Default" Speed="1" />
+            <Animation Name="salim_encounter_take_ring" File="entities/character/npc/Salim/Animations/salim_encounter_take_ring.fbx" Layer="Default" Speed="1" />
+            <Animation Name="salim_encounter" File="entities/character/npc/Salim/Animations/salim_encounter.fbx" Layer="Default" Speed="1" />
+        </Animations>
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Prop_Rigid">
+        <Var ObjectId="4294967295" Name="Health" Value="1.0" />
+        <Var ObjectId="4294967295" Name="Toughness" Value="0" />
+        <Var ObjectId="4294967295" Name="MaxInteractDistance" Value="0" />
+        <Var ObjectId="4294967295" Name="EventTag" Value="" />
+        <Var ObjectId="4294967295" Name="ShowHints" Value="true" />
+        <Var ObjectId="4294967295" Name="LifeLength" Value="0" />
+        <Var ObjectId="4294967295" Name="DissolveDuringLifeDecrease" Value="true" />
+        <Var ObjectId="4294967295" Name="QuickSave" Value="false" />
+        <Var ObjectId="4294967295" Name="FullGameSave" Value="false" />
+        <Var ObjectId="4294967295" Name="BlocksLineOfSight" Value="MaterialBased" />
+        <Var ObjectId="4294967295" Name="MainPhysicsBody" Value="" />
+        <Var ObjectId="4294967295" Name="NoGravityWhenUnderwater" Value="false" />
+        <Var ObjectId="4294967295" Name="DisableFreezeAtStart" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="" />
+        <Var ObjectId="4294967295" Name="ShowMesh" Value="true" />
+        <Var ObjectId="4294967295" Name="DissolveOnDestruction" Value="false" />
+        <Var ObjectId="4294967295" Name="DissolveTime" Value="1.0" />
+        <Var ObjectId="4294967295" Name="RandomizeAnimationStart" Value="true" />
+        <Var ObjectId="4294967295" Name="RootMotionBone" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOnSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOffSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOnTime" Value="0.2" />
+        <Var ObjectId="4294967295" Name="EffectsOffTime" Value="0.2" />
+        <Var ObjectId="4294967295" Name="StaticMoveCheckCollision" Value="false" />
+        <Var ObjectId="4294967295" Name="StaticMoveStartSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveStopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSoundFade" Value="true" />
+        <Var ObjectId="4294967295" Name="BreakActive" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomBreakBehaviour" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakOnlyOnMainBody" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakDestroyJoints" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakMinEnergy" Value="100" />
+        <Var ObjectId="4294967295" Name="BreakEntity" Value="" />
+        <Var ObjectId="4294967295" Name="BreakEntityAlignBody" Value="" />
+        <Var ObjectId="4294967295" Name="BreakSound" Value="" />
+        <Var ObjectId="4294967295" Name="BreakParticleSystem" Value="" />
+        <Var ObjectId="4294967295" Name="BreakImpulse" Value="4" />
+        <Var ObjectId="4294967295" Name="InteractOnlyWithMainBody" Value="false" />
+        <Var ObjectId="4294967295" Name="ScaryObject_BaseFearRate" Value="0.1" />
+        <Var ObjectId="4294967295" Name="ScaryObject_SurpriseFactor" Value="-1.0" />
+        <Var ObjectId="4294967295" Name="ScaryObject_LookAtFactor" Value="-1.0" />
+        <Var ObjectId="4294967295" Name="ScaryObject_ActivationDelay" Value="0.0" />
+        <Var ObjectId="4294967295" Name="ScaryObject_ActivationLightLevel" Value="0.1" />
+        <Var ObjectId="4294967295" Name="ScaryObject_ActivationDistance" Value="3.5" />
+        <Var ObjectId="4294967295" Name="ScaryObject_DeactivationDistance" Value="3.5" />
+        <Var ObjectId="4294967295" Name="ScaryObject_InteractFactor" Value="-1.0" />
+        <Var ObjectId="4294967295" Name="Threat_BaseFearRate" Value="0.1" />
+        <Var ObjectId="4294967295" Name="Threat_SurpriseFactor" Value="-1.0" />
+        <Var ObjectId="4294967295" Name="Threat_LookAtFactor" Value="-1.0" />
+        <Var ObjectId="4294967295" Name="Threat_ActivationDelay" Value="0.0" />
+        <Var ObjectId="4294967295" Name="Threat_ActivationLightLevel" Value="0.1" />
+        <Var ObjectId="4294967295" Name="Threat_MaxFearDistance" Value="2.0" />
+        <Var ObjectId="4294967295" Name="Threat_MinFearDistance" Value="6.0" />
+    </UserDefinedVariables>
+</Entity>

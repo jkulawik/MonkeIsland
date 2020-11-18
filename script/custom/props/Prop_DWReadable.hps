@@ -1,0 +1,164 @@
+#include "props/Prop_Readable.hps"
+#include "helpers/helper_audio.hps"
+
+const tString gsTabletSound_Loop = "player/foley/action/pickup/readable_tablet_energy_loop";
+
+class cScrPropDWReadable : cScrPropReadable
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		cScrPropReadable::Init();
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void SetupAfterLoad(cWorld @apWorld, cResourceVarsObject@ apVars, cResourceVarsObject@ apInstanceVars)
+	{
+		cScrPropReadable::SetupAfterLoad(apWorld, apVars, apInstanceVars);
+				
+		msSubmesh = apVars.GetVarString("Submesh", "");
+		msOnGuiFunction = apInstanceVars.GetVarString("OnGuiFunction", "");
+		mfTextScale = apInstanceVars.GetVarInt("TextScale", 100)/100.0f;
+
+		mBaseObj.SetVarString("DWReadableID", msReadableID);
+		mBaseObj.SetVarFloat("DWTextScale", mfTextScale);
+		mBaseObj.SetVarBool("SuppressText", true);
+		
+		mBaseObj.DisableSubMeshMerge(msSubmesh);
+		mBaseObj.CreateAndSetupGui(msSubmesh, cColor(1,1,1,1), cColor(0,0,0,1), cColor(0,0,0,1), cVector2f(512,512));
+		mBaseObj.SetOnGuiFunction(msOnGuiFunction);
+		mBaseObj.SetGuiVariableFPS(cMath_RandRectl(4,7));
+		mBaseObj.SetGuiActive(true);
+		mBaseObj.SetGuiUpdateWhenOutOfView(false);
+		mBaseObj.SetGuiMaxUpdateDistance(6);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnUpdate(float afTimeStep)
+	{
+		cScrPropReadable::OnUpdate(afTimeStep);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERACTION
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+
+	//------------------------------------------------------------
+		
+	bool OnInteract(int alType, iPhysicsBody@ apBody, const cVector3f &in avFocusPos, const tString&in asData)
+	{
+		cScrPropReadable::OnInteract(alType, apBody, avFocusPos, asData);
+		cLux_ToProp(mpOpenEntity).SetOnGuiFunction(msOnGuiFunction);
+		mpOpenEntity.SetVarBool("DWJustOpened", true);
+
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GLOBAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	void OnReadableOpened()
+	{
+		cScrPropReadable::OnReadableOpened();
+		mBaseObj.SetGuiActive(false, 0.2f);
+		if (msReadableID=="")
+			cLux_ToProp(mpOpenEntity).SetGuiVariableFPS(10);
+		else
+			cLux_ToProp(mpOpenEntity).SetGuiVariableFPS(60);
+		
+		if (msReadableID!="" && !cScript_GetGlobalVarBool("Dialogue_PlayedDWNoteFirstTime"))
+		{
+			cScript_SetGlobalVarBool("Dialogue_PlayedDWNoteFirstTime", true);
+			/*if (!Voice_AnySceneIsActive())
+			{
+				Voice_PlayDelayed("Misc_DWNote_FirstTime", 3.0f);
+			}*/
+		}
+		
+		Sound_CreateAtEntity("Sound_DWReadableLoop", gsTabletSound_Loop, mBaseObj.GetName(),0.5f);				
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnReadableClosed()
+	{
+		cScrPropReadable::OnReadableClosed();
+		cLux_ToProp(mpOpenEntity).SetGuiVariableFPS(cMath_RandRectl(4,7));
+		mBaseObj.SetGuiActive(true, 0.2f);
+		cLux_ToProp(mpOpenEntity).SetVarBool("SuppressText", true);
+		
+		Sound_Stop("Sound_DWReadableLoop", 0.2f);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCanBeHighlighted()
+	{
+		cScrPropReadable::_Global_GetCanBeHighlighted();
+		if (msReadableID=="")
+			cScript_SetGlobalReturnBool(false);
+	}
+	
+	
+	//------------------------------------------------------------
+		
+	/////////////////////////////////////////
+	// DEBUG
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	[nosave] tString msSubmesh;
+	[nosave] tString msOnGuiFunction;
+	[nosave] float mfTextScale;
+	
+	//------------------------------------------------------------
+}	
