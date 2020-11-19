@@ -1,0 +1,58 @@
+//----------------------------------------------
+
+shared enum ePlayerState_Custom
+{
+	// Must be bigger than ePlayerState_LastEnum
+	ePlayerState_Custom_Inventory=51,
+	ePlayerState_Custom_UsingItem=52,
+	ePlayerState_Custom_Drinking=53,
+	ePlayerState_Custom_CheckBaby=54,
+	ePlayerState_Custom_UsingRadio=55,
+	ePlayerState_Custom_Shooting=56,
+	ePlayerState_Custom_Struggle=61,
+	ePlayerState_Custom_ReadMemoryCylinder=62,
+	ePlayerState_Custom_PermaFail=63,
+	ePlayerState_Custom_Birth=64,
+	ePlayerState_Custom_Slide=65,
+	ePlayerState_Custom_Thrown=66,
+	
+	ePlayerState_Custom_LastEnum
+}
+
+//----------------------------------------------
+
+shared enum eMoveState_Custom
+{
+	// Must be bigger than eMoveState_LastEnum
+	eMoveState_Custom_XXX=11,
+	eMoveState_Swim=12,
+	eMoveState_Animated=13,
+	eMoveState_Custom_LastEnum
+}
+
+//----------------------------------------------
+
+shared enum eDamageType
+{
+	eDamageType_Default=0,
+	eDamageType_Guardian,
+	eDamageType_Fall,
+	eDamageType_FallBig,
+	eDamageType_Thrown,
+	eDamageType_Silent,
+	eDamageType_Death
+}
+
+//----------------------------------------------
+
+shared enum eStruggleEvent
+{
+	eStruggleEvent_MoveToward,
+	eStruggleEvent_Animation,
+	eStruggleEvent_Wraith,
+	eStruggleEvent_TinHinan,
+	eStruggleEvent_Stationary,
+	eStruggleEvent_Ghoul,
+}
+
+//----------------------------------------------

@@ -720,7 +720,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 
 		mpAttackDamage.AddType(1,"CloseAttackL");
 		mpAttackDamage.SetType_Damage(0.4, 0.4);
-		mpAttackDamage.SetType_DamageType(eDamageType_FallBig);
+		mpAttackDamage.SetType_DamageType(eDamageType_Default);
 		mpAttackDamage.SetType_Affects(true, false, true);
 		mpAttackDamage.SetType_Force(fAttackForce, 1);
 		mpAttackDamage.SetType_AddShapeAtSocket("socket_lefthand_damage",0, fCloseAttackRadius);
@@ -728,7 +728,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 		
 		mpAttackDamage.AddType(2,"CloseAttackR");
 		mpAttackDamage.SetType_Damage(0.4, 0.4);
-		mpAttackDamage.SetType_DamageType(eDamageType_FallBig);
+		mpAttackDamage.SetType_DamageType(eDamageType_Default);
 		mpAttackDamage.SetType_Affects(true, false, true);
 		mpAttackDamage.SetType_Force(fAttackForce, 1);
 		mpAttackDamage.SetType_AddShapeAtSocket("socket_righthand_damage",0, fCloseAttackRadius);
