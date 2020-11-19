@@ -58,6 +58,15 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(false);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
 		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
 		
 		PlayerBody_SetActive(true);
