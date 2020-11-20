@@ -29,16 +29,16 @@ class cScrMap : iScrMap
 		//----DEBUG----//
 		if(cLux_ScriptDebugOn())
 		{
-			//debug stuff
 		}
 		
-		//Preload sounds
+		PauseMenu_Enabled(false);
 	}
 
 	//-------------------------------------------------------
 
 	void Setup()
 	{
+		Effect_Fade_Out(0);
 	}
 	
 	void PreloadData()
@@ -51,19 +51,33 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		FearHandler_SetActive(false);
+		
 		//////////////
 		// Disable pause menu and show main menu instead
 		Player_Teleport("PlayerStartArea_1");
-		CameraAnimation_Begin("CameraAnimation", "", false);
-		Sound_FadeGlobalVolume(1.f, 0.f, eSoundEntryType_All);
-		PauseMenu_Enabled(true);
-		cLux_SetGamePaused(false, true, true, true);
-		
-		cLux_GetGuiHandler().SetGameHudInputFocus(true);
-		Player_ShowCrossHairIcons(false);
-		Music_PlayExt("A2_MenuTheme.ogg", true, 1.0f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
-		Effect_Fade_In(5.0f);
 		Player_SetGravityEnabled(false);
+		Player_ShowCrossHairIcons(false);
+		
+		Sound_FadeGlobalVolume(1.f, 0.f, eSoundEntryType_All);
+		
+		cLux_SetGamePaused(false, true, true, true);
+		cLux_GetGuiHandler().SetGameHudInputFocus(true);
+		
+		Music_PlayExt("A2_MenuTheme.ogg", true, 0.25f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
+		
+		Effect_Fade_In(5.0f);
+		
+		cConfigFile@ mpConfig = cLux_GetUserConfig();
+		if(mpConfig.GetBool("Main", "DoIntro", true))
+		{
+			CameraAnimation_Begin("CameraAnimation", "", false);
+		}
+		else
+		{
+			CameraAnimation_Begin("NoAnimCameraAnimation", "", false);
+			MainMenu_Show(true);
+		}
 	}
 	
 	//-------------------------------------------------------
@@ -81,8 +95,19 @@ class cScrMap : iScrMap
 	void OnAction(int alAction, bool abPressed)
 	{
 		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+		}
 
 		return;
+	}
+	
+	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		Player_SetActive(false);
 	}
 	
 	//-------------------------------------------------------
@@ -90,6 +115,15 @@ class cScrMap : iScrMap
 	/////////////////////////////////////////
 	// HELPERS
 	/////////////////////////////////////////
+	
+	//---------------------------------------------------------
+	
+	bool OnMenuCameraAnimationEnd(const tString &in asEntity, int alDirection)
+	{
+		MainMenu_Show(true);
+		
+		return true;
+	}
 	
 	//---------------------------------------------------------
 
@@ -105,15 +139,4 @@ class cScrMap : iScrMap
 	}
 
 	//------------------------------------------------------
-
-	void Update(float afTimeStep)
-	{
-		Player_SetActive(false);
-	}
-	
-	bool FadeInMenu(const tString &in asEntity, int alDirection)
-	{
-		MainMenu_Show(true);
-		return true;
-	}
 }

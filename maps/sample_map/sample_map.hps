@@ -58,6 +58,8 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{
+		FearHandler_SetActive(true);
+		
 		FearHandler_SetPermaFailEnabled(false);
 		FearHandler_SetWhispersActive(false);
 		FearHandler_SetAllowDarknessReminderHint(false);
