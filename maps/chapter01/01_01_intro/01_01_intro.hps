@@ -100,6 +100,9 @@ class cScrMap : iScrMap
 		
 		Entity_SetEffectsActive("Wing_Wrecked",false,true);
 		
+		NPC_SetMainAnimation("munshi", "talk_idle_extra_1", true, "", 0.5f, false);
+		Map_GetEntity("munshi").GetMeshEntity().SetPosition(cVector3f(-0.182f, -0.75f, -2.951f));
+		
 		// Decal Setup
 		Decal_SetDynamicVisible("decal_wing_01", false);
 		Decal_SetDynamicVisible("decal_wing_02", false);
@@ -202,7 +205,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Seq_Intro("");
+			//Entity_AttachToSocket("beret", "munshi", "head_socket", true);
 		}
 	}
 
