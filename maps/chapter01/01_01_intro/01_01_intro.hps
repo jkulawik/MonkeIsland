@@ -1,0 +1,423 @@
+#include "interfaces/Map_Interface.hps"
+#include "base/Inputhandler_Types.hps"
+
+#include "helpers/helper_map.hps"
+#include "helpers/helper_props.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_sequences.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_ai.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_areas.hps"
+
+#include "helpers/custom/helper_props_custom.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_menu.hps"
+
+//--------------------------------------------------
+ 
+/*Place any global values here. These must be const variables as they will not be saved*/
+/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+ 
+//--------------------------------------------------
+ 
+class cScrMap : iScrMap
+{
+	//--------------------------------------------
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	////////////////////////////
+	// Set up map environment
+	void Setup()
+	{
+		// Put display name entry in english.lang / Levels
+		GetBase().SetDisplayNameEntry("01-01-intro");
+		
+		FearHandler_SetActive(false);
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(false);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		
+		Pregnancy_SetBarksActive(false);
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+		/////////////////
+		// Preload gui
+		ImGui_PreloadImage("grading_intro_glimpse_desert.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_sandstorm.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_dw.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_fire.dds");
+
+		//////////////
+		// Preload sounds
+		Sound_PreloadGroup("01_01_intro", true);
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		cScript_SetGlobalVarBool("InIntro", true);
+		cScript_SetGlobalVarBool("HideAmuletBracelet", true);
+		
+		// Player Setup
+		PlayerBody_SetActive(true);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetNightVisionEnabled(false);
+		Player_ShowCrossHairIcons(false);
+		cLux_GetPlayer().GetCharacterBody().SetTestCollision(false);
+		
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		
+		// Entities Setup
+		Entity_SetActive("Wing_Wrecked", false);
+		Entity_SetActive("plane_passenger_light_red_*",false);
+		
+		Entity_SetEffectsActive("Wing_Wrecked",false,true);
+		
+		// Decal Setup
+		Decal_SetDynamicVisible("decal_wing_01", false);
+		Decal_SetDynamicVisible("decal_wing_02", false);
+		
+		// Particles Setup
+		ParticleSystem_SetActive("PS_Engine_smoke*",false);
+		ParticleSystem_SetActive("PS_Engine_trail*",false);
+		ParticleSystem_SetActive("PS_Engine_failure*", false);
+		ParticleSystem_SetActive("PS_Sandstorm_Particles_*", true);
+		ParticleSystem_SetActive("PS_Engine", false);
+		
+		// Light Setup
+		Light_SetVisible("Fire_light_*", false);
+		
+		Seq_Intro("");
+		
+		/////////////////////////
+		// Debug
+		if(cLux_ScriptDebugOn())
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+		Effect_ToneMapping_FadeWorldGrading("grading_default", 0.0f);
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_desert.dds");
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_sandstorm.dds");
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_dw.dds");
+		
+		if (m_nConstShake!=-1)
+		{
+			Effect_Shake_FadeOut(m_nConstShake,0.0f);
+			m_nConstShake=-1;
+		}	
+		
+		if(cLux_GetPlayer().GetCharacterBody() !is null)	
+			cLux_GetPlayer().GetCharacterBody().SetTestCollision(true);
+		cLux_EnableSaving();
+		
+		cScript_SetGlobalVarBool("InIntro", false);
+		Player_ShowCrossHairIcons(true);
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// The player has died.
+	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// To get when player makes input (mostly used for debug)
+	void OnAction(int alAction, bool abPressed) 
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+			Seq_Intro("");
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// This only used for pure debug purposes when info needs to printed.
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afY)
+	{
+		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
+		return afY;
+	}
+ 
+	//-------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+		if(!mbGuiIntro) return;
+		
+		ImGui_SetModColorMul(cColor(1.0f, mfScreenAlpha));
+		
+		cImGuiGfx blackImage("simple_black.dds", eImGuiGfx_Texture);
+		ImGui_DoImage(blackImage, ImGui_NrmPos(cVector3f(0, 0, -1.0f)), ImGui_NrmSize(cVector2f(1,1)));
+		
+		ImGui_SetModColorMul(cColor(1.0f, mfQouteAlpha));
+		
+		cImGuiLabelData labelSignature;
+		labelSignature.mbUseBackgroundGfx = false;
+		labelSignature.mFont.SetFile("quentin.fnt"); 
+		labelSignature.mFont.mvSize = cVector2f(30, 30);
+		labelSignature.mFont.mColor = cColor(1, 1);
+		labelSignature.mFontAlign = eFontAlign_Right;
+		
+		cImGuiTextFrameData frameQuote;
+		frameQuote.mbUseBackgroundGfx = false;
+		frameQuote.mFont.SetFile("macondo_96.fnt");
+		frameQuote.mFont.mvSize = cVector2f(36, 36);
+		frameQuote.mFont.mColor = cColor(1, 1);
+		
+		ImGui_SetTransCategory("01_01_intro");
+		
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+			
+		cVector2f vFrameSize(740, 144);
+		cVector3f vFramePos = ImGui_NrmPos(0.5f, 0.5f, 1)-cVector3f(vFrameSize.x, vFrameSize.y,0)/2.0f;
+		
+		ImGui_LayoutBegin(eImGuiLayout_Y, vFramePos, vFrameSize);
+		
+		ImGui_DoTextFrameExt("Quote", cVector2f(0,0), 0, 0, frameQuote, cVector3f_Zero, vFrameSize);
+		
+		ImGui_DoLabelExt("Signature", labelSignature, cVector3f_Zero, cVector2f(vFrameSize.x*0.98f,-1.0f), 2);
+		
+		ImGui_LayoutEnd();
+		
+		ImGui_SetTransCategory("Menu");
+		ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+	}
+	
+	void PostUpdate(float afTimeStep)
+	{
+		mfScreenAlpha = GuiElementFadeController(mfScreenAlpha, mfScreenAlphaTarget, afTimeStep);
+		mfQouteAlpha = GuiElementFadeController(mfQouteAlpha, mfQouteAlphaTarget, afTimeStep);
+		
+		iLuxEntity@ pFirstBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_on_1");
+		float rotation1 = m_fFlyingTime * mfBladesSpeed + cMath_RandRectf(-mfBladesJitter, mfBladesJitter);
+		cVector3f position1 = pFirstBlades.GetPosition();
+		cMatrixf matrix1 = cMath_MatrixRotateXYZ(cVector3f(0,0,rotation1));
+		matrix1.SetTranslation(position1);
+		pFirstBlades.SetMatrix(matrix1);
+		@pFirstBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_off_1");
+		pFirstBlades.SetMatrix(matrix1);
+		
+		iLuxEntity@ pSecondBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_on_2");
+		float rotation2 = m_fFlyingTime * mfBladesSpeed + cMath_RandRectf(-mfBladesJitter, mfBladesJitter);
+		cVector3f position2 = pSecondBlades.GetPosition();
+		cMatrixf matrix2 = cMath_MatrixRotateXYZ(cVector3f(0,0,rotation2));
+		matrix2.SetTranslation(position2);
+		pSecondBlades.SetMatrix(matrix2);
+		@pSecondBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_off_2");
+		pSecondBlades.SetMatrix(matrix2);
+	}
+	
+	float GuiElementFadeController(float afAlpha, float afAlphaTarget, float afTimeStep)
+	{
+		if (afAlpha != afAlphaTarget)
+		{
+			if (mfAlphaFadeSpeed == 0.0f)
+				afAlpha = afAlphaTarget;
+			else
+				afAlpha = cMath_IncreaseTo(afAlpha, afTimeStep / mfAlphaFadeSpeed, afAlphaTarget);
+		}
+		
+		return afAlpha;
+	}
+
+	
+	//-------------------------------------------------------
+ 
+	//} END MAIN CALLBACKS
+ 
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN FUNCTIONS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	int m_nConstShake = -1;
+	float m_fFlyingTime = 0.0f;
+	
+	float mfBladesSpeed = -0.5f;
+	float mfBladesJitter = 0.05f;
+ 
+	//-------------------------------------------------------
+ 
+	/*Put any functions that are used in more than one scene here.*/
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN FUNCTIONS
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 1 AIRPLANE
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		 
+		//-------------------------------------------------------
+		
+		float mfQouteAlpha = 0.0f;
+		float mfQouteAlphaTarget = 0.0f;
+		
+		float mfScreenAlpha = 0.0f;
+		float mfScreenAlphaTarget = 0.0f;
+		
+		float mfAlphaFadeSpeed = 1.0f;
+		
+		bool mbGuiIntro = true;
+		
+		//-------------------------------------------------------
+	 
+		cSequenceStatesData mIntroSequence;
+		void Seq_Intro(const tString&in asX)
+		{
+			Sequence_Begin("Seq_Intro", mIntroSequence);
+						
+			if(Sequence_DoStepAndWait(1.5f))
+			{
+				PauseMenu_Enabled(false);
+				
+				Sound_CreateAtEntity("Sound_IntroStart", "01_01_intro/intro/intro_start", "player", 1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_LightsFlicker", "01_01_intro/intro/lights_01", "sound_lights",1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_GlassRattle_1", "01_01_intro/intro/glass_rattle", "sound_glass", 1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_Typing", "01_01_intro/intro/sweet_type", "sound_typewriter", 1.5f, false, 0.25f);
+				
+				Light_SetVisible("TasiLight_1", false);
+				
+				mfAlphaFadeSpeed = 0.0f;
+				mfScreenAlphaTarget = 1.0f;
+			}
+			else if(Sequence_DoStepAndWait(10.0f))
+			{
+				Music_PlayExt("intro.ogg", false, 0.75f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
+				
+				mfAlphaFadeSpeed = 1.0f;
+				mfQouteAlphaTarget = 1.0f;
+			}
+			else if(Sequence_DoStepAndWait(1.5f))
+			{
+				mfQouteAlphaTarget = 0.0f;
+			}
+			else if(Sequence_DoStepAndWait(1.0f))
+			{
+				CameraAnimation_Begin("IntroAnimation", "", false);
+				//Player_SetActive(false);
+				PlayerBody_SetVisible(false);
+				PlayerHands_SetActive(false);
+				
+				mfScreenAlphaTarget = 0.0f;
+			}
+			else if(Sequence_DoStepAndWait(15))
+			{
+				mbGuiIntro = false;
+				PauseMenu_Enabled(true);
+			}
+			
+			Sequence_End();
+		}
+	 
+		//-------------------------------------------------------
+		
+		//} END General
+	 
+		/////////////////////////////////////////
+		// SCENE 1 EVENT A: INTRO
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+
+		/*Put any variables that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		/*Put any functions that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		//} END Event A
+	 
+	//} END SCENE 1
+ 
+}
