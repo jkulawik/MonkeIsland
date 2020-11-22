@@ -17,12 +17,12 @@
  <Subjects>
   <Subject Desc="Munshi explains the situation" Name="Dialogue_Munshi_Briefing" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">
    <Line CharacterId="1" Prio="0" TextStatus="Recordable" AudioStatus="Final">
-    <Sound Text="In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys." FileName="main_dialogue_munshi_briefing_001_colonel_001" Timestamp="2020-11-21 05:52" />
+    <Sound Text="In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys." Volume="0.8" FileName="main_dialogue_munshi_briefing_001_colonel_001" Timestamp="2020-11-21 05:52" />
     <Sound Text="The island was never taken back - the monkeys developed strong defenses around the island perimeter." FileName="main_dialogue_munshi_briefing_001_colonel_002" Timestamp="2020-11-21 03:18" />
     <Sound Text="Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years." FileName="main_dialogue_munshi_briefing_001_colonel_003" Timestamp="2020-11-21 03:18" />
     <Sound Text="However, the delicate equilibrium has been recently destroyed by the monkeys. They have captured Jordan Anderson, the chief of the weapons lab of the Compeny." FileName="main_dialogue_munshi_briefing_001_colonel_004" Timestamp="2020-11-21 03:18" />
     <Sound Text="They're demanding that the American Government turn over complete control on the banana economy, and they say that if their demands aren't met in the next 24 hours, they will launch a nuclear weapon." FileName="main_dialogue_munshi_briefing_001_colonel_005" Timestamp="2020-11-21 03:18" />
-    <Sound Text="You'll have two mission objectives. First, you're to rescue the Compeny chief. " FileName="main_dialogue_munshi_briefing_001_colonel_006" Timestamp="2020-11-21 03:18" />
+    <Sound Text="You'll have two mission objectives. First, you're to rescue the Compeny chief. " Volume="0.8" FileName="main_dialogue_munshi_briefing_001_colonel_006" Timestamp="2020-11-21 03:18" />
     <Sound Text="Second, you're to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do." FileName="main_dialogue_munshi_briefing_001_colonel_007" Timestamp="2020-11-21 03:18" />
    </Line>
   </Subject>
@@ -31,19 +31,19 @@
     <Sound Text="What's the insertion method?" FileName="main_dialogue_questions_001_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
    <Line CharacterId="1" Direction="(playfully argumentative, hiding fear)" Prio="0" TextStatus="Recordable" AudioStatus="Final">
-    <Sound Text="You're going to parachute to the island." FileName="main_dialogue_questions_002_colonel_001" Timestamp="2020-11-21 03:18" />
+    <Sound Text="You're going to parachute to the island." Volume="0.9" FileName="main_dialogue_questions_002_colonel_001" Timestamp="2020-11-21 03:18" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable">
     <Sound Text="Anyone going with me?" FileName="main_dialogue_questions_003_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
-   <Line CharacterId="1" Prio="0" TextStatus="Recordable">
-    <Sound Text="As usual, this is a one-man infiltration mission. This is why we chose your unit." FileName="main_dialogue_questions_004_colonel_001" Timestamp="2020-11-21 03:18" />
+   <Line CharacterId="1" Prio="0" Callback="ColonelGestureAnim" TextStatus="Recordable">
+    <Sound Text="As usual, this is a one-man infiltration mission. This is why we chose your unit." Volume="0.9" FileName="main_dialogue_questions_004_colonel_001" Timestamp="2020-11-23 12:06" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable">
     <Sound Text="GOLIRA special forces, huh. Weapons and equipment on-site procurement?" FileName="main_dialogue_questions_005_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
    <Line CharacterId="1" Prio="0" TextStatus="Recordable">
-    <Sound Text="Yes. This is a top-secret black op. Besides, the monkeys can detect any unplanned electronic interference and would be alerted of your presence immediately." FileName="main_dialogue_questions_006_colonel_001" Timestamp="2020-11-21 03:18" />
+    <Sound Text="Yes. This is a top-secret black op. Besides, the monkeys can detect any unplanned electronic interference and would be alerted of your presence immediately." Volume="0.9" FileName="main_dialogue_questions_006_colonel_001" Timestamp="2020-11-21 03:18" />
    </Line>
   </Subject>
   <Subject Desc="Banana is thrown into the plane" Name="Dialogue_Banana" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">

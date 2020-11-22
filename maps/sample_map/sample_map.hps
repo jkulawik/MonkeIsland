@@ -79,7 +79,7 @@ class cScrMap : iScrMap
 		
 		Pregnancy_SetBarksActive(false);
 				
-		Entity_SetActive("monke", true);
+		//Entity_SetActive("monke", true);
 		Monke_SetSmellingActive("monke", true);
 		Monke_SetAllowPlayerThrow("monke", false);
 	}
@@ -116,6 +116,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			
 		}
 		if(alAction == eAction_Test2)
 		{

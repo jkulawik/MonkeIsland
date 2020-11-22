@@ -381,7 +381,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWaitUntil(13.0f))
 			{
-				Music_PlayExt("intro.ogg", false, 0.75f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
+				Music_PlayExt("intro.ogg", false, 0.65f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
 				
 				mfAlphaFadeSpeed = 1.0f;
 				mfQouteAlphaTarget = 1.0f;
@@ -411,6 +411,8 @@ class cScrMap : iScrMap
 				Effect_Rumble_Start(0.1f,0.1f,0.0f,0.5f);
 				Effect_Shake_Start(0.0005f,1.0f,0.3f,1.0f);
 				m_nConstShake = Effect_Shake_Start(0.0005f,1000.0f,0.3f,0.5f);
+				
+				Description_Add("01_01_intro", "IntroMessage", 1.0f, false);
 			}
 			else if(Sequence_DoStepAndPause(0.75f))
 			{
@@ -525,7 +527,7 @@ class cScrMap : iScrMap
 			{
 				Voice_Play("Dialogue_Run", -1, "OnVoiceSubjectSequenceDonePlaying");
 			}
-			else if(Sequence_DoStepAndWaitUntil(58.5f))
+			else if(Sequence_DoStepAndWaitUntil(57.5f))
 			{
 				mbPlayRaio = true;
 				Voice_Play("Dialogue_WhereIsRadio", -1, "OnVoiceSubjectSequenceDonePlaying");
@@ -533,6 +535,9 @@ class cScrMap : iScrMap
 			else if(Sequence_DoStepAndWait(2.5f))
 			{
 				Sound_CreateAtEntity("Sound_EngineExplode", "01_01_intro/crash_event/explosion", "sound_engine");
+				Sound_Stop("radio_music", 0.1f);
+				
+				//Sound_PlayGui("sounds/general_rock_rumble.ogg", 0.75f);
 				
 				Effect_Shake_Start(0.03f,0.2f,0.0f,0.2f);
 				Effect_Shake_FadeOut(m_nConstShake,0.1f);
@@ -593,11 +598,22 @@ class cScrMap : iScrMap
 				Sound_CreateAtEntity("Sound_WindowCreak_" + asTimer, "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_" + asTimer);
 		}
 		
+		void ColonelGestureAnim(const tString&in asScene, const tString&in asSubject, int alLineIndex, bool abStartOfLine)
+		{
+			NPC_PlayExtraAnimation("munshi", "talking_extra_1", 0.3f, "StopExtraAnimation");
+		}
+		
+		void StopExtraAnimation(const tString &in asEntityName, const tString &in asAnimName)
+		{
+			NPC_StopExtraAnimation("munshi", 0.3f);
+		}
+		
 		void womenFall(const tString& in asEntityName, bool abReachedEnd)
 		{
 			Entity_SetActive("women", false);
 			Entity_SetActive("women_fall", true);
 			Entity_PlayAnimation("women_fall", "fall", 0.1f, false, true, "", false);
+			Sound_CreateAtEntity("scream", "monke/SFX/VO/scream", "women_fall");
 		}
 
 		//-------------------------------------------------------

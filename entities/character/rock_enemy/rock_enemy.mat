@@ -1,0 +1,33 @@
+<Material>
+    <Main Type="vertexblend" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="Default" BlendMode="Add" />
+    <TextureUnits>
+        <Diffuse_R MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_plaster.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Specular_R MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_plaster_spec.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap_R MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_plaster_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Diffuse_G MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_brick.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Specular_G MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_brick_spec.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap_G MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_brick_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Diffuse_B MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_damage.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Specular_B MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_damage_spec.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap_B MipMaps="true" Compress="true" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_damage_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Height_B MipMaps="true" Compress="false" File="static_objects/beduin/bedouin_town_buildings/bedouin_town_buildings_damage_height.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+    </TextureUnits>
+    <SpecificVariables>
+        <Var ObjectId="4294967295" Name="BlendSmoothness" Value="0.5" />
+        <Var ObjectId="4294967295" Name="ColorBlendSmoothness" Value="1" />
+        <Var ObjectId="4294967295" Name="TextureUVScaleR" Value="1" />
+        <Var ObjectId="4294967295" Name="TextureUVScaleG" Value="1" />
+        <Var ObjectId="4294967295" Name="TextureUVScaleB" Value="1" />
+        <Var ObjectId="4294967295" Name="HeightMapScaleR" Value="0.05" />
+        <Var ObjectId="4294967295" Name="HeightMapScaleG" Value="0.05" />
+        <Var ObjectId="4294967295" Name="HeightMapScaleB" Value="0.05" />
+        <Var ObjectId="4294967295" Name="AlphaMask" Value="true" />
+        <Var ObjectId="4294967295" Name="OverlayNormal" Value="false" />
+        <Var ObjectId="4294967295" Name="DirectionalWeightR" Value="0 0 0 1" />
+        <Var ObjectId="4294967295" Name="DirectionalWeightG" Value="0 0 0 1" />
+        <Var ObjectId="4294967295" Name="DirectionalWeightB" Value="0 0 0 1" />
+        <Var ObjectId="4294967295" Name="AutoUvR" Value="false" />
+        <Var ObjectId="4294967295" Name="AutoUvG" Value="false" />
+        <Var ObjectId="4294967295" Name="AutoUvB" Value="false" />
+    </SpecificVariables>
+</Material>

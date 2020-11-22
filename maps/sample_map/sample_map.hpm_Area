@@ -1,7 +1,7 @@
 <HPLMapTrack_Area ID="82014519DE04367D0D344B6D35C2DEC3D9353D" MajorVersion="1" MinorVersion="1">
     <Section Name="8292389879337415459">
         <Objects>
-            <Area ID="268435456" Name="PlayerStartArea_1" CreStamp="1443527753" ModStamp="1605197317" WorldPos="3.25 12.25 -3" Rotation="-0 3.14159 -0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 11 268435456" AreaType="PlayerStart">
+            <Area ID="268435456" Name="PlayerStartArea_1" CreStamp="1443527753" ModStamp="1606064718" WorldPos="-3.25 1 6.25" Rotation="0 1.5708 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 11 268435456" AreaType="PlayerStart">
                 <UserVariables>
                     <Var ObjectId="268435456" Name="Note" Value="" />
                     <Var ObjectId="268435456" Name="Crouching" Value="false" />
@@ -300,29 +300,28 @@
             <Area ID="268435543" Name="PathNode_88" CreStamp="1605646786" ModStamp="1605646789" WorldPos="16.5 3.5 6.25" Rotation="0 0 0" Scale="0.7 0.7 0.7" Active="true" Mesh="" UID="16 200 268435543" AreaType="PathNode">
                 <UserVariables />
             </Area>
-        </Objects>
-    </Section>
-    <Section Name="10911851120317680304">
-        <Objects>
-            <Area ID="285212672" Name="FearArea_1" CreStamp="1605818771" ModStamp="1605818812" WorldPos="2.58212 7 1.94358" Rotation="0 0 0" Scale="30.25 24 28.75" Active="true" Mesh="" UID="17 138 285212672" AreaType="Fear">
+            <Area ID="268435544" Name="FearArea_1" CreStamp="1605818771" ModStamp="1606073331" WorldPos="2.58212 7 1.94358" Rotation="0 0 0" Scale="30.25 24 28.75" Active="true" Mesh="" UID="16 230 268435544" AreaType="Fear">
                 <UserVariables>
-                    <Var ObjectId="285212672" Name="Priority" Value="0" />
-                    <Var ObjectId="285212672" Name="Safe" Value="false" />
-                    <Var ObjectId="285212672" Name="NoFear" Value="false" />
-                    <Var ObjectId="285212672" Name="DarknessFear" Value="false" />
-                    <Var ObjectId="285212672" Name="BabyKickRateMultiplier" Value="0" />
-                    <Var ObjectId="285212672" Name="Locked" Value="false" />
-                    <Var ObjectId="285212672" Name="AllowProgressWithToken" Value="true" />
-                    <Var ObjectId="285212672" Name="AllowProgressWithoutToken" Value="false" />
-                    <Var ObjectId="285212672" Name="MaxProgressCount" Value="1" />
-                    <Var ObjectId="285212672" Name="ProgressAmount" Value="1" />
-                    <Var ObjectId="285212672" Name="SafeMusic" Value="fear_system_safe_01" />
-                    <Var ObjectId="285212672" Name="NonAgentRateCap" Value="0" />
-                    <Var ObjectId="285212672" Name="CC_Entities" Value="" />
-                    <Var ObjectId="285212672" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435544" Name="Priority" Value="0" />
+                    <Var ObjectId="268435544" Name="Safe" Value="false" />
+                    <Var ObjectId="268435544" Name="NoFear" Value="false" />
+                    <Var ObjectId="268435544" Name="DarknessFear" Value="false" />
+                    <Var ObjectId="268435544" Name="BabyKickRateMultiplier" Value="0" />
+                    <Var ObjectId="268435544" Name="Locked" Value="false" />
+                    <Var ObjectId="268435544" Name="AllowProgressWithToken" Value="true" />
+                    <Var ObjectId="268435544" Name="AllowProgressWithoutToken" Value="false" />
+                    <Var ObjectId="268435544" Name="MaxProgressCount" Value="1" />
+                    <Var ObjectId="268435544" Name="ProgressAmount" Value="1" />
+                    <Var ObjectId="268435544" Name="SafeMusic" Value="fear_system_safe_01" />
+                    <Var ObjectId="268435544" Name="NonAgentRateCap" Value="0" />
+                    <Var ObjectId="268435544" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435544" Name="CC_Funcs" Value="" />
                 </UserVariables>
             </Area>
         </Objects>
+    </Section>
+    <Section Name="10911851120317680304">
+        <Objects />
     </Section>
     <Section Name="13595023762818024409">
         <Objects />
