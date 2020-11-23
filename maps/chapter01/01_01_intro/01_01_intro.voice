@@ -2,7 +2,7 @@
 <VoiceData>
  <Characters>
   <Character ID="0" Name="Player" DisplayName="David" Actor="TiMan" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.9" ReverbVolume="1" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
-  <Character ID="1" Name="Colonel" DisplayName="Colonel" Actor="" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.8" ReverbVolume="1" SpeakerSpread="40" EntitySource="Voice_Munshi" MinDist="0" MaxDist="10" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+  <Character ID="1" Name="Colonel" DisplayName="Colonel" Actor="" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.8" ReverbVolume="1" SpeakerSpread="70" EntitySource="Voice_Munshi" MinDist="5" MaxDist="10" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
   <Character ID="4" Name="Pilot_1" DisplayName="Pilot" Actor="Ramen" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.8" ReverbVolume="0.8" SpeakerSpread="40" EntitySource="Voice_Pilot" MinDist="2" MaxDist="60" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
   <Character ID="6" Name="Pilot_2" DisplayName="Another Pilot" Actor="" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.8" ReverbVolume="0.8" SpeakerSpread="40" EntitySource="Voice_Pilot" MinDist="2" MaxDist="60" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
  </Characters>
@@ -16,33 +16,33 @@
  </Sections>
  <Subjects>
   <Subject Desc="Munshi explains the situation" Name="Dialogue_Munshi_Briefing" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">
-   <Line CharacterId="1" Prio="0" TextStatus="Recordable" AudioStatus="Final">
-    <Sound Text="In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys." Volume="0.8" FileName="main_dialogue_munshi_briefing_001_colonel_001" Timestamp="2020-11-21 05:52" />
-    <Sound Text="The island was never taken back - the monkeys developed strong defenses around the island perimeter." FileName="main_dialogue_munshi_briefing_001_colonel_002" Timestamp="2020-11-21 03:18" />
-    <Sound Text="Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years." FileName="main_dialogue_munshi_briefing_001_colonel_003" Timestamp="2020-11-21 03:18" />
-    <Sound Text="However, the delicate equilibrium has been recently destroyed by the monkeys. They have captured Jordan Anderson, the chief of the weapons lab of the Compeny." FileName="main_dialogue_munshi_briefing_001_colonel_004" Timestamp="2020-11-21 03:18" />
-    <Sound Text="They're demanding that the American Government turn over complete control on the banana economy, and they say that if their demands aren't met in the next 24 hours, they will launch a nuclear weapon." FileName="main_dialogue_munshi_briefing_001_colonel_005" Timestamp="2020-11-21 03:18" />
-    <Sound Text="You'll have two mission objectives. First, you're to rescue the Compeny chief. " Volume="0.8" FileName="main_dialogue_munshi_briefing_001_colonel_006" Timestamp="2020-11-21 03:18" />
-    <Sound Text="Second, you're to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do." FileName="main_dialogue_munshi_briefing_001_colonel_007" Timestamp="2020-11-21 03:18" />
+   <Line CharacterId="1" Prio="0" TextStatus="Shippable" AudioStatus="Final">
+    <Sound Text="In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys." Volume="0.8" Timestamp="2020-11-21 05:52" />
+    <Sound Text="The island was never taken back - the monkeys developed strong defenses around the island perimeter." Timestamp="2020-11-21 03:18" />
+    <Sound Text="Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years." Timestamp="2020-11-21 03:18" />
+    <Sound Text="However, the delicate equilibrium has been recently destroyed by the monkeys. They have captured Jordan Anderson, the chief of the weapons lab of the Compeny." Timestamp="2020-11-21 03:18" />
+    <Sound Text="They're demanding that the American Government turn over complete control on the banana economy, and they say that if their demands aren't met in the next 24 hours, they will launch a nuclear weapon." Timestamp="2020-11-21 03:18" />
+    <Sound Text="You'll have two mission objectives. First, you're to rescue the Compeny chief. " Volume="0.8" Timestamp="2020-11-21 03:18" />
+    <Sound Text="Second, you're to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do." Timestamp="2020-11-21 03:18" />
    </Line>
   </Subject>
   <Subject Name="Dialogue_Questions" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">
    <Line CharacterId="0" Direction="reassuring" Prio="0" TextStatus="Shippable" AudioStatus="Final">
     <Sound Text="What's the insertion method?" FileName="main_dialogue_questions_001_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
-   <Line CharacterId="1" Direction="(playfully argumentative, hiding fear)" Prio="0" TextStatus="Recordable" AudioStatus="Final">
+   <Line CharacterId="1" Direction="(playfully argumentative, hiding fear)" Prio="0" TextStatus="Shippable" AudioStatus="Final">
     <Sound Text="You're going to parachute to the island." Volume="0.9" FileName="main_dialogue_questions_002_colonel_001" Timestamp="2020-11-21 03:18" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable">
     <Sound Text="Anyone going with me?" FileName="main_dialogue_questions_003_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
-   <Line CharacterId="1" Prio="0" Callback="ColonelGestureAnim" TextStatus="Recordable">
+   <Line CharacterId="1" Prio="0" Callback="ColonelGestureAnim" TextStatus="Shippable">
     <Sound Text="As usual, this is a one-man infiltration mission. This is why we chose your unit." Volume="0.9" FileName="main_dialogue_questions_004_colonel_001" Timestamp="2020-11-23 12:06" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable">
     <Sound Text="GOLIRA special forces, huh. Weapons and equipment on-site procurement?" FileName="main_dialogue_questions_005_player_001" Timestamp="2020-11-21 03:18" />
    </Line>
-   <Line CharacterId="1" Prio="0" TextStatus="Recordable">
+   <Line CharacterId="1" Prio="0" TextStatus="Shippable">
     <Sound Text="Yes. This is a top-secret black op. Besides, the monkeys can detect any unplanned electronic interference and would be alerted of your presence immediately." Volume="0.9" FileName="main_dialogue_questions_006_colonel_001" Timestamp="2020-11-21 03:18" />
    </Line>
   </Subject>
@@ -50,7 +50,7 @@
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
     <Sound Text="Whoa, What the hell?" EndPadding="0.7" FileName="main_dialogue_banana_001_player_001" Timestamp="2020-11-21 08:07" />
    </Line>
-   <Line CharacterId="1" Prio="0" TextStatus="Recordable" PlayOnce="True">
+   <Line CharacterId="1" Prio="0" TextStatus="Shippable" PlayOnce="True">
     <Sound Text="We are being attacked!" VoiceOffset="0.5" FileName="main_dialogue_banana_002_colonel_001" Timestamp="2020-11-21 08:07" />
    </Line>
   </Subject>
@@ -58,7 +58,7 @@
    <Line CharacterId="4" Direction="(distraught)" Prio="0" TextStatus="Shippable" AudioStatus="Final">
     <Sound Text="Ah shit! Daymay, Daymay!" Volume="0.8" ReverbVolume="1.5" FileName="pilot_dialogue_crashpanic_001_pilot_1_001" Timestamp="2020-11-21 03:40" />
    </Line>
-   <Line CharacterId="6" Direction="(into the radio)" Prio="0" TextStatus="Recordable" AudioStatus="Final">
+   <Line CharacterId="6" Direction="(into the radio)" Prio="0" TextStatus="Shippable" AudioStatus="Final">
     <Sound Text="Dude it's Mayday, not Daymay." Volume="0.5" ReverbVolume="1.5" FileName="pilot_dialogue_crashpanic_002_pilot_2_001" Timestamp="2020-11-21 03:40" />
    </Line>
   </Subject>

@@ -95,6 +95,8 @@ class cScrMap : iScrMap
 		
 		Entity_SetEffectsActive("Wing_Wrecked",false,true);
 		
+		NPC_SetMainAnimation("munshi", "talking");
+		
 		// Decal Setup
 		Decal_SetDynamicVisible("decal_wing_01", false);
 		Decal_SetDynamicVisible("decal_wing_02", false);
@@ -443,6 +445,8 @@ class cScrMap : iScrMap
 				
 				ParticleSystem_CreateAtEntityExt("glassbreak_1", "grass_breaking_small.ps", "WindowParticleSource_1", true, cColor(1, 1, 1, 0.35f));
 				Sound_CreateAtEntity("Sound_WindowCreak_1", "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_1");
+				
+				Entity_PlayAnimation("munshi", "hit", 0.1f, false, true, "OnMunshiAnimationEnd");
 
 			}
 			else if(Sequence_DoStepAndWaitUntil(29.7f))
@@ -499,7 +503,7 @@ class cScrMap : iScrMap
 				ParticleSystem_SetActive("PS_Engine_smoke*",true);
 				ParticleSystem_SetActive("PS_Engine_failure*", true);
 				
-				Effect_Shake_Start(0.03f,0.2f,0.0f,0.2f);
+				Effect_Shake_Start(0.02f,25.2f,0.0f,0.2f);
 				Effect_Rumble_Start(1.0f,1.0f,0.0f,1.0f);
 				
 				ParticleSystem_SetActive("PS_Engine",true);
@@ -521,6 +525,11 @@ class cScrMap : iScrMap
 				Light_SetVisible("window_caustics",false);
 				Effect_ToneMapping_FadeWorldGrading("grading_intro_glimpse_fire", 3.0f);
 				
+				CameraAnimation_End();
+				CameraAnimation_Begin("CrashAnimation", "", false);
+				
+				Entity_PlayAnimation("munshi", "run_jump");
+				
 				Sound_CreateAtEntity("Sound_EngineExplode", "01_01_intro/crash_event/explosion", "sound_engine");
 			}
 			else if(Sequence_DoStepAndWaitUntil(45.0f))
@@ -534,10 +543,8 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(2.5f))
 			{
-				Sound_CreateAtEntity("Sound_EngineExplode", "01_01_intro/crash_event/explosion", "sound_engine");
+				Sound_CreateAtEntity("Sound_EngineExplode", "monke/SFX/kaboom", "player", 0.0f, false, 0.5f);
 				Sound_Stop("radio_music", 0.1f);
-				
-				//Sound_PlayGui("sounds/general_rock_rumble.ogg", 0.75f);
 				
 				Effect_Shake_Start(0.03f,0.2f,0.0f,0.2f);
 				Effect_Shake_FadeOut(m_nConstShake,0.1f);
@@ -584,30 +591,32 @@ class cScrMap : iScrMap
 				Sound_CreateAtEntity("radio_loop", "02_04_living_quarters/radio/static_loop", "sound_cockpit");
 				Sound_CreateAtEntity("radio_music", "monke/SFX/airplane_crash_sequence/voice_system", "sound_cockpit");
 				
-				NPC_MoveToNode("women", "WomeRun_7", "womenFall");
+				NPC_MoveToNode("women", "Trip", "womenFall");
 			}
 		}
 		
 		void Timer_MoreBananas(const tString&in asTimer)
 		{
-				Entity_SetActive("banana_" + asTimer, true);
-				Prop_SetStaticPhysics("banana_" + asTimer, false);
-				Entity_AddImpulse("banana_" + asTimer, cVector3f_Forward * 3, true, true);
+			Entity_SetActive("banana_" + asTimer, true);
+			Prop_SetStaticPhysics("banana_" + asTimer, false);
+			Entity_AddImpulse("banana_" + asTimer, cVector3f_Forward * 3, true, true);
 				
-				ParticleSystem_CreateAtEntityExt("glassbreak_" + asTimer, "grass_breaking_small.ps", "WindowParticleSource_" + asTimer, true, cColor(1, 1, 1, 0.35f));
-				Sound_CreateAtEntity("Sound_WindowCreak_" + asTimer, "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_" + asTimer);
+			ParticleSystem_CreateAtEntityExt("glassbreak_" + asTimer, "grass_breaking_small.ps", "WindowParticleSource_" + asTimer, true, cColor(1, 1, 1, 0.35f));
+			Sound_CreateAtEntity("Sound_WindowCreak_" + asTimer, "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_" + asTimer);
 		}
 		
 		void ColonelGestureAnim(const tString&in asScene, const tString&in asSubject, int alLineIndex, bool abStartOfLine)
 		{
-			NPC_PlayExtraAnimation("munshi", "talking_extra_1", 0.3f, "StopExtraAnimation");
+			if (!abStartOfLine) return;
+			
+			NPC_PlayExtraAnimation("munshi", "talking_extra_1");
 		}
 		
-		void StopExtraAnimation(const tString &in asEntityName, const tString &in asAnimName)
+		void OnMunshiAnimationEnd(const tString &in asEntityName, const tString &in asAnimName)
 		{
-			NPC_StopExtraAnimation("munshi", 0.3f);
+			Entity_PlayAnimation("munshi", "talking", 0.1f, true);
 		}
-		
+
 		void womenFall(const tString& in asEntityName, bool abReachedEnd)
 		{
 			Entity_SetActive("women", false);

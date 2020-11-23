@@ -1,3 +1,25 @@
 <HPLMapTrack_Terrain ID="83F900C0553BBC9ECE199999E38344A55035FC4F" MajorVersion="1" MinorVersion="1">
-    <Terrain Active="false" GeometryPatchSize="32" TexturePatchSize="32" HeightMapSize="64" MaxHeight="10" UnitSize="1" UndergrowthGridSize="10" UndergrowthFadeStart="18" UndergrowthFadeEnd="20" />
+    <Terrain Active="true" GeometryPatchSize="512" TexturePatchSize="512" HeightMapSize="1024" MaxHeight="100" UnitSize="1" UndergrowthGridSize="10" UndergrowthFadeStart="18" UndergrowthFadeEnd="20" BaseMaterialFile="textures/terrain/sand/sand_desert_smooth_orange.mat" BaseMaterialTileAmount="0.25" BaseMaterialStartFadeValue="0" BaseMaterialDetailTextureAmount="1 0 0" BaseMaterialHeightMapScale="0" MaterialSpecularPower="0.3" MaterialTextureLayerNum="8" MaterialTextureFalloff="3" CliffTextureDiffuse="textures/terrain/sand/sand_desert_streak_orange.dds" CliffTextureNMap="textures/terrain/sand/sand_desert_streak_nrm.dds" CliffTextureSize="0.17" CliffTextureFadeAngleMul="1.15">
+        <DetailTextures DetailFadeStart="10" DetailFadeEnd="20">
+            <DetailTexture ID="0" File="" Scale="1" />
+            <DetailTexture ID="1" File="" Scale="1" />
+            <DetailTexture ID="2" File="" Scale="1" />
+        </DetailTextures>
+        <BlendLayers>
+            <BlendLayer ID="0">
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+            </BlendLayer>
+        </BlendLayers>
+        <Sections>
+            <Section Name="10911851120317680304">
+                <FileIndex_TerrainDecals NumOfFiles="0" />
+                <Decals />
+                <FileIndex_UndergrowthMaterials NumOfFiles="0" />
+                <Undergrowth />
+            </Section>
+        </Sections>
+    </Terrain>
 </HPLMapTrack_Terrain>
