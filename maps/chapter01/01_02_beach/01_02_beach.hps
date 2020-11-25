@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
 #include "helpers/helper_audio.hps"
@@ -10,6 +11,12 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+
+#include "helpers/custom/helper_props_custom.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
 
 //--------------------------------------------------
  
@@ -34,8 +41,7 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		// Put display name entry in english.lang / Levels
-		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
+		GetBase().SetDisplayNameEntry("01-02-beach");
 		
 		// Set up color grading etc.
 	}
@@ -63,9 +69,27 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
-		// Any general setup of script / entities
+		FearHandler_SetActive(false);
+		
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(false);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		
 		PlayerBody_SetActive(true);
 		
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		
+		Pregnancy_SetBarksActive(false);
+				
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
