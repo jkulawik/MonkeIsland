@@ -19,6 +19,15 @@
 #include "custom/helpers/helper_menu.hps"
  
 //--------------------------------------------------
+
+enum eSlideShowSlide
+{
+	eSlideShowSlide_None = 0,
+	eSlideShowSlide_Intro,
+	eSlideShowSlide_Jordan,
+	eSlideShowSlide_Banana,
+	eSlideShowSlide_Objectives,
+}
  
 class cScrMap : iScrMap
 {
@@ -110,6 +119,8 @@ class cScrMap : iScrMap
 		
 		// Light Setup
 		Light_SetVisible("Fire_light_*", false);
+		
+		Effect_Fade_Out(0);
 		
 		Seq_Intro("");
 		
@@ -207,6 +218,10 @@ class cScrMap : iScrMap
 		{
 			cLux_AddDebugMessage("hi");
 			NPC_MoveToNode("women", "WomeRun_7", "womenFall");
+		}
+		if(alAction == eAction_Test3)
+		{
+			RotateScreenUp();
 		}
 	}
 
@@ -337,8 +352,64 @@ class cScrMap : iScrMap
 		/////////////////////////////////////////
 		// General
 		//{//////////////////////////////////////
-		 
+		
 		//-------------------------------------------------------
+		 
+		eSlideShowSlide mCurrentSlide = eSlideShowSlide_None;
+
+		//-------------------------------------------------------
+		
+		void Slideshow_OnGui(const tString&in asEntityName, float afTimeStep)
+		{
+			if (mCurrentSlide == eSlideShowSlide_None) return;
+			
+			ImGui_SetAlignment(eImGuiAlign_TopLeft);
+			
+			tString sSlideFile;
+			switch (mCurrentSlide)
+			{
+				case eSlideShowSlide_Intro:
+					sSlideFile = "slide_intro";
+					
+					break;
+				
+				case eSlideShowSlide_Banana:
+					sSlideFile = "slide_banana";
+					
+					break;
+				
+				case eSlideShowSlide_Jordan:
+					sSlideFile = "slide_jordan";
+					
+					break;
+				
+				case eSlideShowSlide_Objectives:
+					sSlideFile = "slide_objectives";
+				
+					break;
+				
+				default:
+					sSlideFile = "";
+					
+					break;
+			}
+			
+			cImGuiGfx slide(sSlideFile, eImGuiGfx_Texture);
+			cVector2f vSize = ImGui_GetRatioCorrectSizeByWidth(slide, 1024);
+			ImGui_DoImage(slide, cVector3f(0.0f,0.0f,1.0f), vSize);
+		}
+		
+		void RotateScreenUp()
+		{
+			Prop_RotateToSpeed("Slideshow", 1, 1, cVector3f_Right, true, "AreaScreenRot");
+			
+			Map_AddTimer("StopRotate", 1.5f, "Timer_StopRotate");
+		}
+		
+		void Timer_StopRotate(const tString&in asTimer)
+		{
+			Prop_StopMovement("Slideshow");
+		}
 	 
 		//-------------------------------------------------------
 		
@@ -369,6 +440,7 @@ class cScrMap : iScrMap
 						
 			if(Sequence_DoStepAndWaitUntil(2.0f))
 			{
+				Effect_Fade_In(0);
 				PauseMenu_Enabled(false);
 				
 				Sound_CreateAtEntity("Sound_IntroStart", "01_01_intro/intro/intro_start", "player", 1.5f, false, 0.25f);
@@ -405,7 +477,7 @@ class cScrMap : iScrMap
 				mbGuiIntro = false;
 				PauseMenu_Enabled(true);
 				
-				Map_Preload("01_02_beach.hpm");
+				Map_Preload("01_02_beach.hpm", eWorldStreamPriority_Low);
 			}
 			else if(Sequence_DoStepAndWaitUntil(17.099944f))
 			{
@@ -419,9 +491,19 @@ class cScrMap : iScrMap
 			else if(Sequence_DoStepAndPause(0.75f))
 			{
 				Voice_Play("Dialogue_Munshi_Briefing", -1, "OnVoiceSubjectSequenceDonePlaying");
+				
+				Map_AddTimer("ChangeSlides", 0.0f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 27.05f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 36.85f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 48.25f, "Timer_IncreaseSlideshow");
 			}
 			else if(Sequence_DoStepAndWait(10.0f))
 			{
+				mCurrentSlide = eSlideShowSlide_None;
+				Terminal_SetGuiActive("Slideshow", false);
+				
+				RotateScreenUp();
+				
 				Music_Stop(10.0f, eMusicPrio_SceneAmb);
 				
 				Voice_Play("Dialogue_Questions", -1, "OnVoiceSubjectSequenceDonePlaying");
@@ -603,6 +685,11 @@ class cScrMap : iScrMap
 				
 			ParticleSystem_CreateAtEntityExt("glassbreak_" + asTimer, "grass_breaking_small.ps", "WindowParticleSource_" + asTimer, true, cColor(1, 1, 1, 0.35f));
 			Sound_CreateAtEntity("Sound_WindowCreak_" + asTimer, "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_" + asTimer);
+		}
+		
+		void Timer_IncreaseSlideshow(const tString&in asTimer)
+		{
+			mCurrentSlide++;
 		}
 		
 		void ColonelGestureAnim(const tString&in asScene, const tString&in asSubject, int alLineIndex, bool abStartOfLine)
