@@ -34,7 +34,7 @@
                     <Var ObjectId="268435457" Name="ParentAttachBody" Value="" />
                 </UserVariables>
             </Area>
-            <Area ID="268435458" Name="sea" CreStamp="1606249669" ModStamp="1606324541" WorldPos="-614.66 33.52 -0.749984" Rotation="0 0 0" Scale="1064.74 29.75 1053.5" Active="true" Mesh="" UID="16 8720 268435458" AreaType="Liquid">
+            <Area ID="268435458" Name="sea" CreStamp="1606249669" ModStamp="1606498970" WorldPos="-614.66 33.52 -0.749984" Rotation="0 0 0" Scale="1064.74 29.75 1053.5" Active="true" Mesh="" UID="16 8720 268435458" AreaType="Liquid">
                 <UserVariables>
                     <Var ObjectId="268435458" Name="Note" Value="" />
                     <Var ObjectId="268435458" Name="BlocksLineOfSight" Value="false" />
@@ -43,8 +43,8 @@
                     <Var ObjectId="268435458" Name="Static" Value="false" />
                     <Var ObjectId="268435458" Name="QuickSave" Value="false" />
                     <Var ObjectId="268435458" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="268435458" Name="CC_Entities" Value="" />
-                    <Var ObjectId="268435458" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435458" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435458" Name="CC_Funcs" Value="Sea_OnCollide" />
                     <Var ObjectId="268435458" Name="ParentAttachEntity" Value="" />
                     <Var ObjectId="268435458" Name="ParentAttachUseRotation" Value="true" />
                     <Var ObjectId="268435458" Name="ParentAttachBody" Value="" />

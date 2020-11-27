@@ -50,17 +50,9 @@ class cScrMap : iScrMap
 		
 	void PreloadData()
 	{
-		/////////////////
-		// Preload gui
-		//ImGui_PreloadImage("some_image");
-
-		///////////////
-		// Preload particles
-		//ParticleSystem_Preload("some_particle.ps");
-
-		//////////////
-		// Preload screen effects
-		//Material_Preload("some_material.mat");
+		ParticleSystem_Preload("beach_edge_waves.ps");
+		ParticleSystem_Preload("beach_edge_waves02.ps");
+		ParticleSystem_Preload("beach_edge_foam.ps");
 	}
 	
 	//-------------------------------------------------------
@@ -84,12 +76,13 @@ class cScrMap : iScrMap
 		
 		PlayerBody_SetActive(true);
 		
+		Player_SetNightVisionEnabled(false);
 		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
 		
 		Pregnancy_SetBarksActive(false);
-				
+		
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
@@ -200,7 +193,7 @@ class cScrMap : iScrMap
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
-	// SCENE X *NAME OF SCENE*
+	// SCENE 1: BEACH
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
@@ -214,7 +207,34 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		bool Sea_OnCollide(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			iLuxEntity@ pPlayer = Map_GetEntity(PlayerBody_GetEntityName());
+			
+			if (pPlayer is null) return false;
+			
+			bool bCast = alState == -1;
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_Head", bCast);
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_Body", bCast);
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_L_Arm", bCast);
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_R_Arm", bCast);
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_L_Arm1", bCast);
+			SetPlayerBodyPartCastShadow(pPlayer, "_m_Tasi_R_Arm1", bCast);
+			
+			return true;
+		}
+		
+		void SetPlayerBodyPartCastShadow(iLuxEntity@ apPlayerEntity, const tString&in asMeshEntityIndexName, bool abCastShadow)
+		{
+			cMeshEntity@ pMeshEnt = apPlayerEntity.GetMeshEntity();
+			int lBodyParId = pMeshEnt.GetSubMeshEntityIndex(apPlayerEntity.GetName() + asMeshEntityIndexName);
+			
+			if (lBodyParId > -1)
+			{
+				cSubMeshEntity@ pHeadMeshEnt = pMeshEnt.GetSubMeshEntity(lBodyParId);
+				pHeadMeshEnt.SetRenderFlagBit(eRenderableFlag_ShadowCaster, abCastShadow);
+			}
+		}
 	 
 		//-------------------------------------------------------
 		
@@ -236,6 +256,6 @@ class cScrMap : iScrMap
 
 		//} END Event *Name Of Event*
 	 
-	//} END SCENE X
+	//} END SCENE 1
  
 }
