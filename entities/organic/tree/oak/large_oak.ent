@@ -1,0 +1,28 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="entities/organic/tree/oak/large_oak.DAE">
+            <SubMesh ID="0" Name="large_oak_test_01_Bark" CreStamp="0" ModStamp="0" WorldPos="0 0 0" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="5908" Material="" />
+            <SubMesh ID="1" Name="Object401" CreStamp="0" ModStamp="0" WorldPos="6.32305 15.4779 0.103582" Rotation="-1.5708 -1.309e-006 -7.80223e-014" Scale="1 1 1" TriCount="3470" Material="" />
+        </Mesh>
+        <Bones />
+        <Shapes>
+            <Shape ID="348" Name="ShapeCylinder_1" CreStamp="1424696751" ModStamp="1424696777" WorldPos="0 3.25 0" Rotation="0 0 0" Scale="1 7.5 0" RelativeTranslation="0 0 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+        </Shapes>
+        <Bodies>
+            <Body ID="349" Name="Body_1" CreStamp="0" ModStamp="1432117408" WorldPos="0 3.25 0" Rotation="0 0 0" Scale="1 1 1" Material="Wood Robust" Mass="0" AngularDamping="0.1" LinearDamping="0.1" MaxAngularSpeed="20" MaxLinearSpeed="20" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="true" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="true" BlocksLight="true">
+                <Children>
+                    <Child ID="0" />
+                    <Child ID="1" />
+                </Children>
+                <Shape ID="348" />
+            </Body>
+        </Bodies>
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="StaticProp">
+        <Var Name="ShowMesh" Value="true" />
+    </UserDefinedVariables>
+</Entity>

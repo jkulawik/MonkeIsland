@@ -1,0 +1,48 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="entities/organic/tree/elm/tree_elm_02.DAE">
+            <SubMesh ID="22" Name="SOMA_elm_02_AmericanElmBark" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="1698" Material="" />
+            <SubMesh ID="23" Name="SOMA_elm_02_Branches_03" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="640" Material="" />
+            <SubMesh ID="24" Name="SOMA_elm_02_AmericanElmLeaves_1" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="216" Material="" />
+            <SubMesh ID="25" Name="SOMA_elm_02_AmericanElmLeaves_2" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="52" Material="" />
+            <SubMesh ID="26" Name="SOMA_elm_02_AmericanElmLeaves_004" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="52" Material="" />
+            <SubMesh ID="27" Name="SOMA_elm_02_AmericanElmLeaves_005" CreStamp="0" ModStamp="0" WorldPos="0.144386 0.08311 -0.246057" Rotation="-1.5708 -0 0" Scale="1 1 1" TriCount="216" Material="" />
+        </Mesh>
+        <Bones />
+        <Shapes>
+            <Shape ID="7" Name="ShapeCylinder_1" CreStamp="1424870306" ModStamp="1424870379" WorldPos="-0.118246 1.71008 0.007948" Rotation="-0.035098 -0 0.149969" Scale="0.192266 3.35044 0" RelativeTranslation="-0.1212 0.0337408 -0.47709" RelativeRotation="-0.035098 -0 0.149969" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="8" Name="ShapeCylinder_2" CreStamp="1424870381" ModStamp="1424870422" WorldPos="-0.0790258 2.19983 0.451863" Rotation="0.396078 0.0176188 0.0680089" Scale="0.13274 2.05372 0" RelativeTranslation="-0.0819798 0.523491 -0.0331748" RelativeRotation="0.396078 0.0176188 0.0680089" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="9" Name="ShapeCylinder_3" CreStamp="1424870428" ModStamp="1424870479" WorldPos="-0.00561795 1.41256 0.070841" Rotation="0.0865312 -0.0269273 0.202266" Scale="0.195716 1.02401 0" RelativeTranslation="-0.00857195 -0.263779 -0.414197" RelativeRotation="0.0865312 -0.0269273 0.202266" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="10" Name="ShapeCylinder_4" CreStamp="1424870482" ModStamp="1424870522" WorldPos="0.0760747 0.540558 -0.0745244" Rotation="0.0890249 -0.0169186 0.0886322" Scale="0.234207 0.858286 0" RelativeTranslation="0.0731207 -1.13578 -0.559562" RelativeRotation="0.0890249 -0.0169186 0.0886322" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="11" Name="ShapeCylinder_5" CreStamp="1424870527" ModStamp="1424870561" WorldPos="0.109277 0.0955287 -0.00154342" Rotation="-0.214307 -0.0169186 0.0886322" Scale="0.299219 0.206296 0" RelativeTranslation="0.106323 -1.58081 -0.486581" RelativeRotation="-0.214307 -0.0169186 0.0886322" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="12" Name="ShapeCylinder_6" CreStamp="1424870576" ModStamp="1424870608" WorldPos="0.124154 2.8162 1.0446" Rotation="0.706806 0.106561 -0.215013" Scale="0.0987808 2.05372 0" RelativeTranslation="0.1212 1.13986 0.559562" RelativeRotation="0.706806 0.106561 -0.215013" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="13" Name="ShapeCylinder_7" CreStamp="1424870611" ModStamp="1424870646" WorldPos="-0.0135664 3.25715 0.53021" Rotation="-0.00937535 0.114613 -0.0837094" Scale="0.0829335 1.64466 0" RelativeTranslation="-0.0165204 1.58081 0.0451722" RelativeRotation="-0.00937535 0.114613 -0.0837094" RelativeScale="1 1 1" ShapeType="Cylinder" />
+        </Shapes>
+        <Bodies>
+            <Body ID="14" Name="Body_1" CreStamp="0" ModStamp="1425031091" WorldPos="0.002954 1.67634 0.485038" Rotation="0 0 0" Scale="1 1 1" Material="Wood Robust" Mass="0" AngularDamping="0.1" LinearDamping="0.1" MaxAngularSpeed="20" MaxLinearSpeed="20" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="true" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="false" BlocksLight="true">
+                <Children>
+                    <Child ID="24" />
+                    <Child ID="22" />
+                    <Child ID="27" />
+                    <Child ID="26" />
+                    <Child ID="23" />
+                    <Child ID="25" />
+                </Children>
+                <Shape ID="13" />
+                <Shape ID="12" />
+                <Shape ID="8" />
+                <Shape ID="7" />
+                <Shape ID="9" />
+                <Shape ID="10" />
+                <Shape ID="11" />
+            </Body>
+        </Bodies>
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="StaticProp">
+        <Var Name="ShowMesh" Value="true" />
+    </UserDefinedVariables>
+</Entity>
