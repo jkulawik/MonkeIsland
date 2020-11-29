@@ -35,8 +35,12 @@
             <Section Name="10911851120317680304">
                 <FileIndex_TerrainDecals NumOfFiles="0" />
                 <Decals />
-                <FileIndex_UndergrowthMaterials NumOfFiles="0" />
-                <Undergrowth />
+                <FileIndex_UndergrowthMaterials NumOfFiles="1">
+                    <File Id="0" Path="undergrowth/grass/grass_aristida_pungens_dense.tum" />
+                </FileIndex_UndergrowthMaterials>
+                <Undergrowth>
+                    <Circle ID="268437385" Name="Circle_163" CreStamp="1464099141" ModStamp="1606682624" WorldPos="104.165 51.6786 -0.978868" Rotation="-0 4.45059 -0" Scale="2.99497 2.99497 2.99497" FileIndex="0" FadeBorder="1" MaxInfluence="0.2" Center="104.165 -0.978868" Radius="2.99497" UID="16 4129 268437385" BlendType="Add" />
+                </Undergrowth>
             </Section>
         </Sections>
     </Terrain>
