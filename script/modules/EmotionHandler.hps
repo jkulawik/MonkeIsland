@@ -297,7 +297,7 @@ class cScrEmotionHandler : iScrUserModule, iScrUserModule_Interface, iScrEmotion
 		///////////////////////////
 		// Play the sound
 		cLuxSoundExtraData extraData;
-		if(cLux_PlayGuiSoundDataEx(asSound, eSoundEntryType_WorldClean, 1.0f, true, extraData))
+		if(cLux_PlayGuiSoundDataEx(asSound, eSoundEntryType_WorldClean, 0.5f, true, extraData))
 		{
 			if(afStrength>=0)
 				extraData.mpSoundEntry.SetParam("strength", afStrength);
