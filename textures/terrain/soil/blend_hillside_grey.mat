@@ -1,0 +1,11 @@
+<Material>
+    <Main Type="terrain" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="sand" BlendMode="Add" />
+    <TextureUnits>
+        <Diffuse MipMaps="true" Compress="true" File="mods/MonkeIsland/textures/terrain/soil/blend_hillside_grey.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap MipMaps="true" Compress="true" File="textures/terrain/sand/sand_desert_blend_hillside_orange_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Specular MipMaps="true" Compress="true" File="textures/terrain/sand/sand_desert_blend_hillside_orange_spec.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Alpha MipMaps="true" Compress="true" File="textures/terrain/sand/sand_desert_blend_hillside_orange.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Height MipMaps="true" Compress="false" File="textures/terrain/sand/sand_desert_blend_hillside_orange_height.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+    </TextureUnits>
+    <SpecificVariables />
+</Material>

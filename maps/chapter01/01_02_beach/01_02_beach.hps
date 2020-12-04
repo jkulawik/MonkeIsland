@@ -83,6 +83,8 @@ class cScrMap : iScrMap
 		
 		Pregnancy_SetBarksActive(false);
 		
+		
+		
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
@@ -185,7 +187,15 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	bool FadeGlobalLight(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		cLux_AddDebugMessage("Fading Global Light");
+		
+		cLightDirectional@ light = cLux_GetCurrentMap().GetWorld().GetDirectionalLight();
+		light.FadeBrightnessTo(alState == -1 ? 1.0f: 0.05f, 2.0f);
+		
+		return true;
+	}
  
 	//-------------------------------------------------------
  
