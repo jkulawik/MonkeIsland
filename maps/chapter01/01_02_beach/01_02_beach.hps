@@ -13,17 +13,11 @@
 #include "helpers/helper_ai.hps"
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
 
 #include "helpers/custom/helper_props_custom.hps"
 #include "custom/helpers/helper_modules_custom.hps"
 #include "custom/helpers/helper_player_custom.hps"
-
-//--------------------------------------------------
- 
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
-//--------------------------------------------------
  
 class cScrMap : iScrMap
 {
@@ -80,15 +74,14 @@ class cScrMap : iScrMap
 		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
+		Player_SetAutoTeleportWhenBelowAltitude(10.0f);
 		
 		Pregnancy_SetBarksActive(false);
 		
-		
-		
-		/////////////////////////
-		// Debug
-		if(cLux_ScriptDebugOn())
+		Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_All);
+		if(!cLux_ScriptDebugOn())
 		{
+			Seq_WakeUp("");
 		}
 	}
 
@@ -155,8 +148,24 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Effect_DoF_Start(0, 1300, 2.5f, 0);
-			//Effect_Blur_Start(0.5f, 1.0f);
+		}
+		if(alAction == eAction_Test2)
+		{
+			Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
+			CameraAnimation_Begin("BridgeJumpAnimation", "", true);
+		}
+		if(alAction == eAction_Test3)
+		{
+			PlayerBody_PlayCutsceneAnimation("fall_from_collapsed_plankbridge", false, 1.0f);
+		}
+		if(alAction == eAction_Test4)
+		{
+			cVector3f firstPos = Map_GetEntity("BridgeJumpAnimation_5").GetPosition();
+			PlayerBody_PlayCutsceneAnimation("player_fall_through_cave", false, 1.0f, "", 1.0f, 0.0f, true, firstPos);
+		}
+		if(alAction == eAction_Test5)
+		{
+			Player_Disorient(10, true, true);
 		}
 	}
 
@@ -171,6 +180,13 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{		
+		UpdateSpeedTest(afTimeStep);
+	}
+	
+	//-------------------------------------------------------
  
 	//} END MAIN CALLBACKS
  
@@ -183,7 +199,13 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	bool Trigger_Autosave(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Player_SetVertigoActive(true);
+		Game_AutoSave();
+		
+		return false;
+	}
  
 	//-------------------------------------------------------
  
@@ -192,7 +214,7 @@ class cScrMap : iScrMap
 		cLux_AddDebugMessage("Fading Global Light");
 		
 		cLightDirectional@ light = cLux_GetCurrentMap().GetWorld().GetDirectionalLight();
-		light.FadeBrightnessTo(alState == -1 ? 1.0f: 0.05f, 2.0f);
+		light.FadeBrightnessTo(alState == -1 ? 1.0f: 0.06f, 2.0f);
 		
 		return true;
 	}
@@ -211,10 +233,6 @@ class cScrMap : iScrMap
 		// General
 		//{//////////////////////////////////////
 		 
-		//-------------------------------------------------------
-	 
-		/*Put any variables that are used by many events in Scene X here.*/
-	 
 		//-------------------------------------------------------
 	 
 		bool Sea_OnCollide(const tString &in asParent, const tString &in asChild, int alState)
@@ -248,24 +266,283 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 		
+		void BeachInteract_OnPlayerInteract(const tString &in asEntity)
+		{
+			Message_Set("01_02_beach", "BeachInteract", 5.0f);
+		}
+		
+		//-------------------------------------------------------
+		
 		//} END General	
 	 
 		/////////////////////////////////////////
-		// Event *Name Of Event*
+		// WAKE UP
 		//{//////////////////////////////////////
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
+		int mlBlurID = -1;
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		cSequenceStatesData mWakeUpSequence;
+		void Seq_WakeUp(const tString&in asX)
+		{
+			Sequence_Begin("Seq_WakeUp", mWakeUpSequence);
+			
+			if(Sequence_DoStepAndWait(5.508f))
+			{
+				Sound_FadeGlobalVolume(0.0f, 0.0f, eSoundEntryType_WorldAll);
+				Sound_CreateAtEntity("IntroDRONE", "01_03_upsilon_outside/SFX/intro/sequence/drone", "Player");
+				Sound_CreateAtEntity("IntroSFX", "01_03_upsilon_outside/SFX/intro/sequence/sfx", "Player");
+				
+				mlBlurID = Effect_Blur_Start(0.5f, 1.0f);
+				Effect_Fade_Out(0);
+				
+				Player_FadeMoveSpeedMulTo(0.8f, 0.f);
+				Player_FadeLookSpeedMulTo(0.8f, 0.f);
+				
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "",0);
+			}
+			else if(Sequence_DoStepAndWait(8.0f))
+			{
+				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_WorldAll);
+				Sound_Stop("IntroSFX", 0.5f);
+				
+				Effect_Fade_In(0);
+			}
+			else if(Sequence_DoStepAndWait(8.0f))
+			{
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "OnFinishWakingUp");
+				Effect_Blur_FadeOut(mlBlurID, 8.0f);
+			}
+			else if(Sequence_DoStepAndContinue())
+			{
+				Player_FadeMoveSpeedMulTo(1.0f, 25.f);
+				Player_FadeLookSpeedMulTo(1.0f, 4.f);
+			}
+			
+			Sequence_End();
+		}
+		
+		void OnFinishWakingUp(const tString &in asAnimName)
+		{
+			Music_Play("post_crash.ogg", 0.85f, false, eMusicPrio_BigEvent);
+			Map_AddTimer("FadeBeachMusic", 40.0f, "Timer_FadeBeachMusic");
+			
+			Game_AutoSave();
+		}
+		
+		void Timer_FadeBeachMusic(const tString&in asTimer)
+		{
+			Music_Stop(15.0f, eMusicPrio_BigEvent);
+		}
 
 		//-------------------------------------------------------
 
-		//} END Event *Name Of Event*
+		//} END Event WAKE UP
 	 
 	//} END SCENE 1
+	
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 2: FOREST
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+	
+	//-------------------------------------------------------
+	
+	bool Collide_ForestMusic(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		if (alState == -1)
+		{
+			Music_Stop(4.0f, eMusicPrio_BgAmb);
+		}
+		else
+		{
+			Music_Play("beach_forest", 0.85f, true, eMusicPrio_BgAmb);
+		}
+		
+		return true;
+	}
+	
+	//-------------------------------------------------------
+	
+	void MonkeExamine_OnPlayerInteract(const tString &in asEntity)
+	{
+		Message_Set("01_02_beach", "MonkeStatue", 5.0f);
+	}
+	
+	//-------------------------------------------------------
+	
+	//} END SCENE 2
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 3: BRIDGE
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+	
+	//-------------------------------------------------------
+		
+	bool mbIsInsideSpeedTest = false;
+	bool mbPlayingBuildupMusic = false;
+	bool mbPlayingAnimation = false;
+	
+	float mfTotalRunningTime = 0.0f;
+	
+	//-------------------------------------------------------
+	
+	bool Area_SpeedTest(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		mbIsInsideSpeedTest = alState == 1;
+		
+		return true;
+	}
+	
+	void UpdateSpeedTest(float afTimeStep)
+	{
+		if(!mbIsInsideSpeedTest)
+		{
+			Music_Stop(0.75f, eMusicPrio_MinorEvent);
+			
+			mfTotalRunningTime = 0.0f;
+			mbPlayingBuildupMusic = false;
+			
+			return;
+		}
+		
+		if (Player_GetRunning())
+		{
+			mfTotalRunningTime += afTimeStep;
+			
+			if(!mbPlayingBuildupMusic)
+			{
+				Music_PlayExt("bridge_jump_buildup", false, 0.55f, 1.0f, 0.5f, 1.0f, eMusicPrio_MinorEvent, true);
+				
+				mbPlayingBuildupMusic = true;
+			}
+			
+			if (mfTotalRunningTime >= 2.0f && !mbPlayingAnimation && Entity_GetCollide("player", "BridgeJump") && Player_GetVelocity().y > 1.0f)
+			{
+				Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
+				CameraAnimation_Begin("BridgeJumpAnimation", "", true);
+				
+				mbPlayingAnimation = true;
+			}
+		}
+		else
+		{
+			Music_Stop(0.75f, eMusicPrio_MinorEvent);
+			
+			mfTotalRunningTime = 0.0f;
+			mbPlayingBuildupMusic = false;
+		}
+		
+	}
+	
+	//-------------------------------------------------------
+	
+	bool BridgeJumpAnimation_7_CameraNodePassed(const tString &in asEntity, int alDirection)
+	{
+		Sound_CreateAtEntity("Break", "02_04_living_quarters/tower/beam_snap", asEntity);
+		Sound_CreateAtEntity("Ouch", "monke/Player/reaction/air/hurt", asEntity);
+		ParticleSystem_CreateAtEntity("BreakPS", "wood_collapse.ps", asEntity, false);
+		
+		Effect_Shake_Start(0.25f, 0.2f, 0.01f, 0.05f, cVector3f(0.25f, 0.25f, 0.25f));
+				
+		return true;
+	}
+	
+	bool BridgeJumpAnimation_4_CameraNodePassed(const tString &in asEntity, int alDirection)
+	{
+		Sound_PlayGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.05f);
+				
+		Music_Stop(0.0f, eMusicPrio_BigEvent);
+		
+		return true;
+	}
+	
+	bool BridgeJumpAnimation_12_CameraNodePassed(const tString &in asEntity, int alDirection)
+	{
+		Sound_StopGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.5f);
+		CameraAnimation_End();
+		Seq_FallRecovery("");
+		
+		return true;
+	}
+	
+	cSequenceStatesData mFallRecoverySequence;
+	void Seq_FallRecovery(const tString&in asX)
+	{
+		Sequence_Begin("Seq_FallRecovery", mFallRecoverySequence);
+		
+		if(Sequence_DoStepAndWait(5.0f))
+		{
+			Player_GiveDamage(0.2f, 0.0f, eDamageType_Silent, "");
+			Sound_CreateAtEntity("Boom", "player/foley/damage/player_fall_death", "Player");
+			Player_Teleport("AfterFall");
+			Effect_Fade_Out(0);
+		}
+		else if(Sequence_DoStepAndWait(1.0f))
+		{
+			Music_Play("A2_3_3_Tasi_Wake", 0.7f, false, eMusicPrio_BigEvent);
+			PlayerBody_PlayCutsceneAnimation("player_struggle_wake_up_start", false, 1.0f, "PlayStruggleLoop");
+		}
+		else if(Sequence_DoStepAndWait(8.0f))
+		{
+			Player_Teleport("AfterFall");
+			Effect_Fade_In(2.0f);
+		}
+		
+		Sequence_End();
+	}
+	
+	void PlayStruggleLoop(const tString &in asAnimName)
+	{
+		PlayerBody_SetInteractiveAnimationInteractCallback("Banana_OnPlayerInteract");
+		PlayerBody_PlayInteractiveAnimation("player_struggle_wake_up_normal_loop", 1.0f, "", false, false, false, 1.f, false, 0.f, 0.f, false, true);
+	}
+	
+	void Banana_OnPlayerInteract(const tString &in asEntity)
+	{
+		Music_Play("A2_3_3_Tasi_Wake", 0.7f, false, eMusicPrio_BigEvent);
+		
+		Map_AddTimer("ShutTheFuckUp", 3.0f, "Timer_ShutTheFuckUp");
+		
+		Item_AddToInventory("Banana");
+		
+		Prop_SetActiveAndFade("Banana", false, 0.5f);
+		Light_FadeTo("Light_Banana", cColor(0,0,0,0), 1.0f, 1.0f);
+		
+		PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "", 1.0f, 0.0f, false, 0.0f, 0.0f, false, true);
+	}
+	
+	void Timer_ShutTheFuckUp(const tString&in asTimer)
+	{
+		Music_StopAll(0.0f);
+	}
+	
+	//-------------------------------------------------------
+	
+	bool Secret(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		if (alState == -1)
+		{
+			Music_Stop(4.0f, eMusicPrio_BgAmb);
+		}
+		else
+		{
+			Message_Set("01_02_beach", "Secret", 5.0f);
+			Music_Play("secret", 0.85f, true, eMusicPrio_BgAmb);
+		}
+		
+		return true;
+	}
+	
+	//-------------------------------------------------------
+	
+	//} END SCENE 3
  
 }

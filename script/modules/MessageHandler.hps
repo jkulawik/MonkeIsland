@@ -1,0 +1,244 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "modules/ModuleInterfaces.hps"
+#include "helpers/helper_imgui.hps"
+
+#include "helpers/helper_message.hps"
+
+class cScrMessageHandler : iScrUserModule, iScrUserModule_Interface
+{
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+	
+	void Update(float afTimeStep)
+	{
+		if (!mbIsMessageDisplayed) return;
+		
+		if (mbIsShowing)
+		{
+			mfAlpha = cMath_IncreaseTo(mfAlpha, afTimeStep * 0.8f, 1);
+			if (mfAlpha == 1) mbIsShowing = false;
+		}
+		else
+		{
+			if (mfDisplayTimer < mfMessageDur)
+			{
+				mfDisplayTimer = cMath_IncreaseTo(mfDisplayTimer, afTimeStep * 0.8f, mfMessageDur);
+			}
+			else
+			{
+				mfAlpha = cMath_IncreaseTo(mfAlpha, afTimeStep, 0);
+				if (mfAlpha == 0) mbIsMessageDisplayed = false;
+			}
+		}
+	}
+	
+	//-------------------------------------------------------
+	
+	void Reset() 
+	{
+		mfAlpha = 0;
+		mfDisplayTimer = 0;
+		
+		mbIsMessageDisplayed = true;
+		mbIsShowing = true;
+		mbCalculate = true;
+	}
+	
+	//-------------------------------------------------------
+	
+	void Init() {}
+	void PostUpdate(float afTimeStep) {}
+	void VariableUpdate(float afDeltaTime) {}
+	void OnDraw(float afFrameTime) {}
+	void OnPostRender(float afFrameTime) {}
+	void LoadUserConfig() {}
+	void SaveUserConfig() {}
+	void OnMapEnter(cLuxMap @apMap) {}
+	void OnMapLeave(cLuxMap @apMap) {}
+	void CreateWorldEntities(cLuxMap @apMap) {}
+	void DestroyWorldEntities(cLuxMap @apMap) {}
+	void PreloadData(cLuxMap @apMap) {}
+	void OnEnterContainer(const tString&in asOldContainer) {}
+	void OnLeaveContainer(const tString&in asNewContainer) {}
+	void OnExitPressed() {}
+	void OnAction(int alAction,  bool abPressed) {}
+	void OnAnalogInput(int alAnalogId,  const cVector3f &in avAmount) {}
+	void AppGotInputFocus() {}
+	void AppLostInputFocus() {}
+	
+	//-------------------------------------------------------
+	
+	//} END MAIN CALLBACKS
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ================
+	// GLOBAL FUNCTIONS
+	// ================
+	//{///////////////////////////////////////////////////////////////////////////////////////
+	
+	//-------------------------------------------------------
+	
+	void _Global_SetMessage()
+	{
+		msLangCategory = cScript_GetGlobalArgString(0);
+		msMessage = cScript_GetGlobalArgString(1);
+		mfMessageDur = cScript_GetGlobalArgFloat(2);
+		mlMessagePos = cScript_GetGlobalArgInt(3);
+		mlMessageAlign = cScript_GetGlobalArgInt(4);
+		mvMessageSize = cScript_GetGlobalArgVector2f(5);
+		mvMessageOffset = cScript_GetGlobalArgVector2f(6);
+		
+		Reset();
+	}
+	
+	//-------------------------------------------------------
+	
+	//} END GLOBAL FUNCTIONS
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// =============
+	// GUI CALLBACKS
+	// =============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+	
+	//-------------------------------------------------------
+	
+	void OnGui(float afTimeStep) 
+	{
+		if (!mbIsMessageDisplayed) return;
+		
+		cVector3f vPos;
+		vPos.x = -cLux_GetHudVirtualOffset().x;
+		vPos.y = -cLux_GetHudVirtualOffset().y;
+		vPos.z = 0.0f;
+		ImGui_GroupBegin(vPos, ImGui_GetSize());
+		
+		ImGui_SetTransCategory(msLangCategory);
+		
+		cImGuiTextFrameData data;
+		data.mbUseBackgroundGfx = false;
+		data.mFont.mvSize = ImGui_NrmSizeKeepRatio(0.025);
+		data.mFont.SetFile("work_56.fnt");
+		data.mColorText = cColor(1.0f, 1.0f, 1.0f, mfAlpha);
+		
+		if (mbCalculate)
+		{
+			mfMessageHeight = ImGui_DoTextFrameExt(msMessage, 
+				cVector2f(0, 0), 1, 0, data, 
+				ImGui_NrmPosGroup(0.0f, 0.0f, 0.0f), 
+				ImGui_NrmSizeGroup(0.7, 0.0));
+			mfMessageHeight *= data.mFont.mvSize.y;
+			
+			if (mvMessageSize != cVector2f_MinusOne)
+				mvMessageSize = ImGui_NrmSizeGroup(mvMessageSize);
+			else
+				mvMessageSize = ImGui_NrmSizeGroup(0.7f, 1.0f);
+			
+			mvMessageOffset = ImGui_NrmPos2Group(mvMessageOffset.x, mvMessageOffset.y);
+			
+			mbCalculate = false;
+		}
+		
+		cVector3f vTextPos;
+		switch (mlMessagePos)
+		{
+			case eMessagePosition_TopLeft:
+				vTextPos = ImGui_NrmPosGroup(0.02, 0.02, 0.0); 
+				data.mFontAlign = eFontAlign_Left;
+				break;
+			case eMessagePosition_TopCenter:
+				vTextPos = ImGui_NrmPosGroup(0.15, 0.02, 0.0); 
+				data.mFontAlign = eFontAlign_Center;
+				break;
+			case eMessagePosition_TopRight:
+				vTextPos = ImGui_NrmPosGroup(0.28, 0.02, 0.0); 
+				data.mFontAlign = eFontAlign_Right;
+				break;
+				
+			case eMessagePosition_MiddleLeft:
+				vTextPos = ImGui_NrmPosGroup(0.02, 0.5, 0.0); 
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - (mfMessageHeight / 2), vTextPos.z);
+				data.mFontAlign = eFontAlign_Left;
+				break;
+			case eMessagePosition_MiddleCenter:
+				vTextPos = ImGui_NrmPosGroup(0.15, 0.5, 0.0);
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - (mfMessageHeight / 2), vTextPos.z);
+				data.mFontAlign = eFontAlign_Center;
+				break;
+			case eMessagePosition_MiddleRight:
+				vTextPos = ImGui_NrmPosGroup(0.28, 0.5, 0.0); 
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - (mfMessageHeight / 2), vTextPos.z);
+				data.mFontAlign = eFontAlign_Right;
+				break;
+				
+			case eMessagePosition_BottomLeft:
+				vTextPos = ImGui_NrmPosGroup(0.02, 0.98, 0.0); 
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - mfMessageHeight, vTextPos.z);
+				data.mFontAlign = eFontAlign_Left;
+				break;
+			case eMessagePosition_BottomCenter:
+				vTextPos = ImGui_NrmPosGroup(0.15, 0.98, 0.0); 
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - mfMessageHeight, vTextPos.z);
+				data.mFontAlign = eFontAlign_Center;
+				break;
+			case eMessagePosition_BottomRight:
+				vTextPos = ImGui_NrmPosGroup(0.28, 0.98, 0.0); 
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y - mfMessageHeight, vTextPos.z);
+				data.mFontAlign = eFontAlign_Right;
+				break;
+		}
+		
+		vTextPos = cVector3f(vTextPos.x + mvMessageOffset.x, vTextPos.y + mvMessageOffset.y, vTextPos.z);
+		
+		if (mlMessageAlign != eMessageAlignment_Default)
+		{
+			switch (mlMessageAlign)
+			{
+				case eMessageAlignment_Left: 
+					data.mFontAlign = eFontAlign_Left; break;
+				case eMessageAlignment_Center: 
+					data.mFontAlign = eFontAlign_Center; break;
+				case eMessageAlignment_Right: 
+					data.mFontAlign = eFontAlign_Right; break;
+			}
+		}
+		
+		ImGui_DoTextFrameExt(msMessage, cVector2f(0, 0), 1, 0, data, vTextPos, mvMessageSize);
+			
+		ImGui_GroupEnd();
+		ImGui_SetTransCategory("");
+	}
+	
+	//-------------------------------------------------------
+	
+	//} END GUI CALLBACKS
+	
+	//-------------------------------------------------------
+	
+	tString msMessage;
+	tString msLangCategory;
+	float mfMessageDur;
+	int mlMessagePos;
+	int mlMessageAlign;
+	cVector2f mvMessageSize;
+	cVector2f mvMessageOffset;
+	
+	//-------------------------------------------------------
+	
+	bool mbIsMessageDisplayed;
+	bool mbIsShowing;
+	float mfDisplayTimer;
+	float mfAlpha;
+	
+	//-------------------------------------------------------
+	
+	float mfMessageHeight;
+	bool mbCalculate;
+	
+	//-------------------------------------------------------
+	
+	
+}

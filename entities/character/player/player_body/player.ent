@@ -533,7 +533,13 @@
                 <Event Name="New Event" Time="0.59766" Direction="Both" Type="PlaySound" DestSocket="" Value="player/footsteps/default/rock_dirt" />
                 <Event Name="New Event" Time="1.76945" Direction="Both" Type="PlaySound" DestSocket="" Value="player/footsteps/default/rock_dirt" />
             </Animation>
-            <Animation Name="interactive_wakeup_test" File="entities/character/player/player_body/animation/wake_up_from_death_3a.fbx" Layer="Default" Speed="1" />
+            <Animation Name="interactive_wakeup_test" File="entities/character/player/player_body/animation/wake_up_from_death_3a.fbx" Layer="Default" Speed="1">
+                <Event Name="Sound_Wake_2" Time="0" Direction="Both" Type="PlaySound" DestSocket="" Value="player/foley/animations/player/wake_permafail_v2" />
+                <Event Name="New Event" Time="1.65" Direction="" Type="PlaySound" DestSocket="" Value="player/footsteps/default/sand" />
+                <Event Name="New Event" Time="3.5017" Direction="" Type="PlaySound" DestSocket="" Value="player/footsteps/default/stone_stair" />
+                <Event Name="New Event" Time="5.72026" Direction="" Type="PlaySound" DestSocket="" Value="player/footsteps/default/rock_solid" />
+                <Event Name="New Event" Time="6.01828" Direction="" Type="PlaySound" DestSocket="" Value="player/footsteps/temp/player_prone_up" />
+            </Animation>
             <Animation Name="player_not_trying_to_escape_tf17_fall_through_ground" File="entities/character/player/player_body/animation/player_not_trying_to_escape_tf17_fall_through_ground.fbx" Layer="FullBody" Speed="1" />
             <Animation Name="player_trying_to_escape_tf17_fall_through_ground" File="entities/character/player/player_body/animation/player_trying_to_escape_tf17_fall_through_ground.fbx" Layer="FullBody" Speed="1" />
             <Animation Name="player_tf17_push_cannon_start" File="entities/character/player/player_body/animation/player_tf17_push_cannon_start.fbx" Layer="FullBody" Speed="1">
@@ -1079,6 +1085,7 @@
                 <Event Name="Sound_SwimSlowLeft_2" Time="2.72591" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
                 <Event Name="Sound_SwimSlowLeft_3" Time="4.33555" Direction="Both" Type="PlaySound" DestSocket="L_Hand" Value="level_dreams/swim/swim_slow" />
             </Animation>
+            <Animation Name="player_wake_up_after_collapse" File="mods/MonkeIsland/entities/character/player/player_body/animations/player_wake_up_after_collapse.fbx" Layer="Default" Speed="1" />
         </Animations>
         <ProcAnimations />
     </ModelData>
