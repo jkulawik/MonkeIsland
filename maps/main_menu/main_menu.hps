@@ -64,7 +64,7 @@ class cScrMap : iScrMap
 		cLux_SetGamePaused(false, true, true, true);
 		cLux_GetGuiHandler().SetGameHudInputFocus(true);
 		
-		Music_PlayExt("A2_MenuTheme.ogg", true, 0.25f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
+		Music_PlayExt("A2_MenuTheme.ogg", true, 0.85f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
 		
 		Effect_Fade_In(5.0f);
 		
