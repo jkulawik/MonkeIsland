@@ -14,6 +14,7 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
 
 #include "helpers/custom/helper_props_custom.hps"
 #include "custom/helpers/helper_modules_custom.hps"
@@ -148,6 +149,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "", 1.0f, 0.0f, false, 0.0f);
 		}
 		if(alAction == eAction_Test2)
 		{
@@ -313,6 +315,8 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(8.0f))
 			{
+				Voice_Play("WakeUp");
+				
 				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "OnFinishWakingUp");
 				Effect_Blur_FadeOut(mlBlurID, 8.0f);
 			}
@@ -376,6 +380,15 @@ class cScrMap : iScrMap
 	
 	//-------------------------------------------------------
 	
+	bool Trigger_StairsVoice(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Voice_Play("Motivated");
+		
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
 	//} END SCENE 2
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +404,16 @@ class cScrMap : iScrMap
 	bool mbPlayingAnimation = false;
 	
 	float mfTotalRunningTime = 0.0f;
+	
+	//-------------------------------------------------------
+	
+	bool Collide_BridgeJump(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Voice_Play("BridgeJumpComment");
+		Entity_SetActive("Area_SpeedTest", true);
+		
+		return false;
+	}
 	
 	//-------------------------------------------------------
 	
@@ -428,6 +451,8 @@ class cScrMap : iScrMap
 			{
 				Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
 				CameraAnimation_Begin("BridgeJumpAnimation", "", true);
+				
+				Voice_PlayDelayed("BridgeJump", 1.0f);
 				
 				mbPlayingAnimation = true;
 			}
@@ -480,6 +505,9 @@ class cScrMap : iScrMap
 		
 		if(Sequence_DoStepAndWait(5.0f))
 		{
+			Sketchbook_SetInventoryEnabled(false);
+			
+			Player_SetVertigoActive(false);
 			Player_GiveDamage(0.2f, 0.0f, eDamageType_Silent, "");
 			Sound_CreateAtEntity("Boom", "player/foley/damage/player_fall_death", "Player");
 			Player_Teleport("AfterFall");
@@ -487,6 +515,8 @@ class cScrMap : iScrMap
 		}
 		else if(Sequence_DoStepAndWait(1.0f))
 		{
+			Voice_PlayDelayed("MyBack_1", 2.0f);
+			
 			Music_Play("A2_3_3_Tasi_Wake", 0.7f, false, eMusicPrio_BigEvent);
 			PlayerBody_PlayCutsceneAnimation("player_struggle_wake_up_start", false, 1.0f, "PlayStruggleLoop");
 		}
@@ -502,26 +532,19 @@ class cScrMap : iScrMap
 	void PlayStruggleLoop(const tString &in asAnimName)
 	{
 		PlayerBody_SetInteractiveAnimationInteractCallback("Banana_OnPlayerInteract");
-		PlayerBody_PlayInteractiveAnimation("player_struggle_wake_up_normal_loop", 1.0f, "", false, false, false, 1.f, false, 0.f, 0.f, false, true);
+		PlayerBody_PlayInteractiveAnimation("player_struggle_wake_up_normal_loop", 1.0f, "", false, false, false, 1.f, false, 0.f, 0.f);
 	}
 	
 	void Banana_OnPlayerInteract(const tString &in asEntity)
 	{
-		Music_Play("A2_3_3_Tasi_Wake", 0.7f, false, eMusicPrio_BigEvent);
-		
-		Map_AddTimer("ShutTheFuckUp", 3.0f, "Timer_ShutTheFuckUp");
+		Voice_PlayDelayed("MyBack_2", 2.0f);
 		
 		Item_AddToInventory("Banana");
 		
 		Prop_SetActiveAndFade("Banana", false, 0.5f);
 		Light_FadeTo("Light_Banana", cColor(0,0,0,0), 1.0f, 1.0f);
 		
-		PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "", 1.0f, 0.0f, false, 0.0f, 0.0f, false, true);
-	}
-	
-	void Timer_ShutTheFuckUp(const tString&in asTimer)
-	{
-		Music_StopAll(0.0f);
+		PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 3.0f, "", 1.0f, 0.0f, false, 0.0f);
 	}
 	
 	//-------------------------------------------------------
