@@ -82,7 +82,7 @@ class cScrMap : iScrMap
 		Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_All);
 		if(!cLux_ScriptDebugOn())
 		{
-			Seq_WakeUp("");
+			Map_AddTimer("WakeUp", 2.0f, "Timer_WakeUp");
 		}
 	}
 
@@ -222,6 +222,13 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
+	
+	void ReEnableInventory(const tString &in asAnimName)
+	{
+		Sketchbook_SetInventoryEnabled(true);
+	}
+	
+	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS
  
@@ -287,8 +294,14 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
+
+		void Timer_WakeUp(const tString&in asTimer)
+		{
+			Seq_WakeUp("");
+		}
+
 		cSequenceStatesData mWakeUpSequence;
-		void Seq_WakeUp(const tString&in asX)
+		void Seq_WakeUp(const tString&in asTimer)
 		{
 			Sequence_Begin("Seq_WakeUp", mWakeUpSequence);
 			
@@ -452,7 +465,7 @@ class cScrMap : iScrMap
 				Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
 				CameraAnimation_Begin("BridgeJumpAnimation", "", true);
 				
-				Voice_PlayDelayed("BridgeJump", 1.0f);
+				//Voice_PlayDelayed("BridgeJump", 1.0f);
 				
 				mbPlayingAnimation = true;
 			}
@@ -482,7 +495,7 @@ class cScrMap : iScrMap
 	
 	bool BridgeJumpAnimation_4_CameraNodePassed(const tString &in asEntity, int alDirection)
 	{
-		Sound_PlayGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.05f);
+		Sound_PlayGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.06f);
 				
 		Music_Stop(0.0f, eMusicPrio_BigEvent);
 		
@@ -515,13 +528,13 @@ class cScrMap : iScrMap
 		}
 		else if(Sequence_DoStepAndWait(1.0f))
 		{
-			Voice_PlayDelayed("MyBack_1", 2.0f);
-			
 			Music_Play("A2_3_3_Tasi_Wake", 0.7f, false, eMusicPrio_BigEvent);
 			PlayerBody_PlayCutsceneAnimation("player_struggle_wake_up_start", false, 1.0f, "PlayStruggleLoop");
 		}
 		else if(Sequence_DoStepAndWait(8.0f))
 		{
+			Voice_PlayDelayed("MyBack_1", 2.0f);
+			
 			Player_Teleport("AfterFall");
 			Effect_Fade_In(2.0f);
 		}
@@ -532,7 +545,7 @@ class cScrMap : iScrMap
 	void PlayStruggleLoop(const tString &in asAnimName)
 	{
 		PlayerBody_SetInteractiveAnimationInteractCallback("Banana_OnPlayerInteract");
-		PlayerBody_PlayInteractiveAnimation("player_struggle_wake_up_normal_loop", 1.0f, "", false, false, false, 1.f, false, 0.f, 0.f);
+		PlayerBody_PlayInteractiveAnimation("player_struggle_wake_up_normal_loop", 1.0f, "", false, false);
 	}
 	
 	void Banana_OnPlayerInteract(const tString &in asEntity)
@@ -544,7 +557,7 @@ class cScrMap : iScrMap
 		Prop_SetActiveAndFade("Banana", false, 0.5f);
 		Light_FadeTo("Light_Banana", cColor(0,0,0,0), 1.0f, 1.0f);
 		
-		PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 3.0f, "", 1.0f, 0.0f, false, 0.0f);
+		PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 3.0f, "ReEnableInventory", 1.0f, 0.0f, false, 0.0f);
 	}
 	
 	//-------------------------------------------------------
