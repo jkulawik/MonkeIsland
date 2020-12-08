@@ -116,12 +116,45 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			PlayerBody_PlayCutsceneAnimation("player_exhausted", false, 1.0f, "");
 			
+			Sound_CreateAtEntity("Player", "monke/Player/barf/ohgod", "Player");
+			
+			Map_AddTimer("StartPuke", 1.0f, "Timer_StartPuke");
 		}
 		if(alAction == eAction_Test2)
 		{
 			Sketchbook_AddAllIdeas(true);
 		}
+		if(alAction == eAction_Test3)
+		{
+
+		}
+	}
+	
+	void Timer_StartPuke(const tString&in asTimer)
+	{
+		Sound_CreateAtEntity("Player", "monke/Player/barf/surstromming", "Player");
+		ParticleSystem_CreateAtEntityExt("Puke", "puke_small.ps", "Camera", true, cColor_White);
+		
+		array<cParticleSystem@> vParticles;
+		Map_GetParticleSystemArray("Puke", vParticles);
+		
+		cCamera@ pPlayerCamera = cLux_GetPlayer().GetCamera();
+		cParticleSystem@ pParticle = vParticles[0];
+		
+		cVector3f vRot = cMath_MatrixToEulerAngles(pParticle.GetLocalMatrix().GetRotation());
+		vRot.x -= cMath_ToRad(50.f);
+		
+		pParticle.SetMatrix(cMath_MatrixRotateXYZ(vRot));
+		pParticle.SetPosition(pPlayerCamera.GetForward() * 0.3 + pPlayerCamera.GetRight() * 0.04 + pPlayerCamera.GetUp() * -0.04);
+
+		Map_AddTimer("DestroyPuke", 3.0f, "Timer_DestroyPuke");
+	}
+
+	void Timer_DestroyPuke(const tString&in asTimer)
+	{
+		ParticleSystem_Destroy("Puke");
 	}
 
 	//-------------------------------------------------------

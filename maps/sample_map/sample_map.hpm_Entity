@@ -1,6 +1,6 @@
 <HPLMapTrack_Entity ID="82014519DE04367D0D344B6D35C2DEC3D9353D" MajorVersion="1" MinorVersion="1">
     <Section Name="8292389879337415459">
-        <FileIndex_Entities NumOfFiles="49">
+        <FileIndex_Entities NumOfFiles="50">
             <File Id="0" Path="entities/darkworld/furniture/dwf_table_01/dwf_table_01.ent" />
             <File Id="1" Path="entities/darkworld/furniture/dwf_table_01/dwf_table_leg_01.ent" />
             <File Id="2" Path="entities/darkworld/gameplay/dw_tablet_readable/dw_tablet_readable.ent" />
@@ -50,6 +50,7 @@
             <File Id="46" Path="entities/character/npc/doctor/doctor.ent" />
             <File Id="47" Path="entities/nonexclusive/gameplay/bottle_laudanum/bottle_laudanum_withcork_pickup.ent" />
             <File Id="48" Path="entities/nonexclusive/gameplay/oil_flask_herbert/oil_flask_herbert.ent" />
+            <File Id="49" Path="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.ent" />
         </FileIndex_Entities>
         <Objects>
             <Entity ID="268435545" Name="dwf_table_01_1" CreStamp="1604961683" ModStamp="1605178273" WorldPos="-6.3831 0 -6.77588" Rotation="0 0.523599 0" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 105 268435545">
@@ -965,54 +966,53 @@
                     <Var ObjectId="268435561" Name="Highlight" Value="true" />
                 </UserVariables>
             </Entity>
+            <Entity ID="268435562" Name="rock_enemy" CreStamp="1606064698" ModStamp="1607454877" WorldPos="6.25 0 8.5" Rotation="0 0 0" Scale="3 3 3" FileIndex="49" Active="false" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 245 268435562">
+                <UserVariables>
+                    <Var ObjectId="268435562" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435562" Name="UserVar" Value="" />
+                    <Var ObjectId="268435562" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435562" Name="EffectsActive" Value="true" />
+                    <Var ObjectId="268435562" Name="AutoDisableWhenOutOfSight" Value="false" />
+                    <Var ObjectId="268435562" Name="AutoDisableWhenOutOfSightMinDist" Value="10" />
+                    <Var ObjectId="268435562" Name="AutoDisableCallback" Value="" />
+                    <Var ObjectId="268435562" Name="ColorMul" Value="1 1 1 1" />
+                    <Var ObjectId="268435562" Name="UpdateWhenInvisible" Value="false" />
+                    <Var ObjectId="268435562" Name="IllumColor" Value="1 1 1 1" />
+                    <Var ObjectId="268435562" Name="IllumBrightness" Value="1" />
+                    <Var ObjectId="268435562" Name="SensesActive" Value="true" />
+                    <Var ObjectId="268435562" Name="ConnectionStateChangeCallback" Value="" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435562" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435562" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435562" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435562" Name="PlayerInteractLeaveCallback" Value="" />
+                    <Var ObjectId="268435562" Name="PlayerInteractLeaveCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435562" Name="RecieveMessageCallback" Value="" />
+                    <Var ObjectId="268435562" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435562" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435562" Name="ConnectedEntity" Value="" />
+                    <Var ObjectId="268435562" Name="ConnectedEntityInvertState" Value="false" />
+                    <Var ObjectId="268435562" Name="ConnectedEntityStatesUsed" Value="0" />
+                    <Var ObjectId="268435562" Name="HearingMul" Value="1" />
+                    <Var ObjectId="268435562" Name="SightMul" Value="1" />
+                    <Var ObjectId="268435562" Name="Deaf" Value="false" />
+                    <Var ObjectId="268435562" Name="Blind" Value="false" />
+                    <Var ObjectId="268435562" Name="HeadTracker_TargetEntity" Value="" />
+                    <Var ObjectId="268435562" Name="HeadTracker_Active" Value="true" />
+                    <Var ObjectId="268435562" Name="Listener_Active" Value="true" />
+                </UserVariables>
+            </Entity>
         </Objects>
     </Section>
     <Section Name="10911851120317680304">
         <FileIndex_Entities NumOfFiles="1">
-            <File Id="0" Path="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.ent" />
+            <File Id="0" Path="mods/MonkeIsland/entities/gameplay/crystal_pepsi/crystal_pepsi.ent" />
         </FileIndex_Entities>
-        <Objects>
-            <Entity ID="285212672" Name="rock_enemy" CreStamp="1606064698" ModStamp="1606066611" WorldPos="6.25 0 8.5" Rotation="0 0 0" Scale="3 3 3" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="17 15 285212672">
-                <UserVariables>
-                    <Var ObjectId="285212672" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="285212672" Name="UserVar" Value="" />
-                    <Var ObjectId="285212672" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="285212672" Name="EffectsActive" Value="true" />
-                    <Var ObjectId="285212672" Name="AutoDisableWhenOutOfSight" Value="false" />
-                    <Var ObjectId="285212672" Name="AutoDisableWhenOutOfSightMinDist" Value="10" />
-                    <Var ObjectId="285212672" Name="AutoDisableCallback" Value="" />
-                    <Var ObjectId="285212672" Name="ColorMul" Value="1 1 1 1" />
-                    <Var ObjectId="285212672" Name="UpdateWhenInvisible" Value="false" />
-                    <Var ObjectId="285212672" Name="IllumColor" Value="1 1 1 1" />
-                    <Var ObjectId="285212672" Name="IllumBrightness" Value="1" />
-                    <Var ObjectId="285212672" Name="SensesActive" Value="true" />
-                    <Var ObjectId="285212672" Name="ConnectionStateChangeCallback" Value="" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="285212672" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="285212672" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="285212672" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="285212672" Name="PlayerInteractLeaveCallback" Value="" />
-                    <Var ObjectId="285212672" Name="PlayerInteractLeaveCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="285212672" Name="RecieveMessageCallback" Value="" />
-                    <Var ObjectId="285212672" Name="CC_Entities" Value="" />
-                    <Var ObjectId="285212672" Name="CC_Funcs" Value="" />
-                    <Var ObjectId="285212672" Name="ConnectedEntity" Value="" />
-                    <Var ObjectId="285212672" Name="ConnectedEntityInvertState" Value="false" />
-                    <Var ObjectId="285212672" Name="ConnectedEntityStatesUsed" Value="0" />
-                    <Var ObjectId="285212672" Name="HearingMul" Value="1" />
-                    <Var ObjectId="285212672" Name="SightMul" Value="1" />
-                    <Var ObjectId="285212672" Name="Deaf" Value="false" />
-                    <Var ObjectId="285212672" Name="Blind" Value="false" />
-                    <Var ObjectId="285212672" Name="HeadTracker_TargetEntity" Value="" />
-                    <Var ObjectId="285212672" Name="HeadTracker_Active" Value="true" />
-                    <Var ObjectId="285212672" Name="Listener_Active" Value="true" />
-                </UserVariables>
-            </Entity>
-        </Objects>
+        <Objects />
     </Section>
     <Section Name="13595023762818024409">
         <FileIndex_Entities NumOfFiles="0" />
