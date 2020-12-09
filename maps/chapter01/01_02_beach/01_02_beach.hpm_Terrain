@@ -1,5 +1,5 @@
 <HPLMapTrack_Terrain ID="83F900C0553BBC9ECE199999E38344A55035FC4F" MajorVersion="1" MinorVersion="1">
-    <Terrain Active="true" GeometryPatchSize="512" TexturePatchSize="512" HeightMapSize="1024" MaxHeight="100" UnitSize="1" UndergrowthGridSize="10" UndergrowthFadeStart="18" UndergrowthFadeEnd="20" BaseMaterialFile="textures/terrain/sand/sand_desert_smooth_orange.mat" BaseMaterialTileAmount="0.25" BaseMaterialStartFadeValue="0" BaseMaterialDetailTextureAmount="1 0 0" BaseMaterialHeightMapScale="0" MaterialSpecularPower="0.3" MaterialTextureLayerNum="8" MaterialTextureFalloff="3" CliffTextureDiffuse="textures/terrain/sand/sand_desert_streak_orange.dds" CliffTextureNMap="textures/terrain/sand/sand_desert_streak_nrm.dds" CliffTextureSize="0.17" CliffTextureFadeAngleMul="1.15">
+    <Terrain Active="true" GeometryPatchSize="512" TexturePatchSize="512" HeightMapSize="1024" MaxHeight="100" UnitSize="1" UndergrowthGridSize="10" UndergrowthFadeStart="60" UndergrowthFadeEnd="80" BaseMaterialFile="textures/terrain/sand/sand_desert_smooth_orange.mat" BaseMaterialTileAmount="0.25" BaseMaterialStartFadeValue="0" BaseMaterialDetailTextureAmount="1 0 0" BaseMaterialHeightMapScale="0" MaterialSpecularPower="0.3" MaterialTextureLayerNum="8" MaterialTextureFalloff="3" CliffTextureDiffuse="textures/terrain/sand/sand_desert_streak_orange.dds" CliffTextureNMap="textures/terrain/sand/sand_desert_streak_nrm.dds" CliffTextureSize="0.17" CliffTextureFadeAngleMul="1.15">
         <DetailTextures DetailFadeStart="10" DetailFadeEnd="20">
             <DetailTexture ID="0" File="" Scale="1" />
             <DetailTexture ID="1" File="" Scale="1" />
@@ -27,7 +27,7 @@
             <BlendLayer ID="3">
                 <Material File="mods/MonkeIsland/textures/terrain/soil/dirt_road_tiling.mat" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
                 <Material File="mods/MonkeIsland/textures/terrain/soil/blend_hillside_grey.mat" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0.25" />
-                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="textures/terrain/sand/sand_desert_blend_hillside_orange.mat" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0.25" />
                 <Material File="core/textures/terrain_hole.mat" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
             </BlendLayer>
         </BlendLayers>

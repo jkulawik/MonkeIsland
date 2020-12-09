@@ -149,7 +149,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "", 1.0f, 0.0f, false, 0.0f);
 		}
 		if(alAction == eAction_Test2)
 		{
@@ -282,6 +281,13 @@ class cScrMap : iScrMap
 		
 		//-------------------------------------------------------
 		
+		void EngineExamine_OnPlayerInteract(const tString &in asEntity)
+		{
+			Message_Set("01_02_beach", "EngineInteract");
+		}
+		
+		//-------------------------------------------------------
+		
 		//} END General	
 	 
 		/////////////////////////////////////////
@@ -398,6 +404,16 @@ class cScrMap : iScrMap
 		Voice_Play("Motivated");
 		
 		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	bool Sticky_1_Attach(const tString &in asStickyArea, const tString &in asBodyName)
+	{
+		Entity_SetActive("bridgebox", false);
+		Hint_ShowHint("Hints", "HintPlank");
+				
+		return true;
 	}
 	
 	//-------------------------------------------------------
@@ -550,6 +566,8 @@ class cScrMap : iScrMap
 	
 	void Banana_OnPlayerInteract(const tString &in asEntity)
 	{
+		Hint_StopHint();
+
 		Voice_PlayDelayed("MyBack_2", 2.0f);
 		
 		Item_AddToInventory("Banana");
@@ -578,6 +596,89 @@ class cScrMap : iScrMap
 	}
 	
 	//-------------------------------------------------------
+	
+	bool Trigger_StairsFall(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Seq_StairsFall("");
+		
+		return false;
+	}
+	
+	cSequenceStatesData mStairsFallSequence;
+	void Seq_StairsFall(const tString&in asX)
+	{
+		Sequence_Begin("Seq_StairsFall", mStairsFallSequence);
+		
+		if(Sequence_DoStepAndWait(0.5f))
+		{
+			Voice_Play("CaveFall");
+		}
+		else if(Sequence_DoStepAndWait(0.4f))
+		{
+			Sketchbook_SetInventoryEnabled(true);
+			Voice_StopAll();
+			
+			Sound_CreateAtEntity("wow", "monke/SFX/VO/scream", "Player");
+			Voice_PlayDelayed("MotherMary", 2.0f);
+			
+			PlayerBody_SetVisible(false);
+			Player_AddBodyForce(cVector3f(35000, 0, 0), false);
+			Player_SetCrouching(true, true, true);
+			Player_SetActive(false);
+			
+			Player_StartLookAt("LookUp", 5.0f, 5.0f, 5.0f);
+		}
+		else if(Sequence_DoStepAndWait(0.5f))
+		{
+			Player_StartLookAt("LookDown", 2.0f, 5.0f, 5.0f);
+		}
+		else if(Sequence_DoStepAndWait(0.5f))
+		{
+			Player_StartLookAt("LookUp", 5.0f, 5.0f, 5.0f);
+		}
+		else if(Sequence_DoStepAndWait(1.0f))
+		{
+			Player_Disorient(10.f, true, true);
+		}
+		else if(Sequence_DoStepAndWait(5.8f))
+		{
+			Player_SetActive(true);
+			Player_SetCrouching(false, true, true);
+			Player_StopLookAt(1.0f);
+			PlayerBody_SetVisible(true);
+			PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 0.75f, "ReEnableInventory", 1.0f);
+			
+			Music_Play("A2_4_3_Baby_Leave", 0.85f, false, eMusicPrio_BigEvent);
+		}
+		else if(Sequence_DoStepAndContinue())
+		{
+			Music_StopAll(0.0f);
+		}
+		
+		Sequence_End();
+	}
+	
+	//-------------------------------------------------------
+	
+		bool OnCollide_CollapseChaseBridge(const tString &in asParent, const tString &in asChild, int alState)
+		{
+             Sound_CreateAtEntity("BridgeSmash", "03_03_herberts_hq/shadow_guardian/bridge_collapse_smash", "bridge");
+			 
+			 Entity_SetActive("bridge", false);
+			 
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
+			 			 			 
+			Map_AddTimer("ChangeMap", 0.75f, "Timer_ChangeMap");
+			 
+             return false;
+		}
+		
+		void Timer_ChangeMap(const tString&in asTimer)
+		{
+			if (!cLux_ScriptDebugOn())
+				Map_ChangeMap("01_03_monke_tomb.hpm", "Start_Begin", "", "", false);
+		}
 	
 	//} END SCENE 3
  
