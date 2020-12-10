@@ -481,7 +481,7 @@ class cScrMap : iScrMap
 				Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
 				CameraAnimation_Begin("BridgeJumpAnimation", "", true);
 				
-				//Voice_PlayDelayed("BridgeJump", 1.0f);
+				Voice_StopAll();
 				
 				mbPlayingAnimation = true;
 			}
@@ -677,7 +677,7 @@ class cScrMap : iScrMap
 		void Timer_ChangeMap(const tString&in asTimer)
 		{
 			if (!cLux_ScriptDebugOn())
-				Map_ChangeMap("01_03_monke_tomb.hpm", "Start_Begin", "", "", false);
+				Map_ChangeMap("01_03_monke_temple.hpm", "Start_Begin", "", "", false);
 		}
 	
 	//} END SCENE 3
