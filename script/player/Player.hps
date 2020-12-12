@@ -1247,6 +1247,20 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	
 	//------------------------------------------------------------
 	
+	void _Global_SetCanDie()
+	{
+		mbCanDie = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCanDie()
+	{
+		cScript_SetGlobalReturnBool(mbCanDie);
+	}
+	
+	//------------------------------------------------------------
+	
 	/////////////////////////////////////////
 	// CHARACTER CALLBACK
 	/////////////////////////////////////////
@@ -2221,6 +2235,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	bool mbLanternOn = false;
 	int mlHideSmellAreaCount = 0;
 	bool mbLeanDisabled = false;
+	bool mbCanDie = true;
 	
 	[nosave] array<tID> mvPlayerLights;
 	[nosave] array<tID> mvIgnoredLights;

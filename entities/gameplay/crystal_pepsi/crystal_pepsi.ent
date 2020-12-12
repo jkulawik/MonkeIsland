@@ -1,0 +1,83 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="mods/MonkeIsland/entities/gameplay/crystal_pepsi/crystal_pepsi.dae">
+            <SubMesh ID="0" Name="pCylinder1" CreStamp="0" ModStamp="1607454268" WorldPos="0 0.0277608 0" Rotation="0 0 0" Scale="10 20 10" TriCount="600" Material="" Static="true" />
+        </Mesh>
+        <Bones />
+        <Shapes>
+            <Shape ID="1" Name="ShapeCapsule_1" CreStamp="1607454375" ModStamp="1607454386" WorldPos="0 0.0613185 0" Rotation="0 0 0" Scale="0.0950189 0.323815 0" RelativeTranslation="0 0.048556 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Capsule" />
+            <Shape ID="3" Name="ShapeCylinder_1" CreStamp="1607454394" ModStamp="1607454418" WorldPos="0 -0.219155 0" Rotation="0 0 0" Scale="0.0915783 0.0974172 0" RelativeTranslation="0 -0.231918 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="4" Name="ShapeCylinder_2" CreStamp="1607454423" ModStamp="1607454424" WorldPos="0 -0.125826 0" Rotation="0 0 0" Scale="0.0767471 0.117948 0" RelativeTranslation="0 -0.138588 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="5" Name="ShapeCylinder_3" CreStamp="1607454438" ModStamp="1607454444" WorldPos="0 0.24468 0" Rotation="0 0 0" Scale="0.0286751 0.059905 0" RelativeTranslation="0 0.231918 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+        </Shapes>
+        <Bodies>
+            <Body ID="6" Name="Body_1" CreStamp="0" ModStamp="1607454533" WorldPos="0 0.0127625 0" Rotation="0 0 0" Scale="1 1 1" Material="ball" Mass="4" AngularDamping="0.5" LinearDamping="0.1" MaxAngularSpeed="15" MaxLinearSpeed="20" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="false" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="true" BlocksLight="true">
+                <Children>
+                    <Child ID="0" />
+                </Children>
+                <Shape ID="5" />
+                <Shape ID="1" />
+                <Shape ID="4" />
+                <Shape ID="3" />
+            </Body>
+        </Bodies>
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Prop_Pickup">
+        <Var ObjectId="4294967295" Name="Health" Value="1.0" />
+        <Var ObjectId="4294967295" Name="Toughness" Value="0" />
+        <Var ObjectId="4294967295" Name="MaxInteractDistance" Value="0" />
+        <Var ObjectId="4294967295" Name="EventTag" Value="" />
+        <Var ObjectId="4294967295" Name="ShowHints" Value="true" />
+        <Var ObjectId="4294967295" Name="LifeLength" Value="0" />
+        <Var ObjectId="4294967295" Name="DissolveDuringLifeDecrease" Value="true" />
+        <Var ObjectId="4294967295" Name="QuickSave" Value="false" />
+        <Var ObjectId="4294967295" Name="FullGameSave" Value="false" />
+        <Var ObjectId="4294967295" Name="BlocksLineOfSight" Value="MaterialBased" />
+        <Var ObjectId="4294967295" Name="MainPhysicsBody" Value="" />
+        <Var ObjectId="4294967295" Name="NoGravityWhenUnderwater" Value="false" />
+        <Var ObjectId="4294967295" Name="DisableFreezeAtStart" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="" />
+        <Var ObjectId="4294967295" Name="ShowMesh" Value="true" />
+        <Var ObjectId="4294967295" Name="DissolveOnDestruction" Value="false" />
+        <Var ObjectId="4294967295" Name="DissolveTime" Value="1.0" />
+        <Var ObjectId="4294967295" Name="RandomizeAnimationStart" Value="true" />
+        <Var ObjectId="4294967295" Name="RootMotionBone" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOnSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOffSound" Value="" />
+        <Var ObjectId="4294967295" Name="EffectsOnTime" Value="0.2" />
+        <Var ObjectId="4294967295" Name="EffectsOffTime" Value="0.2" />
+        <Var ObjectId="4294967295" Name="StaticMoveCheckCollision" Value="false" />
+        <Var ObjectId="4294967295" Name="StaticMoveStartSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveStopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSound" Value="" />
+        <Var ObjectId="4294967295" Name="StaticMoveLoopSoundFade" Value="true" />
+        <Var ObjectId="4294967295" Name="BreakActive" Value="false" />
+        <Var ObjectId="4294967295" Name="CustomBreakBehaviour" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakOnlyOnMainBody" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakDestroyJoints" Value="false" />
+        <Var ObjectId="4294967295" Name="BreakMinEnergy" Value="100" />
+        <Var ObjectId="4294967295" Name="BreakEntity" Value="" />
+        <Var ObjectId="4294967295" Name="BreakEntityAlignBody" Value="" />
+        <Var ObjectId="4294967295" Name="BreakSound" Value="" />
+        <Var ObjectId="4294967295" Name="BreakParticleSystem" Value="" />
+        <Var ObjectId="4294967295" Name="BreakImpulse" Value="4" />
+        <Var ObjectId="4294967295" Name="ItemType" Value="CrystalPepsi" />
+        <Var ObjectId="4294967295" Name="ContentSubType" Value="" />
+        <Var ObjectId="4294967295" Name="ContentLevel" Value="-1" />
+        <Var ObjectId="4294967295" Name="ContentColor" Value="0 0 0 0" />
+        <Var ObjectId="4294967295" Name="OnlyNeedOne" Value="false" />
+        <Var ObjectId="4294967295" Name="PutAwayAfter" Value="true" />
+        <Var ObjectId="4294967295" Name="AnimationName" Value="" />
+        <Var ObjectId="4294967295" Name="PickupSound" Value="player/foley/action/pickup/oil_pickup" />
+        <Var ObjectId="4294967295" Name="IsMeat" Value="false" />
+        <Var ObjectId="4294967295" Name="MeatAttractDistance" Value="10" />
+        <Var ObjectId="4294967295" Name="MeatAttractDistanceMax" Value="20" />
+        <Var ObjectId="4294967295" Name="UseFullnessAnimation" Value="false" />
+    </UserDefinedVariables>
+    <Notes Content="25 years old bepis" />
+</Entity>

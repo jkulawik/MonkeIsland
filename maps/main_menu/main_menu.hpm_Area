@@ -40,7 +40,7 @@
                     <Var ObjectId="268435458" Name="Crouching" Value="false" />
                 </UserVariables>
             </Area>
-            <Area ID="268435459" Name="CameraAnimation_2" CreStamp="1604758502" ModStamp="1604785203" WorldPos="-19.7165 14.5 -20.8033" Rotation="-0 3.66519 -0" Scale="0.25 0.25 0.5" Active="true" Mesh="" UID="16 14 268435459" AreaType="CameraAnimation">
+            <Area ID="268435459" Name="CameraAnimation_2" CreStamp="1604758502" ModStamp="1605873564" WorldPos="-19.7165 14.5 -20.8033" Rotation="-0 3.66519 -0" Scale="0.25 0.25 0.5" Active="true" Mesh="" UID="16 14 268435459" AreaType="CameraAnimation">
                 <UserVariables>
                     <Var ObjectId="268435459" Name="Note" Value="" />
                     <Var ObjectId="268435459" Name="MaxYaw" Value="45" />
@@ -56,7 +56,26 @@
                     <Var ObjectId="268435459" Name="CrouchOnExit" Value="false" />
                     <Var ObjectId="268435459" Name="InitToCamera" Value="false" />
                     <Var ObjectId="268435459" Name="UsePlayerEyeline" Value="false" />
-                    <Var ObjectId="268435459" Name="CallbackFunc" Value="FadeInMenu" />
+                    <Var ObjectId="268435459" Name="CallbackFunc" Value="OnMenuCameraAnimationEnd" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435460" Name="CameraAnimation_1" CreStamp="1604784554" ModStamp="1604785249" WorldPos="-13 14.5 -27" Rotation="-0 3.66519 -0" Scale="0.25 0.25 0.5" Active="true" Mesh="" UID="16 8752 268435460" AreaType="CameraAnimation">
+                <UserVariables>
+                    <Var ObjectId="268435460" Name="Note" Value="" />
+                    <Var ObjectId="268435460" Name="MaxYaw" Value="45" />
+                    <Var ObjectId="268435460" Name="MaxPitch" Value="45" />
+                    <Var ObjectId="268435460" Name="LookSpeedMultiplier" Value="1" />
+                    <Var ObjectId="268435460" Name="ForwardTime" Value="11" />
+                    <Var ObjectId="268435460" Name="BackwardTime" Value="1" />
+                    <Var ObjectId="268435460" Name="AutoMovement" Value="1" />
+                    <Var ObjectId="268435460" Name="LookMoveDistance" Value="0" />
+                    <Var ObjectId="268435460" Name="LookMoveMaxAngle" Value="0" />
+                    <Var ObjectId="268435460" Name="InteractiveMovement" Value="true" />
+                    <Var ObjectId="268435460" Name="UseSpeedFading" Value="true" />
+                    <Var ObjectId="268435460" Name="CrouchOnExit" Value="false" />
+                    <Var ObjectId="268435460" Name="InitToCamera" Value="false" />
+                    <Var ObjectId="268435460" Name="UsePlayerEyeline" Value="false" />
+                    <Var ObjectId="268435460" Name="CallbackFunc" Value="" />
                 </UserVariables>
             </Area>
         </Objects>
@@ -106,25 +125,28 @@
     <Section Name="16833971806461490161">
         <Objects />
     </Section>
-    <Section Name="13804122162549422590">
+    <Section Name="13595023762818024409">
+        <Objects />
+    </Section>
+    <Section Name="10911851120317680304">
         <Objects>
-            <Area ID="536870912" Name="CameraAnimation_1" CreStamp="1604784554" ModStamp="1604785249" WorldPos="-13 14.5 -27" Rotation="-0 3.66519 -0" Scale="0.25 0.25 0.5" Active="true" Mesh="" UID="32 14 536870912" AreaType="CameraAnimation">
+            <Area ID="553648128" Name="NoAnimCameraAnimation_1" CreStamp="1605873746" ModStamp="1605873758" WorldPos="-19.7165 14.5 -20.8033" Rotation="-0 3.66519 -0" Scale="0.25 0.25 0.5" Active="true" Mesh="" UID="33 14 553648128" AreaType="CameraAnimation">
                 <UserVariables>
-                    <Var ObjectId="536870912" Name="Note" Value="" />
-                    <Var ObjectId="536870912" Name="MaxYaw" Value="45" />
-                    <Var ObjectId="536870912" Name="MaxPitch" Value="45" />
-                    <Var ObjectId="536870912" Name="LookSpeedMultiplier" Value="1" />
-                    <Var ObjectId="536870912" Name="ForwardTime" Value="11" />
-                    <Var ObjectId="536870912" Name="BackwardTime" Value="1" />
-                    <Var ObjectId="536870912" Name="AutoMovement" Value="1" />
-                    <Var ObjectId="536870912" Name="LookMoveDistance" Value="0" />
-                    <Var ObjectId="536870912" Name="LookMoveMaxAngle" Value="0" />
-                    <Var ObjectId="536870912" Name="InteractiveMovement" Value="true" />
-                    <Var ObjectId="536870912" Name="UseSpeedFading" Value="true" />
-                    <Var ObjectId="536870912" Name="CrouchOnExit" Value="false" />
-                    <Var ObjectId="536870912" Name="InitToCamera" Value="false" />
-                    <Var ObjectId="536870912" Name="UsePlayerEyeline" Value="false" />
-                    <Var ObjectId="536870912" Name="CallbackFunc" Value="" />
+                    <Var ObjectId="553648128" Name="Note" Value="" />
+                    <Var ObjectId="553648128" Name="MaxYaw" Value="45" />
+                    <Var ObjectId="553648128" Name="MaxPitch" Value="45" />
+                    <Var ObjectId="553648128" Name="LookSpeedMultiplier" Value="1" />
+                    <Var ObjectId="553648128" Name="ForwardTime" Value="1" />
+                    <Var ObjectId="553648128" Name="BackwardTime" Value="1" />
+                    <Var ObjectId="553648128" Name="AutoMovement" Value="0" />
+                    <Var ObjectId="553648128" Name="LookMoveDistance" Value="0" />
+                    <Var ObjectId="553648128" Name="LookMoveMaxAngle" Value="0" />
+                    <Var ObjectId="553648128" Name="InteractiveMovement" Value="true" />
+                    <Var ObjectId="553648128" Name="UseSpeedFading" Value="true" />
+                    <Var ObjectId="553648128" Name="CrouchOnExit" Value="false" />
+                    <Var ObjectId="553648128" Name="InitToCamera" Value="false" />
+                    <Var ObjectId="553648128" Name="UsePlayerEyeline" Value="false" />
+                    <Var ObjectId="553648128" Name="CallbackFunc" Value="" />
                 </UserVariables>
             </Area>
         </Objects>

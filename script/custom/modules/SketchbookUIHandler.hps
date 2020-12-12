@@ -4074,6 +4074,10 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 							{
 								Hint_DrawExplicit("InventoryUI", "HintInventoryUseBanana", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
 							}
+							else if(cString_Sub(msCurrentItem, 0, 12) == "CrystalPepsi")
+							{
+								Hint_DrawExplicit("InventoryUI", "HintInventoryUsePepsi", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
+							}
 							else if (cString_GetFirstStringPos(msCurrentItem, "ShadowFleshVial") >= 0 && ItemType_GetFirstInInventory("ShadowFleshCanister") != "")
 							{
 								Hint_DrawExplicit("InventoryUI", "HintInventoryUseCapsule", ImGui_NrmPosGroup(vHintPos), ImGui_NrmSizeGroup(vHintSize), formatParams);
@@ -4176,6 +4180,19 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 			return;
 		}
 		
+        /////////////////
+        // Pepsi Management
+		if (cString_Sub(asItemID, 0, 12) == "CrystalPepsi")
+		{
+
+			Item_RemoveFromInventory(ItemType_GetFirstInInventory("CrystalPepsi"));
+			CloseSketchbook();
+				
+			mBaseObj.Timer_Add("BananaIncreaseHealth", 0.5f, "OnTimer_PepsiPuke");
+			
+			return;
+		}
+		
 		/////////////////
         // Shadow flesh vials
 		if (cString_GetFirstStringPos(asItemID, "ShadowFleshVial") >= 0)
@@ -4254,6 +4271,50 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 		cLux_AddTodoMessage("Add Banana Eating sfx");
 		//Sound_CreateAtEntity("Eat", "", "player");
     }
+	
+	void OnTimer_PepsiPuke(uint64 alID)
+	{
+		Player_AddHealth(1.0f);
+		
+		Sound_CreateAtEntity("Drink", "player/tools/water_bottle/lake/water_drink", "Player");
+		
+		mBaseObj.Timer_Add("StopDrink", 2.0f, "Timer_StopDrink");
+	}
+	
+	void Timer_StopDrink(uint64 alID)
+	{
+		PlayerBody_PlayCutsceneAnimation("player_exhausted", false, 1.0f, "");
+
+		Sound_Stop("Drink", 0.25f);
+		Sound_CreateAtEntity("Puke", "monke/Player/barf/ohgod", "Player");
+		
+		mBaseObj.Timer_Add("StartPuke", 1.0f, "Timer_StartPuke");
+	}
+	
+	void Timer_StartPuke(uint64 alID)
+	{
+		Sound_CreateAtEntity("PukeRip", "monke/Player/barf/surstromming", "Player");
+		ParticleSystem_CreateAtEntityExt("Puke", "puke_small.ps", "Camera", true, cColor_White);
+		
+		array<cParticleSystem@> vParticles;
+		Map_GetParticleSystemArray("Puke", vParticles);
+		
+		cCamera@ pPlayerCamera = cLux_GetPlayer().GetCamera();
+		cParticleSystem@ pParticle = vParticles[0];
+		
+		cVector3f vRot = cMath_MatrixToEulerAngles(pParticle.GetLocalMatrix().GetRotation());
+		vRot.x -= cMath_ToRad(50.f);
+		
+		pParticle.SetMatrix(cMath_MatrixRotateXYZ(vRot));
+		pParticle.SetPosition(pPlayerCamera.GetForward() * 0.3 + pPlayerCamera.GetRight() * 0.04 + pPlayerCamera.GetUp() * -0.04);
+
+		mBaseObj.Timer_Add("DestroyPuke", 3.0f, "Timer_DestroyPuke");
+	}
+	
+	void Timer_DestroyPuke(uint64 alID)
+	{
+		ParticleSystem_Destroy("Puke");
+	}
     
 	//------------------------------------------------------------
 	

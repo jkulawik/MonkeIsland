@@ -57,8 +57,6 @@ enum eMainMenuGroup
 	eMainMenuGroup_Options_Display_Gamma,
 	eMainMenuGroup_Options_Audio,
 	eMainMenuGroup_Options_Accessibility,
-	
-	//eMainMenuGroup_Options_Audio,
 	eMainMenuGroup_Options_Audio_Subtitles,
 	eMainMenuGroup_Options_Video,
 	eMainMenuGroup_Options_Video_Display,
@@ -674,6 +672,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 	void SaveUserConfig()
 	{
 	}
+	
 	//------------------------------------------------------------
 	
 	/////////////////////////////////////////
@@ -705,11 +704,15 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		if(abX)
 		{
 			Sound_CreateAtEntity("MenuBGNoise", "special_fx/frontend/main_menu_bg", "Player", 6.0f, false, 1.0f);
-
+			
 			////////////////////////////////
 			// Variable setup
-			mbPremenuActive = (mbShowPreMenu || Platform_IsConsole()) && gbFirstRun;
+			mbPremenuActive = false;
 			mbClearTimersNextFrame = true;
+			gbFirstRun = false;
+
+			mpConfig.SetBool("Main", "DoIntro", false);
+			mpConfig.Save();
 
 			if(mbPremenuActive)
 			{
@@ -722,12 +725,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 				
 				mbMouseVisible = false;
 				mbShowPressX = Platform_IsConsole();
-				gbFirstRun = false;
-				
-				if(cLux_ScriptDebugOn())
-				{
-					//gbFirstRun = true;
-				}
 				
 				mfMainAlpha =0;
 			}
@@ -764,8 +761,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			//Music
 			if(mbPauseMenuEnabled==false && mbPremenuActive==false)
 			{
-				//Music_PlayExt("Menu_Music", true, mfMenuMusicVol, 1.0f, 6.0f, 0.0f, eMusicPrio_OverrideAll, false);
-				cLux_AddTodoMessage("Sound: Menu background noise");
 				Sound_CreateAtEntity("MenuBGNoise", "special_fx/frontend/main_menu_bg", "Player", 6.0f, false, 1.0f);
 			}
 				
@@ -933,6 +928,8 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 
 		//////////////
 		// Load config
+		mpConfig.SetBool("Main", "DoIntro", mpConfig.GetBool("Main", "DoIntro", true));
+		mpConfig.Save();
 		
 		mbShowPreMenu = mpConfig.GetBool("Main", "ShowPreMenu", true);
 		mbFirstGameStart = mpConfig.GetBool("Main", "FirstGameStart", (mbShowPreMenu) ? true : false);
@@ -1148,9 +1145,9 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 	void Reset()
 	{
 	}
+	
 	void VariableUpdate(float afDeltaTime)
 	{
-		
 	}
 
 	//------------------------------------------------------------
@@ -1505,10 +1502,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			{
 				ImGui_StopTimer("NewGame");
 				mbWelcomeScreen = true;
-				//SetMenuActive(false);
-				//mbGameOver = false;
-				//msPreviousSaveLoaded = "";
-				//StartNewGame();
 				
 				return;
 			}
@@ -1582,7 +1575,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		if(mbPremenuActive==false)
 			OptionMenu_SetModColor(cColor(1, mfMainAlpha));
 			
-		//cLux_AddDebugMessage("TARGET: "+mTargetGroup+" CURR: "+mCurrentGroup);
 		/////////////////////
 		// Do title fading and parallax
 		switch(mTargetGroup)
@@ -1792,10 +1784,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		SetMenuActive(false);
 		
 		gLastTimeOnGameScreen.LoadingStarted();
-		
-		//gbMainMenuLoadingSavedGameStarted = true;
-		//gbMainMenuLoadingSavedGame_LoadHeaderDone = false;
-		//gbMainMenuLoadingSavedGameDone = false;
 	}
 	
 	//------------------------------------------------------
@@ -2320,7 +2308,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		if (mbSaveLoadEnabled == false)
 		{
 		}
-		else if ( (Map_IsChanging()==false) && cLux_GetSavingEnabled() )
+		else if ( (Map_IsChanging()==false) && cLux_GetSavingEnabled() && (cScript_GetGlobalVarBool("InIntro")==false) )
 		{
 			if(OptionMenu_MainMenuButton("SaveAndExit", kMainMenuButtonPos, lEntryPos, eMainMenuButtonID_SaveAndExit, msSelectedPauseMenuButton, mlClickedPauseMenuButton, mfTransitionAlpha))
 			{
@@ -6624,11 +6612,6 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		}
 		else if(lSelect == -1)
 		{
-			///////////
-			// Exit the game
-			//SetMenuActive(false);
-			//cLux_Exit();
-			
 			cLux_GetGuiHandler().SetGameHudInputFocus(false);
 			
 			ImGui_AddTimer("ExitGame", mfExitGameFadeLength);
@@ -8430,22 +8413,18 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 	
 			if(mPreMenuPhase==ePreMenuPhase_FrictionalLogo)
 			{
-				cLux_AddDebugMessage("[PRE-MENU] LOGO");
-				ImGui_AddTimer("FGLogoOver", 3.2f);
-				mbMouseVisible = true;
-				Sound_PlayGui("special_fx/frontend/FG_Menu_Sting", 1.0f, eSoundEntryType_Gui);
-				/*
-				if(mbShowPressX)
-				{
-					cLux_AddTodoMessage("Sound: Menu background noise");
-					//Sound_CreateAtEntity("MenuBGNoise", "special_fx/frontend/main_menu_bg", "Player", 6.0f, false, 1.0f);
-				}
-				else
-				{
-					//mPreMenuPhase++;
-					//mlPreMenuState++;
-				}
-				*/
+                cLux_AddDebugMessage("[PRE-MENU] LOGO");
+                if(mbFirstGameStart && mbShowPreMenu)
+                {
+                    ImGui_AddTimer("FGLogoOver", 3.2f);
+                    mbMouseVisible = true;
+                    Sound_PlayGui("special_fx/frontend/FG_Menu_Sting", 1.0f, eSoundEntryType_Gui);
+                }
+                else
+                {
+                    mbMouseVisible = true;
+                    mPreMenuPhase = ePreMenuPhase_Gamma;
+                }
 			}
 			
 			if(mPreMenuPhase==ePreMenuPhase_FmodLogo)

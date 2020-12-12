@@ -1,0 +1,722 @@
+#include "interfaces/Map_Interface.hps"
+#include "base/Inputhandler_Types.hps"
+
+#include "helpers/helper_map.hps"
+#include "helpers/helper_props.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_sequences.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_ai.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_areas.hps"
+
+#include "helpers/custom/helper_props_custom.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_menu.hps"
+ 
+//--------------------------------------------------
+
+enum eSlideShowSlide
+{
+	eSlideShowSlide_None = 0,
+	eSlideShowSlide_Intro,
+	eSlideShowSlide_Jordan,
+	eSlideShowSlide_Banana,
+	eSlideShowSlide_Objectives,
+}
+ 
+class cScrMap : iScrMap
+{
+	//--------------------------------------------
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	////////////////////////////
+	// Set up map environment
+	void Setup()
+	{
+		// Put display name entry in english.lang / Levels
+		GetBase().SetDisplayNameEntry("01-01-intro");
+		
+		FearHandler_SetActive(false);
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(false);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		
+		Pregnancy_SetBarksActive(false);
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+		/////////////////
+		// Preload gui
+		ImGui_PreloadImage("grading_intro_glimpse_desert.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_sandstorm.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_dw.dds");
+		ImGui_PreloadImage("grading_intro_glimpse_fire.dds");
+
+		//////////////
+		// Preload sounds
+		Sound_PreloadGroup("01_01_intro", true);
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		cScript_SetGlobalVarBool("InIntro", true);
+		cScript_SetGlobalVarBool("HideAmuletBracelet", true);
+		
+		// Player Setup
+		PlayerBody_SetActive(true);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetNightVisionEnabled(false);
+		Player_ShowCrossHairIcons(false);
+		cLux_GetPlayer().GetCharacterBody().SetTestCollision(false);
+		
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		
+		// Entities Setup
+		Entity_SetActive("Wing_Wrecked", false);
+		Entity_SetActive("plane_passenger_light_red_*",false);
+		
+		Entity_SetEffectsActive("Wing_Wrecked",false,true);
+		
+		NPC_SetMainAnimation("munshi", "talking");
+		
+		// Decal Setup
+		Decal_SetDynamicVisible("decal_wing_01", false);
+		Decal_SetDynamicVisible("decal_wing_02", false);
+		
+		// Particles Setup
+		ParticleSystem_SetActive("PS_Engine_smoke*",false);
+		ParticleSystem_SetActive("PS_Engine_trail*",false);
+		ParticleSystem_SetActive("PS_Engine_failure*", false);
+		ParticleSystem_SetActive("PS_Sandstorm_Particles_*", true);
+		ParticleSystem_SetActive("PS_Engine", false);
+		
+		// Light Setup
+		Light_SetVisible("Fire_light_*", false);
+		
+		Effect_Fade_Out(0);
+		
+		Seq_Intro("");
+		
+		/////////////////////////
+		// Debug
+		if(cLux_ScriptDebugOn())
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+		Effect_ToneMapping_FadeWorldGrading("grading_default", 0.0f);
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_desert.dds");
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_sandstorm.dds");
+		Effect_ToneMapping_RemoveGradingTexture("grading_intro_glimpse_dw.dds");
+		
+		if (m_nConstShake!=-1)
+		{
+			Effect_Shake_FadeOut(m_nConstShake,0.0f);
+			m_nConstShake=-1;
+		}	
+		
+		if(cLux_GetPlayer().GetCharacterBody() !is null)	
+			cLux_GetPlayer().GetCharacterBody().SetTestCollision(true);
+		cLux_EnableSaving();
+		
+		cScript_SetGlobalVarBool("InIntro", false);
+		Player_ShowCrossHairIcons(true);
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// The player has died.
+	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// To get when player makes input (mostly used for debug)
+	void OnAction(int alAction, bool abPressed) 
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+			Entity_SetActive("banana_*", true);
+			Prop_SetStaticPhysics("banana_*", false);
+			Entity_AddImpulse("banana_*", cVector3f_Forward * 3, true, true);
+		}
+		if(alAction == eAction_Test2)
+		{
+			cLux_AddDebugMessage("hi");
+			NPC_MoveToNode("women", "WomeRun_7", "womenFall");
+		}
+		if(alAction == eAction_Test3)
+		{
+			RotateScreenUp();
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// This only used for pure debug purposes when info needs to printed.
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afY)
+	{
+		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
+		return afY;
+	}
+ 
+	//-------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+		if(!mbGuiIntro) return;
+		
+		ImGui_SetModColorMul(cColor(1.0f, mfScreenAlpha));
+		
+		cImGuiGfx blackImage("simple_black.dds", eImGuiGfx_Texture);
+		ImGui_DoImage(blackImage, ImGui_NrmPos(cVector3f(0, 0, -1.0f)), ImGui_NrmSize(cVector2f(1,1)));
+		
+		ImGui_SetModColorMul(cColor(1.0f, mfQouteAlpha));
+		
+		cImGuiLabelData labelSignature;
+		labelSignature.mbUseBackgroundGfx = false;
+		labelSignature.mFont.SetFile("quentin.fnt"); 
+		labelSignature.mFont.mvSize = cVector2f(30, 30);
+		labelSignature.mFont.mColor = cColor(1, 1);
+		labelSignature.mFontAlign = eFontAlign_Right;
+		
+		cImGuiTextFrameData frameQuote;
+		frameQuote.mbUseBackgroundGfx = false;
+		frameQuote.mFont.SetFile("macondo_96.fnt");
+		frameQuote.mFont.mvSize = cVector2f(36, 36);
+		frameQuote.mFont.mColor = cColor(1, 1);
+		
+		ImGui_SetTransCategory("01_01_intro");
+		
+		ImGui_SetAlignment(eImGuiAlign_TopLeft);
+			
+		cVector2f vFrameSize(740, 144);
+		cVector3f vFramePos = ImGui_NrmPos(0.5f, 0.5f, 1)-cVector3f(vFrameSize.x, vFrameSize.y,0)/2.0f;
+		
+		ImGui_LayoutBegin(eImGuiLayout_Y, vFramePos, vFrameSize);
+		
+		ImGui_DoTextFrameExt("Quote", cVector2f(0,0), 0, 0, frameQuote, cVector3f_Zero, vFrameSize);
+		
+		ImGui_DoLabelExt("Signature", labelSignature, cVector3f_Zero, cVector2f(vFrameSize.x*0.98f,-1.0f), 2);
+		
+		ImGui_LayoutEnd();
+		
+		ImGui_SetTransCategory("Menu");
+		ImGui_SetAlignment(eImGuiAlign_CenterCenter);
+	}
+
+	
+	//-------------------------------------------------------
+ 
+	//} END MAIN CALLBACKS
+ 
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN FUNCTIONS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	int m_nConstShake = -1;
+	float m_fFlyingTime = 0.0f;
+	
+	float mfBladesSpeed = -0.5f;
+	float mfBladesJitter = 0.05f;
+ 
+	//-------------------------------------------------------
+ 
+	void PostUpdate(float afTimeStep)
+	{
+		mfScreenAlpha = GuiElementFadeController(mfScreenAlpha, mfScreenAlphaTarget, afTimeStep);
+		mfQouteAlpha = GuiElementFadeController(mfQouteAlpha, mfQouteAlphaTarget, afTimeStep);
+		
+		iLuxEntity@ pFirstBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_on_1");
+		float rotation1 = m_fFlyingTime * mfBladesSpeed + cMath_RandRectf(-mfBladesJitter, mfBladesJitter);
+		cVector3f position1 = pFirstBlades.GetPosition();
+		cMatrixf matrix1 = cMath_MatrixRotateXYZ(cVector3f(0,0,rotation1));
+		matrix1.SetTranslation(position1);
+		pFirstBlades.SetMatrix(matrix1);
+		@pFirstBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_off_1");
+		pFirstBlades.SetMatrix(matrix1);
+		
+		iLuxEntity@ pSecondBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_on_2");
+		float rotation2 = m_fFlyingTime * mfBladesSpeed + cMath_RandRectf(-mfBladesJitter, mfBladesJitter);
+		cVector3f position2 = pSecondBlades.GetPosition();
+		cMatrixf matrix2 = cMath_MatrixRotateXYZ(cVector3f(0,0,rotation2));
+		matrix2.SetTranslation(position2);
+		pSecondBlades.SetMatrix(matrix2);
+		@pSecondBlades = cLux_GetCurrentMap().GetEntityByName("plane_blades_off_2");
+		pSecondBlades.SetMatrix(matrix2);
+	}
+	
+	float GuiElementFadeController(float afAlpha, float afAlphaTarget, float afTimeStep)
+	{
+		if (afAlpha != afAlphaTarget)
+		{
+			if (mfAlphaFadeSpeed == 0.0f)
+				afAlpha = afAlphaTarget;
+			else
+				afAlpha = cMath_IncreaseTo(afAlpha, afTimeStep / mfAlphaFadeSpeed, afAlphaTarget);
+		}
+		
+		return afAlpha;
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN FUNCTIONS
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 1 AIRPLANE
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		
+		//-------------------------------------------------------
+		 
+		eSlideShowSlide mCurrentSlide = eSlideShowSlide_None;
+
+		//-------------------------------------------------------
+		
+		void Slideshow_OnGui(const tString&in asEntityName, float afTimeStep)
+		{
+			if (mCurrentSlide == eSlideShowSlide_None) return;
+			
+			ImGui_SetAlignment(eImGuiAlign_TopLeft);
+			
+			tString sSlideFile;
+			switch (mCurrentSlide)
+			{
+				case eSlideShowSlide_Intro:
+					sSlideFile = "slide_intro";
+					
+					break;
+				
+				case eSlideShowSlide_Banana:
+					sSlideFile = "slide_banana";
+					
+					break;
+				
+				case eSlideShowSlide_Jordan:
+					sSlideFile = "slide_jordan";
+					
+					break;
+				
+				case eSlideShowSlide_Objectives:
+					sSlideFile = "slide_objectives";
+				
+					break;
+				
+				default:
+					sSlideFile = "";
+					
+					break;
+			}
+			
+			cImGuiGfx slide(sSlideFile, eImGuiGfx_Texture);
+			cVector2f vSize = ImGui_GetRatioCorrectSizeByWidth(slide, 1024);
+			ImGui_DoImage(slide, cVector3f(0.0f,0.0f,1.0f), vSize);
+		}
+		
+		void RotateScreenUp()
+		{
+			Prop_RotateToSpeed("Slideshow", 1, 1, cVector3f_Right, true, "AreaScreenRot");
+			
+			Map_AddTimer("StopRotate", 1.5f, "Timer_StopRotate");
+		}
+		
+		void Timer_StopRotate(const tString&in asTimer)
+		{
+			Prop_StopMovement("Slideshow");
+		}
+	 
+		//-------------------------------------------------------
+		
+		//} END General
+	 
+		/////////////////////////////////////////
+		// SCENE 1 EVENT A: INTRO
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+		
+		float mfQouteAlpha = 0.0f;
+		float mfQouteAlphaTarget = 0.0f;
+		
+		float mfScreenAlpha = 0.0f;
+		float mfScreenAlphaTarget = 0.0f;
+		
+		float mfAlphaFadeSpeed = 1.0f;
+		
+		bool mbGuiIntro = true;
+
+		//-------------------------------------------------------
+
+		cSequenceStatesData mIntroSequence;
+		void Seq_Intro(const tString&in asX)
+		{
+			Sequence_Begin("Seq_Intro", mIntroSequence);
+						
+			if(Sequence_DoStepAndWaitUntil(2.0f))
+			{
+				Effect_Fade_In(0);
+				PauseMenu_Enabled(false);
+				
+				Sound_CreateAtEntity("Sound_IntroStart", "01_01_intro/intro/intro_start", "player", 1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_LightsFlicker", "01_01_intro/intro/lights_01", "sound_lights",1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_GlassRattle_1", "01_01_intro/intro/glass_rattle", "sound_glass", 1.5f, false, 0.25f);
+				Sound_CreateAtEntity("Sound_Typing", "01_01_intro/intro/sweet_type", "sound_typewriter", 1.5f, false, 0.25f);
+				
+				Light_SetVisible("TasiLight_1", false);
+				
+				mfAlphaFadeSpeed = 0.0f;
+				mfScreenAlphaTarget = 1.0f;
+			}
+			else if(Sequence_DoStepAndWaitUntil(13.0f))
+			{
+				Music_PlayExt("intro.ogg", false, 0.65f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
+				
+				mfAlphaFadeSpeed = 1.0f;
+				mfQouteAlphaTarget = 1.0f;
+			}
+			else if(Sequence_DoStepAndWaitUntil(14.0f))
+			{
+				mfQouteAlphaTarget = 0.0f;
+			}
+			else if(Sequence_DoStepAndWaitUntil(15.0f))
+			{
+				CameraAnimation_Begin("IntroAnimation", "", false);
+				PlayerBody_SetVisible(false);
+				PlayerHands_SetActive(false);
+				
+				mfScreenAlphaTarget = 0.0f;
+			}
+			else if(Sequence_DoStepAndWaitUntil(16.0f))
+			{
+				mbGuiIntro = false;
+				PauseMenu_Enabled(true);
+				
+				Map_Preload("01_02_beach.hpm", eWorldStreamPriority_Low);
+			}
+			else if(Sequence_DoStepAndWaitUntil(17.099944f))
+			{
+				Effect_Shake_Start(0.001f,0.3f,0.0f,0.2f);
+				Effect_Rumble_Start(0.1f,0.1f,0.0f,0.5f);
+				Effect_Shake_Start(0.0005f,1.0f,0.3f,1.0f);
+				m_nConstShake = Effect_Shake_Start(0.0005f,1000.0f,0.3f,0.5f);
+				
+				Description_Add("01_01_intro", "IntroMessage", 1.0f, false);
+			}
+			else if(Sequence_DoStepAndPause(0.75f))
+			{
+				Voice_Play("Dialogue_Munshi_Briefing", -1, "OnVoiceSubjectSequenceDonePlaying");
+				
+				Map_AddTimer("ChangeSlides", 0.0f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 27.05f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 36.85f, "Timer_IncreaseSlideshow");
+				Map_AddTimer("ChangeSlides", 48.25f, "Timer_IncreaseSlideshow");
+			}
+			else if(Sequence_DoStepAndWait(10.0f))
+			{
+				mCurrentSlide = eSlideShowSlide_None;
+				Terminal_SetGuiActive("Slideshow", false);
+				
+				RotateScreenUp();
+				
+				Music_Stop(10.0f, eMusicPrio_SceneAmb);
+				
+				Voice_Play("Dialogue_Questions", -1, "OnVoiceSubjectSequenceDonePlaying");
+			}
+			else if(Sequence_DoStepAndPause(1.0f))
+			{
+				cLux_AddDebugMessage("Begin Crash Sequence Main SFX");
+				
+				Sound_CreateAtEntity("Sound_CrashStart", "monke/SFX/airplane_crash_sequence/crash", "player");
+			}
+			else if(Sequence_DoStepAndWaitUntil(29.0f))
+			{
+				cLux_AddDebugMessage("First Banana");
+				
+				Effect_Shake_Start(0.005f,0.3f,0.0f,0.2f);
+				Effect_Rumble_Start(0.1f,0.1f,0.0f,0.5f);
+			
+				Entity_SetActive("banana_1", true);
+				Prop_SetStaticPhysics("banana_1", false);
+				Entity_AddImpulse("banana_1", cVector3f_Forward * 3, true, true);
+				
+				ParticleSystem_CreateAtEntityExt("glassbreak_1", "grass_breaking_small.ps", "WindowParticleSource_1", true, cColor(1, 1, 1, 0.35f));
+				Sound_CreateAtEntity("Sound_WindowCreak_1", "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_1");
+				
+				Entity_PlayAnimation("munshi", "hit", 0.1f, false, true, "OnMunshiAnimationEnd");
+
+			}
+			else if(Sequence_DoStepAndWaitUntil(29.7f))
+			{
+				cLux_AddDebugMessage("Second Banana");
+				
+				Entity_SetActive("banana_2", true);
+				Prop_SetStaticPhysics("banana_2", false);
+				Entity_AddImpulse("banana_2", cVector3f_Forward * 3, true, true);
+				
+				ParticleSystem_CreateAtEntityExt("glassbreak_2", "grass_breaking_small.ps", "WindowParticleSource_2", true, cColor(1, 1, 1, 0.35f));
+				Sound_CreateAtEntity("Sound_WindowCreak_2", "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_2");
+				
+				Map_AddTimer("3", 0.7, "Timer_MoreBananas");
+				Map_AddTimer("4", 1.3, "Timer_MoreBananas");
+				
+				Voice_Play("Dialogue_Banana", -1);
+			}
+			else if(Sequence_DoStepAndWaitUntil(32.0f))
+			{
+				cLux_AddDebugMessage("Big Shake");
+				
+				Effect_Shake_FadeOut(m_nConstShake,0.1f);
+				Effect_Rumble_Start(1.0f,0.1f,0.0f,0.5f);
+				m_nConstShake = Effect_Shake_Start(0.003f,100.0f,0.0f,0.2f);
+				
+				Light_SetVisible("ExtLight_*", false);
+				Light_SetVisible("TasiLight_*", false);
+				Light_SetupFlicker("CabinLight_*", cColor(0,0,0,0),10,0.1f,0.2f,"","",0.01f,0.1f,"","",false,0.0f,0.0f,0.0f,0.0f);
+				Light_SetFlickerActive("CabinLight_*", true);
+				
+				Sound_CreateAtEntity("Sound_LightsOff", "01_01_intro/crash_event/lights_02", "sound_lights");
+				Sound_CreateAtEntity("Sound_GlassRattle_2", "01_01_intro/crash_event/glass_sweet", "sound_glass");
+				Sound_CreateAtEntity("Sound_Alarms", "01_01_intro/crash_event/cockpit_sweet", "sound_cockpit");
+				Sound_CreateAtEntity("Terain", "monke/SFX/airplane_crash_sequence/terrain", "sound_cockpit");
+				
+				Sound_PlayGui("01_01_intro/crash_event/crash_01", 1.0);
+				Sound_PlayGui("01_01_intro/crash_event/stingers", 1.0);
+				
+				Billboard_SetVisible("billboard_lamp_*", false);
+				
+				// Cabin lights go out.
+				Light_SetVisible("CabinLight_*",false);
+				Entity_SetActive("plane_passenger_light_red_*",true);
+				Billboard_SetVisible("Billboard_tasi_light",false);
+			}
+			else if(Sequence_DoStepAndWait(5.5f))
+			{
+				Voice_Play("Dialogue_CrashPanic", -1);
+			}
+			else if(Sequence_DoStepAndWaitUntil(36.0f))
+			{
+				cLux_AddDebugMessage("Big Explosion");
+				
+				ParticleSystem_SetActive("PS_Engine_smoke*",true);
+				ParticleSystem_SetActive("PS_Engine_failure*", true);
+				
+				Effect_Shake_Start(0.02f,25.2f,0.0f,0.2f);
+				Effect_Rumble_Start(1.0f,1.0f,0.0f,1.0f);
+				
+				ParticleSystem_SetActive("PS_Engine",true);
+				
+				mfBladesSpeed=0.00f;
+				mfBladesJitter=0.00f;
+				
+				Entity_SetActive("plane_blades_off_1",true);
+				Entity_SetActive("plane_blades_off_2",true);
+				
+				Entity_SetActive("Wing_Darkworld", false);
+				Entity_SetActive("Wing_Wrecked", true);
+				Decal_SetDynamicVisible("decal_wing_01", true);
+				Decal_SetDynamicVisible("decal_wing_02", true);
+				ParticleSystem_SetActive("PS_Engine_trail*",true);
+				Entity_SetActive("plane_interior_panel_light_03*",true);
+				Entity_SetEffectsActive("Wing_Wrecked",true,true);
+				Light_SetVisible("Fire_light_*",true);
+				Light_SetVisible("window_caustics",false);
+				Effect_ToneMapping_FadeWorldGrading("grading_intro_glimpse_fire", 3.0f);
+				
+				CameraAnimation_End();
+				CameraAnimation_Begin("CrashAnimation", "", false);
+				
+				Entity_PlayAnimation("munshi", "run_jump");
+				
+				Sound_CreateAtEntity("Sound_EngineExplode", "01_01_intro/crash_event/explosion", "sound_engine");
+			}
+			else if(Sequence_DoStepAndWaitUntil(45.0f))
+			{
+				Voice_Play("Dialogue_Run", -1, "OnVoiceSubjectSequenceDonePlaying");
+			}
+			else if(Sequence_DoStepAndWaitUntil(57.5f))
+			{
+				mbPlayRaio = true;
+				Voice_Play("Dialogue_WhereIsRadio", -1, "OnVoiceSubjectSequenceDonePlaying");
+			}
+			else if(Sequence_DoStepAndWait(2.5f))
+			{
+				Sound_CreateAtEntity("Sound_EngineExplode", "monke/SFX/kaboom", "player", 0.0f, false, 0.5f);
+				Sound_Stop("radio_music", 0.1f);
+				
+				Effect_Shake_Start(0.03f,0.2f,0.0f,0.2f);
+				Effect_Shake_FadeOut(m_nConstShake,0.1f);
+				m_nConstShake = Effect_Shake_Start(0.03f,100.0f,0.0f,0.2f);
+				
+				Effect_Fade_Out(0.5f);
+			}
+			else if(Sequence_DoStepAndWait(8.5f))
+			{
+				Entity_SetActive("Soundscape_Cabin", false);
+				
+				Sound_Stop("Sound_Alarms", 0.5f);
+				Sound_Stop("Sound_GlassRattle_2", 0.5f);
+				Sound_Stop("Sound_LightsOff", 0.5f);
+				
+				Sound_StopGui("01_01_intro/crash_event/crash_01", 0.0f);
+				Sound_StopGui("01_01_intro/crash_event/stingers", 0.0f);
+				
+				Sound_FadeGlobalVolume(0.f, 5.0f, eSoundEntryType_All);
+				Effect_Shake_FadeOut(m_nConstShake,0.5f);
+				m_nConstShake=-1;
+			}
+			else if (Sequence_DoStepAndContinue())
+			{
+				// Clean up
+				Player_SetActive(true);
+				
+				Effect_ToneMapping_FadeWorldGrading("grading_default", 0.0f);
+				
+				if (!cLux_ScriptDebugOn())
+					Map_ChangeMap("01_02_beach.hpm", "Start_Begin", "", "", false);
+			}
+			
+			Sequence_End();
+		}
+		
+		bool mbPlayRaio = false;
+		void OnVoiceSubjectSequenceDonePlaying(const tString&in asScene, const tString&in asSubject)
+		{
+			SequenceStates_Resume("Seq_Intro");
+			
+			if (mbPlayRaio)
+			{
+				Sound_CreateAtEntity("radio_loop", "02_04_living_quarters/radio/static_loop", "sound_cockpit");
+				Sound_CreateAtEntity("radio_music", "monke/SFX/airplane_crash_sequence/voice_system", "sound_cockpit");
+				
+				NPC_MoveToNode("women", "Trip", "womenFall");
+			}
+		}
+		
+		void Timer_MoreBananas(const tString&in asTimer)
+		{
+			Entity_SetActive("banana_" + asTimer, true);
+			Prop_SetStaticPhysics("banana_" + asTimer, false);
+			Entity_AddImpulse("banana_" + asTimer, cVector3f_Forward * 3, true, true);
+				
+			ParticleSystem_CreateAtEntityExt("glassbreak_" + asTimer, "grass_breaking_small.ps", "WindowParticleSource_" + asTimer, true, cColor(1, 1, 1, 0.35f));
+			Sound_CreateAtEntity("Sound_WindowCreak_" + asTimer, "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_" + asTimer);
+		}
+		
+		void Timer_IncreaseSlideshow(const tString&in asTimer)
+		{
+			mCurrentSlide++;
+		}
+		
+		void ColonelGestureAnim(const tString&in asScene, const tString&in asSubject, int alLineIndex, bool abStartOfLine)
+		{
+			if (!abStartOfLine) return;
+			
+			NPC_PlayExtraAnimation("munshi", "talking_extra_1");
+		}
+		
+		void OnMunshiAnimationEnd(const tString &in asEntityName, const tString &in asAnimName)
+		{
+			Entity_PlayAnimation("munshi", "talking", 0.1f, true);
+		}
+
+		void womenFall(const tString& in asEntityName, bool abReachedEnd)
+		{
+			Entity_SetActive("women", false);
+			Entity_SetActive("women_fall", true);
+			Entity_PlayAnimation("women_fall", "fall", 0.1f, false, true, "", false);
+			Sound_CreateAtEntity("scream", "monke/SFX/VO/scream", "women_fall");
+		}
+
+		//-------------------------------------------------------
+
+		//} END Event A
+	 
+	//} END SCENE 1
+ 
+}

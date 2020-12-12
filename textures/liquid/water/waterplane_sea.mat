@@ -1,0 +1,30 @@
+<Material>
+    <Main Type="water" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="Water" BlendMode="Mulx2" />
+    <TextureUnits>
+        <Diffuse MipMaps="true" Compress="true" File="textures/liquid/water/waterplane_wild.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <NMap MipMaps="true" Compress="true" File="textures/liquid/water/waterplane_still_nrm.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+    </TextureUnits>
+    <SpecificVariables>
+        <Var ObjectId="4294967295" Name="RefractionScale" Value="4" />
+        <Var ObjectId="4294967295" Name="FrenselBias" Value="0.08" />
+        <Var ObjectId="4294967295" Name="FrenselPow" Value="4" />
+        <Var ObjectId="4294967295" Name="WaveSpeed" Value="0.5" />
+        <Var ObjectId="4294967295" Name="WaveAmplitude" Value="1" />
+        <Var ObjectId="4294967295" Name="WaveFreq" Value="0.2" />
+        <Var ObjectId="4294967295" Name="ReflectionFadeStart" Value="0" />
+        <Var ObjectId="4294967295" Name="ReflectionFadeEnd" Value="0" />
+        <Var ObjectId="4294967295" Name="HasRefraction" Value="true" />
+        <Var ObjectId="4294967295" Name="HasReflection" Value="true" />
+        <Var ObjectId="4294967295" Name="OcclusionCullWorldReflection" Value="true" />
+        <Var ObjectId="4294967295" Name="LargeSurface" Value="true" />
+        <Var ObjectId="4294967295" Name="ReflectTerrain" Value="false" />
+        <Var ObjectId="4294967295" Name="HasVertexWaves" Value="true" />
+        <Var ObjectId="4294967295" Name="VertexWaveSpeed" Value="1" />
+        <Var ObjectId="4294967295" Name="VertexWaveAmplitude" Value="0.025" />
+        <Var ObjectId="4294967295" Name="VertexWaveFreq" Value="3" />
+        <Var ObjectId="4294967295" Name="HasChaoticWaves" Value="false" />
+        <Var ObjectId="4294967295" Name="FadeWhenShallowMul" Value="0.25" />
+        <Var ObjectId="4294967295" Name="FadeWhenShallowPow" Value="1" />
+        <Var ObjectId="4294967295" Name="FadeBasedOnFogStart" Value="false" />
+    </SpecificVariables>
+</Material>

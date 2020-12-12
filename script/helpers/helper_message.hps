@@ -1,0 +1,90 @@
+enum eMessagePosition
+{
+	eMessagePosition_TopLeft = 0,
+	eMessagePosition_TopCenter,
+	eMessagePosition_TopRight,
+	eMessagePosition_MiddleLeft,
+	eMessagePosition_MiddleCenter,
+	eMessagePosition_MiddleRight,
+	eMessagePosition_BottomLeft,
+	eMessagePosition_BottomCenter,
+	eMessagePosition_BottomRight,
+	eMessagePosition_LastEnum
+}
+
+enum eMessageAlignment
+{
+	eMessageAlignment_Default = 0,
+	eMessageAlignment_Left,
+	eMessageAlignment_Center,
+	eMessageAlignment_Right
+}
+
+/**
+ * @brief Shows a text message with default settings, making it similar to the message in TDD. This is what you should be using most of the time.
+ * @param string asTextCategory, The text category to be using for this message.
+ * @param string asTextEntry, The text entry for the message to be displayed.
+ * @param float afMessageDuration, The time, in seconds, for the message to be displayed. (Excluding the fade in/out time.)
+ */
+void Message_Set(const tString &in asText, const tString &in asTextEntry, float afMessageDuration = 3.0f)
+{
+	Message_Set_Custom(asText, asTextEntry, afMessageDuration, eMessagePosition_MiddleCenter, eMessageAlignment_Default, cVector2f_MinusOne, cVector2f(0.0f, 0.05f));
+}
+
+/* 
+ * Shows a text message on the screen that dissapears after a certain duration.
+ * 
+ * @param string asText, The message to be displayed.
+ * @param float afMessageDuration, The time, in seconds, for the message to be displayed. (Excluding the fade in/out time.)
+ * @param eMessagePosition alMessagePosition, The position of the text on the screen. (Defaults to dead center).
+ * @param eMessageAlignment alMessageAlignment, The alignment of the text body. (Defaults to dependant on the message position.)
+ * @param cVector2f avMessageSize, The size, in group space (0.0-1.0), of the text body. (Defaults to roughly two thirds the width of the screen.)
+ * @param cVector2f alMessageOffset, The offset, in group space (0.0-1.0), of the message text. (Defaults to no offset.)
+ * */
+void Message_Set_Custom(const tString &in asText, 
+		float afMessageDuration = 3.0f,
+		eMessagePosition alMessagePosition = eMessagePosition_TopCenter,
+		eMessageAlignment alMessageAlignment = eMessageAlignment_Default,
+		cVector2f avMessageSize = cVector2f_MinusOne,
+		cVector2f avMessageOffset = cVector2f_Zero)
+{
+	cScript_SetGlobalArgString(0, "");
+	cScript_SetGlobalArgString(1, asText);
+	cScript_SetGlobalArgFloat(2, afMessageDuration);
+	cScript_SetGlobalArgInt(3, alMessagePosition);
+	cScript_SetGlobalArgInt(4, alMessageAlignment);
+	cScript_SetGlobalArgVector2f(5, avMessageSize);
+	cScript_SetGlobalArgVector2f(6, avMessageOffset);
+	
+	cScript_RunGlobalFunc("MessageHandler", "", "_Global_SetMessage");
+}
+
+/* 
+ * Shows a text message on the screen that dissapears after a certain duration.
+ * 
+ * @param string asTextCategory, The text category to be using for this message.
+ * @param string asTextEntry, The text entry for the message to be displayed.
+ * @param float afMessageDuration, The time, in seconds, for the message to be displayed. (Excluding the fade in/out time.)
+ * @param eMessagePosition alMessagePosition, The position of the text on the screen. (Defaults to dead center).
+ * @param eMessageAlignment alMessageAlignment, The alignment of the text body. (Defaults to dependant on the message position.)
+ * @param cVector2f avMessageSize, The size, in group space (0.0-1.0), of the text body. (Defaults to roughly two thirds the width of the screen.)
+ * @param cVector2f alMessageOffset, The offset, in group space (0.0-1.0), of the message text. (Defaults to no offset.)
+ * */
+void Message_Set_Custom(const tString &in asTextCategory,
+		const tString &in asTextEntry, 
+		float afMessageDuration = 3.0f,
+		eMessagePosition alMessagePosition = eMessagePosition_TopCenter,
+		eMessageAlignment alMessageAlignment = eMessageAlignment_Default,
+		cVector2f avMessageSize = cVector2f_MinusOne,
+		cVector2f avMessageOffset = cVector2f_Zero)
+{
+	cScript_SetGlobalArgString(0, asTextCategory);
+	cScript_SetGlobalArgString(1, asTextEntry);
+	cScript_SetGlobalArgFloat(2, afMessageDuration);
+	cScript_SetGlobalArgInt(3, alMessagePosition);
+	cScript_SetGlobalArgInt(4, alMessageAlignment);
+	cScript_SetGlobalArgVector2f(5, avMessageSize);
+	cScript_SetGlobalArgVector2f(6, avMessageOffset);
+	
+	cScript_RunGlobalFunc("MessageHandler", "", "_Global_SetMessage");
+}

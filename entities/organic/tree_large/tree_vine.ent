@@ -1,0 +1,65 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="entities/organic/plants/tree_large/tree_vine_poseable.dae">
+            <SubMesh ID="0" Material="" ModStamp="23/0/2014 13:34:35" Name="pCylinder3" Rotation="0 0 0" Scale="1 1 1" TriCount="216" WorldPos="0 0 0" />
+        </Mesh>
+        <Bones>
+            <Bone ID="1" Name="joint1" />
+            <Bone ID="2" Name="joint2" />
+            <Bone ID="3" Name="joint3" />
+            <Bone ID="4" Name="joint4" />
+            <Bone ID="5" Name="joint5" />
+            <Bone ID="6" Name="joint6" />
+            <Bone ID="7" Name="joint7" />
+            <Bone ID="8" Name="joint8" />
+            <Bone ID="9" Name="joint9" />
+            <Bone ID="10" Name="joint10" />
+            <Bone ID="11" Name="joint11" />
+            <Bone ID="12" Name="joint12" />
+            <Bone ID="13" Name="joint13" />
+            <Bone ID="14" Name="joint14" />
+            <Bone ID="15" Name="joint15" />
+            <Bone ID="16" Name="pCylinder3" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Prop_Rigid">
+        <Var Name="Health" Value="100" />
+        <Var Name="Toughness" Value="0" />
+        <Var Name="MaxInteractDistance" Value="0" />
+        <Var Name="EventTag" Value="" />
+        <Var Name="ShowHints" Value="true" />
+        <Var Name="LifeLength" Value="0" />
+        <Var Name="DissolveDuringLifeDecrease" Value="true" />
+        <Var Name="BlocksLineOfSight" Value="true" />
+        <Var Name="MainPhysicsBody" Value="" />
+        <Var Name="CustomScriptFile" Value="" />
+        <Var Name="CustomScriptClass" Value="" />
+        <Var Name="ShowMesh" Value="true" />
+        <Var Name="DissolveOnDestruction" Value="false" />
+        <Var Name="DissolveTime" Value="1.0" />
+        <Var Name="RandomizeAnimationStart" Value="true" />
+        <Var Name="EffectsOnSound" Value="" />
+        <Var Name="EffectsOffSound" Value="" />
+        <Var Name="EffectsOnTime" Value="0.2" />
+        <Var Name="EffectsOffTime" Value="0.2" />
+        <Var Name="StaticMoveCheckCollision" Value="false" />
+        <Var Name="StaticMoveStartSound" Value="" />
+        <Var Name="StaticMoveStopSound" Value="" />
+        <Var Name="StaticMoveLoopSound" Value="" />
+        <Var Name="BreakActive" Value="false" />
+        <Var Name="BreakOnlyOnMainBody" Value="false" />
+        <Var Name="BreakDestroyJoints" Value="false" />
+        <Var Name="BreakMinEnergy" Value="100" />
+        <Var Name="BreakEntity" Value="" />
+        <Var Name="BreakEntityAlignBody" Value="" />
+        <Var Name="BreakSound" Value="" />
+        <Var Name="BreakParticleSystem" Value="" />
+        <Var Name="BreakImpulse" Value="4" />
+    </UserDefinedVariables>
+</Entity>

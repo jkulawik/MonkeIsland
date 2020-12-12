@@ -397,6 +397,7 @@ class cScrPlayerCustom : cScrPlayer
 	//------------------------------------------------------------
 	
 	float mfDamage_MaxFearLevel = 1.f;
+	bool mbPlayDeathSoundEffects = true;
 	
 	//------------------------------------------------------------
 	
@@ -416,11 +417,26 @@ class cScrPlayerCustom : cScrPlayer
 	
 	void OnDamageTaken(float afAmount, int aType, tID a_idSource) override
 	{
-		if (cLux_GetPlayer().IsActive() && (Player_GetHealth() <= 0.015f || aType == eDamageType_Death))
+		if (cLux_GetPlayer().IsActive() 
+			&& (Player_GetHealth() <= 0.015f || aType == eDamageType_Death)
+			&& Player_GetCanDie())
 		{
-			Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
-			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld);
-			Sound_PlayGui("player/foley/damage/player_fall_death", 1.0f, eSoundEntryType_GuiWorld);
+			if (mBaseObj.IsInLiquid())
+			{
+				float fHeight = mBaseObj.GetLiquidHeight();
+				if (fHeight > 0.2f)
+				{
+					mbPlayDeathSoundEffects = false;
+				}
+			}
+			
+			Sound_PlayGui("player/foley/damage/player_death", 1.0f, eSoundEntryType_GuiWorld); // Play this regardless
+			
+			if (mbPlayDeathSoundEffects)
+			{
+				Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
+				Sound_PlayGui("player/foley/damage/player_fall_death", 1.0f, eSoundEntryType_GuiWorld);
+			}
 			
 			tString sSource = "";
 			
@@ -1369,7 +1385,7 @@ class cScrPlayerCustom : cScrPlayer
 					mlWaterHiding_FeedbackStage = 0;			
 					mfWaterHiding_OxygenCount = gfWaterHidingOxygenMax;
 					
-					FearHandler_TriggerPermaFail(false, "drown", true);
+					mBaseObj.GiveDamage(1.0f, 1, eDamageType_Silent, 0.0f, tID_Invalid, -1);
 				}
 			}
 			return;
