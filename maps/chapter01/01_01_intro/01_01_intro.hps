@@ -563,6 +563,7 @@ class cScrMap : iScrMap
 				Sound_CreateAtEntity("Sound_LightsOff", "01_01_intro/crash_event/lights_02", "sound_lights");
 				Sound_CreateAtEntity("Sound_GlassRattle_2", "01_01_intro/crash_event/glass_sweet", "sound_glass");
 				Sound_CreateAtEntity("Sound_Alarms", "01_01_intro/crash_event/cockpit_sweet", "sound_cockpit");
+				Sound_CreateAtEntity("Terain", "monke/SFX/airplane_crash_sequence/terrain", "sound_cockpit");
 				
 				Sound_PlayGui("01_01_intro/crash_event/crash_01", 1.0);
 				Sound_PlayGui("01_01_intro/crash_event/stingers", 1.0);

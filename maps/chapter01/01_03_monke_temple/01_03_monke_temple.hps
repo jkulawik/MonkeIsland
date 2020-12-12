@@ -21,9 +21,8 @@
 #include "custom/helpers/helper_player_custom.hps"
 
 //--------------------------------------------------
- 
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+
+const tString gsCavesMusic = "A2_01_02_Cave_Ambience_B";
  
 //--------------------------------------------------
  
@@ -84,18 +83,9 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
 		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
-				
-		PlayerBody_SetActive(true);
-		Player_SetMapDeepShadow(0.05f);
-		Player_SetNightVisionEnabled(false);
-		Player_SetNightVisionBrightness(0.5f);
-		Player_SetNightVisionRadius(5.5f);
-		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
-		Player_SetVertigoActive(false);
-		Player_SetAllowCheckBaby(false);
-		Player_SetAutoTeleportWhenBelowAltitude(-55.0f);
-		
-		Pregnancy_SetBarksActive(false);
+
+		SetupTombLights();
+		SetupEntities();
 		
 		/////////////////////////
 		// Debug
@@ -110,6 +100,21 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		Player_SetAmbientLight_Indoors(true);
+		
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(false);
+		Player_SetNightVisionBrightness(0.5f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetAutoTeleportWhenBelowAltitude(-55.0f);
+		
+		Pregnancy_SetBarksActive(false);
+		
+		cLux_ClearAllMapSaveData();		
 		Game_AutoSave();
 	}
 
@@ -167,7 +172,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			FearHandler_SetPermaFailEnabled(false);
+			CameraAnimation_Begin("DeathAnim", "", true);
 		}
 	}
 
@@ -193,20 +198,147 @@ class cScrMap : iScrMap
 	//{///////////////////////////////////////////////////////////////////////////////////////
  
 	//-------------------------------------------------------
+	
+	//Ambient Music
+	bool mbAmbientMusicPlaying = false;
+	bool mbAmbientMusicAllowed = true;
+	float gfAmbientMusicMul = 0.7f;
+	
+	void AmbientMusicHandler(const tString &in asTimer)
+	{		
+		if (asTimer=="StartAmbient" && mbAmbientMusicPlaying==false)
+		{
+			Music_PlayExt(gsCavesMusic, true, 0.5f, 1.0f, cMath_RandRectf(3.f,5.f), 0.0f, eMusicPrio_BgAmb, true);
+
+			cLux_AddDebugMessage("Ambient music triggering");
+			
+			mbAmbientMusicPlaying = true;
+			
+			//Dynamic fades
+			Map_AddTimer("RandomFadeRider", cMath_RandRectf(10.f,20.f), "AmbientMusicHandler");
+			Map_AddTimer("FadeOut", cMath_RandRectf(60.f,120.f), "AmbientMusicHandler");
+			Map_RemoveTimer("StopAmbientMusic");
+			Map_RemoveTimer("StopAmbientMusicQuickly");
+		}
+		
+		else if (asTimer=="StartAmbient" && mbAmbientMusicPlaying==false)
+		{
+			Map_AddTimer("StartAmbient", cMath_RandRectf(10.f,20.f), "AmbientMusicHandler");
+		}
+		
+		else if (asTimer=="StopAmbientMusic" && mbAmbientMusicPlaying==true)
+		{
+			Music_Stop(4.5f, eMusicPrio_BgAmb);
+			Map_RemoveTimer("RandomFadeRider");
+			Map_RemoveTimer("FadeOut");
+			Map_RemoveTimer("StartAmbient");
+			Music_FadeVolumeMul(1.0f,1.0f);
+			mbAmbientMusicPlaying = false;
+		}
+		else if (asTimer=="StopAmbientMusicQuickly" && mbAmbientMusicPlaying==true)
+		{
+			cLux_AddDebugMessage("Stop Ambient Music Quickly Triggered");
+			Music_Stop(1.5f, eMusicPrio_BgAmb);
+			Map_RemoveTimer("StartAmbient");
+			Map_RemoveTimer("RandomFadeRider");
+			Map_RemoveTimer("FadeOut");
+			Music_FadeVolumeMul(1.0f,1.0f);
+			mbAmbientMusicPlaying = false;
+		}
+		
+		else if(asTimer=="RandomFadeRider")
+		{
+			Music_PlayExt(gsCavesMusic, true, 0.5f * gfAmbientMusicMul, 1.0f, cMath_RandRectf(5.f,8.f), 0.0f, eMusicPrio_BgAmb, true);
+			
+			cLux_AddDebugMessage("Ambient Music Fading");
+			gfAmbientMusicMul = cMath_RandRectf(0.75f, 1.2f);
+			Map_AddTimer("RandomFadeRider", cMath_RandRectf(10.f,15.f), "AmbientMusicHandler");
+		}
+		
+		else if(asTimer=="FadeOut")
+		{	
+			cLux_AddDebugMessage("Ambient Music Fading Out");
+			Music_Stop(cMath_RandRectf(8.f,12.f), eMusicPrio_BgAmb);
+			mbAmbientMusicPlaying = false;
+			
+			Map_RemoveTimer("RandomFadeRider");
+			Map_AddTimer("StartAmbient", cMath_RandRectf(60.f,80.f), "AmbientMusicHandler");
+		}
+		
+		cLux_AddDebugMessage("Ambient Music Playing is "+mbAmbientMusicPlaying);
+	}
+	
+	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	void OnGuiDWNote(const tString&in asEntityName, float afTimeStep)
+	{
+		DWNote_RenderGUI(asEntityName, afTimeStep);
+	}
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	void SetupTombLights()
+	{
+		Light_SetBrightness("Light_Spot_5", 0.0f);
+		Light_SetBrightness("Light_Point_5", 0.0f);
+		Light_SetBrightness("Light_Box_2", 0.0f);
+		Light_SetBrightness("Light_Box_10", 0.0f);
+		Light_SetBrightness("Light_Box_8", 0.0f);
+		Light_SetBrightness("Light_Box_14", 0.0f);
+		
+		Lamp_SetLit("dwf_torch_02_6", false, false);
+		Lamp_SetLit("dwf_torch_02_3", false, false);
+		Lamp_SetLit("dwf_torch_01_3", false, false);
+		Lamp_SetLit("dwf_torch_01_2", false, false);
+		Lamp_SetLit("dwf_torch_02_1", false, false);
+		Lamp_SetLit("dwf_torch_02_5", false, false);
+		Lamp_SetLit("dwf_torch_02_2", false, false);
+		Lamp_SetLit("lamp_orb_3", false, false);
+		Lamp_SetLit("lamp_orb_5", false, false);
+		
+		Lamp_SetLit("lamp_spire_1", false, false);
+		Lamp_SetLit("lamp_spire_2", false, false);
+		Lamp_SetLit("lamp_spire_3", false, false);
+		
+		Billboard_SetVisible("Billboard_80_Imported_4", false);
+		Billboard_SetVisible("Billboard_81_Imported_4", false);
+		Billboard_SetVisible("Billboard_80_Imported_3", false);
+		Billboard_SetVisible("Billboard_81_Imported_3", false);
+		Billboard_SetVisible("Billboard_77", false);
+		Billboard_SetVisible("Billboard_76", false);
+		Billboard_SetVisible("Billboard_78_Imported", false);
+		Billboard_SetVisible("Billboard_79_Imported", false);
+		Billboard_SetVisible("Billboard_80_Imported", false);
+		Billboard_SetVisible("Billboard_81_Imported", false);
+		Billboard_SetVisible("Billboard_80_Imported_1", false);
+		Billboard_SetVisible("Billboard_81_Imported_1", false);
+		Billboard_SetVisible("Billboard_80_Imported_2", false);
+		Billboard_SetVisible("Billboard_81_Imported_2", false);
+		Billboard_SetVisible("Billboard_12", false);
+				
+		ParticleSystem_SetVisible("PS_44", false);
+		ParticleSystem_SetVisible("PS_42", false);
+		ParticleSystem_SetVisible("PS_43", false);
+		ParticleSystem_SetVisible("PS_41", false);
+	}
  
+	//-------------------------------------------------------
+	
+	void SetupEntities()
+	{
+		Entity_StopAnimation("amulet");
+		
+		Entity_SetActive("monke_1", true);
+		Monke_SetAllowPlayerThrow("monke_1", false);
+	}
+	
 	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
-	// SCENE X *NAME OF SCENE*
+	// SCENE 1 CAVES
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
@@ -216,13 +348,19 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		bool OnCollideTriggerEnterCaves(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Map_AddTimer("StartAmbient", 1.0f, "AmbientMusicHandler");
+			
+			return false;
+		}
 	 
 		//-------------------------------------------------------
 	 
 		void OnInteract_GetLantern(const tString &in asEntity)
 		{
 			Light_FadeBrightnessTo("light_lantern_item_*", 0.0f, 0.5f);
+			Light_FadeBrightnessTo("BoxLight_41", 0.0f, 0.5f);
 			
 			if (ItemType_GetCountInInventory("Lantern") > 0)
 			{
@@ -232,7 +370,6 @@ class cScrMap : iScrMap
 			Hint_StopHint();
 			
 			Map_AddTimer("Timer_LanternAmount",0.1f,"OnTimer_LanternAmount");
-			
 			
 			FearHandler_SetActive(true);
 			FearHandler_SetDarknessFactorActive(true);
@@ -244,26 +381,192 @@ class cScrMap : iScrMap
 			Item_SetContent(ItemType_GetFirstInInventory("Lantern"), "Oil", 9);
 		}
 		
+		bool Spooks(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("steps", "01_02_caves/sweeteners/near/steps", "sound_ghoul_cave_warning_1", 0.0, false, 1.0f, 5.0f, 40.0f);
+			
+			return false;
+		}
+		
+		bool Spooks2(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("SPPOKY", "01_02_caves/scare_events/cave_movement_01", "sos");
+			
+			return false;
+		}
+		
+		void monke_1_OnPlayerLookAt(const tString &in asEntity, int alState)
+		{
+			Monke_CommandGoToSpecificHole_Execute("monke_1", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
+		}
+		
+		bool EnableMonke2(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_2", true);
+			
+			return false;
+		}
+		
+		void monke_2_OnPlayerLookAt(const tString &in asEntity, int alState)
+		{
+			Map_AddTimer("Move", 1.5f, "Timer_Move");
+		}
+		
+		void Timer_Move(const tString&in asTimer)
+		{
+			Monke_CommandGoToSpecificHole_Execute("monke_2", "GhoulHole_2", true, false, true, eMonkeSpeed_Run);
+		}
+		
+		bool Monke_Disappear(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive(asChild, false);
+			
+			return true;
+		}
+		
+		bool SpanishAd(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("spanish", "monke/SFX/spanish_ad", "AdSource", 0.0f, true, 1.0f, 12.0f, 55.0f);
+			
+			return false;
+		}
+		
+		bool StopThatShit(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_Stop("spanish", 0.0f);
+			
+			return false;
+		}
+		
+		bool lol(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "AdSource", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Autosave(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Game_AutoSave();
+			
+			return false;
+		}
+		
 		//-------------------------------------------------------
 		
 		//} END General	
 	 
 		/////////////////////////////////////////
-		// Event *Name Of Event*
+		// Event FLAMES
 		//{//////////////////////////////////////
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
+		int mlBlurID = -1;
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		bool LightThatShitUp(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			mbAmbientMusicAllowed = false;
+			
+			Map_AddTimer("StopAmbientMusic", 0.1f, "AmbientMusicHandler");
+			Seq_TombLightUp("");
+			
+			return false;
+		}
+
+		cSequenceStatesData mTombLigtUpSequence;
+		void Seq_TombLightUp(const tString&in asX)
+		{
+			Sequence_Begin("Seq_TombLightUp", mTombLigtUpSequence);
+			
+			if(Sequence_DoStepAndWait(0.5f))
+			{
+				Sound_CreateAtEntity("Woosh1", "level_entity_shared/fire/campfire/campfire_ignite", "Player");
+				
+				Lamp_SetLit("dwf_torch_02_6", true, true);
+				Lamp_SetLit("dwf_torch_02_3", true, true);
+			}
+			else if(Sequence_DoStepAndWait(0.5f))
+			{
+				mlBlurID = Effect_RadialBlur_Start(0.25f, 0.25f, 0.3f, 1.f);
+				
+				Lamp_SetLit("dwf_torch_01_3", true, true);
+				Lamp_SetLit("dwf_torch_01_2", true, true);
+				
+				Light_FadeBrightnessTo("Light_Spot_5", 0.025f, 0.5f);
+				Light_FadeBrightnessTo("Light_Point_5", 0.15f, 0.5f);
+				Light_FadeBrightnessTo("Light_Box_2", 2.0f, 0.5f);
+				
+				Light_FadeBrightnessTo("Light_Box_8", 5.0f, 0.5f);
+				Light_FadeBrightnessTo("Light_Box_14", 5.0f, 0.5f);
+			}
+			else if(Sequence_DoStepAndWait(0.5f))
+			{
+				Sound_CreateAtEntity("Woosh2", "level_entity_shared/fire/campfire/campfire_ignite", "Player");
+				
+				Lamp_SetLit("dwf_torch_02_1", true, true);
+				Lamp_SetLit("dwf_torch_02_5", true, true);
+				Lamp_SetLit("dwf_torch_02_2", true, true);
+				
+				Light_FadeBrightnessTo("Light_Box_10", 5.0f, 0.5f);
+			}
+			else if(Sequence_DoStepAndWait(0.5f))
+			{
+				Lamp_SetLit("lamp_orb_3", true, true);
+				Lamp_SetLit("lamp_orb_5", true, true);
+				
+				Music_Play("", 0.75f, false, eMusicPrio_BigEvent);
+			}
+			else if(Sequence_DoStepAndWait(1.0f))
+			{
+				Sound_CreateAtEntity("Woosh3", "level_entity_shared/lights/dw_light_on", "Player");
+				
+				Lamp_SetLit("lamp_spire_1", true, true);
+				Lamp_SetLit("lamp_spire_2", true, true);
+				Lamp_SetLit("lamp_spire_3", true, true);
+				
+				Billboard_SetVisible("Billboard_80_Imported_4", true);
+				Billboard_SetVisible("Billboard_81_Imported_4", true);
+				Billboard_SetVisible("Billboard_80_Imported_3", true);
+				Billboard_SetVisible("Billboard_81_Imported_3", true);
+				Billboard_SetVisible("Billboard_77", true);
+				Billboard_SetVisible("Billboard_76", true);
+				Billboard_SetVisible("Billboard_78_Imported", true);
+				Billboard_SetVisible("Billboard_79_Imported", true);
+				Billboard_SetVisible("Billboard_80_Imported", true);
+				Billboard_SetVisible("Billboard_81_Imported", true);
+				Billboard_SetVisible("Billboard_80_Imported_1", true);
+				Billboard_SetVisible("Billboard_81_Imported_1", true);
+				Billboard_SetVisible("Billboard_80_Imported_2", true);
+				Billboard_SetVisible("Billboard_81_Imported_2", true);
+				Billboard_SetVisible("Billboard_12", true);
+				
+				ParticleSystem_SetVisible("PS_44", true);
+				ParticleSystem_SetVisible("PS_42", true);
+				ParticleSystem_SetVisible("PS_43", true);
+				ParticleSystem_SetVisible("PS_41", true);
+				
+				Effect_RadialBlur_FadeSize(mlBlurID, 0.05f, 5.0f);
+				Effect_RadialBlur_FadeOut(mlBlurID, 5.0f);
+			}
+			else if(Sequence_DoStepAndContinue())
+			{
+				Sound_Stop("Woosh1", 1.0f);
+				Sound_Stop("Woosh2", 1.0f);
+				Sound_Stop("Woosh3", 1.0f);
+			}
+			
+			Sequence_End();
+		}
 
 		//-------------------------------------------------------
 
-		//} END Event *Name Of Event*
+		//} END Event FLAMES
 	 
-	//} END SCENE X
+	//} END SCENE 1
  
 }
