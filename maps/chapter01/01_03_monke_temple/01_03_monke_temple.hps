@@ -88,10 +88,14 @@ class cScrMap : iScrMap
 		SetupTombLights();
 		SetupEntities();
 		
+
+		
 		/////////////////////////
 		// Debug
-		if(cLux_ScriptDebugOn())
+		if(!cLux_ScriptDebugOn())
 		{
+			Effect_Fade_Out(0.0f);
+			Map_AddTimer("start", 3.0f, "Timer_Start");
 		}
 	}
 
@@ -348,6 +352,14 @@ class cScrMap : iScrMap
 		//{//////////////////////////////////////
 		 
 		//-------------------------------------------------------
+		
+		void Timer_Start(const tString&in asTimer)
+		{
+			Effect_Fade_In(1.0f);
+			CameraAnimation_Begin("DeathAnim", "", true);
+		}
+		
+		//-------------------------------------------------------
 	 
 		bool OnCollideTriggerEnterCaves(const tString &in asParent, const tString &in asChild, int alState)
 		{
@@ -568,16 +580,100 @@ class cScrMap : iScrMap
 		
 		void Amulet_OnPlayerInteract(const tString &in asEntity)
 		{
+			cScript_SetGlobalVarBool("HideAmuletBracelet", false);
+			
+			Item_AddToInventory("CurseMedallion");
+			
+			Sound_Stop("sound_amulet", 1.0f);
 			Prop_SetActiveAndFade("amulet", false, 1.0f);
+			Entity_SetActive("Trigger_10", true);
+			
+			Light_FadeBrightnessTo("Light_Point_3", 0.0f, 1.0f);
+			
+			Amulet_StartTracking(true, "rift_simple_1");
+			Item_Equip(ItemType_GetFirstInInventory("CurseMedallion"));
 		}
 
 		//-------------------------------------------------------
 				
 		bool MonkeFlashes(const tString &in asParent, const tString &in asChild, int alState)
 		{
-			
+			Seq_Monke("");
 			
 			return false;
+		}
+		
+		cSequenceStatesData mMonkeSeq;
+		void Seq_Monke(const tString&in asX)
+		{
+			Sequence_Begin("Seq_Monke", mMonkeSeq);
+			
+			if(Sequence_DoStepAndWait(2.5f))
+			{
+				Item_Unequip(ItemType_GetFirstInInventory("CurseMedallion"));
+				
+				Sketchbook_Close();
+				Sketchbook_SetInventoryEnabled(false);
+				
+				Music_Play("A2_3_5_sneaking_tension", 0.15f, false, eMusicPrio_BigEvent);
+				PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_FearLoop, 1, "monke/Player/breaths/air_fear");
+				
+				Effect_Flash_Start(0.15, 1.0f, 0.15f);
+				
+				Effect_ImageTrail_Start(0.95f, 1.0f, 30.0f, 3.0f);
+				Player_SetMoveSpeedMul(0.5f);
+			}
+			else if(Sequence_DoStepAndWait(1.5f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper1", 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(2.0f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper2", 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(1.0f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper3", 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(1.5f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper1", 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(2.0f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper2", 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(1.0f))
+			{
+				Sound_PlayGui("monke/SFX/VO/scary/whisper3", 1.0f);
+				
+				Music_Play("A2_2_4_Falling_Head", 0.55f, false, eMusicPrio_BigEvent);
+			}
+			else if(Sequence_DoStepAndWait(1.0f))
+			{
+				PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_FearLoop, 1, "monke/Player/reaction/air/hurt");
+				
+				Player_SetActive(false);
+				Effect_Fade_Out(4.0f);
+				//PlayerBody_PlayCutsceneAnimation("die_fall", false, 0.5f, "OnFinishAnimation", 0.75f);
+				Player_SetCrouching(true);
+				Player_StartLookAt("rip", 1.0f, 1.0f, 1.0f);
+			}
+			else if(Sequence_DoStepAndWait(3.0f))
+			{
+				Sound_FadeGlobalVolume(0.0f, 3.0f);
+			}
+			else if(Sequence_DoStepAndContinue())
+			{
+				
+			}
+			
+			Sequence_End();
+		}
+		
+		void OnFinishAnimation(const tString &in asAnimName)
+		{
+
 		}
 		
 		//-------------------------------------------------------
