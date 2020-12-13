@@ -563,7 +563,23 @@ class cScrMap : iScrMap
 			
 			Sequence_End();
 		}
+		
+		//-------------------------------------------------------
+		
+		void Amulet_OnPlayerInteract(const tString &in asEntity)
+		{
+			Prop_SetActiveAndFade("amulet", false, 1.0f);
+		}
 
+		//-------------------------------------------------------
+				
+		bool MonkeFlashes(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			
+			
+			return false;
+		}
+		
 		//-------------------------------------------------------
 
 		//} END Event FLAMES
