@@ -17,12 +17,13 @@
 #include "helpers/helper_rotation.hps"
 
 #include "helpers/custom/helper_props_custom.hps"
-#include "custom/helpers/helper_modules_custom.hps"
-#include "custom/helpers/helper_player_custom.hps"
+#include "helpers/custom/helpers/helper_modules_custom.hps"
+#include "helpers/custom/helpers/helper_player_custom.hps"
 
 //--------------------------------------------------
 
 const tString gsCavesMusic = "A2_01_02_Cave_Ambience_B";
+const tString gsTempleMusic = "monke_reveal";
  
 //--------------------------------------------------
  
@@ -519,7 +520,7 @@ class cScrMap : iScrMap
 				Lamp_SetLit("lamp_orb_3", true, true);
 				Lamp_SetLit("lamp_orb_5", true, true);
 				
-				Music_Play("", 0.75f, false, eMusicPrio_BigEvent);
+				Music_Play(gsTempleMusic, 1.0f, false, eMusicPrio_BigEvent);
 			}
 			else if(Sequence_DoStepAndWait(1.0f))
 			{
