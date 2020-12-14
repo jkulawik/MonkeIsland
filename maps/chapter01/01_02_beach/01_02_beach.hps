@@ -37,8 +37,6 @@ class cScrMap : iScrMap
 	void Setup()
 	{
 		GetBase().SetDisplayNameEntry("01-02-beach");
-		
-		// Set up color grading etc.
 	}
 	
 	//-------------------------------------------------------
@@ -149,6 +147,8 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			Sketchbook_AddIdea("rescue_chief");
+			Sketchbook_AddIdea("research_monke");
 		}
 		if(alAction == eAction_Test2)
 		{
@@ -352,6 +352,9 @@ class cScrMap : iScrMap
 		{
 			Music_Play("post_crash.ogg", 0.85f, false, eMusicPrio_BigEvent);
 			Map_AddTimer("FadeBeachMusic", 40.0f, "Timer_FadeBeachMusic");
+			
+			Sketchbook_AddIdea("rescue_chief");
+			Sketchbook_AddIdea("research_monke");
 			
 			Game_AutoSave();
 		}

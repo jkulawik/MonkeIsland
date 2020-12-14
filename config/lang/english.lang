@@ -11,9 +11,6 @@
     <Entry Name="NoteTest_BackEntry">Another test - back</Entry>
     <Entry Name="NoteTest_FrontEntry_Name">Another test - name</Entry>
   </CATEGORY>
-  <CATEGORY Name="Levels">
-    <Entry Name="sample_map_sketchbook_category">Test map notes</Entry>
-  </CATEGORY>
   <CATEGORY Name="GameOver">
     <Entry Name="DefaultMessage">You were returned to monke</Entry>
   </CATEGORY>
@@ -84,7 +81,7 @@
     <Entry Name="HintMatchHowTo">Use a match to light lamps. First equip it with $Input{Match}, then interact with the lamp.</Entry>
     <Entry Name="HintMatchMove">Moving around too much while holding a match will make it go out.</Entry>
     <Entry Name="HintBabyKickFear">Whenever your baby kicks you can check in on it to reduce your fear.</Entry>
-    <Entry Name="HintAmulet">Press $Input{Amulet} to bring out or put away the amulet.</Entry>
+    <Entry Name="HintAmulet">Press $Input{Amulet} to bring out M[u8217]Speak amulet.</Entry>
     <Entry Name="HintAmuletGuide">Head in the direction the amulet is pointing.</Entry>
     <Entry Name="HintJournal">Press $Input{OpenIdeas} to open your journal.</Entry>
     <Entry Name="HintReminders">The Reminders tab of your sketchbook (press $Input{OpenIdeas}) shows your current objective.</Entry>
@@ -105,7 +102,7 @@
   <CATEGORY Name="Levels">
     <Entry Name="01-01-intro">Mission Briefing</Entry>
     <Entry Name="01-02-beach">The Beach</Entry>
-    <Entry Name="01-03-monke-temple">Monke Temple</Entry>
+    <Entry Name="01-03-monke-temple">Monke Caves</Entry>
     <Entry Name="01-04-dream">Dream</Entry>
     <Entry Name="02-01-tomb-escape">Escape</Entry>
     <Entry Name="02-02-tomb-exit">Monke Tomb Exit</Entry>
@@ -121,24 +118,28 @@
     <Entry Name="Signature">-Dani Shapiro</Entry>
     <Entry Name="IntroMessage">Somewhere above Nigeria</Entry>
   </CATEGORY>
-
   <CATEGORY Name="01_02_beach">
     <Entry Name="EngineInteract">This engine is really bad.</Entry>
     <Entry Name="BeachInteract">There is no time for having fun for. I need to get going..</Entry>
     <Entry Name="MonkeStatue">A monke statue. Must be related to the rebel. Seems like an acneint reminiscent of the past..</Entry>
-    <Entry Name="Secret">don&apos;t break the mod dumbass</Entry>
+    <Entry Name="Secret">don't break the mod dumbass</Entry>
   </CATEGORY>
-
+  <CATEGORY Name="01_03_monke_temple">
+    <Entry Name="FirstCaveNote_FrontEntry">I don't remember the date :([br][br]We have infliterated the island through[br]the barracks. According to our intel,[br]there is a forest nearby in which the[br]monkeys live at.[br][br]I got separated from my crew, I found[br]this cave.[br][br]The weird thing is, this cave does not[br]appear on any map.</Entry>
+    <Entry Name="FirstCaveNote_FrontEntry_Name">Cave Note</Entry>
+    <Entry Name="SecondCaveNote_FrontEntry">I cannot believe this. Hidden from plain[br]sight, I found this ancient temple of monkies. I cannot begin to understand[br]how it was built or by whom, but if I hadt[br]o take a guess, I would say it was doneby the monkys, somehow.[br][br]I am near a shrine, there is this strangeamulet. I shouldn[u8217]t touch it just yet.[br][br]I gotta search for my comrades, they need to see this.[br][br]Something big is happening.</Entry>
+    <Entry Name="SecondCaveNote_FrontEntry_Name">Strange Note</Entry>
+  </CATEGORY>
   <CATEGORY Name="Voices_01_01_intro">
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_001">In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_002">The island was never taken back - the monkeys developed strong defenses around the island perimeter.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_003">Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_004">However, the delicate equilibrium has been recently destroyed by the monkeys. They have captured Jordan Anderson, the chief of the weapons lab of the Compeny.</Entry>
-    <Entry Name="main_dialogue_munshi_briefing_001_colonel_005">They&apos;re demanding that the American Government turn over complete control on the banana economy, and they say that if their demands aren&apos;t met in the next 24 hours, they will launch a nuclear weapon.</Entry>
-    <Entry Name="main_dialogue_munshi_briefing_001_colonel_006">You&apos;ll have two mission objectives. First, you&apos;re to rescue the Compeny chief. </Entry>
-    <Entry Name="main_dialogue_munshi_briefing_001_colonel_007">Second, you&apos;re to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do.</Entry>
-    <Entry Name="main_dialogue_questions_001_player_001">What&apos;s the insertion method?</Entry>
-    <Entry Name="main_dialogue_questions_002_colonel_001">You&apos;re going to parachute to the island.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_005">They're demanding that the American Government turn over complete control on the banana economy, and they say that if their demands aren't met in the next 24 hours, they will launch a nuclear weapon.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_006">You'll have two mission objectives. First, you're to rescue the Compeny chief. </Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_007">Second, you're to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do.</Entry>
+    <Entry Name="main_dialogue_questions_001_player_001">What's the insertion method?</Entry>
+    <Entry Name="main_dialogue_questions_002_colonel_001">You're going to parachute to the island.</Entry>
     <Entry Name="main_dialogue_questions_003_player_001">Anyone going with me?</Entry>
     <Entry Name="main_dialogue_questions_004_colonel_001">As usual, this is a one-man infiltration mission. This is why we chose your unit.</Entry>
     <Entry Name="main_dialogue_questions_005_player_001">GOLIRA special forces, huh. Weapons and equipment on-site procurement?</Entry>
@@ -146,11 +147,10 @@
     <Entry Name="main_dialogue_banana_001_player_001">Whoa, What the hell?</Entry>
     <Entry Name="main_dialogue_banana_002_colonel_001">We are being attacked!</Entry>
     <Entry Name="pilot_dialogue_crashpanic_001_pilot_1_001">Ah shit! Daymay, Daymay!</Entry>
-    <Entry Name="pilot_dialogue_crashpanic_002_pilot_2_001">Dude it&apos;s Mayday, not Daymay.</Entry>
+    <Entry Name="pilot_dialogue_crashpanic_002_pilot_2_001">Dude it's Mayday, not Daymay.</Entry>
     <Entry Name="pilot_dialogue_run_001_pilot_1_001">To all passengers: The plane is about to crash! RUN!</Entry>
     <Entry Name="pilot_dialogue_whereisradio_001_pilot_1_001">Where is the radio god damnit!</Entry>
   </CATEGORY>
-
   <CATEGORY Name="Voices_01_02_beach">
     <Entry Name="main_wakeup_001_player_001">Ugh... My Head. Colonel? Are you here?</Entry>
     <Entry Name="main_motivated_001_player_001">I cannot let down my comrades, I will fight for the death even if I die.</Entry>
@@ -159,7 +159,7 @@
     <Entry Name="Main_MyBack_1_001_Player_001">Ugh... my back.</Entry>
     <Entry Name="main_myback_2_001_player_001">My back!</Entry>
     <Entry Name="main_cavefall_001_player_001">I hope there is some-</Entry>
-    <Entry Name="main_floorfall_001_player_001">Hopefully there won&apos;t be any-</Entry>
+    <Entry Name="main_floorfall_001_player_001">Hopefully there won't be any-</Entry>
     <Entry Name="main_mothermary_001_player_001">Ah shit! Oh, Mother Mary, Oh...</Entry>
     <Entry Name="main_mothermary_001_player_002">*Cries like a little bitch*</Entry>
   </CATEGORY>

@@ -618,9 +618,9 @@ class cScrMap : iScrMap
 				Music_Play("A2_3_5_sneaking_tension", 0.15f, false, eMusicPrio_BigEvent);
 				PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_FearLoop, 1, "monke/Player/breaths/air_fear");
 				
-				Effect_Flash_Start(0.15, 1.0f, 0.15f);
+				StruggleFlashHandler_DoFlash(0.15f,0.0f);
 				
-				Effect_ImageTrail_Start(0.95f, 1.0f, 30.0f, 3.0f);
+				Effect_ImageTrail_Start(0.95f, 2.0f, 30.0f, 3.0f);
 				Player_SetMoveSpeedMul(0.5f);
 			}
 			else if(Sequence_DoStepAndWait(1.5f))
@@ -633,6 +633,8 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(1.0f))
 			{
+				PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_FearLoop, 1, "monke/Player/breaths/air_fear");
+				StruggleFlashHandler_DoFlash(0.15f,0.0f);
 				Sound_PlayGui("monke/SFX/VO/scary/whisper3", 1.0f);
 			}
 			else if(Sequence_DoStepAndWait(1.5f))
@@ -641,6 +643,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(2.0f))
 			{
+				StruggleFlashHandler_DoFlash(0.15f,0.0f);
 				Sound_PlayGui("monke/SFX/VO/scary/whisper2", 1.0f);
 			}
 			else if(Sequence_DoStepAndWait(1.0f))
@@ -651,15 +654,15 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(1.0f))
 			{
+				StruggleFlashHandler_DoFlash(0.15f,0.0f);
 				PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_FearLoop, 1, "monke/Player/reaction/air/hurt");
 				
 				Player_SetActive(false);
 				Effect_Fade_Out(4.0f);
-				//PlayerBody_PlayCutsceneAnimation("die_fall", false, 0.5f, "OnFinishAnimation", 0.75f);
 				Player_SetCrouching(true);
 				Player_StartLookAt("rip", 1.0f, 1.0f, 1.0f);
 			}
-			else if(Sequence_DoStepAndWait(3.0f))
+			else if(Sequence_DoStepAndWait(6.0f))
 			{
 				Sound_FadeGlobalVolume(0.0f, 3.0f);
 			}
