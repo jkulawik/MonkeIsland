@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
 #include "helpers/helper_audio.hps"
@@ -10,6 +11,10 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
 
 //--------------------------------------------------
  
@@ -34,27 +39,16 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		// Put display name entry in english.lang / Levels
-		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
+		GetBase().SetDisplayNameEntry("01-04-dream");
 		
-		// Set up color grading etc.
+		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(0)));
+		Effect_DoF_Start(5, 200, 1.5f, 1.0f);
 	}
 	
 	//-------------------------------------------------------
 		
 	void PreloadData()
 	{
-		/////////////////
-		// Preload gui
-		//ImGui_PreloadImage("some_image");
-
-		///////////////
-		// Preload particles
-		//ParticleSystem_Preload("some_particle.ps");
-
-		//////////////
-		// Preload screen effects
-		//Material_Preload("some_material.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -63,11 +57,22 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
-		// Any general setup of script / entities
+		FearHandler_SetActive(false);
 		
-		/////////////////////////
-		// Debug
-		if(cLux_ScriptDebugOn())
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(true);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		
+		SetupEntities();
+		
+		if(!cLux_ScriptDebugOn())
 		{
 		}
 	}
@@ -78,6 +83,20 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		Player_SetCanDie(false);
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(false);
+		Player_SetNightVisionBrightness(0.5f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetGravity(cVector3f(0, -5.5f, 0));
+		
+		Pregnancy_SetBarksActive(false);
+		
+		cLux_ClearAllMapSaveData();		
 		Game_AutoSave();
 	}
 
@@ -135,6 +154,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			
 		}
 	}
 
@@ -149,6 +169,20 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		mfSkyboxRotationAdd += afTimeStep * mfSkyboxRotationSpeedMul;
+		
+		if(mfSkyboxRotationAdd >= 360.0f)
+		{
+			mfSkyboxRotationAdd = 0.0f;
+		}
+				
+		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(mfSkyboxRotationAdd)));
+	}
+	
+	//-------------------------------------------------------
  
 	//} END MAIN CALLBACKS
  
@@ -160,12 +194,63 @@ class cScrMap : iScrMap
 	//{///////////////////////////////////////////////////////////////////////////////////////
  
 	//-------------------------------------------------------
+	
+	float mfSkyboxRotationAdd = 0.0f;
+	float mfSkyboxRotationSpeedMul = 1.0f;
+	
+	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	void SetupEntities()
+	{
+		Prop_RotateToSpeed("banana_throw_2", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
+		Prop_RotateToSpeed("banana_throw_4", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
+		
+		Prop_RotateToSpeed("banana_1", 1.0f, 1.0f, true, "");
+		Prop_RotateToSpeed("banana_2", -1.0f, -1.0f, true, "");
+		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");
+		Prop_RotateToSpeed("banana_4", 1.3f, 1.3f, true, "");
+		
+		Entity_SetVarFloat("Teleporter_1", "FogStart", 450.0f);
+		Entity_SetVarFloat("Teleporter_2", "FogStart", 300.0f);
+		
+		Entity_SetVarFloat("Teleporter_1", "SkyboxSpeed", 3.0f);
+		Entity_SetVarFloat("Teleporter_2", "SkyboxSpeed", 10.0f);
+		
+		Entity_SetVarString("Teleporter_1", "Billboard", "Billboard_1");
+		Entity_SetVarString("Teleporter_2", "Billboard", "Billboard_2");
+		
+		Entity_SetVarString("Teleporter_1", "FogArea", "FogArea_Hide_1");
+		Entity_SetVarString("Teleporter_1", "FogAreaToUnhide", "FogArea_Hide_2");
+				
+		FogArea_SetVisible("FogArea_Hide_1", false);
+		FogArea_SetVisible("FogArea_Hide_2", false);
+	}
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	 
+	bool TeleportPlayer(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Sound_CreateAtEntity("teleport", "level_entity_shared/portal/portal_passthrough", "player");
+		
+		Player_Teleport(Entity_GetVarString(asParent, ""));
+		
+		Map_SetFogProperties(Entity_GetVarFloat(asParent, "FogStart"), 600.0f, 1.0f, cColor(1,0.938,0.629,1), true);
+		
+		Billboard_SetVisible(Entity_GetVarString(asParent, "Billboard"), false);
+		FogArea_SetVisible(Entity_GetVarString(asParent, "FogArea"), true);
+		
+		mfSkyboxRotationSpeedMul = Entity_GetVarFloat(asParent, "SkyboxSpeed");
+		
+		return true;
+	}
+	
+	bool DeathTeleport(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Player_Teleport(Entity_GetVarString(asParent, ""));
+		
+		return true;
+	}
  
 	//-------------------------------------------------------
  
@@ -173,7 +258,7 @@ class cScrMap : iScrMap
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
-	// SCENE X *NAME OF SCENE*
+	// SCENE 1 DREAM
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
@@ -186,29 +271,11 @@ class cScrMap : iScrMap
 		/*Put any variables that are used by many events in Scene X here.*/
 	 
 		//-------------------------------------------------------
-	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+
 	 
 		//-------------------------------------------------------
 		
 		//} END General	
 	 
-		/////////////////////////////////////////
-		// Event *Name Of Event*
-		//{//////////////////////////////////////
-
-		//-------------------------------------------------------
-
-		/*Put any variables that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		/*Put any functions that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		//} END Event *Name Of Event*
-	 
-	//} END SCENE X
- 
+	//} END SCENE 1
 }
