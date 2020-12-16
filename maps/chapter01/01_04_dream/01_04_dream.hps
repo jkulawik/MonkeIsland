@@ -18,11 +18,6 @@
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
-//--------------------------------------------------
- 
 class cScrMap : iScrMap
 {
 	//--------------------------------------------
@@ -43,6 +38,8 @@ class cScrMap : iScrMap
 		
 		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(0)));
 		Effect_DoF_Start(5, 200, 1.5f, 1.0f);
+		
+		Visibility_SetMainActive(false);
 	}
 	
 	//-------------------------------------------------------
@@ -74,6 +71,8 @@ class cScrMap : iScrMap
 		
 		if(!cLux_ScriptDebugOn())
 		{
+			Effect_Fade_Out(0);
+			Map_AddTimer("Timer_WakeUp", 2.0f, "Timer_WakeUp");
 		}
 	}
 
@@ -93,6 +92,8 @@ class cScrMap : iScrMap
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
 		Player_SetGravity(cVector3f(0, -5.5f, 0));
+		
+		cLux_SetGodModeActivated(true);
 		
 		Pregnancy_SetBarksActive(false);
 		
@@ -154,7 +155,8 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			
+			//Visibility_SetMainActive(false);
+			Visibility_SetAreaActive("VisibilityArea_2", false);
 		}
 	}
 
@@ -202,6 +204,12 @@ class cScrMap : iScrMap
  
 	void SetupEntities()
 	{
+		Visibility_SetAreaActive("VisibilityArea_2", false);
+		Visibility_SetAreaActive("VisibilityArea_3", false);
+		
+		Map_AddTimer("PlankMovement", 1.0f, "Timer_PlankMovement");
+		Map_AddTimer("PlankMovement", 4.0f, "Timer_PlankMovementBackwards");
+		
 		Prop_RotateToSpeed("banana_throw_2", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		Prop_RotateToSpeed("banana_throw_4", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		
@@ -209,6 +217,13 @@ class cScrMap : iScrMap
 		Prop_RotateToSpeed("banana_2", -1.0f, -1.0f, true, "");
 		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");
 		Prop_RotateToSpeed("banana_4", 1.3f, 1.3f, true, "");
+		Prop_RotateToSpeed("banana_5", -1.3f, -1.3f, true, "");
+		
+		for(int i = 1; i <= 7; i++)
+		{
+			Prop_RotateToSpeed("block_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_" + i);
+			Prop_RotateToSpeed("block_opposite_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_opposite_" + i);
+		}
 		
 		Entity_SetVarFloat("Teleporter_1", "FogStart", 450.0f);
 		Entity_SetVarFloat("Teleporter_2", "FogStart", 300.0f);
@@ -219,13 +234,64 @@ class cScrMap : iScrMap
 		Entity_SetVarString("Teleporter_1", "Billboard", "Billboard_1");
 		Entity_SetVarString("Teleporter_2", "Billboard", "Billboard_2");
 		
-		Entity_SetVarString("Teleporter_1", "FogArea", "FogArea_Hide_1");
-		Entity_SetVarString("Teleporter_1", "FogAreaToUnhide", "FogArea_Hide_2");
+		Entity_SetVarString("Teleporter_1", "Music", "banan_dream_stage_2");
+		Entity_SetVarString("Teleporter_2", "Music", "banan_dream_stage_3");
+		
+		Entity_SetVarString("Teleporter_1", "VisAreaToDisable", "VisibilityArea_1");
+		Entity_SetVarString("Teleporter_1", "VisAreaToEnable", "VisibilityArea_2");
+		Entity_SetVarString("Teleporter_2", "VisAreaToDisable", "VisibilityArea_2");
+		Entity_SetVarString("Teleporter_2", "VisAreaToEnable", "VisibilityArea_3");
 				
 		FogArea_SetVisible("FogArea_Hide_1", false);
 		FogArea_SetVisible("FogArea_Hide_2", false);
 	}
  
+	//-------------------------------------------------------
+	
+	void Timer_PlankMovement(const tString&in asTimer)
+	{
+		Prop_MoveLinearTo("plank_1", "Plank_1_In", 5.0f, 3.0f, 0.5f, true, "MoveOut");
+		Prop_MoveLinearTo("plank_3", "Plank_3_In", 5.0f, 3.0f, 0.5f, true, "MoveOut");
+	}
+	
+	void Timer_PlankMovementBackwards(const tString&in asTimer)
+	{
+		Prop_MoveLinearTo("plank_2", "Plank_2_In", 5.0f, 3.0f, 0.5f, true, "MoveOutBackwards");
+		Prop_MoveLinearTo("plank_4", "Plank_4_In", 5.0f, 3.0f, 0.5f, true, "MoveOutBackwards");
+	}
+	
+	//-------------------------------------------------------
+		
+	void MoveOut(const tString& in asPropName)	 
+	{
+		Prop_MoveLinearTo("plank_1", "Plank_1_Out", 5.0f, 3.0f, 0.5f, true, "MoveIn");
+		Prop_MoveLinearTo("plank_3", "Plank_3_Out", 5.0f, 3.0f, 0.5f, true, "MoveIn");
+		Prop_MoveLinearTo("plank_5", "Plank_5_Out", 5.0f, 3.0f, 0.5f, true, "MoveIn");
+	}
+	
+	void MoveIn(const tString& in asPropName)	 
+	{
+		Prop_MoveLinearTo("plank_1", "Plank_1_In", 5.0f, 3.0f, 0.5f, true, "MoveOut");
+		Prop_MoveLinearTo("plank_3", "Plank_3_In", 5.0f, 3.0f, 0.5f, true, "MoveOut");
+		Prop_MoveLinearTo("plank_5", "Plank_5_In", 5.0f, 3.0f, 0.5f, true, "MoveOut");
+	}
+	
+	//-------------------------------------------------------
+	
+	void MoveOutBackwards(const tString& in asPropName)	 
+	{
+		Prop_MoveLinearTo("plank_2", "Plank_2_Out", 5.0f, 3.0f, 0.5f, true, "MoveInBackward");
+		Prop_MoveLinearTo("plank_4", "Plank_4_Out", 5.0f, 3.0f, 0.5f, true, "MoveInBackward");
+		Prop_MoveLinearTo("plank_6", "Plank_6_Out", 5.0f, 3.0f, 0.5f, true, "MoveInBackward");
+	}
+	
+	void MoveInBackward(const tString& in asPropName)	 
+	{
+		Prop_MoveLinearTo("plank_2", "Plank_2_In", 5.0f, 3.0f, 0.5f, true, "MoveOutBackwards");
+		Prop_MoveLinearTo("plank_4", "Plank_4_In", 5.0f, 3.0f, 0.5f, true, "MoveOutBackwards");
+		Prop_MoveLinearTo("plank_6", "Plank_6_In", 5.0f, 3.0f, 0.5f, true, "MoveOutBackwards");
+	}
+	
 	//-------------------------------------------------------
  
 	 
@@ -242,6 +308,11 @@ class cScrMap : iScrMap
 		
 		mfSkyboxRotationSpeedMul = Entity_GetVarFloat(asParent, "SkyboxSpeed");
 		
+		Music_Play(Entity_GetVarString(asParent, "Music"), 0.85f, true, eMusicPrio_BgAmb);
+				
+		Visibility_SetAreaActive(Entity_GetVarString(asParent, "VisAreaToDisable"), false);
+		Visibility_SetAreaActive(Entity_GetVarString(asParent, "VisAreaToEnable"), true);
+			
 		return true;
 	}
 	
@@ -253,6 +324,15 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
+	
+	bool DisableSun(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Entity_SetActive("sun_large_1", false);
+		
+		return false;
+	}
+	
+	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS
  
@@ -263,19 +343,50 @@ class cScrMap : iScrMap
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
 		/////////////////////////////////////////
-		// General
+		// WAKE UP
 		//{//////////////////////////////////////
-		 
-		//-------------------------------------------------------
-	 
-		/*Put any variables that are used by many events in Scene X here.*/
-	 
+
 		//-------------------------------------------------------
 
-	 
-		//-------------------------------------------------------
+		void Timer_WakeUp(const tString&in asTimer)
+		{
+			Seq_WakeUp("");
+		}
+
+		cSequenceStatesData mWakeUpSequence;
+		void Seq_WakeUp(const tString&in asTimer)
+		{
+			Sequence_Begin("Seq_WakeUp", mWakeUpSequence);
+			
+			if(Sequence_DoStepAndWait(2.508f))
+			{
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "",0);
+			}
+			else if(Sequence_DoStepAndWait(5.0f))
+			{
+				Music_Play("banan_dream_stage_1", 1.0f, true, eMusicPrio_BgAmb);
+				
+				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_WorldAll);
+				Sound_Stop("IntroSFX", 0.5f);
+				
+				Effect_Fade_In(1.0f);
+			}
+			else if(Sequence_DoStepAndContinue())
+			{				
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 0.85f, "OnFinishWakingUp");
+			}
+			
+			Sequence_End();
+		}
 		
-		//} END General	
-	 
+		void OnFinishWakingUp(const tString &in asAnimName)
+		{
+			Game_AutoSave();
+		}
+
+		//-------------------------------------------------------
+
+		//} END Event WAKE UP
+			 
 	//} END SCENE 1
 }

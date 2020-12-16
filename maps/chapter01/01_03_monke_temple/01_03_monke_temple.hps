@@ -666,15 +666,10 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndContinue())
 			{
-				
+				Map_ChangeMap("01_04_dream.hpm", "Start_Begin", "", "", false);
 			}
 			
 			Sequence_End();
-		}
-		
-		void OnFinishAnimation(const tString &in asAnimName)
-		{
-
 		}
 		
 		//-------------------------------------------------------

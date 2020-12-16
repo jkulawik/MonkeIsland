@@ -4173,7 +4173,7 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 			{
 				Item_RemoveFromInventory(ItemType_GetFirstInInventory("Banana"));
 				CloseSketchbook();
-				
+								
 				mBaseObj.Timer_Add("BananaIncreaseHealth", 0.5f, "OnTimer_BananaIncreaseHealth");
 			}
 			
@@ -4267,9 +4267,8 @@ class cScrSketchbookUIHandler : iScrUserModule, iScrUserModule_Interface, iScrSk
 	void OnTimer_BananaIncreaseHealth(uint64 alID)
 	{
 		Player_AddHealth(0.2f);
-		
-		cLux_AddTodoMessage("Add Banana Eating sfx");
-		//Sound_CreateAtEntity("Eat", "", "player");
+				
+		Sound_CreateAtEntity("Drink", "monke/UI/eat_banana", "Player");
     }
 	
 	void OnTimer_PepsiPuke(uint64 alID)
