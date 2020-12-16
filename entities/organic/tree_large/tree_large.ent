@@ -1,0 +1,73 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="entities/organic/plants/tree_large/tree_large.dae">
+            <SubMesh ID="0" Material="" ModStamp="23/0/2014 11:31:07" Name="pCylinder2" Rotation="0 0 0" Scale="1 1 1" TriCount="920" WorldPos="0 0 0" />
+        </Mesh>
+        <Bones />
+        <Shapes>
+            <Shape ID="1" ModStamp="23/0/2014 11:32:12" Name="ShapeCylinder_1" RelativeRotation="0 -0 0" RelativeScale="1 1 1" RelativeTranslation="0.078774 2.25325 0.304951" Rotation="0 0 0" Scale="0.6 7 0" ShapeType="Cylinder" WorldPos="0 3.50391 0" />
+            <Shape ID="2" ModStamp="23/0/2014 11:32:53" Name="ShapeCylinder_2" RelativeRotation="-0.976049 -0 0" RelativeScale="1 1 1" RelativeTranslation="0.123835 -1.28741 1.45129" Rotation="-0.976049 -0 0" Scale="0.25 2 0" ShapeType="Cylinder" WorldPos="0.0450606 -0.0367454 1.14634" />
+            <Shape ID="3" ModStamp="23/0/2014 11:32:53" Name="ShapeCylinder_3" RelativeRotation="-0.990477 0.964664 -0.0202662" RelativeScale="1 1 1" RelativeTranslation="1.00077 -1.21622 0.991377" Rotation="-0.990477 0.964664 -0.0202662" Scale="0.25 2 0" ShapeType="Cylinder" WorldPos="0.921997 0.0344472 0.686427" />
+            <Shape ID="4" ModStamp="23/0/2014 11:34:29" Name="ShapeCylinder_4" RelativeRotation="2.16496 1.13758 -3.11864" RelativeScale="1 1 1" RelativeTranslation="1.20056 -1.35963 0.0752842" Rotation="2.16496 1.13758 -3.11864" Scale="0.15 2 0" ShapeType="Cylinder" WorldPos="1.12179 -0.108964 -0.229667" />
+            <Shape ID="5" ModStamp="23/0/2014 11:34:29" Name="ShapeCylinder_5" RelativeRotation="2.49781 0.530601 -2.9502" RelativeScale="1 1 1" RelativeTranslation="0.762671 -1.38043 -0.367366" Rotation="2.49781 0.530601 -2.9502" Scale="0.15 2 0" ShapeType="Cylinder" WorldPos="0.683897 -0.129769 -0.672317" />
+            <Shape ID="6" ModStamp="23/0/2014 11:32:53" Name="ShapeCylinder_6" RelativeRotation="-0.865729 -0.892656 -0.00338466" RelativeScale="1 1 1" RelativeTranslation="-0.775516 -1.36869 1.08435" Rotation="-0.865729 -0.892656 -0.00338466" Scale="0.25 2 0" ShapeType="Cylinder" WorldPos="-0.85429 -0.118025 0.779394" />
+            <Shape ID="7" ModStamp="23/0/2014 11:32:53" Name="ShapeCylinder_7" RelativeRotation="-1.41367 -1.48051 0.541655" RelativeScale="1 1 1" RelativeTranslation="-1.20056 -1.2845 0.500093" Rotation="-1.41367 -1.48051 0.541655" Scale="0.25 2 0" ShapeType="Cylinder" WorldPos="-1.27934 -0.0338376 0.195142" />
+            <Shape ID="8" ModStamp="23/0/2014 11:37:27" Name="ShapeCylinder_8" RelativeRotation="2.30805 -0.470582 3.13028" RelativeScale="1 1 1" RelativeTranslation="-0.408857 -1.16861 -0.467556" Rotation="-0.833538 3.61217 -0.0113095" Scale="0.35 2 0" ShapeType="Cylinder" WorldPos="-0.487631 0.0820484 -0.772507" />
+            <Shape ID="9" ModStamp="23/0/2014 11:38:11" Name="ShapeCylinder_9" RelativeRotation="2.47715 -0.470582 3.13028" RelativeScale="1 1 1" RelativeTranslation="-0.921581 -2.25325 -1.45129" Rotation="-0.664445 3.61217 -0.0113095" Scale="0.25 2 0" ShapeType="Cylinder" WorldPos="-1.00035 -1.00259 -1.75624" />
+        </Shapes>
+        <Bodies>
+            <Body AngularDamping="0.1" BlocksLight="true" BlocksSound="false" BuoyancyDensityMul="1" CanAttachCharacter="false" CollideCharacter="true" CollideNonCharacter="true" ContinuousCollision="true" HasGravity="true" ID="10" LinearDamping="0.1" Mass="0" Material="Wood Robust" MaxAngularSpeed="20" MaxLinearSpeed="20" ModStamp="23/0/2014 11:38:55" Name="Body_1" PushedByCharacterGravity="false" Rotation="0 0 0" Scale="1 1 1" UseSurfaceEffects="true" Volatile="false" WorldPos="-0.078774 1.25066 -0.304951">
+                <Children>
+                    <Child ID="0" />
+                </Children>
+                <Shape ID="7" />
+                <Shape ID="6" />
+                <Shape ID="8" />
+                <Shape ID="1" />
+                <Shape ID="9" />
+                <Shape ID="5" />
+                <Shape ID="4" />
+                <Shape ID="3" />
+                <Shape ID="2" />
+            </Body>
+        </Bodies>
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Prop_Rigid">
+        <Var Name="Health" Value="100" />
+        <Var Name="Toughness" Value="0" />
+        <Var Name="MaxInteractDistance" Value="0" />
+        <Var Name="EventTag" Value="" />
+        <Var Name="ShowHints" Value="true" />
+        <Var Name="LifeLength" Value="0" />
+        <Var Name="DissolveDuringLifeDecrease" Value="true" />
+        <Var Name="BlocksLineOfSight" Value="true" />
+        <Var Name="MainPhysicsBody" Value="" />
+        <Var Name="CustomScriptFile" Value="" />
+        <Var Name="CustomScriptClass" Value="" />
+        <Var Name="ShowMesh" Value="true" />
+        <Var Name="DissolveOnDestruction" Value="false" />
+        <Var Name="DissolveTime" Value="1.0" />
+        <Var Name="RandomizeAnimationStart" Value="true" />
+        <Var Name="EffectsOnSound" Value="" />
+        <Var Name="EffectsOffSound" Value="" />
+        <Var Name="EffectsOnTime" Value="0.2" />
+        <Var Name="EffectsOffTime" Value="0.2" />
+        <Var Name="StaticMoveCheckCollision" Value="false" />
+        <Var Name="StaticMoveStartSound" Value="" />
+        <Var Name="StaticMoveStopSound" Value="" />
+        <Var Name="StaticMoveLoopSound" Value="" />
+        <Var Name="BreakActive" Value="false" />
+        <Var Name="BreakOnlyOnMainBody" Value="false" />
+        <Var Name="BreakDestroyJoints" Value="false" />
+        <Var Name="BreakMinEnergy" Value="100" />
+        <Var Name="BreakEntity" Value="" />
+        <Var Name="BreakEntityAlignBody" Value="" />
+        <Var Name="BreakSound" Value="" />
+        <Var Name="BreakParticleSystem" Value="" />
+        <Var Name="BreakImpulse" Value="4" />
+    </UserDefinedVariables>
+</Entity>

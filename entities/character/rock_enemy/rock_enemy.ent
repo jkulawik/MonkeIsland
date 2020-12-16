@@ -1,0 +1,56 @@
+<Entity>
+    <ModelData>
+        <Entities />
+        <Mesh Filename="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.fbx">
+            <SubMesh ID="0" Name="Sphere" CreStamp="0" ModStamp="1606067288" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="528" Material="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.mat" Static="true" />
+        </Mesh>
+        <Bones>
+            <Bone ID="1" Name="Sphere" />
+            <Bone ID="2" Name="rock_joint_1" />
+            <Bone ID="3" Name="rock_joint_2" />
+        </Bones>
+        <Shapes />
+        <Bodies />
+        <Joints />
+        <Animations>
+            <Animation Name="roll" File="mods/MonkeIsland/entities/character/rock_enemy/animations/roll.fbx" Layer="Default" Speed="0.2" />
+        </Animations>
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="Agent_General">
+        <Var ObjectId="4294967295" Name="Note" Value="" />
+        <Var ObjectId="4294967295" Name="Health" Value="100" />
+        <Var ObjectId="4294967295" Name="Toughness" Value="0" />
+        <Var ObjectId="4294967295" Name="EventTag" Value="" />
+        <Var ObjectId="4294967295" Name="VoiceSourceBone" Value="" />
+        <Var ObjectId="4294967295" Name="CastShadows" Value="true" />
+        <Var ObjectId="4294967295" Name="EffectsOnTime" Value="1" />
+        <Var ObjectId="4294967295" Name="EffectsOffTime" Value="1" />
+        <Var ObjectId="4294967295" Name="RootMotionBone" Value="" />
+        <Var ObjectId="4294967295" Name="CutsceneEndAlignmentBone" Value="" />
+        <Var ObjectId="4294967295" Name="CharBodySize" Value="1 1 1" />
+        <Var ObjectId="4294967295" Name="MeshPositionOffset" Value="0 0.5 0" />
+        <Var ObjectId="4294967295" Name="MeshRotationOffset" Value="0 0 0" />
+        <Var ObjectId="4294967295" Name="MeshScaleOffset" Value="1 1 1" />
+        <Var ObjectId="4294967295" Name="CharBodyPosBone" Value="rock_joint_1" />
+        <Var ObjectId="4294967295" Name="CharBodyBoneIsFeet" Value="false" />
+        <Var ObjectId="4294967295" Name="CharBodyBoneYOffset" Value="0" />
+        <Var ObjectId="4294967295" Name="CharBodyMaterial" Value="" />
+        <Var ObjectId="4294967295" Name="CustomScriptFile" Value="agent_rock.hps" />
+        <Var ObjectId="4294967295" Name="CustomScriptClass" Value="cScrAgentRock" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_WalkAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_RunAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_BackwardAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraAnim" Value="" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraMinWait" Value="4" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraMaxWait" Value="10" />
+        <Var ObjectId="4294967295" Name="CharMover_IdleExtraPauseProcedural" Value="true" />
+        <Var ObjectId="4294967295" Name="HeadTracker_Bones" Value="" />
+        <Var ObjectId="4294967295" Name="HeadTracker_BoneMuls" Value="" />
+        <Var ObjectId="4294967295" Name="HeadTracker_ChestBone" Value="" />
+        <Var ObjectId="4294967295" Name="HeadTracker_SpeedMul" Value="1" />
+        <Var ObjectId="4294967295" Name="HeadTracker_MaxSpeed" Value="1" />
+        <Var ObjectId="4294967295" Name="HeadTracker_MaxAngle" Value="45" />
+    </UserDefinedVariables>
+</Entity>

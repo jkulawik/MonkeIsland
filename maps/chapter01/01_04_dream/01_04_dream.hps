@@ -1,0 +1,281 @@
+#include "interfaces/Map_Interface.hps"
+#include "base/Inputhandler_Types.hps"
+
+#include "helpers/helper_map.hps"
+#include "helpers/helper_agent.hps"
+#include "helpers/helper_props.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_sequences.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
+
+//--------------------------------------------------
+ 
+/*Place any global values here. These must be const variables as they will not be saved*/
+/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+ 
+//--------------------------------------------------
+ 
+class cScrMap : iScrMap
+{
+	//--------------------------------------------
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	////////////////////////////
+	// Set up map environment
+	void Setup()
+	{
+		GetBase().SetDisplayNameEntry("01-04-dream");
+		
+		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(0)));
+		Effect_DoF_Start(5, 200, 1.5f, 1.0f);
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		FearHandler_SetActive(false);
+		
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(true);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		
+		SetupEntities();
+		
+		if(!cLux_ScriptDebugOn())
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{	
+		Player_SetCanDie(false);
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(false);
+		Player_SetNightVisionBrightness(0.5f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetGravity(cVector3f(0, -5.5f, 0));
+		
+		Pregnancy_SetBarksActive(false);
+		
+		cLux_ClearAllMapSaveData();		
+		Game_AutoSave();
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// The player has died.
+	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// To get when player makes input (mostly used for debug)
+	void OnAction(int alAction, bool abPressed) 
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+			
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// This only used for pure debug purposes when info needs to printed.
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afY)
+	{
+		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
+		return afY;
+	}
+ 
+	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		mfSkyboxRotationAdd += afTimeStep * mfSkyboxRotationSpeedMul;
+		
+		if(mfSkyboxRotationAdd >= 360.0f)
+		{
+			mfSkyboxRotationAdd = 0.0f;
+		}
+				
+		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(mfSkyboxRotationAdd)));
+	}
+	
+	//-------------------------------------------------------
+ 
+	//} END MAIN CALLBACKS
+ 
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN FUNCTIONS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+	
+	float mfSkyboxRotationAdd = 0.0f;
+	float mfSkyboxRotationSpeedMul = 1.0f;
+	
+	//-------------------------------------------------------
+ 
+	void SetupEntities()
+	{
+		Prop_RotateToSpeed("banana_throw_2", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
+		Prop_RotateToSpeed("banana_throw_4", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
+		
+		Prop_RotateToSpeed("banana_1", 1.0f, 1.0f, true, "");
+		Prop_RotateToSpeed("banana_2", -1.0f, -1.0f, true, "");
+		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");
+		Prop_RotateToSpeed("banana_4", 1.3f, 1.3f, true, "");
+		
+		Entity_SetVarFloat("Teleporter_1", "FogStart", 450.0f);
+		Entity_SetVarFloat("Teleporter_2", "FogStart", 300.0f);
+		
+		Entity_SetVarFloat("Teleporter_1", "SkyboxSpeed", 3.0f);
+		Entity_SetVarFloat("Teleporter_2", "SkyboxSpeed", 10.0f);
+		
+		Entity_SetVarString("Teleporter_1", "Billboard", "Billboard_1");
+		Entity_SetVarString("Teleporter_2", "Billboard", "Billboard_2");
+		
+		Entity_SetVarString("Teleporter_1", "FogArea", "FogArea_Hide_1");
+		Entity_SetVarString("Teleporter_1", "FogAreaToUnhide", "FogArea_Hide_2");
+				
+		FogArea_SetVisible("FogArea_Hide_1", false);
+		FogArea_SetVisible("FogArea_Hide_2", false);
+	}
+ 
+	//-------------------------------------------------------
+ 
+	 
+	bool TeleportPlayer(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Sound_CreateAtEntity("teleport", "level_entity_shared/portal/portal_passthrough", "player");
+		
+		Player_Teleport(Entity_GetVarString(asParent, ""));
+		
+		Map_SetFogProperties(Entity_GetVarFloat(asParent, "FogStart"), 600.0f, 1.0f, cColor(1,0.938,0.629,1), true);
+		
+		Billboard_SetVisible(Entity_GetVarString(asParent, "Billboard"), false);
+		FogArea_SetVisible(Entity_GetVarString(asParent, "FogArea"), true);
+		
+		mfSkyboxRotationSpeedMul = Entity_GetVarFloat(asParent, "SkyboxSpeed");
+		
+		return true;
+	}
+	
+	bool DeathTeleport(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Player_Teleport(Entity_GetVarString(asParent, ""));
+		
+		return true;
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN FUNCTIONS
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 1 DREAM
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		 
+		//-------------------------------------------------------
+	 
+		/*Put any variables that are used by many events in Scene X here.*/
+	 
+		//-------------------------------------------------------
+
+	 
+		//-------------------------------------------------------
+		
+		//} END General	
+	 
+	//} END SCENE 1
+}

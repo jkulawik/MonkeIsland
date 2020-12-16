@@ -1,0 +1,790 @@
+#include "custom/props/Prop_Pickup.hps"
+#include "custom/player/PlayerState_Normal_Custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "helpers/helper_player.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "helpers/helper_modules.hps"
+
+//------------------------------------------------------------
+
+const float gfIgniteBrightness = 2.83f;
+const float gfRegularBrightness = 0.55f;
+
+const float gfRegularRadius = 12.f;
+const float gfMoveRadius = 7.5f;
+
+const eItemHandlerHand glMatchHand = eItemHandlerHand_Left;			// !!!!! Also UPDATE Inventory.cfg LeftHand flag
+const float gfInteractBurnTime = 2.f;								// When using a match, how much burn time is consumed
+const float gfBurnTimeMax = 20.f;									// Total burn time
+const float gfBurnWalkTimeMax = 6.f;								// Total walk-time before the match dies (regenerates after idling some time) 
+const float gfBurnRunTimeMax = 1.2f;								// Total run time before the match dies (doesn't reset. Ideally should reset after a cooldown timer)
+const float gfBurnCrouchFactor = 0.6f;								// Multiplier for crouching in order to extend burn time
+				
+const float gfBurnWalkTimeRegenWaitingTime = 1.5f;					// How long to wait, idle, before the walk-time Regen kicks in
+const float gfBurnMoveMarginMax = 0.7f;								// How how long you can walking before walk-time Regen kicks in (used to avoid resetting on micro movements)
+const float gfBurnWalkTimeRegenSpeed = 1.f;							// How fast the walk time will be Regened
+
+const float gfFlameHealthMax = 1.f;
+const float gfFlameHealthDepletionSpeed = 0.005f;
+        
+//------------------------------------------------------------
+
+enum eFlameState
+{
+    eFlameState_IgniteStart,
+    eFlameState_IgniteEnd,
+    eFlameState_Burn,
+    eFlameState_BurnWalk,
+    eFlameState_BurnRun,
+    eFlameState_Fade,
+    eFlameState_PutAwayDelay,
+    eFlameState_None
+}
+
+//------------------------------------------------------------
+
+enum eFlameType
+{
+	eFlameType_Default = 0,
+	eFlameType_Ignite = 0,
+	eFlameType_Dying,
+	
+	eFlameType_None = -1
+}
+
+//------------------------------------------------------------
+
+float[] gvFlameHealthValues =
+{
+	1.0f,
+	0.25f,	//eFlameType_Default
+	0		//eFlameType_Dying
+};
+
+//------------------------------------------------------------
+
+class cScrPropMatch : cScrPropPickup
+{
+    //------------------------------------------------------------
+	
+	void _Global_CopyFromItemEntity() override
+	{
+		
+	}
+    
+	//------------------------------------------------------------
+	
+	void _Global_OnItemTakenOut()
+	{
+		Sound_CreateAtEntity("Sound_Ignite","player/tools/lighter/lighter_ignite",mBaseObj.GetName());
+		mBaseObj.SetEffectsActive(true, true);
+		mBaseObj.GetMeshEntity().SetLiquidAmount(0);
+		mBaseObj.SetAnimationCallbackActive(true);
+        mlFlameState=eFlameState_IgniteStart;
+		
+		//////////////
+		// Play burn animation
+		int i = cMath_RandRectl(0,3);
+		msAnim = "match_burning_down_"+i;
+		
+		msHandAnimationOverride = "";
+		mfKillFlameSpeed = -1.0f;
+		
+		cMeshEntity@ pMeshEntity = mBaseObj.GetMeshEntity();
+		cAnimationState@ pAnim = pMeshEntity.GetAnimationStateFromName(msAnim);
+		pMeshEntity.PlayName(msAnim, false, true);
+		pAnim.SetSpeed(0);
+		
+		iLight@ pFlameSupportLight = mBaseObj.GetLightFromName("Light_flom");
+		mfSupportLightBaseRadius = pFlameSupportLight.GetRadius();
+		
+		mvOldCamRot = GetPlayerCamRot();
+		EnableFlame();
+		Item_RemoveFromInventory(ItemType_GetFirstInInventory("Matchbook"));
+		
+		cMeshEntity@ pMeshEnt = mBaseObj.GetMeshEntity();
+		if (pMeshEnt !is null)
+		{
+			pMeshEnt.SetRenderFlagBit(eRenderableFlag_VisibleInReflection, false);
+			pMeshEnt.SetRenderFlagBit(eRenderableFlag_VisibleInNonReflection, true);
+			pMeshEnt.SetRenderFlagBit(eRenderableFlag_ShadowCaster, true);
+		}
+	}
+	
+	//------------------------------------------------------------
+    
+    void _Global_OnItemStartPutAway()
+	{
+		mbPutAwayStarted = true;
+		mfKillFlameSpeed = 1.5f;
+        cScript_RunGlobalFunc("LuxPlayer","","_Global_LanternOff");
+		
+		if (Player_GetUnderwater())
+			mfKillFlameSpeed = 30.0f;
+	}
+    
+	//------------------------------------------------------------
+	
+	void _Global_OnItemPutAway()
+	{
+        cMeshEntity@ pMeshEntity = mBaseObj.GetMeshEntity();
+		cAnimationState@ pAnim = pMeshEntity.GetAnimationStateFromName(msAnim);
+		pAnim.SetActive(false);
+		
+		DisableFlame(false);
+		
+		cParticleSystem@ pSmokeParticle=mBaseObj.GetParticleSystem(2);
+        if (pSmokeParticle !is null)
+		{
+			cLux_AddDebugMessage("Kill PS");
+			pSmokeParticle.SetActive(false);
+			pSmokeParticle.SetVisible(false);
+		}
+		
+		Reset();
+	}
+	
+	//-------------------------------------------------------
+	
+	void Reset()
+	{
+		mfBurningTime = 0;
+		mfBurningRunTime = 0;
+		mfBurningWalkTime = 0;
+		mfBurningResetTime = 0;
+		mfBurnMoveMargin = 0;
+		mbBurnResetTimeActive = false;
+		mbBurnMoveMarginActive = false;
+		mbBurnTimeRegenActive = false;
+		mlFlameState = eFlameState_None;
+		mlFlameType = eFlameType_None;
+		mbPutAwayStarted = false;
+		mbExtinguishStarted = false;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void OnAfterAnimationUpdate(cMeshEntity@ apFunctions, float afTimeStep)
+	{
+		cBoneState@ pBone = mBaseObj.GetMeshEntity().GetBoneStateFromName("j_flame");
+		cMatrixf mtxOld = pBone.GetWorldMatrix();
+		cMatrixf mtxNew = cLux_GetPlayer().GetCamera().GetViewMatrix().GetRotation().GetTranspose();
+		
+		// Apply sway
+		mtxNew = cMath_MatrixMul(mtxNew, cMath_MatrixRotateZ(mfFlameRot));
+		
+		// Scale correctly
+		mtxNew.SetRight(mtxNew.GetRight() * mtxOld.GetRight().Length());
+		mtxNew.SetUp(mtxNew.GetUp() * mtxOld.GetUp().Length());
+		mtxNew.SetForward(mtxNew.GetForward() * mtxOld.GetForward().Length());
+		
+		mtxNew.SetTranslation(pBone.GetWorldPosition());
+		
+		pBone.SetWorldMatrix(mtxNew);
+	}
+    
+    //------------------------------------------------------------
+    
+    void OnUpdate(float afTimeStep)
+	{
+		cScrPropPickup::OnUpdate(afTimeStep);
+		
+		//cLux_AddDebugMessage("TIMER: "+mfBurningTime+" - Health: "+mfFlameHealth);
+		
+        if (mlFlameState==eFlameState_None) return;
+		
+		mbPlayerIsMoving = Player_GetSpeed() > 1.f;
+		float fFlameTypeFadeSpeed = 1.f;
+		
+		/////////////////////
+        // Player walking or running
+        if (mbPlayerIsMoving)
+        {
+            bool bIsRunning = Player_GetRunning();
+            
+			///////////////////////////////
+			// Light Brightness and Radius
+			mfLightMoveFadeSpeed = 4.f * afTimeStep;
+            mfLightMoveMulTar = bIsRunning ? 0.5f : 1.f;
+			mfLightRadiusTar = gfMoveRadius;
+            
+            //////////////////////////////
+            // Flame State (Speed-based)
+            int lDesiredFlameState = bIsRunning ? eFlameState_BurnRun : eFlameState_BurnWalk;
+            if (IsBurningOut() && mlFlameState != lDesiredFlameState)
+                mlFlameState = lDesiredFlameState;
+        }
+        /////////////
+        // Stationary
+        else
+        {
+			///////////////////////////////
+			// Light Brightness and Radius
+			mfLightMoveFadeSpeed = 8.f * afTimeStep;
+			mfLightMoveMulTar = 1.5f;
+			mfLightRadiusTar = gfRegularRadius;
+            
+            //////////////////////////////
+            // Flame State
+            if (IsBurningOut() && mlFlameState != eFlameState_Burn)
+                mlFlameState=eFlameState_Burn;
+        }
+		
+		//////////////////////////////
+		// Brightness and Radius
+		mfLightMoveMul = cMath_IncreaseTo(mfLightMoveMul, mfLightMoveFadeSpeed, mfLightMoveMulTar);
+		mfLightRadius = cMath_IncreaseTo(mfLightRadius, mfLightMoveFadeSpeed, mfLightRadiusTar);
+
+        /////////////////
+        // Burning States
+        switch(mlFlameState)
+        {
+            //////////////////
+            // Ignition States
+            case eFlameState_IgniteStart:
+                //cLux_AddDebugMessage("Match burning state: Ignite Start");
+				mlFlameType = eFlameType_Ignite;
+				mfFlameTypeFadeSpeed = 8.f;
+                mfBaseBrightness = cMath_IncreaseTo(mfBaseBrightness, mfLightStateFadeSpeed * 5.f, gfIgniteBrightness);
+				
+                if (mfBaseBrightness>=gfIgniteBrightness)
+                    mlFlameState=eFlameState_IgniteEnd;
+                break;
+                
+            case eFlameState_IgniteEnd:
+                //cLux_AddDebugMessage("Match burning state: Ignite End");
+                mfBaseBrightness = cMath_IncreaseTo(mfBaseBrightness, mfLightStateFadeSpeed, gfRegularBrightness);
+				
+                if (mfBaseBrightness==gfRegularBrightness)
+                    mlFlameState = eFlameState_Burn;
+                break;
+			
+            /////////////////
+            // Burning States
+            case eFlameState_Burn:
+				if (mlFlameStatePrev == eFlameState_BurnWalk || mlFlameStatePrev == eFlameState_BurnRun)
+				{
+					mfBurnMoveMargin = 0.f;
+					mbBurnMoveMarginActive = false;
+					mbBurnResetTimeActive = true;
+				}
+				break;
+				
+			case eFlameState_BurnWalk:
+			case eFlameState_BurnRun:
+				if (mlFlameState != mlFlameStatePrev)
+					mbBurnMoveMarginActive = true;
+                break;
+            
+            /////////////
+            // Burned out
+            case eFlameState_Fade:
+				//cLux_AddDebugMessage("Match burning state: Fade");
+				
+				///////////
+				// Fade out
+				//mlFlameType = eFlameType_Fade;
+				mfFlameTypeFadeSpeed = 0.5f;
+				mfBaseBrightness = cMath_IncreaseTo(mfBaseBrightness, afTimeStep, 0.f);
+                
+				///////////
+				// Put Off
+                if (mfBaseBrightness <= 0.f)
+                {
+					mlFlameType = eFlameType_None;
+					mfFlameTypeFadeSpeed = 1.f;
+					
+					/////////////////
+					// Smoke particle, removed since it didn't look good enough
+//					if (Player_GetUnderwater()==false)
+//					{
+//						cWorld@ pCurrentWorld = cLux_GetCurrentMap().GetWorld();
+//						cParticleSystem@ pSmokeFx = pCurrentWorld.CreateParticleSystem("smoke_fx_"+mBaseObj.GetID(), "match_flame_fade_smoke", cVector3f(1), true, false);
+//						cNode3D@ pSocket = mBaseObj.GetMeshEntity().GetSocket("flame_socket");
+//						if (pSmokeFx!=null && pSocket!=null)
+//							pSmokeFx.SetPosition(pSocket.GetWorldPosition());
+//					}
+						
+					mfPutAwayDelay = (mfBurningTime < gfBurnTimeMax) ? 0.5f : 0;
+					mlFlameState = eFlameState_PutAwayDelay;
+                }
+                break;
+			case eFlameState_PutAwayDelay:
+				mfPutAwayDelay -= afTimeStep;
+				if (mfPutAwayDelay <= 0 && !mbPutAwayStarted)
+                {
+					if (mfBurningTime < gfBurnTimeMax)
+						msHandAnimationOverride = "tool_match_holster_fade";
+					Item_PutAway(glMatchHand);
+                }
+				break;
+        }
+		
+		
+		
+		/////////////////
+		// Set anim speed
+		cMeshEntity@ pMeshEntity = mBaseObj.GetMeshEntity();
+		cAnimationState@ pAnim = pMeshEntity.GetAnimationStateFromName(msAnim);
+		
+		//////////////////////
+		// Billboard
+		FlameBillboard_DoBlending(afTimeStep);
+		FlameBillboard_Health(afTimeStep);
+		FlameBillboard_FadeTo(mlFlameType, mfFlameTypeFadeSpeed);
+		
+		float fRelPos = (mfBurningTime/gfBurnTimeMax)*0.9; //Don't play anim all the way as it looks weird near Tasi's fingers
+		pAnim.SetRelativeTimePosition(fRelPos); 
+		pMeshEntity.SetLiquidAmount(fRelPos*0.475f); // Using magic number to better sync the trickle effect to the flame.
+			
+		/////////////////
+		// Set Brightness
+		float fWindMul = DoWindFlicker(afTimeStep);
+		float fFinalBrightness = mfBaseBrightness * (fWindMul * mfLightMoveMul) * cMath_Min((mfFlameHealth+0.2f)*10.0f, 1.0f); //Keep flame strong until the last bit of flame health
+			
+		//cLux_AddDebugMessage("BRIGHT: "+cMath_Min(mfFlameHealth*10.0f, 1.0f)+" HEALTH"+mfFlameHealth);
+		
+		iLight@ pMainLight = mBaseObj.GetLightFromName("Light_Main");		
+		if (pMainLight !is null)
+		{
+			pMainLight.SetBrightness(fFinalBrightness);
+			pMainLight.SetRadius(mfLightRadius);
+			pMainLight.SetFlicker(cColor(0.965,0.808,0.498),mfLightRadius-0.5f,0.01f,0.2f,"","",0.01f,0.1f,"","",true,0.01f,0.1f,0.02f,0.1f);
+		}
+		
+		iLight@ pFlameSupportLight = mBaseObj.GetLightFromName("Light_flom");
+		
+		if (pFlameSupportLight !is null)
+		{
+			pFlameSupportLight.SetBrightness(fFinalBrightness);
+			pFlameSupportLight.SetRadius(cMath_Min(mfLightRadius,mfSupportLightBaseRadius));
+			//pFlameSupportLight.SetFlicker(cColor(0.965,0.808,0.498),mfLightRadius-0.5f,0.01f,0.2f,"","",0.01f,0.1f,"","",true,0.01f,0.1f,0.02f,0.1f);
+		}
+		
+		iLight@ pFlameLight = mBaseObj.GetLightFromName("Light_Flame");
+		
+		
+		if (pFlameLight !is null)
+		{
+			pFlameLight.SetBrightness(fFinalBrightness);
+		}
+		
+		// Fade out billboard towards end of lifetime
+		if (mlCurrBillboardIndex >= 0 && !mbFlameBlending)
+		{
+			float fBillboardBrightness = mfFlameHealth/gvFlameHealthValues[gvFlameHealthValues.length()-2];
+			mBaseObj.GetBillboard(mlCurrBillboardIndex).SetBrightness(cMath_Min(fBillboardBrightness, 1.0f));
+		}
+		
+		///////////////////////////
+		// Match Health Consumption
+		Burn(afTimeStep);
+		
+		//////////////////
+		// Update lit flag
+		bool bLit = fFinalBrightness > 0.f;
+		if (bLit == false && mbPrevLit) 
+			cScript_RunGlobalFunc("LuxPlayer","","_Global_LanternOff");
+		else if (bLit && mbPrevLit == false)
+			cScript_RunGlobalFunc("LuxPlayer","","_Global_LanternOn");
+		mbPrevLit = bLit;
+		
+		//////////////////
+		// Hints
+		if (mbPlayerIsMoving && mlFlameState == eFlameState_Fade && mlFlameStatePrev != eFlameState_Fade)
+			Hint_ShowHint_Hold("Hints", "HintMatchMove", false, 1.5f, true, 10.f);
+		
+		mlFlameStatePrev = mlFlameState;
+    }
+	
+	//------------------------------------------------------- 
+	
+	void FlameBillboard_DoBlending(float afTimeStep)
+	{
+		/////////////////////////////////
+		// Blend between flame billboards
+		if (mbFlameBlending)
+		{
+			float fFadeTime = mfBillboardBlendSpeed * afTimeStep;
+			if (mlCurrBillboardIndex>=0)
+			{
+				cBillboard@ pNextBillboard = mBaseObj.GetBillboard(mlCurrBillboardIndex);
+				if (pNextBillboard!=null)
+				{
+					mfCurrBillboardMul = cMath_Min(mfCurrBillboardMul + fFadeTime, 1.f);
+					pNextBillboard.SetBrightness(mfCurrBillboardMul);
+				}
+			}
+			
+			mfPrevBillboardMul = cMath_Max(mfPrevBillboardMul - fFadeTime, 0.f);
+			for (int i=0; i<mBaseObj.GetBillboardNum(); i++)
+			{
+				if (mlCurrBillboardIndex>=0 && i==mlCurrBillboardIndex) continue;
+				
+				cBillboard@ pOtherBillboard = mBaseObj.GetBillboard(i);
+				if (pOtherBillboard==null || pOtherBillboard.GetBrightness()<=0) continue;
+				
+				pOtherBillboard.SetBrightness(mfPrevBillboardMul);
+			}
+			
+			if (mfPrevBillboardMul<=0 && mfCurrBillboardMul>=1)
+				mbFlameBlending = false;
+		}
+	}
+	
+	//-------------------------------------------------------
+	
+	float DoWindFlicker(float afTimeStep)
+	{
+		float fWindFlickerMul = mbPlayerIsMoving ? 0.5f : 1.f;
+        if (mlLightFlickerState == 1)
+        {
+            mfFlickerTimer -= afTimeStep;
+            if (mfFlickerTimer <= 0.f)
+            {
+                mfFlickerTimer = cMath_RandRectf(0.6f, 0.9f) * fWindFlickerMul;
+                mfFlickerTarget = cMath_RandRectf(0.6f, 0.9f) * fWindFlickerMul;
+				mlLightFlickerState = -1;
+            }
+            mfFlickerMul = cMath_IncreaseTo(mfFlickerMul, 1.2f * afTimeStep / mfFlickerTarget, 1.0f);
+        }
+        else
+        {
+            mfFlickerMul = cMath_IncreaseTo(mfFlickerMul, 1.2f * afTimeStep / mfFlickerTarget, mfFlickerTarget);
+			
+            if (mfFlickerMul == mfFlickerTarget)
+                mlLightFlickerState = 1;
+        }
+		
+		return mfFlickerMul;
+	}
+	
+	//-------------------------------------------------------
+	
+	void _Global_GetHand()
+	{
+		cScript_SetGlobalReturnInt(glMatchHand);
+	}
+    
+    //-------------------------------------------------------
+	
+	tString msHandAnimationOverride = "";
+	void _Global_GetAnimationNameSpecific() override
+	{
+		if (Player_GetUnderwater())
+		{
+			cScript_SetGlobalReturnString("tool_match_holster_fade");
+			return;
+		}
+		cScript_SetGlobalReturnString(msHandAnimationOverride);
+	}
+    
+    //-------------------------------------------------------
+	
+	bool CanBurn()
+	{
+		return ( Sketchbook_IsOpen() == false && 
+				Player_GetCurrentStateName() != "State_Interact_Read" && 
+				Player_GetCurrentStateName() != "State_ReadMemoryCylinder" && 
+				Sketchbook_IsFlashbackActive(true)==false ); 
+	}
+	
+	//------------------------------------------------------- 
+	
+    //void OnPostUpdate(float afTimeStep){}
+	
+	int mlFlameShakeState = 0;
+	int mlFlameShakeSign = 0;
+	bool mbFlameShakeActive = false;
+	float mfKillFlameSpeed = -1.0f;
+	float mlFlameShakeTimeMax = 0.6f;
+	float mlFlameShakeTime = 0;
+		
+	void FlameBillboard_Health(float afTimeStep)
+	{
+		if (CanBurn() == false)	return;
+			
+		//////////////////////////////
+		// Camera movement and shake
+		DoMatchMovement(afTimeStep);
+		
+		if ((IsBurningOut() || (mfKillFlameSpeed > 0)) && mfFlameHealth > 0)
+		{
+			if (mfKillFlameSpeed > 0)
+			{
+				mfFlameHealth -= mfKillFlameSpeed*afTimeStep;
+			}
+			else if (mfBurningTime >= gfBurnTimeMax-3)
+			{
+				mfFlameHealth -= 0.225f*afTimeStep;
+			}
+			else
+			{
+				if (mlFlameState == eFlameState_BurnWalk)
+				{
+					float fCrouchMul = Player_GetCrouching() ? gfBurnCrouchFactor : 1.0f;
+					mfFlameHealth -= 1/gfBurnWalkTimeMax*fCrouchMul*afTimeStep;
+				}
+				else if (mlFlameState == eFlameState_BurnRun)
+					mfFlameHealth -= 1/gfBurnRunTimeMax*afTimeStep;
+				else
+					mfFlameHealth = cMath_Clamp(mfFlameHealth+afTimeStep*0.6f,0,gfFlameHealthMax);
+			}
+		}
+		else
+		{
+			// Hack used for small delay in light fade
+			mfFlameHealth -= 1/gfBurnWalkTimeMax*3.5f*afTimeStep;
+		}
+		
+		// Determine which flame billboard to use
+		for (int i = 1; i < gvFlameHealthValues.length(); i++)
+		{
+			float fValue = gvFlameHealthValues[i];
+			if (mfFlameHealth >= fValue)
+			{
+				mlFlameType = (i-1);
+				break;
+			}
+		}		
+		
+		// Resize flame based on health
+		if (mlFlameType>=0)
+		{
+			cBillboard@ pCurrBillboard = mBaseObj.GetBillboard(mlFlameType);
+			if (pCurrBillboard !is null)
+			{
+				pCurrBillboard.SetSize(cVector2f(0.06f, 0.02f+0.14f*mfFlameHealth));
+			}
+		}
+		
+		if (mfFlameHealth <= 0 && mlFlameState != eFlameState_PutAwayDelay)
+		{
+			if (mbExtinguishStarted == false)
+			{
+				mbExtinguishStarted = true;
+				Sound_CreateAtEntity("ExtinguishMatch", "player/tools/match/match_extinguish", mBaseObj.GetName());
+			}
+			
+			mlFlameState = eFlameState_Fade;
+		}
+	}
+	
+	//-------------------------------------------------------
+	
+	void DoMatchMovement(float afTimeStep)
+	{
+		////////////////////////////
+		// Camera data used for billboards
+		cVector3f vCurrCamRot = GetPlayerCamRot();
+		float fVel = (vCurrCamRot-mvOldCamRot).Length();
+		float fXVel = (vCurrCamRot.x - mvOldCamRot.x)/afTimeStep;
+		mfFlameVel = cMath_IncreaseTo(mfFlameVel, afTimeStep*cMath_Abs(fXVel-mfFlameVel)*4.0f, fXVel);
+		
+		mfFlameRot = cMath_Easing(eEasing_CubicInOut, -mfFlameVel*0.2f+0.5f, -0.5f, 0.5f);
+		mfFlameRot = cMath_Clamp(mfFlameRot, -0.5f, 0.5f);
+		
+		float fNoise = cGenerate_GetNoisePerlin1D(cEngine_GetGameTime()*(fVel*0.0075f))*0.25f;
+		mfFlameRot += fNoise;
+		
+		mvOldCamRot = vCurrCamRot;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void Burn(float afTimeStep)
+	{
+		if (CanBurn() == false)	return;
+		if (mlFlameState == eFlameState_PutAwayDelay) return;
+		
+		//cLux_AddDebugMessage("Burn time: "+mfBurningTime+" - Walk time: "+mfBurningWalkTime+" - Run time: "+mfBurningRunTime+" - Reset time: "+mfBurningResetTime+" - Regen Time: "+mfBurnMoveMargin);
+		//cLux_AddDebugMessage("Walk time: "+mfBurningWalkTime+" - Reset time: "+mfBurningResetTime+" - Regen active: "+mbBurnTimeRegenActive+" - Move Margin: "+mfBurnMoveMargin);
+		
+		if (mfBurnInteractTime > 0)
+		{
+			float fToAdd = cMath_Min(afTimeStep*3.0f, mfBurnInteractTime);
+			mfBurnInteractTime -= fToAdd;
+			mfBurningTime += fToAdd;
+		}
+		
+		mfBurningTime += afTimeStep;
+
+		//////////////////////////////
+		// Walking and Running Timers
+		if (mlFlameState == eFlameState_BurnWalk)
+		{
+			float fCrouchMul = Player_GetCrouching() ? gfBurnCrouchFactor : 1.0f;
+			mfBurningWalkTime += afTimeStep*fCrouchMul;
+		}
+		else if (mlFlameState == eFlameState_BurnRun)
+			mfBurningRunTime += afTimeStep;
+		
+		/////////
+		// Match fades state when timers run out
+		if (mfBurningTime>=gfBurnTimeMax)
+		{
+			Item_PutAway(glMatchHand);
+		}
+	}
+	
+	//------------------------------------------------------- 
+	
+	void _Global_IsBurnt()
+	{
+		cScript_SetGlobalReturnBool(IsBurnt());
+	}
+	
+	//------------------------------------------------------- 
+	
+	bool IsBurnt()
+	{
+		return mfBurningTime >= gfBurnTimeMax;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void _Global_IncreaseBurnTime()
+	{
+		IncreaseBurnTime();
+	}
+	
+	//------------------------------------------------------- 
+	
+	void IncreaseBurnTime()
+	{
+		mfBurnInteractTime = gfInteractBurnTime;
+	}
+    
+    //------------------------------------------------------------
+	
+	void FlameBillboard_FadeTo(const int alNextBillboardInd, const float afSpeed=1.f)
+	{
+		//cLux_AddDebugMessage("FLAME: "+alNextBillboardInd+" CURR: "+mlCurrBillboardIndex);
+		if (mlCurrBillboardIndex==alNextBillboardInd) return;
+		if (mbFlameBlending) return;
+		
+		mlCurrBillboardIndex = alNextBillboardInd;
+		mfPrevBillboardMul = 1.f;
+		mfCurrBillboardMul = 0.f;
+		mfBillboardBlendSpeed = afSpeed;
+		mbFlameBlending = true;
+	}
+	
+	//------------------------------------------------------------
+	
+	void DisableFlame(bool abSetInactive = false)
+	{
+		for (int i=0; i<mBaseObj.GetBillboardNum(); i++)
+		{
+			cBillboard@ pCurrBillboard = mBaseObj.GetBillboard(i);
+			if (pCurrBillboard==null) continue;
+			
+			if (abSetInactive)
+			{
+				pCurrBillboard.SetActive(false);
+				pCurrBillboard.SetVisible(false);
+				continue;
+			}
+			
+			if (pCurrBillboard.GetBrightness()<=0) continue;
+			pCurrBillboard.SetBrightness(0);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void EnableFlame()
+	{
+		cBillboard@ pCurrBillboard = mBaseObj.GetBillboard(0);
+		if (pCurrBillboard==null) return;
+		
+		pCurrBillboard.SetActive(true);
+		pCurrBillboard.SetVisible(true);
+		pCurrBillboard.SetBrightness(1);
+	}
+	
+    //------------------------------------------------------------
+	
+	cVector3f GetPlayerCamRot()
+	{
+		cCamera@ pPlayerCamera = cLux_GetPlayer().GetCamera();
+		cVector3f vToReturn;
+		vToReturn.x = pPlayerCamera.GetYaw();
+		vToReturn.y = pPlayerCamera.GetRoll();
+		vToReturn.z = pPlayerCamera.GetPitch();
+		return vToReturn;
+	}
+	
+    //------------------------------------------------------------
+    
+    bool IsBurningOut()
+    {
+        return mlFlameState==eFlameState_Burn || mlFlameState==eFlameState_BurnWalk || mlFlameState==eFlameState_BurnRun;
+    }
+    
+    //------------------------------------------------------------
+    
+    /////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+    
+    //------------------------------------------------------------
+    
+    bool mbBurnedOut = false;
+	bool mbExtinguishStarted = false;
+	
+    float mfFlickerTarget = 1.f;
+    float mfFlickerMul = 1.f;
+    float mfFlickerTimer = 0.f;
+    
+	int mlLightFlickerState = 1;
+	
+	bool mbPlayerIsMoving = false;
+	
+	float mfBurnInteractTime = 0.f;
+    
+    float mfBurningTime = 0.f;
+    float mfBurningWalkTime = 0.f;
+    float mfBurningRunTime = 0.f;
+	float mfBurningResetTime = 0.f;
+	bool mbBurnResetTimeActive = false;
+	bool mbBurnTimeRegenActive = false;
+	bool mbBurnMoveMarginActive = false;
+	float mfBurnMoveMargin = 0.f;
+    
+    float mfBaseBrightness = 0.f;
+    float mfLightRadius = 3.f;
+    float mfLightMoveMul = 1.f;
+	
+	float mfSupportLightBaseRadius = 1.f;
+	
+	float mfLightMoveMulTar = 1.f;
+	float mfLightRadiusTar = 1.f;
+	float mfLightMoveFadeSpeed = 1.f;
+	float mfLightStateFadeSpeed = 1.f;
+    
+    int mlFlameState = eFlameState_None;
+	int mlFlameStatePrev = eFlameState_None;
+	int mlFlameType = eFlameType_Default;
+	float mfFlameTypeFadeSpeed = 1.f;
+    
+    bool mbPrevLit = false;
+	
+	float mfFlameHealth = gfFlameHealthMax;
+	
+	tString msAnim;
+	float mfAnimSpeed = 1;
+	
+	bool mbFlameBlending = false;
+	float mfPrevBillboardMul = 0.f;
+	float mfCurrBillboardMul = 0.f;
+	int mlCurrBillboardIndex = -1;
+	float mfBillboardBlendSpeed = 1.f;
+	
+	float mfFlameVel = 0;
+	cVector3f mvOldCamRot;
+	float mfFlameRot = 0;
+	
+	float mfPutAwayDelay = 0;
+	bool mbPutAwayStarted = false;
+}

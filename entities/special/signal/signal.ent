@@ -1,0 +1,68 @@
+<Entity>
+    <ModelData>
+        <Entities>
+            <Billboard ID="28" Name="Billboard_1" CreStamp="1606330888" ModStamp="1606331673" WorldPos="-0.168147 0.882945 0.313711" Rotation="0 4.71239 0" Scale="1 1 1" BillboardType="FixedAxis" MaterialFile="billboards/halo/star_simple.mat" IsHalo="false" BillboardSize="1 1" HaloSourceSize="0.3 0.3 0.3" BillboardOffset="0" BillboardColor="1 0.738281 0 1" Brightness="3" CulledByDistance="false" CulledByFog="true" ConnectLight="Light_Point_1" Static="false" RangeMinStart="-1" RangeMinEnd="-1" RangeMaxStart="-1" RangeMaxEnd="-1" />
+            <PointLight ID="29" Name="Light_Point_1" CreStamp="1606330997" ModStamp="1606332607" WorldPos="-0.422092 0.838659 0.326149" Rotation="0 0 0" Scale="1 1 1" CastShadows="false" ShadowResolution="High" ShadowsAffectStatic="true" ShadowsAffectDynamic="true" Radius="0" Gobo="" GoboType="Diffuse" GoboAnimMode="None" GoboAnimFrameTime="1" GoboAnimStartTime="0" DiffuseColor="1 1 1 1" FlickerActive="true" FlickerOnMinLength="0.201" FlickerOnMaxLength="0.201" FlickerOnPS="" FlickerOnSound="" FlickerOffMinLength="0.201" FlickerOffMaxLength="0.201" FlickerOffPS="" FlickerOffSound="" FlickerOffColor="0 0 0 1" FlickerOffRadius="0" FlickerFade="false" FlickerOnFadeMinLength="0" FlickerOnFadeMaxLength="0" FlickerOffFadeMinLength="0" FlickerOffFadeMaxLength="0" CastDiffuseLight="true" CastSpecularLight="true" Brightness="1" Static="false" CulledByDistance="true" CulledByFog="true" FalloffPow="1" ConnectedLightMaskID="4294967295" />
+            <Billboard ID="33" Name="Billboard_2" CreStamp="1606331184" ModStamp="1606331325" WorldPos="-0.168 0.883 -0.279279" Rotation="0 4.71239 0" Scale="1 1 1" BillboardType="FixedAxis" MaterialFile="billboards/halo/star_simple.mat" IsHalo="false" BillboardSize="1 1" HaloSourceSize="0.3 0.3 0.3" BillboardOffset="0" BillboardColor="1 0.737255 0 1" Brightness="3" CulledByDistance="false" CulledByFog="true" ConnectLight="Light_Point_2" Static="false" RangeMinStart="-1" RangeMinEnd="-1" RangeMaxStart="-1" RangeMaxEnd="-1" />
+            <PointLight ID="34" Name="Light_Point_2" CreStamp="1606331295" ModStamp="1606331360" WorldPos="-0.433504 0.883 -0.135898" Rotation="0 0 0" Scale="1 1 1" CastShadows="false" ShadowResolution="High" ShadowsAffectStatic="true" ShadowsAffectDynamic="true" Radius="0" Gobo="" GoboType="Diffuse" GoboAnimMode="None" GoboAnimFrameTime="1" GoboAnimStartTime="0" DiffuseColor="1 1 1 1" FlickerActive="true" FlickerOnMinLength="0.2" FlickerOnMaxLength="0.2" FlickerOnPS="" FlickerOnSound="" FlickerOffMinLength="0.2" FlickerOffMaxLength="0.2" FlickerOffPS="" FlickerOffSound="" FlickerOffColor="0 0 0 1" FlickerOffRadius="0" FlickerFade="false" FlickerOnFadeMinLength="0" FlickerOnFadeMaxLength="0" FlickerOffFadeMinLength="0" FlickerOffFadeMaxLength="0" CastDiffuseLight="true" CastSpecularLight="true" Brightness="1" Static="false" CulledByDistance="true" CulledByFog="true" FalloffPow="1" ConnectedLightMaskID="4294967295" />
+        </Entities>
+        <Mesh Filename="entities/signal/signal.DAE">
+            <SubMesh ID="0" Name="Box002" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0314923 1.21777 -0.180197" Rotation="-0.785398 -0 0" Scale="0.358688 0.422389 0.46701" TriCount="12" Material="" Static="true" />
+            <SubMesh ID="1" Name="Tube002" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0611573 0.88803 -0.285024" Rotation="-1.5708 -0 1.5708" Scale="0.410712 0.410712 0.377795" TriCount="144" Material="" Static="true" />
+            <SubMesh ID="2" Name="Cylinder003" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0181041 0.885134 -0.284918" Rotation="0 -1.5708 0" Scale="1.14513 1.14513 0.061781" TriCount="216" Material="" Static="true" />
+            <SubMesh ID="3" Name="Cylinder002" CreStamp="0" ModStamp="1606330363" WorldPos="5.51455e-05 0.885134 -0.341028" Rotation="0 0 0" Scale="1 1 0.870178" TriCount="216" Material="" Static="true" />
+            <SubMesh ID="4" Name="Cylinder001" CreStamp="0" ModStamp="1606330363" WorldPos="5.51455e-05 0 0.00269725" Rotation="-1.5708 -0 0" Scale="1 1 1.97749" TriCount="216" Material="" Static="true" />
+            <SubMesh ID="5" Name="Tube001" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0611573 0.88803 0.311612" Rotation="-1.5708 -0 1.5708" Scale="0.410712 0.410712 0.377795" TriCount="144" Material="" Static="true" />
+            <SubMesh ID="6" Name="Cylinder004" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0181041 0.885134 0.312371" Rotation="0 -1.5708 0" Scale="1.14513 1.14513 0.061781" TriCount="216" Material="" Static="true" />
+            <SubMesh ID="7" Name="Sphere003" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0607616 0.88123 0.31251" Rotation="1.5708 -0 3.14159" Scale="0.058546 0.115757 0.115757" TriCount="1020" Material="" Static="true" />
+            <SubMesh ID="8" Name="Sphere002" CreStamp="0" ModStamp="1606330363" WorldPos="-0.0607616 0.88123 -0.284514" Rotation="1.5708 -0 3.14159" Scale="0.058546 0.115757 0.115757" TriCount="1020" Material="" Static="true" />
+        </Mesh>
+        <Bones />
+        <Shapes>
+            <Shape ID="9" Name="ShapeCylinder_1" CreStamp="1606330294" ModStamp="1606330393" WorldPos="0 0.75 0.00256543" Rotation="0 0 0" Scale="0.0192365 1.5 0" RelativeTranslation="0.0508105 -0.325405 -0.00795008" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="11" Name="ShapeCylinder_2" CreStamp="1606330436" ModStamp="1606330444" WorldPos="0 0.885687 0.00256543" Rotation="-1.5708 -0 0" Scale="0.0192365 0.694303 0" RelativeTranslation="0.0508105 -0.189718 -0.00795008" RelativeRotation="-1.5708 -0 0" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="12" Name="ShapeCylinder_3" CreStamp="1606330465" ModStamp="1606330529" WorldPos="-0.0418366 0.884081 0.313237" Rotation="1.49012e-07 -5.21435e-08 -1.5708" Scale="0.128004 0.0536425 0" RelativeTranslation="0.0089739 -0.191324 0.302722" RelativeRotation="1.49012e-07 -5.21435e-08 -1.5708" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="13" Name="ShapeCylinder_4" CreStamp="1606330531" ModStamp="1606330536" WorldPos="-0.0418366 0.884081 -0.281294" Rotation="1.49012e-07 -5.21435e-08 -1.5708" Scale="0.128004 0.0536425 0" RelativeTranslation="0.0089739 -0.191324 -0.291809" RelativeRotation="1.49012e-07 -5.21435e-08 -1.5708" RelativeScale="1 1 1" ShapeType="Cylinder" />
+            <Shape ID="14" Name="ShapeBox_1" CreStamp="1606330552" ModStamp="1606330589" WorldPos="-0.101621 0.914086 0.217204" Rotation="-1.21427 -0 0" Scale="0.0629786 0.0191509 0.0520337" RelativeTranslation="-0.0508105 -0.161319 0.206688" RelativeRotation="-1.21427 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="15" Name="ShapeBox_2" CreStamp="1606330590" ModStamp="1606330601" WorldPos="-0.101621 0.953253 0.243559" Rotation="-0.804125 -0 0" Scale="0.0629786 0.0191509 0.0520337" RelativeTranslation="-0.0508105 -0.122152 0.233043" RelativeRotation="-0.804125 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="16" Name="ShapeBox_3" CreStamp="1606330602" ModStamp="1606330622" WorldPos="-0.101621 0.9719 0.27186" Rotation="-0.319332 -0 0" Scale="0.0629786 0.0191509 0.0376937" RelativeTranslation="-0.0508105 -0.103505 0.261344" RelativeRotation="-0.319332 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="17" Name="ShapeBox_4" CreStamp="1606330626" ModStamp="1606330636" WorldPos="-0.101621 0.979674 0.313086" Rotation="0.0198956 -0 0" Scale="0.0629786 0.0191509 0.0529438" RelativeTranslation="-0.0508105 -0.095731 0.30257" RelativeRotation="0.0198956 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="18" Name="ShapeBox_5" CreStamp="1606330641" ModStamp="1606330651" WorldPos="-0.101621 0.963168 0.366736" Rotation="0.599015 -0 0" Scale="0.0629786 0.0191509 0.0529438" RelativeTranslation="-0.0508105 -0.112237 0.35622" RelativeRotation="0.599015 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="19" Name="ShapeBox_6" CreStamp="1606330652" ModStamp="1606330663" WorldPos="-0.101621 0.922912 0.399852" Rotation="1.11633 -0 0" Scale="0.0629786 0.0191509 0.069917" RelativeTranslation="-0.0508105 -0.152493 0.389336" RelativeRotation="1.11633 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="20" Name="ShapeBox_7" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.922912 -0.196172" Rotation="1.11633 -0 0" Scale="0.0629786 0.0191509 0.069917" RelativeTranslation="-0.0508105 -0.152493 -0.206688" RelativeRotation="1.11633 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="21" Name="ShapeBox_8" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.963168 -0.229289" Rotation="0.599015 -0 0" Scale="0.0629786 0.0191509 0.0529438" RelativeTranslation="-0.0508105 -0.112237 -0.239805" RelativeRotation="0.599015 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="22" Name="ShapeBox_9" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.979674 -0.282938" Rotation="0.0198956 -0 0" Scale="0.0629786 0.0191509 0.0529438" RelativeTranslation="-0.0508105 -0.095731 -0.293454" RelativeRotation="0.0198956 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="23" Name="ShapeBox_10" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.9719 -0.324164" Rotation="-0.319332 -0 0" Scale="0.0629786 0.0191509 0.0376937" RelativeTranslation="-0.0508105 -0.103505 -0.33468" RelativeRotation="-0.319332 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="24" Name="ShapeBox_11" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.953253 -0.352465" Rotation="-0.804125 -0 0" Scale="0.0629786 0.0191509 0.0520337" RelativeTranslation="-0.0508105 -0.122152 -0.362981" RelativeRotation="-0.804125 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="25" Name="ShapeBox_12" CreStamp="1606330673" ModStamp="1606330679" WorldPos="-0.101621 0.914086 -0.378821" Rotation="-1.21427 -0 0" Scale="0.0629786 0.0191509 0.0520337" RelativeTranslation="-0.0508105 -0.161319 -0.389336" RelativeRotation="-1.21427 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+            <Shape ID="26" Name="ShapeBox_13" CreStamp="1606330695" ModStamp="1606330778" WorldPos="-0.0309911 1.40081 0.000147149" Rotation="0.785398 -0 0" Scale="0.0280615 0.523131 0.533813" RelativeTranslation="0.0198194 0.325405 -0.0103684" RelativeRotation="0.785398 -0 0" RelativeScale="1 1 1" ShapeType="Box" />
+        </Shapes>
+        <Bodies>
+            <Body ID="27" Name="Body_1" CreStamp="0" ModStamp="1606330840" WorldPos="-0.0508105 1.07541 0.0105155" Rotation="0 0 0" Scale="1 1 1" Material="metal med" Mass="0" AngularDamping="0.5" LinearDamping="0.1" MaxAngularSpeed="20" MaxLinearSpeed="20" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="false" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="true" BlocksLight="true">
+                <Shape ID="9" />
+                <Shape ID="26" />
+                <Shape ID="14" />
+                <Shape ID="15" />
+                <Shape ID="16" />
+                <Shape ID="17" />
+                <Shape ID="18" />
+                <Shape ID="19" />
+                <Shape ID="12" />
+                <Shape ID="13" />
+                <Shape ID="25" />
+                <Shape ID="24" />
+                <Shape ID="23" />
+                <Shape ID="22" />
+                <Shape ID="21" />
+                <Shape ID="20" />
+                <Shape ID="11" />
+            </Body>
+        </Bodies>
+        <Joints />
+        <Animations />
+        <ProcAnimations />
+    </ModelData>
+    <UserDefinedVariables EntityType="StaticProp">
+        <Var ObjectId="4294967295" Name="ShowMesh" Value="true" />
+    </UserDefinedVariables>
+</Entity>

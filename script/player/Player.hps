@@ -48,7 +48,7 @@ const float gfSafePositionMaxBuffer = 5.0f;
 const float gfSmallFallDistance = 1.0f;
 const float gfMediumFallDistance = 3.5f;
 const float gfBigFallDistance = 6.0f;
-const float gfDeathFallDistance = 11.0f;
+const float gfDeathFallDistance = 10.0f;
 
 //------------------------------------------------------------
 
@@ -1247,6 +1247,20 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	
 	//------------------------------------------------------------
 	
+	void _Global_SetCanDie()
+	{
+		mbCanDie = cScript_GetGlobalArgBool(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void _Global_GetCanDie()
+	{
+		cScript_SetGlobalReturnBool(mbCanDie);
+	}
+	
+	//------------------------------------------------------------
+	
 	/////////////////////////////////////////
 	// CHARACTER CALLBACK
 	/////////////////////////////////////////
@@ -1389,14 +1403,15 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 			// Larger distances required if landing on sand
 			if (mbLandSofterOnSand && cScript_GetGlobalVarBool("PlayerOnSand"))
 				fFallDistance *= 0.7f;
-						
+			
 			if (fFallDistance > mfDeathFallDistance)
 			{
-				mBaseObj.GiveDamage(1.0f, 1, eDamageType_FallBig, 0, tID_Invalid, -1);
+				mBaseObj.GiveDamage(1.0f, 1, eDamageType_Death, 0.0f, tID_Invalid, -1);
 				
 				return;
 			}
-			else if (fFallDistance > mfBigFallDistance)								lFallType = 2;
+			
+			if (fFallDistance > mfBigFallDistance)								lFallType = 2;
 			else if (fFallDistance > mfMediumFallDistance)							lFallType = 1;
 			else if (fFallDistance > mfSmallFallDistance && mbFallJumped == false)	lFallType = 0;
 						
@@ -2220,6 +2235,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	bool mbLanternOn = false;
 	int mlHideSmellAreaCount = 0;
 	bool mbLeanDisabled = false;
+	bool mbCanDie = true;
 	
 	[nosave] array<tID> mvPlayerLights;
 	[nosave] array<tID> mvIgnoredLights;

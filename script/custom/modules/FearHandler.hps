@@ -54,7 +54,7 @@ tString gsFearSoundParam_FearSystemLoop_2 = "FearRate";
 tString gsFearSoundParam_FearSystemLoop_3 = "FearFocus";
 
 bool gbFearSound_Breathing_Active = true;
-tString gsFearSound_Breathing = "player/UI/fear_system/fear_breathing";
+tString gsFearSound_Breathing = "monke/Player/breaths/air_fear";
 tString gsFearSoundParam_Breathing_1 = "FearRate";
 tString gsFearSoundParam_Breathing_2 = "FearFocus";
 tString gsFearSoundParam_Breathing_3 = "FearCap";
@@ -81,7 +81,7 @@ const tString gsStruggleLoopSound = "player/UI/permafail/hands_loop";
 	
 const tString gsStruggleGradingTexture = "grading_struggle_bright";	
 
-bool gbFearSound_WhispersActive = true;
+bool gbFearSound_WhispersActive = false;
 array<tString> gvFearWhisperNames = {
 	"StartToSalim",				// eFearWhisperStage_StartToSalim,
 	"SalimToRadio",				// eFearWhisperStage_SalimToRadio,
@@ -5598,7 +5598,7 @@ class cScrFearHandler : iScrUserModule, iScrUserModule_Interface, iScrFearHandle
 	bool mbProgressToken = false;
 	int mlFearAreaAddedCount = 0;
 	float mfCracklingLevel = 0;
-	float mfFearTentaclesMul = 1.f;
+	float mfFearTentaclesMul = 0.f;
     
     bool mbSafeRoomBabyKickDone = false;
     float mfTimeSinceSafeRoomEnter = 0.f;

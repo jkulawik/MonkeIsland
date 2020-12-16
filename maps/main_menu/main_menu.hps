@@ -1,0 +1,142 @@
+#include "interfaces/Map_Interface.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_map.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_player.hps"
+#include "inputhandler_types.hps"
+#include "helpers/helper_imgui_options.hps"
+#include "custom/helpers/helper_menu.hps"
+
+//-----------------------------------------
+
+class cScrMap : iScrMap
+{
+
+	//-------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAIN CALLBACKS
+	/////////////////////////////////////////
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		//----DEBUG----//
+		if(cLux_ScriptDebugOn())
+		{
+		}
+		
+		PauseMenu_Enabled(false);
+	}
+
+	//-------------------------------------------------------
+
+	void Setup()
+	{
+		Effect_Fade_Out(0);
+	}
+	
+	void PreloadData()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{	
+		FearHandler_SetActive(false);
+		
+		//////////////
+		// Disable pause menu and show main menu instead
+		Player_Teleport("PlayerStartArea_1");
+		Player_SetGravityEnabled(false);
+		Player_ShowCrossHairIcons(false);
+		
+		Sound_FadeGlobalVolume(1.f, 0.f, eSoundEntryType_All);
+		
+		cLux_SetGamePaused(false, true, true, true);
+		cLux_GetGuiHandler().SetGameHudInputFocus(true);
+		
+		Music_PlayExt("A2_MenuTheme.ogg", true, 0.85f, 1.0f, 0.0f, 1.0f, eMusicPrio_BgAmb, true);
+		
+		Effect_Fade_In(5.0f);
+		
+		cConfigFile@ mpConfig = cLux_GetUserConfig();
+		if(mpConfig.GetBool("Main", "DoIntro", true))
+		{
+			CameraAnimation_Begin("CameraAnimation", "", false);
+		}
+		else
+		{
+			CameraAnimation_Begin("NoAnimCameraAnimation", "", false);
+			MainMenu_Show(true);
+		}
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+		Player_ShowCrossHairIcons(true);
+		Music_Stop(3.0f, eMusicPrio_BgAmb);
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+		}
+
+		return;
+	}
+	
+	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		Player_SetActive(false);
+	}
+	
+	//-------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//---------------------------------------------------------
+	
+	bool OnMenuCameraAnimationEnd(const tString &in asEntity, int alDirection)
+	{
+		MainMenu_Show(true);
+		
+		return true;
+	}
+	
+	//---------------------------------------------------------
+
+	/////////////////////////////////////////
+	// MAIN MENU GUI
+	/////////////////////////////////////////
+	
+	//---------------------------------------------------------
+
+	void OnGui(float afTimeStep)
+	{
+		// Rendering done in PauseMenu script
+	}
+
+	//------------------------------------------------------
+}

@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<VoiceData>
+ <Characters>
+  <Character ID="0" Name="Player" DisplayName="David" Actor="TiMan" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1" ReverbVolume="1" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+ </Characters>
+ <Effects />
+ <Scenes>
+  <Scene ID="0" Name="Main" FocusPrio="2" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.8" />
+ </Scenes>
+ <Sections>
+  <Section Name="Main" />
+ </Sections>
+ <Subjects>
+  <Subject Name="WakeUp" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="Ugh... My Head. Colonel? Are you here?" FileName="main_wakeup_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="Motivated" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="I cannot let down my comrades, I will fight for the death even if I die." FileName="main_motivated_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="BridgeJumpComment" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="This gap is too big, but If I run fast and with enough distance, I can jump over the gap and reach the other side." FileName="main_bridgejumpcomment_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="Just like how colonel munshi taught me in military school" FileName="main_bridgejumpcomment_002_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="MyBack_1" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="Ugh... my back." FileName="main_myback_1_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="MyBack_2" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="My back!" FileName="main_myback_2_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="CaveFall" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="I hope there is some-" FileName="main_cavefall_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="FloorFall" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="ToTranslators" PlayOnce="True">
+    <Sound Text="Hopefully there won't be any-" FileName="main_floorfall_001_player_001" Timestamp="2020-12-06 11:07" />
+   </Line>
+  </Subject>
+  <Subject Name="MotherMary" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="Ah shit! Oh, Mother Mary, Oh..." FileName="main_mothermary_001_player_001" Timestamp="2020-12-09 10:11" />
+    <Sound Text="*Cries like a little bitch*" FileName="main_mothermary_001_player_002" Timestamp="2020-12-09 10:11" />
+   </Line>
+  </Subject>
+ </Subjects>
+</VoiceData>
