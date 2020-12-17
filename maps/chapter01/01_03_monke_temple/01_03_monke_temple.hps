@@ -608,6 +608,8 @@ class cScrMap : iScrMap
 			
 			if(Sequence_DoStepAndWait(2.5f))
 			{
+				Amulet_StopTracking();
+				
 				Item_Unequip(ItemType_GetFirstInInventory("CurseMedallion"));
 				
 				Sketchbook_Close();

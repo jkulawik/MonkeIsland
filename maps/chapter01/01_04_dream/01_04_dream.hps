@@ -213,17 +213,11 @@ class cScrMap : iScrMap
 		Prop_RotateToSpeed("banana_throw_2", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		Prop_RotateToSpeed("banana_throw_4", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		
-		Prop_RotateToSpeed("banana_1", 1.0f, 1.0f, true, "");
+/*		Prop_RotateToSpeed("banana_1", 1.0f, 1.0f, true, "");
 		Prop_RotateToSpeed("banana_2", -1.0f, -1.0f, true, "");
-		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");
+		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");*/
 		Prop_RotateToSpeed("banana_4", 1.3f, 1.3f, true, "");
 		Prop_RotateToSpeed("banana_5", -1.3f, -1.3f, true, "");
-		
-		for(int i = 1; i <= 7; i++)
-		{
-			Prop_RotateToSpeed("block_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_" + i);
-			Prop_RotateToSpeed("block_opposite_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_opposite_" + i);
-		}
 		
 		Entity_SetVarFloat("Teleporter_1", "FogStart", 450.0f);
 		Entity_SetVarFloat("Teleporter_2", "FogStart", 300.0f);
@@ -246,6 +240,20 @@ class cScrMap : iScrMap
 		FogArea_SetVisible("FogArea_Hide_2", false);
 	}
  
+	//-------------------------------------------------------
+	
+	bool BananaSplit(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Player_AddBodyForce(cVector3f_Forward * 30000, true);
+		
+		if(!Sound_Exists("Lol"))
+		{
+			Sound_CreateAtEntity("Lol", "monke/SFX/slippery", "Player");
+		}
+		
+		return true;
+	}
+	
 	//-------------------------------------------------------
 	
 	void Timer_PlankMovement(const tString&in asTimer)
@@ -308,13 +316,15 @@ class cScrMap : iScrMap
 		
 		mfSkyboxRotationSpeedMul = Entity_GetVarFloat(asParent, "SkyboxSpeed");
 		
-		Music_Play(Entity_GetVarString(asParent, "Music"), 0.85f, true, eMusicPrio_BgAmb);
+		Music_Play(Entity_GetVarString(asParent, "Music"), 0.7f, true, eMusicPrio_BgAmb);
 				
 		Visibility_SetAreaActive(Entity_GetVarString(asParent, "VisAreaToDisable"), false);
 		Visibility_SetAreaActive(Entity_GetVarString(asParent, "VisAreaToEnable"), true);
 			
 		return true;
 	}
+	
+	//-------------------------------------------------------
 	
 	bool DeathTeleport(const tString &in asParent, const tString &in asChild, int alState)
 	{
@@ -325,9 +335,27 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
 	
+	bool FinalPlatforming(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Entity_SetVarString("DeathTeleport_3", "", "Platforming_4");
+		
+		for(int i = 1; i <= 7; i++)
+		{
+			Prop_RotateToSpeed("block_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_" + i);
+			Prop_RotateToSpeed("block_opposite_" + i, 0.8f + (0.05f * i), 0.1f + (0.05f * i), true, "block_rotate_opposite_" + i);
+		}
+		
+		return false;
+	}
+	
+	//-------------------------------------------------------
+		
 	bool DisableSun(const tString &in asParent, const tString &in asChild, int alState)
 	{
 		Entity_SetActive("sun_large_1", false);
+		Entity_SetVarString("DeathTeleport_3", "", "Platforming_5");
+		
+		Music_StopAll(20.0f);
 		
 		return false;
 	}
@@ -364,7 +392,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(5.0f))
 			{
-				Music_Play("banan_dream_stage_1", 1.0f, true, eMusicPrio_BgAmb);
+				Music_Play("banan_dream_stage_1", 0.7f, true, eMusicPrio_BgAmb);
 				
 				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_WorldAll);
 				Sound_Stop("IntroSFX", 0.5f);
@@ -387,6 +415,13 @@ class cScrMap : iScrMap
 		//-------------------------------------------------------
 
 		//} END Event WAKE UP
-			 
+		
+		bool WakeTheFuckUpDavid(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
+			
+			return false;
+		}
+					 
 	//} END SCENE 1
 }

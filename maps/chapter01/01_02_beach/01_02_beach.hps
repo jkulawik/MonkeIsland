@@ -77,9 +77,9 @@ class cScrMap : iScrMap
 		
 		Pregnancy_SetBarksActive(false);
 		
-		Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_All);
 		if(!cLux_ScriptDebugOn())
 		{
+			Sound_FadeGlobalVolume(0.0f, 0.0f, eSoundEntryType_All);
 			Map_AddTimer("WakeUp", 2.0f, "Timer_WakeUp");
 		}
 	}

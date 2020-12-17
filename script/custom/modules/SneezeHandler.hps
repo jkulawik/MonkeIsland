@@ -1,0 +1,125 @@
+#include "interfaces/UserModule_Interface.hps"
+
+#include "base/Player_Types.hps"
+#include "base/InputHandler_Types.hps"
+
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_effects.hps"
+
+//----------------------------------------------------------------------------------------
+
+const cVector2f gfSneezeTime = cVector2f(1000.0f, 2000.0f);
+
+//----------------------------------------------------------------------------------------
+
+class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
+{
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ==============
+    // MAIN CALLBACKS
+    // ==============
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+    void Init()
+	{
+		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
+	}
+	
+    void Reset() 
+	{
+		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
+	}
+	
+	//-------------------------------------------------------
+	
+    void Update(float afTimeStep) {}
+    void PostUpdate(float afTimeStep) {}
+	void VariableUpdate(float afDeltaTime) {}
+    void OnDraw(float afFrameTime) {}
+    void OnPostRender(float afFrameTime) {}
+    void LoadUserConfig() {}
+    void SaveUserConfig() {}
+	
+	//-------------------------------------------------------
+	
+    void OnMapEnter(cLuxMap @apMap)
+	{
+		mBaseObj.Timer_Add("_Timer_DoSneeze", mfNextSneezeTime, "DoSneeze");
+	}
+	
+	//-------------------------------------------------------
+	
+    void OnMapLeave(cLuxMap @apMap) 
+	{
+		mBaseObj.Timer_ClearAll();
+	}
+	
+	//-------------------------------------------------------
+	
+    void CreateWorldEntities(cLuxMap @apMap) {}
+    void DestroyWorldEntities(cLuxMap @apMap) {}
+    void PreloadData(cLuxMap @apMap) {}
+    void OnEnterContainer(const tString&in asOldContainer) {}
+    void OnLeaveContainer(const tString&in asNewContainer) {}
+    void OnExitPressed() {}
+    void OnAction(int alAction,  bool abPressed) {}
+    void OnAnalogInput(int alAnalogId,  const cVector3f &in avAmount) {}
+    void AppGotInputFocus() {}
+    void AppLostInputFocus() {}
+    
+    //-------------------------------------------------------
+    
+    //} END MAIN CALLBACKS
+	
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ================
+    // MAIN FUNCTION
+    // ================
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+		
+	void DoSneeze(uint64 alID)
+	{
+		Sound_CreateAtEntity("_sneeze", "monke/Player/breaths/sneeze", "Player");
+		Effect_Shake_Start(0.05f, 1.0f, 0.0f, 1.0f);
+		
+		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
+		mBaseObj.Timer_Add("_Timer_DoSneeze", mfNextSneezeTime, "DoSneeze");
+	}
+		
+	//-------------------------------------------------------
+	
+	//} END MAIN FUNCTION
+    	
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // =============
+    // GUI CALLBACKS
+    // =============
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+    void OnGui(float afTimeStep) {}
+    
+    //-------------------------------------------------------
+    
+    //} END GUI CALLBACKS
+	
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ================
+    // PROPERTIES
+    // ================
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+	[nosave] float mfNextSneezeTime;
+	
+    //-------------------------------------------------------
+    
+    //} END PROPERTIES
+}
