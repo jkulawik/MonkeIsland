@@ -149,6 +149,7 @@ class cScrMap : iScrMap
 		{
 			Sketchbook_AddIdea("rescue_chief");
 			Sketchbook_AddIdea("research_monke");
+			Player_SetCrossHairEnabled(false);
 		}
 		if(alAction == eAction_Test2)
 		{

@@ -155,8 +155,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			//Visibility_SetMainActive(false);
-			Visibility_SetAreaActive("VisibilityArea_2", false);
+			Player_SetCrossHairEnabled(false);
 		}
 	}
 
