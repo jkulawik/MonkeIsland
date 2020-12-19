@@ -417,6 +417,7 @@ class cScrMap : iScrMap
 		
 		bool WakeTheFuckUpDavid(const tString &in asParent, const tString &in asChild, int alState)
 		{
+			Visibility_SetMainActive(true);
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
 			return false;
