@@ -65,7 +65,9 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
+		
 		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
+		cScript_SetGlobalVarBool("HideAmuletBracelet", true);
 		
 		SetupEntities();
 		
