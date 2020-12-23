@@ -1,6 +1,7 @@
 #include "agents/Agent_Humanoid.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_player.hps"
+#include "helpers/helper_player_custom.hps"
 #include "custom/player/PlayerTypes_Custom.hps"
 #include "base/Base_Types.hps"
 
@@ -9,6 +10,12 @@
 /////////////////////////////////////////
 // SETTINGS
 /////////////////////////////////////////
+
+//------------------------------------------------------------
+
+float gfMaxFearDistance = 2.0f;
+float gfMinFearDistance = 10.0f;
+float gfFear_SurpriseEffect = 0.5f;
 
 //------------------------------------------------------------
 
@@ -70,6 +77,13 @@ class cScrAgentRock : cScrAgentHumanoid
 	cLuxAttackDamage@ mpAttackDamage;
 	
 	cSoundEntity@ mpRollSound;
+	
+	////////////////
+	// Fear management
+	float mfFearDefault = 0.5f;
+	float mfFearSpotted = 0.7f;
+	float mfFearHunted = 1.0f;
+	cFearThreatParams mFearParams;
 	
 	//} END PROPERTIES
 	
@@ -142,6 +156,8 @@ class cScrAgentRock : cScrAgentHumanoid
 		mpPathfinder.SetMaxHeight(0.8f);
 		
 		SetupComponents(apWorld, apVars, apInstanceVars);
+		
+		RegisterWithFearHandler();
 	}
 	
 	//------------------------------------------------------------
@@ -179,8 +195,8 @@ class cScrAgentRock : cScrAgentHumanoid
 		///////////////////////////////
 		//Proximity Sensor
 		@mpProximitySensor = cLux_CreateEntityComponent_ProximitySensor(mBaseObj);
-		mpProximitySensor.AddState(eRockProximity_Touching, 1, 1.1, true, false);
-		mpProximitySensor.AddState(eRockProximity_Close, 2.4, 2.6, true, false);
+		mpProximitySensor.AddState(eRockProximity_Touching, 1.5, 1.6, true, false);
+		mpProximitySensor.AddState(eRockProximity_Close, 3.0, 3.2, true, false);
 		
 		////////////
 		// Mover Setup
@@ -202,13 +218,13 @@ class cScrAgentRock : cScrAgentHumanoid
 		float fRunMul = apInstanceVars.GetVarFloat("RunSpeedMul", 2.25f);
 		
 		mpMover.AddSpeedState(eRockSpeed_Walk);
-		mpMover.SetSpeedState_Forward(0.8*fWalkMul);
+		mpMover.SetSpeedState_Forward(0.8 * fWalkMul);
 		
 		mpMover.AddSpeedState(eRockSpeed_FastWalk);
-		mpMover.SetSpeedState_Forward(1.6*fWalkMul);
+		mpMover.SetSpeedState_Forward(1.6 * fWalkMul);
 		
 		mpMover.AddSpeedState(eRockSpeed_Investigate);
-		mpMover.SetSpeedState_Forward(1.2*fWalkMul);
+		mpMover.SetSpeedState_Forward(1.2 * fWalkMul);
 		
 		mpMover.AddSpeedState(eRockSpeed_Run);
 		mpMover.SetSpeedState_Forward(4.2);
@@ -227,6 +243,21 @@ class cScrAgentRock : cScrAgentHumanoid
 			mpAttackDamage.SetType_AddShapeFromCenter(cVector3f(0,0,1), 1);
 			
 		mBaseObj.StopAllAnimations(0);
+		
+		//////////////////////////////////
+        // Fear component
+		mFearParams.m_idEntity = mBaseObj.GetID();
+		mFearParams.mfBaseFearRate = mfFearDefault;
+		mFearParams.mfSurpriseFactor = gfFear_SurpriseEffect;
+		mFearParams.mfLookAtFactor = 0.3f;
+		mFearParams.mfMinFearDist = gfMinFearDistance;
+		mFearParams.mfActivationDistance = gfMinFearDistance;
+		mFearParams.mfDeactivationDistance = 30.0f;
+		mFearParams.mfActivationDelay = 0.3f;
+		mFearParams.mfActivationLightLevel = -1.0f;
+		mFearParams.mbLookAtDetectWholeArea = false;
+		
+		mFearParams.mfMaxFearDist = gfMaxFearDistance;
 	}
 	
 	//------------------------------------------------------------
@@ -265,6 +296,21 @@ class cScrAgentRock : cScrAgentHumanoid
 			mpRollSound.SetVolume(0.35f);
 			
 			mbIsRolling = true;
+		}
+		
+		
+		cVector3f vPrevPos = mBaseObj.GetBody(0).GetCharacterBody().GetLastPosition();
+		cVector3f vCurrentPos = mBaseObj.GetBody(0).GetCharacterBody().GetPosition();
+		
+		bool mbIsGoingDown = (vCurrentPos.y - vPrevPos.y) < 0.0f;
+		
+		if (mbIsGoingDown)
+		{
+			mpMover.SetSpeedMul(2.0f);
+		}
+		else
+		{
+			mpMover.SetSpeedMul(1.0f);
 		}
 	}
 	
@@ -340,6 +386,15 @@ class cScrAgentRock : cScrAgentHumanoid
 	}
 	
 	//------------------------------------------------------------
+	
+	bool mbRegisteredWithFearHandler = false;
+	void RegisterWithFearHandler()
+	{
+		if (mbRegisteredWithFearHandler) return;
+		mbRegisteredWithFearHandler = true;
+		iScrFearHandler_Interface @pHandler = cast<iScrFearHandler_Interface>( cLux_GetUserModuleFromID(eModuleType_Custom_FearHandler) );
+		pHandler.RegisterThreatAgent(mFearParams);
+	}
 	
 	//} END HELPERS
 	
@@ -983,6 +1038,11 @@ class cScrAgentRock : cScrAgentHumanoid
 	
 	//------------------------------------------------------------
 	
+	void _Global_ForcePatrolState()
+	{
+		mpStateMachine.ChangeState(eRockState_Patrol);
+	}
+	
 	//------------------------------------------------------------
 	void State_Patrol_Enter()
 	{
@@ -1214,10 +1274,9 @@ class cScrAgentRock : cScrAgentHumanoid
 		cLux_AddDebugMessage("[agent] ATTACK STATE ENTERED");
 		
 		mpPathfinder.Stop();
-		mpMover.PlayAnimation("Attack1");
-		//mpAttackDamage.Start(0, 1);
+		mpMover.SetSpeedMul(0.0f);
 		
-		mBaseObj.SetFOVMul(4.0f);
+		Player_GiveDamage(1.0f, 1.0f, eDamageType_CrushDeath, mBaseObj.GetName());
 	}
 	
 	//------------------------------------------------------------
@@ -1274,29 +1333,12 @@ class cScrAgentRock : cScrAgentHumanoid
 		//////////////////////
 		// Animation Event
 		else if (alMessageId == eLuxEntityMessage_AnimationMessageEvent)
-		{
-			//mpAttackDamage.Start(0, 1);
-			
+		{			
 			cLux_AddDebugMessage("anim event");
-			/*if (mbAttackActive) 
-			{
-				mpAttackDamage.StopAll();
-				mbAttackActive = false;
-			}
-			else
-			{*/
-				mpAttackDamage.Start(0,1);
-				mbAttackActive = true;
-			//}
-				
-			/*float fDist = GetDistanceTo(mBaseObj.GetPlayerFeetPos(),true);
-			
-			cLux_AddTodoMessage("Hit " + fDist);
-			
-			if (fDist < 1.5f)
-			{
-				Player_GiveDamage(0.1f,0.1f, eDamageType_Default, mBaseObj.GetName());
-			}*/
+
+			mpAttackDamage.Start(0,1);
+			mbAttackActive = true;
+
 			return true;
 		}
 		

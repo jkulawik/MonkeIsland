@@ -58,7 +58,7 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
-		FearHandler_SetActive(false);
+		FearHandler_SetActive(true);
 		
 		FearHandler_SetPermaFailEnabled(false);
 		FearHandler_SetWhispersActive(true);
@@ -72,6 +72,9 @@ class cScrMap : iScrMap
 		
 		cScript_SetGlobalVarBool("HideAmuletBracelet", false);
 		
+		Entity_SetActive("monke_bg_1", true);
+		Monke_SetAllowPlayerThrow("monke_bg_1", false);
+				
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
@@ -183,11 +186,17 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	bool mbRevealPlayerPos = false;
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	void Update(float afTimeStep)
+	{
+		if (mbRevealPlayerPos)
+		{
+			Agent_RevealPlayerPosition("rock_enemy", true);
+		}
+	}
  
 	//-------------------------------------------------------
  
@@ -195,7 +204,7 @@ class cScrMap : iScrMap
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
-	// SCENE X *NAME OF SCENE*
+	// SCENE 1 START CHASE
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
@@ -204,14 +213,72 @@ class cScrMap : iScrMap
 		//{//////////////////////////////////////
 		 
 		//-------------------------------------------------------
-	 
-		/*Put any variables that are used by many events in Scene X here.*/
+	 	 
+		bool Trigger_StartChase(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			MovingButton_SetSwitchedOn("pressureplate_1", true, true);
+			MovingButton_SetSwitchedOn("pressureplate_2", true, true);
+			
+			Map_AddTimer("Timer_CloseDoor", 0.5f, "Timer_CloseDoor");
+			
+			return false;
+		}
+		
+		void Timer_CloseDoor(const tString&in asTimer)
+		{
+			Player_SetActive(false);
+			
+			Map_AddTimer("RockFall", 0.5f, "Timer_OpenRockDoor");
+		}
+		
+		void Timer_OpenRockDoor(const tString&in asTimer)
+		{
+			PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, "monke/Player/breaths/air_fear");
+
+			SlideDoor_SetClosed("ChaseStartDoor", true);
+			Player_StartLookAt("ChaseStartDoor", 2.0f, 2.0f, 2.0f);
+			
+			Map_AddTimer("RockFall", 3.0, "Timer_RockFall");
+		}
+		
+		void Timer_RockFall(const tString&in asTimer)
+		{
+			SlideDoor_SetClosed("RockDoor", false);
+			Entity_SetActive("rock_enemy", true);
+			
+			Player_SetActive(true);
+			Player_StopLookAt(1.0f);
+			
+			mbRevealPlayerPos = true;
+			
+			Map_AddTimer("PlayerMusic", 0.9f, "Timer_PlayMusic");
+		}
+		
+		void Timer_PlayMusic(const tString&in asTimer)
+		{
+			Music_Play("monke_island_escape_temple", 0.7f, false, eMusicPrio_BigEvent);
+		}
 	 
 		//-------------------------------------------------------
-	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
-	 
+		
+		bool Monke_Disappear(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive(asChild, false);
+			
+			return true;
+		}
+		
+		bool Monke_RunAbove(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_1", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
+			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_1", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
 		//-------------------------------------------------------
+		
 		
 		//} END General	
 	 
@@ -221,16 +288,95 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
-
+		int mlLeverCount = 0;
+			
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		bool Trigger_OpenBigDoor(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			SlideDoor_SetClosed("BigDoor_Left", false);
+			SlideDoor_SetClosed("BigDoor_Right", false);
+			
+			return false;
+		}
 
+		//-------------------------------------------------------
+		
+		void TombLevers_OnConnectionChangeState(const tString &in asEntity, int alState)
+		{
+			if (alState == 1)
+			{
+				mlLeverCount++;
+			}
+			
+			if (mlLeverCount == 3)
+			{
+				mbRevealPlayerPos = true;
+				
+				SlideDoor_SetClosed("CavesDoor", false);
+			}
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Monke_RunCave(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_2", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_2", "GhoulHole_2", true, false, true, eMonkeSpeed_Run);
+			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_2", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Monke_RunCave2(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_3", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_3", "GhoulHole_3", true, false, true, eMonkeSpeed_FastRun);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Trigger_CloseDoor(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("Trigger_5", true);
+			
+			SlideDoor_SetClosed("ChaseEndDoor", true);
+			
+			Music_StopAll(10.0f);
+			
+			return false;
+		}
+		
+		bool Trigger_StopRock(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			mbRevealPlayerPos = false;
+			
+			Agent_RevealPlayerPosition("rock_enemy", false);
+			Agent_SetSensesActive("rock_enemy", false);
+			Agent_ResetPlayerDetectionState("rock_enemy");
+			
+			Rock_ForcePatrolState("rock_enemy");
+			
+			Pathfinder_Track_Add("rock_enemy", "PathNode_81");
+			Pathfinder_Track_Start("rock_enemy", false, 1.0f, "DisableRock");
+			
+			return false;
+		}
+		
+		void DisableRock(const tString&in asEntityName)
+		{
+			Entity_SetActive(asEntityName, false);
+		}
+		
 		//-------------------------------------------------------
 
 		//} END Event *Name Of Event*
 	 
-	//} END SCENE X
+	//} END SCENE 1
  
 }

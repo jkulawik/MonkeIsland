@@ -74,6 +74,32 @@ void Agent_SetDistanceCallback(const tString &in asAgentName, const tString &in 
 //-------------------------------------------------
 
 /////////////////////////////////////////
+// ROCK
+/////////////////////////////////////////
+
+//-------------------------------------------------
+
+/**
+ * Forces a specific state on the rock.
+ * 
+ * @param asAgentName, name of the agent
+ **/
+void Rock_ForcePatrolState(const tString &in asAgentName)
+{
+	if (Entity_Exists(asAgentName))
+	{
+		cScript_RunGlobalFunc(asAgentName, "cScrAgentRock", "_Global_ForcePatrolState");
+	}
+	else
+	{
+		Error("Could not find Rock agent " + asAgentName + "!");
+	}
+}
+ 
+
+//-------------------------------------------------
+
+/////////////////////////////////////////
 // MONKE
 /////////////////////////////////////////
 
