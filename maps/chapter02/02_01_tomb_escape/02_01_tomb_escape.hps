@@ -160,6 +160,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			mfLightFadeRate = cMath_Easing(eEasing_Linear, 0.1f, 0, 1);
 		}
 	}
 
@@ -196,6 +197,8 @@ class cScrMap : iScrMap
 		{
 			Agent_RevealPlayerPosition("rock_enemy", true);
 		}
+		
+		UpdateLampsColor(afTimeStep);
 	}
  
 	//-------------------------------------------------------
@@ -256,7 +259,7 @@ class cScrMap : iScrMap
 		
 		void Timer_PlayMusic(const tString&in asTimer)
 		{
-			Music_Play("monke_island_escape_temple", 0.7f, false, eMusicPrio_BigEvent);
+			Music_Play("monke_island_escape_temple", 0.69f, false, eMusicPrio_BigEvent);
 		}
 	 
 		//-------------------------------------------------------
@@ -289,6 +292,11 @@ class cScrMap : iScrMap
 		//-------------------------------------------------------
 
 		int mlLeverCount = 0;
+		
+		tString msCurrentLamp = "";
+		cColor mpDestColor = cColor_White; // lol
+		
+		float mfLightFadeRate = 0.0f;
 			
 		//-------------------------------------------------------
 
@@ -336,6 +344,8 @@ class cScrMap : iScrMap
 			Entity_SetActive("monke_bg_3", true);
 			Monke_CommandGoToSpecificHole_Execute("monke_bg_3", "GhoulHole_3", true, false, true, eMonkeSpeed_FastRun);
 			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_2", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
 			return false;
 		}
 		
@@ -348,6 +358,8 @@ class cScrMap : iScrMap
 			SlideDoor_SetClosed("ChaseEndDoor", true);
 			
 			Music_StopAll(10.0f);
+			
+			Game_AutoSave();
 			
 			return false;
 		}
@@ -374,8 +386,71 @@ class cScrMap : iScrMap
 		}
 		
 		//-------------------------------------------------------
-
-		//} END Event *Name Of Event*
+		
+		void UpdateLampsColor(float afTimeStep)
+		{
+			if (msCurrentLamp == "" || mpDestColor == cColor_White) return;
+			
+			cColor pIllumColor = Map_GetEntity(msCurrentLamp).GetMeshEntity().GetIlluminationColor();
+			
+			if (pIllumColor.r == mpDestColor) return;
+			
+			mfLightFadeRate += cMath_Clamp(afTimeStep * 2.0f, 0.0f, 1.0f);
+			if (mfLightFadeRate > 0.5f)
+			{
+				mfLightFadeRate = 0.0f;
+			}
+			
+			float fR = cMath_Easing(eEasing_Linear, mfLightFadeRate, pIllumColor.r, mpDestColor.r);
+			float fG = cMath_Easing(eEasing_Linear, mfLightFadeRate, pIllumColor.g, mpDestColor.g);
+						
+			cColor pNewColor = mpDestColor;
+			pNewColor.r = fR;
+			pNewColor.g = fG;
+			
+			Map_GetEntity(msCurrentLamp).GetMeshEntity().SetIlluminationColor(pNewColor);
+		}
+		
+		void MonkeButton_OnConnectionChangeState(const tString &in asEntity, int alState)
+		{
+			tString sLightName = Entity_GetVarString(asEntity, "");
+			msCurrentLamp = cString_ReplaceStringTo(sLightName, "Light", "Lamp");
+			
+			mpDestColor = alState == 1 ? cColor_Green : cColor_Red;
+			
+			Light_FadeTo(sLightName, mpDestColor, 2, 0.25f);
+			
+			Entity_SetActive("BlockBox_Door_*", !(!Button_IsSwitchedOn("SeeNoButton") && Button_IsSwitchedOn("HearNoButton")));
+		}
+		
+		//-------------------------------------------------------
+		
+		void TickLever_OnConnectionStateChange(const tString &in asEntity, int alState)
+		{
+			if (alState == 1)
+			{
+				Sound_CreateAtEntity("Tick", "monke_new/sfx/gameplay/tick_fast", "TickSource");
+				Sound_CreateAtEntity("DoorOpen", "level_entity_shared/doors/portcullis/portcullis_start_stop", "DoorSource", 0.0f, false, 1.0f, 3.0f, 11.0f);
+				
+				SlideDoor_SetClosed("SafeExitDoor", false);
+				
+				Lever_SetStuckState("TickLever", 1, false);
+				
+				Map_AddTimer("CloseGate", 4.0f, "Timer_CloseGate");
+			}
+		}
+		
+		void Timer_CloseGate(const tString&in asTimer)
+		{
+			SlideDoor_SetClosed("SafeExitDoor", true);
+			Sound_Stop("Tick", 0.0f);
+			
+			Sound_CreateAtEntity("DoorOpen", "level_entity_shared/doors/portcullis/portcullis_start_stop", "DoorSource", 0.0f, false, 1.0f, 3.0f, 11.0f);
+			
+			Lever_SetStuckState("TickLever", 0, false);
+		}
+		
+		//-------------------------------------------------------
 	 
 	//} END SCENE 1
  

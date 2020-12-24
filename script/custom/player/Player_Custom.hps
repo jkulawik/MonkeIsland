@@ -436,7 +436,7 @@ class cScrPlayerCustom : cScrPlayer
 			{
 				Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
 				
-				tString sSound = aType == eDamageType_Death ? "player/foley/damage/player_fall_death" : "boulder_crush.ogg";
+				tString sSound = aType == eDamageType_Death ? "player/foley/damage/player_fall_death" : "monke_new/sfx/player/death/death_crush";
 				Sound_PlayGui(sSound, 1.0f, eSoundEntryType_GuiWorld);
 			}
 			
@@ -449,8 +449,7 @@ class cScrPlayerCustom : cScrPlayer
 			}
 			
 			if (aType == eDamageType_CrushDeath)
-			{
-				
+			{	
 				Effect_Fade_Out(0.5f);
 			}
 			

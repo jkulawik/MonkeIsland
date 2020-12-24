@@ -306,9 +306,9 @@ class cScrMap : iScrMap
 	 
 	bool TeleportPlayer(const tString &in asParent, const tString &in asChild, int alState)
 	{
-		Sound_CreateAtEntity("teleport", "level_entity_shared/portal/portal_passthrough", "player");
-		
 		Player_Teleport(Entity_GetVarString(asParent, ""));
+		
+		Sound_CreateAtEntity("teleport", "level_entity_shared/portal/portal_passthrough", "player");
 		
 		Map_SetFogProperties(Entity_GetVarFloat(asParent, "FogStart"), 600.0f, 1.0f, cColor(1,0.938,0.629,1), true);
 		
@@ -330,7 +330,8 @@ class cScrMap : iScrMap
 	bool DeathTeleport(const tString &in asParent, const tString &in asChild, int alState)
 	{
 		Player_Teleport(Entity_GetVarString(asParent, ""));
-		
+		Sound_CreateAtEntity("teleport", "monke/SFX/auugh", "player");
+	
 		return true;
 	}
  
@@ -420,6 +421,9 @@ class cScrMap : iScrMap
 		bool WakeTheFuckUpDavid(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Visibility_SetMainActive(true);
+			
+			Player_SetGravity(cVector3f(0, 0, 0));
+			
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
 			return false;

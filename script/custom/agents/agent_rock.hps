@@ -293,7 +293,7 @@ class cScrAgentRock : cScrAgentHumanoid
 			mBaseObj.PlayAnimation("roll", 0.3f, true, true);
 			
 			@mpRollSound = mBaseObj.PlaySound("_roll", "monke/SFX/stop_the_rock/they_see_me_rolling", false, true);
-			mpRollSound.SetVolume(0.35f);
+			mpRollSound.SetVolume(0.4f);
 			
 			mbIsRolling = true;
 		}

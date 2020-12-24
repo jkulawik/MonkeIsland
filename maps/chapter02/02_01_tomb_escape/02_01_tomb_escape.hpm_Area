@@ -28,7 +28,7 @@
                     <Var ObjectId="268435456" Name="ParentAttachBody" Value="" />
                 </UserVariables>
             </Area>
-            <Area ID="268435457" Name="Start_Begin" CreStamp="1608392156" ModStamp="1608392169" WorldPos="72.75 -37.5962 87.75" Rotation="-0 3.14159 -0" Scale="0.7 1.76324 0.7" Active="true" Mesh="" UID="16 45 268435457" AreaType="PlayerStart">
+            <Area ID="268435457" Name="Start_Begin" CreStamp="1608392156" ModStamp="1608392169" WorldPos="72.75 -37.5962 87.75" Rotation="-0 3.14159 -0" Scale="0.7 1.76324 0.7" Active="true" Mesh="" UID="16 10889 268435457" AreaType="PlayerStart">
                 <UserVariables>
                     <Var ObjectId="268435457" Name="Note" Value="" />
                     <Var ObjectId="268435457" Name="Crouching" Value="false" />
@@ -168,7 +168,7 @@
                     <Var ObjectId="268435461" Name="UnderwaterLightColor" Value="0.4156863093376159668 0.40000003576278686523 0.29411765933036804199 1" />
                 </UserVariables>
             </Area>
-            <Area ID="268435462" Name="Soundscape_DeepCaveEntrance_2" CreStamp="1533911001" ModStamp="1608665951" WorldPos="163.006 -43.5608 82.334" Rotation="1.26109e-08 0.0161842 2.67465e-08" Scale="35.2883 16.8273 38.8108" Active="true" Mesh="" UID="16 98 268435462" AreaType="Soundscape">
+            <Area ID="268435462" Name="Soundscape_DeepCaveEntrance_2" CreStamp="1533911001" ModStamp="1608816762" WorldPos="163.006 -43.5608 82.334" Rotation="1.26109e-08 0.0161842 2.67465e-08" Scale="35.2883 16.8273 38.8108" Active="true" Mesh="" UID="16 98 268435462" AreaType="Soundscape">
                 <UserVariables>
                     <Var ObjectId="268435462" Name="Note" Value="" />
                     <Var ObjectId="268435462" Name="UseReverb" Value="true" />
@@ -179,7 +179,7 @@
                     <Var ObjectId="268435462" Name="Prio" Value="1" />
                     <Var ObjectId="268435462" Name="Level" Value="2: Room" />
                     <Var ObjectId="268435462" Name="BG_Sound" Value="level_amb_shared/amb/background/03_05_vitae_station/med_room" />
-                    <Var ObjectId="268435462" Name="BG_Volume" Value="0.7" />
+                    <Var ObjectId="268435462" Name="BG_Volume" Value="1" />
                     <Var ObjectId="268435462" Name="BG_FadeInTime" Value="0.5" />
                     <Var ObjectId="268435462" Name="BG_FadeOutTime" Value="1.5" />
                     <Var ObjectId="268435462" Name="BG_FadeTransitionSpeed" Value="1" />
@@ -222,7 +222,7 @@
                     <Var ObjectId="268435463" Name="ParentAttachBody" Value="" />
                 </UserVariables>
             </Area>
-            <Area ID="268435464" Name="StartChase" CreStamp="1608666078" ModStamp="1608738701" WorldPos="90.75 -36.5 69.75" Rotation="0 0 0" Scale="0.25 5.25 11.75" Active="true" Mesh="" UID="16 12181 268435464" AreaType="Trigger">
+            <Area ID="268435464" Name="StartChase" CreStamp="1608666078" ModStamp="1608738701" WorldPos="90.75 -36.5 69.75" Rotation="0 0 0" Scale="0.25 5.25 11.75" Active="true" Mesh="" UID="16 10995 268435464" AreaType="Trigger">
                 <UserVariables>
                     <Var ObjectId="268435464" Name="Note" Value="" />
                     <Var ObjectId="268435464" Name="BlocksLineOfSight" Value="false" />
@@ -250,6 +250,716 @@
                     <Var ObjectId="268435464" Name="CustomInteractIcon" Value="Default" />
                 </UserVariables>
             </Area>
+            <Area ID="268435465" Name="GhoulHole_1" CreStamp="1607793978" ModStamp="1608742078" WorldPos="170.8 -33.5111 49.5458" Rotation="0 1.0472 0" Scale="1 2 1" Active="true" Mesh="" UID="16 10993 268435465" AreaType="GhoulHole">
+                <UserVariables>
+                    <Var ObjectId="268435465" Name="Animation" Value="Low" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435466" Name="Trigger_1_Imported" CreStamp="1607794522" ModStamp="1608742091" WorldPos="170.8 -33.0111 49.5458" Rotation="0 1.0472 0" Scale="1.75 3 2" Active="true" Mesh="" UID="16 10994 268435466" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435466" Name="Note" Value="" />
+                    <Var ObjectId="268435466" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435466" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435466" Name="UserVar" Value="" />
+                    <Var ObjectId="268435466" Name="Static" Value="false" />
+                    <Var ObjectId="268435466" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435466" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435466" Name="CC_Entities" Value="monke_bg_1" />
+                    <Var ObjectId="268435466" Name="CC_Funcs" Value="Monke_Disappear" />
+                    <Var ObjectId="268435466" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435466" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435466" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435466" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435466" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435466" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435466" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435466" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435466" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435466" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435467" Name="SoundScape_PoolBlockedHall_1" CreStamp="1526390615" ModStamp="1608735003" WorldPos="172.25 -43.25 170.25" Rotation="0 0 0" Scale="17.25 8.7412 32.25" Active="true" Mesh="" UID="16 10303 268435467" AreaType="Soundscape">
+                <UserVariables>
+                    <Var ObjectId="268435467" Name="Note" Value="" />
+                    <Var ObjectId="268435467" Name="UseReverb" Value="true" />
+                    <Var ObjectId="268435467" Name="ReverbType" Value="ExtraRoomMedium" />
+                    <Var ObjectId="268435467" Name="ReverbPrio" Value="2" />
+                    <Var ObjectId="268435467" Name="ReverbAmount" Value="1.175" />
+                    <Var ObjectId="268435467" Name="ReverbFadeTime" Value="1" />
+                    <Var ObjectId="268435467" Name="Prio" Value="2" />
+                    <Var ObjectId="268435467" Name="Level" Value="2: Room" />
+                    <Var ObjectId="268435467" Name="BG_Sound" Value="level_amb_shared/amb/background/03_05_vitae_station/small_corridor" />
+                    <Var ObjectId="268435467" Name="BG_Volume" Value="0.9" />
+                    <Var ObjectId="268435467" Name="BG_FadeInTime" Value="0.5" />
+                    <Var ObjectId="268435467" Name="BG_FadeOutTime" Value="1.5" />
+                    <Var ObjectId="268435467" Name="BG_FadeTransitionSpeed" Value="1" />
+                    <Var ObjectId="268435467" Name="BG_ParentVolMul" Value="1" />
+                    <Var ObjectId="268435467" Name="SoundEnt_InNames" Value="" />
+                    <Var ObjectId="268435467" Name="SoundEnt_OutNames" Value="" />
+                    <Var ObjectId="268435467" Name="SoundEnt_FadeInTime" Value="1" />
+                    <Var ObjectId="268435467" Name="SoundEnt_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435467" Name="SoundPrefixPrio" Value="0" />
+                    <Var ObjectId="268435467" Name="SoundPrefix" Value="[None]" />
+                    <Var ObjectId="268435467" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435467" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435467" Name="ParentAttachBody" Value="" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435468" Name="Fear_Global" CreStamp="1608738096" ModStamp="1608738113" WorldPos="130.5 -36.25 85.75" Rotation="0 0 0" Scale="212.25 83 229" Active="true" Mesh="" UID="16 28 268435468" AreaType="Fear">
+                <UserVariables>
+                    <Var ObjectId="268435468" Name="Priority" Value="0" />
+                    <Var ObjectId="268435468" Name="Safe" Value="false" />
+                    <Var ObjectId="268435468" Name="NoFear" Value="false" />
+                    <Var ObjectId="268435468" Name="DarknessFear" Value="false" />
+                    <Var ObjectId="268435468" Name="BabyKickRateMultiplier" Value="1" />
+                    <Var ObjectId="268435468" Name="Locked" Value="false" />
+                    <Var ObjectId="268435468" Name="AllowProgressWithToken" Value="true" />
+                    <Var ObjectId="268435468" Name="AllowProgressWithoutToken" Value="false" />
+                    <Var ObjectId="268435468" Name="MaxProgressCount" Value="1" />
+                    <Var ObjectId="268435468" Name="ProgressAmount" Value="1" />
+                    <Var ObjectId="268435468" Name="SafeMusic" Value="fear_system_safe_01" />
+                    <Var ObjectId="268435468" Name="NonAgentRateCap" Value="0.8" />
+                    <Var ObjectId="268435468" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435468" Name="CC_Funcs" Value="" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435469" Name="OpenBigDoor" CreStamp="1608738422" ModStamp="1608738465" WorldPos="126.75 -44.75 69.75" Rotation="0 0 0" Scale="0.25 5.25 11.75" Active="true" Mesh="" UID="16 12181 268435469" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435469" Name="Note" Value="" />
+                    <Var ObjectId="268435469" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435469" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435469" Name="UserVar" Value="" />
+                    <Var ObjectId="268435469" Name="Static" Value="false" />
+                    <Var ObjectId="268435469" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435469" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435469" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435469" Name="CC_Funcs" Value="Trigger_OpenBigDoor" />
+                    <Var ObjectId="268435469" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435469" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435469" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435469" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435469" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435469" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435469" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435469" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435469" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435469" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435470" Name="PathNode_1" CreStamp="1608739287" ModStamp="1608739292" WorldPos="93.75 -40 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12195 268435470" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435471" Name="PathNode_2" CreStamp="1608739300" ModStamp="1608739302" WorldPos="95.75 -40.5 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12196 268435471" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435472" Name="PathNode_3" CreStamp="1608739306" ModStamp="1608739311" WorldPos="99.6023 -41.5 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12194 268435472" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435473" Name="PathNode_4" CreStamp="1608739306" ModStamp="1608739311" WorldPos="97.6023 -41 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12193 268435473" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435474" Name="PathNode_5" CreStamp="1608739318" ModStamp="1608739324" WorldPos="107.426 -43.5855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12190 268435474" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435475" Name="PathNode_6" CreStamp="1608739318" ModStamp="1608739324" WorldPos="105.426 -43.0855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12188 268435475" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435476" Name="PathNode_7" CreStamp="1608739318" ModStamp="1608739324" WorldPos="103.574 -42.5855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12189 268435476" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435477" Name="PathNode_8" CreStamp="1608739318" ModStamp="1608739324" WorldPos="101.574 -42.0855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12192 268435477" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435478" Name="PathNode_9" CreStamp="1608739330" ModStamp="1608739338" WorldPos="120.926 -47.233 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12167 268435478" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435479" Name="PathNode_10" CreStamp="1608739330" ModStamp="1608739338" WorldPos="118.926 -46.733 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12186 268435479" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435480" Name="PathNode_11" CreStamp="1608739330" ModStamp="1608739338" WorldPos="117.074 -46.233 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12191 268435480" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435481" Name="PathNode_12" CreStamp="1608739330" ModStamp="1608739338" WorldPos="115.074 -45.733 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12183 268435481" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435482" Name="PathNode_13" CreStamp="1608739330" ModStamp="1608739338" WorldPos="113.103 -45.1474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12187 268435482" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435483" Name="PathNode_14" CreStamp="1608739330" ModStamp="1608739338" WorldPos="111.103 -44.6474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12185 268435483" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435484" Name="PathNode_15" CreStamp="1608739330" ModStamp="1608739338" WorldPos="109.25 -44.1474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12182 268435484" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435485" Name="PathNodeGenerator_1" CreStamp="1608739352" ModStamp="1608739383" WorldPos="126.75 -47.25 69.5" Rotation="0 0 0" Scale="10 0.5 3.5" Active="true" Mesh="" UID="16 12179 268435485" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435485" Name="Note" Value="" />
+                    <Var ObjectId="268435485" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435485" Name="Density" Value="0.5" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435486" Name="PathNodeGenerator_2" CreStamp="1608739386" ModStamp="1608739414" WorldPos="143 -46.5 70" Rotation="0 0 0" Scale="19.75 1.75504 8" Active="true" Mesh="" UID="16 12180 268435486" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435486" Name="Note" Value="" />
+                    <Var ObjectId="268435486" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435486" Name="Density" Value="1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435487" Name="PathNodeGenerator_3" CreStamp="1608739417" ModStamp="1608739435" WorldPos="163.5 -51.25 53" Rotation="0 0 0" Scale="5.5 1.75504 20" Active="true" Mesh="" UID="16 12178 268435487" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435487" Name="Note" Value="" />
+                    <Var ObjectId="268435487" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435487" Name="Density" Value="1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435488" Name="PathNodeGenerator_4" CreStamp="1608739439" ModStamp="1608739482" WorldPos="163 -46.4185 90.25" Rotation="0 0 0" Scale="29.75 0.75 22" Active="true" Mesh="" UID="16 12176 268435488" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435488" Name="Note" Value="" />
+                    <Var ObjectId="268435488" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435488" Name="Density" Value="1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435489" Name="PathNodeGenerator_5" CreStamp="1608739651" ModStamp="1608739692" WorldPos="165.239 -46.4185 127.547" Rotation="0 0 0" Scale="37.75 1.5 53.5" Active="true" Mesh="" UID="16 12177 268435489" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435489" Name="Note" Value="" />
+                    <Var ObjectId="268435489" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435489" Name="Density" Value="1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435490" Name="PathNode_16" CreStamp="1608739701" ModStamp="1608739717" WorldPos="152.25 -47.25 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12149 268435490" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435491" Name="PathNode_17" CreStamp="1608739718" ModStamp="1608739721" WorldPos="152.25 -46.9701 71.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12146 268435491" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435492" Name="PathNode_19" CreStamp="1608739723" ModStamp="1608739726" WorldPos="152.25 -46.6919 67.5482" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12173 268435492" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435493" Name="PathNode_20" CreStamp="1608739727" ModStamp="1608739729" WorldPos="154.105 -47.0288 67.5482" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12151 268435493" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435494" Name="PathNode_21" CreStamp="1608739730" ModStamp="1608739733" WorldPos="155.029 -46.9302 66.1596" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12150 268435494" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435495" Name="PathNode_22" CreStamp="1608739733" ModStamp="1608739737" WorldPos="155.25 -46.734 64.1437" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12148 268435495" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435496" Name="PathNode_23" CreStamp="1608739738" ModStamp="1608739741" WorldPos="155.75 -46.734 62" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12147 268435496" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435497" Name="PathNode_24" CreStamp="1608739741" ModStamp="1608739769" WorldPos="156.25 -47.2163 60.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12152 268435497" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435498" Name="PathNode_25" CreStamp="1608739769" ModStamp="1608739775" WorldPos="156.831 -47.601 59.0071" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12164 268435498" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435499" Name="PathNode_26" CreStamp="1608739775" ModStamp="1608739777" WorldPos="156.831 -47.8724 57.4058" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12184 268435499" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435500" Name="PathNode_27" CreStamp="1608739778" ModStamp="1608739781" WorldPos="156.831 -48.0649 56.0522" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12165 268435500" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435501" Name="PathNode_28" CreStamp="1608739781" ModStamp="1608739783" WorldPos="156.831 -48.8161 54.3953" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12166 268435501" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435502" Name="PathNode_29" CreStamp="1608739784" ModStamp="1608739786" WorldPos="156.831 -49.42 52.7193" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12163 268435502" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435503" Name="PathNode_30" CreStamp="1608739787" ModStamp="1608739790" WorldPos="157.054 -50.1321 50.8995" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12162 268435503" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435504" Name="PathNode_31" CreStamp="1608739790" ModStamp="1608739793" WorldPos="157.054 -50.7294 48.7492" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12159 268435504" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435505" Name="PathNode_32" CreStamp="1608739797" ModStamp="1608739799" WorldPos="157.054 -51.1319 46.3008" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12161 268435505" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435506" Name="PathNode_33" CreStamp="1608739799" ModStamp="1608739803" WorldPos="159.165 -51.1319 46.3008" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12158 268435506" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435507" Name="PathNode_34" CreStamp="1608739803" ModStamp="1608739805" WorldPos="159.165 -51.1319 44.0065" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12157 268435507" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435508" Name="PathNode_35" CreStamp="1608739806" ModStamp="1608739807" WorldPos="161.179 -51.1319 43.5531" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12156 268435508" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435509" Name="PathNode_36" CreStamp="1608739808" ModStamp="1608739811" WorldPos="160.117 -50.6323 42.561" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12155 268435509" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435510" Name="PathNode_37" CreStamp="1608739812" ModStamp="1608739814" WorldPos="158.779 -50.8094 43.1933" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12153 268435510" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435511" Name="PathNode_38" CreStamp="1608739815" ModStamp="1608739817" WorldPos="162.133 -50.7672 42.8412" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12154 268435511" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435512" Name="PathNode_39" CreStamp="1608739822" ModStamp="1608739824" WorldPos="153.804 -47.1805 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12172 268435512" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435513" Name="PathNode_43" CreStamp="1608739832" ModStamp="1608739832" WorldPos="156.885 -46.734 64.1437" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12171 268435513" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435514" Name="PathNode_44" CreStamp="1608739834" ModStamp="1608739835" WorldPos="157.475 -46.734 62" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12170 268435514" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435515" Name="PathNode_45" CreStamp="1608739835" ModStamp="1608739838" WorldPos="157.683 -47.4527 60.0245" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12144 268435515" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435516" Name="PathNode_47" CreStamp="1608740208" ModStamp="1608740211" WorldPos="159.35 -47.6052 58.5637" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12160 268435516" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435517" Name="PathNode_48" CreStamp="1608740212" ModStamp="1608740216" WorldPos="159.834 -47.8192 58.0191" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12145 268435517" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435518" Name="PathNode_49" CreStamp="1608740308" ModStamp="1608740309" WorldPos="159.403 -47.8192 57.1403" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12140 268435518" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435519" Name="PathNode_50" CreStamp="1608740310" ModStamp="1608740312" WorldPos="158.336 -47.6696 57.992" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12143 268435519" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435520" Name="PathNode_51" CreStamp="1608740314" ModStamp="1608740317" WorldPos="160.843 -50.4139 57.1403" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12139 268435520" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435521" Name="PathNode_52" CreStamp="1608740317" ModStamp="1608740320" WorldPos="160.445 -50.4139 59.4914" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12142 268435521" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435522" Name="PathNode_53" CreStamp="1608740320" ModStamp="1608740324" WorldPos="161.802 -51.1123 58.5524" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12141 268435522" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435523" Name="Trigger_1" CreStamp="1608741005" ModStamp="1608741028" WorldPos="172.25 -45.0645 155.75" Rotation="0 0 0" Scale="3.81509 3.3408 0.75" Active="true" Mesh="" UID="16 12175 268435523" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435523" Name="Note" Value="" />
+                    <Var ObjectId="268435523" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435523" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435523" Name="UserVar" Value="" />
+                    <Var ObjectId="268435523" Name="Static" Value="false" />
+                    <Var ObjectId="268435523" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435523" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435523" Name="CC_Entities" Value="Player" />
+                    <Var ObjectId="268435523" Name="CC_Funcs" Value="Trigger_CloseDoor" />
+                    <Var ObjectId="268435523" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435523" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435523" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435523" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435523" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435523" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435523" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435523" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435523" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435523" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435524" Name="PathNode_1_MonkeBg_2" CreStamp="1608741896" ModStamp="1608742015" WorldPos="158.25 -34.25 47.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12202 268435524" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435525" Name="PathNode_40" CreStamp="1608741902" ModStamp="1608741915" WorldPos="158.894 -34.2996 47.354" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12201 268435525" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435526" Name="PathNode_41" CreStamp="1608741906" ModStamp="1608741907" WorldPos="159.5 -34.25 47" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12204 268435526" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435527" Name="PathNode_42" CreStamp="1608741918" ModStamp="1608741919" WorldPos="160 -34.25 46.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12203 268435527" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435528" Name="PathNode_46" CreStamp="1608741920" ModStamp="1608741923" WorldPos="160.5 -34.25 46.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12207 268435528" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435529" Name="PathNode_54" CreStamp="1608741923" ModStamp="1608741926" WorldPos="161 -34.25 46.2088" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12205 268435529" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435530" Name="PathNode_55" CreStamp="1608741926" ModStamp="1608741942" WorldPos="161.663 -34.3148 45.8763" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12220 268435530" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435531" Name="PathNode_56" CreStamp="1608741931" ModStamp="1608741941" WorldPos="162.24 -34.2815 45.5455" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12219 268435531" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435532" Name="PathNode_57" CreStamp="1608741933" ModStamp="1608741940" WorldPos="162.727 -34.3372 45.0721" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12206 268435532" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435533" Name="PathNode_58" CreStamp="1608741935" ModStamp="1608741938" WorldPos="163.351 -34.3576 44.986" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12221 268435533" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435534" Name="PathNode_59" CreStamp="1608741949" ModStamp="1608741951" WorldPos="164.032 -34.3576 45.4117" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12218 268435534" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435535" Name="PathNode_60" CreStamp="1608741952" ModStamp="1608741954" WorldPos="164.759 -34.3576 45.8299" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12213 268435535" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435536" Name="PathNode_61" CreStamp="1608741955" ModStamp="1608741959" WorldPos="165.513 -34.3187 46.3463" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12215 268435536" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435537" Name="PathNode_62" CreStamp="1608741959" ModStamp="1608741962" WorldPos="166.178 -34.3187 46.8254" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12214 268435537" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435538" Name="PathNode_63" CreStamp="1608741962" ModStamp="1608741965" WorldPos="166.933 -34.2687 47.2831" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12212 268435538" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435539" Name="PathNode_64" CreStamp="1608741966" ModStamp="1608741969" WorldPos="167.717 -34.2159 47.7347" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12200 268435539" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435540" Name="PathNode_65" CreStamp="1608741970" ModStamp="1608741971" WorldPos="168.374 -34.2159 48.1117" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12199 268435540" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435541" Name="PathNode_66" CreStamp="1608741972" ModStamp="1608741977" WorldPos="169.135 -34.1517 48.5325" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12217 268435541" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435542" Name="PathNode_67" CreStamp="1608741978" ModStamp="1608741979" WorldPos="169.943 -34.1517 48.9982" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12216 268435542" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435543" Name="Trigger_2" CreStamp="1608742166" ModStamp="1608742431" WorldPos="155.413 -44.75 67.3753" Rotation="0 -0.648771 0" Scale="5.75 4.75 0.25" Active="true" Mesh="" UID="16 12198 268435543" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435543" Name="Note" Value="" />
+                    <Var ObjectId="268435543" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435543" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435543" Name="UserVar" Value="" />
+                    <Var ObjectId="268435543" Name="Static" Value="false" />
+                    <Var ObjectId="268435543" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435543" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435543" Name="CC_Entities" Value="Player" />
+                    <Var ObjectId="268435543" Name="CC_Funcs" Value="Monke_RunAbove" />
+                    <Var ObjectId="268435543" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435543" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435543" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435543" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435543" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435543" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435543" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435543" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435543" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435543" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435544" Name="Trigger_1_Imported_1" CreStamp="1608742697" ModStamp="1608743601" WorldPos="175.25 -45.75 132.25" Rotation="0 -0.261799 0" Scale="2.81082 4.81856 3.21237" Active="true" Mesh="" UID="16 12615 268435544" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435544" Name="Note" Value="" />
+                    <Var ObjectId="268435544" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435544" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435544" Name="UserVar" Value="" />
+                    <Var ObjectId="268435544" Name="Static" Value="false" />
+                    <Var ObjectId="268435544" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435544" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435544" Name="CC_Entities" Value="monke_bg_2" />
+                    <Var ObjectId="268435544" Name="CC_Funcs" Value="Monke_Disappear" />
+                    <Var ObjectId="268435544" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435544" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435544" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435544" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435544" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435544" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435544" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435544" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435544" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435544" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435545" Name="GhoulHole_2" CreStamp="1608742697" ModStamp="1608742711" WorldPos="175.25 -46.25 132.25" Rotation="0 -0.261799 0" Scale="1 2 1" Active="true" Mesh="" UID="16 12620 268435545" AreaType="GhoulHole">
+                <UserVariables>
+                    <Var ObjectId="268435545" Name="Animation" Value="Low" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435546" Name="Trigger_3" CreStamp="1608742734" ModStamp="1608743606" WorldPos="152.177 -44.75 129.306" Rotation="0 0.523599 0" Scale="5.5 5.75 0.25" Active="true" Mesh="" UID="16 12630 268435546" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435546" Name="Note" Value="" />
+                    <Var ObjectId="268435546" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435546" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435546" Name="UserVar" Value="" />
+                    <Var ObjectId="268435546" Name="Static" Value="false" />
+                    <Var ObjectId="268435546" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435546" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435546" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435546" Name="CC_Funcs" Value="Monke_RunCave" />
+                    <Var ObjectId="268435546" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435546" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435546" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435546" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435546" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435546" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435546" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435546" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435546" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435546" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435547" Name="GhoulHole_3" CreStamp="1608742904" ModStamp="1608743669" WorldPos="151.987 -46.25 122.259" Rotation="0 -0.261799 0" Scale="1 2 1" Active="true" Mesh="" UID="16 12627 268435547" AreaType="GhoulHole">
+                <UserVariables>
+                    <Var ObjectId="268435547" Name="Animation" Value="Low" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435548" Name="Trigger_1_Imported_2" CreStamp="1608742904" ModStamp="1608743669" WorldPos="151.987 -45.75 122.259" Rotation="0 -0.261799 0" Scale="3.46494 5.93991 3.95124" Active="true" Mesh="" UID="16 12628 268435548" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435548" Name="Note" Value="" />
+                    <Var ObjectId="268435548" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435548" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435548" Name="UserVar" Value="" />
+                    <Var ObjectId="268435548" Name="Static" Value="false" />
+                    <Var ObjectId="268435548" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435548" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435548" Name="CC_Entities" Value="monke_bg_3" />
+                    <Var ObjectId="268435548" Name="CC_Funcs" Value="Monke_Disappear" />
+                    <Var ObjectId="268435548" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435548" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435548" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435548" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435548" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435548" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435548" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435548" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435548" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435548" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435549" Name="Trigger_4" CreStamp="1608742923" ModStamp="1608743647" WorldPos="170.998 -44.75 125.248" Rotation="0 0.785398 0" Scale="5.5 5.75 0.25" Active="true" Mesh="" UID="16 12626 268435549" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435549" Name="Note" Value="" />
+                    <Var ObjectId="268435549" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435549" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435549" Name="UserVar" Value="" />
+                    <Var ObjectId="268435549" Name="Static" Value="false" />
+                    <Var ObjectId="268435549" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435549" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435549" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435549" Name="CC_Funcs" Value="Monke_RunCave2" />
+                    <Var ObjectId="268435549" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435549" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435549" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435549" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435549" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435549" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435549" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435549" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435549" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435549" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435550" Name="PathNode_18" CreStamp="1608743455" ModStamp="1608743455" WorldPos="173.25 -46.5 140.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12617 268435550" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435551" Name="PathNode_68" CreStamp="1608743458" ModStamp="1608743460" WorldPos="172 -46.5 140.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12624 268435551" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435552" Name="PathNode_69" CreStamp="1608743461" ModStamp="1608743463" WorldPos="170.5 -46.5 140" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12618 268435552" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435553" Name="PathNode_70" CreStamp="1608743463" ModStamp="1608743465" WorldPos="168.75 -46.5 139.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12621 268435553" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435554" Name="PathNode_71" CreStamp="1608743465" ModStamp="1608743469" WorldPos="166.75 -46.5206 139" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12623 268435554" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435555" Name="PathNode_72" CreStamp="1608743469" ModStamp="1608743476" WorldPos="163.987 -46.7114 137.746" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12625 268435555" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435556" Name="PathNode_73" CreStamp="1608743477" ModStamp="1608743480" WorldPos="162.158 -46.2183 136.686" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12619 268435556" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435557" Name="PathNode_74" CreStamp="1608743481" ModStamp="1608743485" WorldPos="160.183 -46.003 135.266" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12622 268435557" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435558" Name="PathNode_75" CreStamp="1608743485" ModStamp="1608743575" WorldPos="157.973 -46.231 134.299" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12612 268435558" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435559" Name="PathNode_76" CreStamp="1608743564" ModStamp="1608743565" WorldPos="156.55 -46.4062 133.661" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12616 268435559" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435560" Name="PathNode_77" CreStamp="1608743566" ModStamp="1608743569" WorldPos="155.141 -46.6225 132.464" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12614 268435560" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435561" Name="PathNode_78" CreStamp="1608743570" ModStamp="1608743572" WorldPos="153.62 -46.7555 130.691" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12610 268435561" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435562" Name="PathNode_79" CreStamp="1608743671" ModStamp="1608743672" WorldPos="152.844 -46.7555 128.908" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12611 268435562" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435563" Name="PathNode_80" CreStamp="1608743673" ModStamp="1608743675" WorldPos="151.964 -46.8716 126.599" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12613 268435563" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435564" Name="PathNode_81" CreStamp="1608743676" ModStamp="1608743677" WorldPos="151.964 -46.8716 123.837" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 12609 268435564" AreaType="PathNode">
+                <UserVariables />
+            </Area>
+            <Area ID="268435565" Name="Trigger_5" CreStamp="1608746655" ModStamp="1608746696" WorldPos="172.25 -45.0645 154.008" Rotation="0 0 0" Scale="3.81509 3.3408 0.75" Active="false" Mesh="" UID="16 12608 268435565" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435565" Name="Note" Value="" />
+                    <Var ObjectId="268435565" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435565" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435565" Name="UserVar" Value="" />
+                    <Var ObjectId="268435565" Name="Static" Value="false" />
+                    <Var ObjectId="268435565" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435565" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435565" Name="CC_Entities" Value="rock_enemy" />
+                    <Var ObjectId="268435565" Name="CC_Funcs" Value="Trigger_StopRock" />
+                    <Var ObjectId="268435565" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435565" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435565" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435565" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435565" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435565" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435565" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435565" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435565" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435565" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435566" Name="MonkeSource_1" CreStamp="1608748475" ModStamp="1608748484" WorldPos="161.25 -38 51.25" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="16 12607 268435566" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435566" Name="Note" Value="" />
+                    <Var ObjectId="268435566" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435566" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435566" Name="UserVar" Value="" />
+                    <Var ObjectId="268435566" Name="Static" Value="false" />
+                    <Var ObjectId="268435566" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435566" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435566" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435566" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435566" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435566" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435566" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435566" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435566" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435566" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435566" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435566" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435566" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435566" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435567" Name="MonkeSource_2" CreStamp="1608757932" ModStamp="1608757949" WorldPos="173.5 -45 139.5" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="16 12606 268435567" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435567" Name="Note" Value="" />
+                    <Var ObjectId="268435567" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435567" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435567" Name="UserVar" Value="" />
+                    <Var ObjectId="268435567" Name="Static" Value="false" />
+                    <Var ObjectId="268435567" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435567" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435567" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435567" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435567" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435567" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435567" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435567" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435567" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435567" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435567" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435567" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435567" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435567" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435568" Name="DoorSource" CreStamp="1608817074" ModStamp="1608817081" WorldPos="174.75 -45.4173 183.5" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="16 45 268435568" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435568" Name="Note" Value="" />
+                    <Var ObjectId="268435568" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435568" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435568" Name="UserVar" Value="" />
+                    <Var ObjectId="268435568" Name="Static" Value="false" />
+                    <Var ObjectId="268435568" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435568" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435568" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435568" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435568" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435568" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435568" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435568" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435568" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435568" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435568" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435568" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435568" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435568" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435569" Name="InteractAux_1" CreStamp="1608832521" ModStamp="1608832537" WorldPos="172.324 -42.5 173.009" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 25 268435569" AreaType="InteractAux">
+                <UserVariables>
+                    <Var ObjectId="268435569" Name="Note" Value="" />
+                    <Var ObjectId="268435569" Name="InteractParent" Value="SeeNoButton" />
+                    <Var ObjectId="268435569" Name="UseParentMainBody" Value="true" />
+                    <Var ObjectId="268435569" Name="OverrideParentMainBody" Value="false" />
+                    <Var ObjectId="268435569" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435569" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="268435569" Name="DeactivateOnInteract" Value="false" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435570" Name="InteractAux_2" CreStamp="1608832540" ModStamp="1608832546" WorldPos="170.5 -42.5 173.009" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 40 268435570" AreaType="InteractAux">
+                <UserVariables>
+                    <Var ObjectId="268435570" Name="Note" Value="" />
+                    <Var ObjectId="268435570" Name="InteractParent" Value="HearNoButton" />
+                    <Var ObjectId="268435570" Name="UseParentMainBody" Value="true" />
+                    <Var ObjectId="268435570" Name="OverrideParentMainBody" Value="false" />
+                    <Var ObjectId="268435570" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435570" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="268435570" Name="DeactivateOnInteract" Value="false" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435571" Name="InteractAux_3" CreStamp="1608832551" ModStamp="1608832556" WorldPos="174.25 -42.5 173.009" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="16 39 268435571" AreaType="InteractAux">
+                <UserVariables>
+                    <Var ObjectId="268435571" Name="Note" Value="" />
+                    <Var ObjectId="268435571" Name="InteractParent" Value="SpeakNoButton" />
+                    <Var ObjectId="268435571" Name="UseParentMainBody" Value="true" />
+                    <Var ObjectId="268435571" Name="OverrideParentMainBody" Value="false" />
+                    <Var ObjectId="268435571" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435571" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="268435571" Name="DeactivateOnInteract" Value="false" />
+                </UserVariables>
+            </Area>
         </Objects>
     </Section>
     <Section Name="2638995545809106536">
@@ -269,653 +979,54 @@
     </Section>
     <Section Name="10911851120317680304">
         <Objects>
-            <Area ID="268437721" Name="GhoulHole_1" CreStamp="1607793978" ModStamp="1608742078" WorldPos="170.8 -33.5111 49.5458" Rotation="0 1.0472 0" Scale="1 2 1" Active="true" Mesh="" UID="16 12620 268437721" AreaType="GhoulHole">
+            <Area ID="369098832" Name="TickSource" CreStamp="1608838299" ModStamp="1608838307" WorldPos="172.532 -45.4173 185.25" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="22 45 369098832" AreaType="Trigger">
                 <UserVariables>
-                    <Var ObjectId="268437721" Name="Animation" Value="Low" />
+                    <Var ObjectId="369098832" Name="Note" Value="" />
+                    <Var ObjectId="369098832" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="369098832" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="369098832" Name="UserVar" Value="" />
+                    <Var ObjectId="369098832" Name="Static" Value="false" />
+                    <Var ObjectId="369098832" Name="QuickSave" Value="false" />
+                    <Var ObjectId="369098832" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="369098832" Name="CC_Entities" Value="" />
+                    <Var ObjectId="369098832" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="369098832" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="369098832" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="369098832" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="369098832" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="369098832" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="369098832" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="369098832" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="369098832" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="369098832" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="369098832" Name="CustomInteractIcon" Value="Default" />
                 </UserVariables>
             </Area>
-            <Area ID="268437722" Name="Trigger_1_Imported" CreStamp="1607794522" ModStamp="1608742091" WorldPos="170.8 -33.0111 49.5458" Rotation="0 1.0472 0" Scale="1.75 3 2" Active="true" Mesh="" UID="16 12615 268437722" AreaType="Trigger">
+            <Area ID="369098914" Name="InteractAux_4" CreStamp="1608841448" ModStamp="1608841472" WorldPos="168.932 -45.403 182.566" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 25 369098914" AreaType="InteractAux">
                 <UserVariables>
-                    <Var ObjectId="268437722" Name="Note" Value="" />
-                    <Var ObjectId="268437722" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="268437722" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="268437722" Name="UserVar" Value="" />
-                    <Var ObjectId="268437722" Name="Static" Value="false" />
-                    <Var ObjectId="268437722" Name="QuickSave" Value="false" />
-                    <Var ObjectId="268437722" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="268437722" Name="CC_Entities" Value="monke_bg_1" />
-                    <Var ObjectId="268437722" Name="CC_Funcs" Value="Monke_Disappear" />
-                    <Var ObjectId="268437722" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="268437722" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="268437722" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="268437722" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="268437722" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="268437722" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="268437722" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="268437722" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="268437722" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="268437722" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="369098914" Name="Note" Value="" />
+                    <Var ObjectId="369098914" Name="InteractParent" Value="SlideLock_TortureCell_2" />
+                    <Var ObjectId="369098914" Name="UseParentMainBody" Value="true" />
+                    <Var ObjectId="369098914" Name="OverrideParentMainBody" Value="false" />
+                    <Var ObjectId="369098914" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="369098914" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="369098914" Name="DeactivateOnInteract" Value="false" />
                 </UserVariables>
             </Area>
-            <Area ID="318767202" Name="SoundScape_PoolBlockedHall_1" CreStamp="1526390615" ModStamp="1608735003" WorldPos="172.25 -43.25 170.25" Rotation="0 0 0" Scale="17.25 8.7412 32.25" Active="true" Mesh="" UID="19 10303 318767202" AreaType="Soundscape">
+            <Area ID="369098915" Name="InteractAux_5" CreStamp="1608841473" ModStamp="1608841484" WorldPos="175.75 -45.403 184.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 24 369098915" AreaType="InteractAux">
                 <UserVariables>
-                    <Var ObjectId="318767202" Name="Note" Value="" />
-                    <Var ObjectId="318767202" Name="UseReverb" Value="true" />
-                    <Var ObjectId="318767202" Name="ReverbType" Value="ExtraRoomMedium" />
-                    <Var ObjectId="318767202" Name="ReverbPrio" Value="2" />
-                    <Var ObjectId="318767202" Name="ReverbAmount" Value="1.175" />
-                    <Var ObjectId="318767202" Name="ReverbFadeTime" Value="1" />
-                    <Var ObjectId="318767202" Name="Prio" Value="2" />
-                    <Var ObjectId="318767202" Name="Level" Value="2: Room" />
-                    <Var ObjectId="318767202" Name="BG_Sound" Value="level_amb_shared/amb/background/03_05_vitae_station/small_corridor" />
-                    <Var ObjectId="318767202" Name="BG_Volume" Value="0.9" />
-                    <Var ObjectId="318767202" Name="BG_FadeInTime" Value="0.5" />
-                    <Var ObjectId="318767202" Name="BG_FadeOutTime" Value="1.5" />
-                    <Var ObjectId="318767202" Name="BG_FadeTransitionSpeed" Value="1" />
-                    <Var ObjectId="318767202" Name="BG_ParentVolMul" Value="1" />
-                    <Var ObjectId="318767202" Name="SoundEnt_InNames" Value="" />
-                    <Var ObjectId="318767202" Name="SoundEnt_OutNames" Value="" />
-                    <Var ObjectId="318767202" Name="SoundEnt_FadeInTime" Value="1" />
-                    <Var ObjectId="318767202" Name="SoundEnt_FadeOutTime" Value="1" />
-                    <Var ObjectId="318767202" Name="SoundPrefixPrio" Value="0" />
-                    <Var ObjectId="318767202" Name="SoundPrefix" Value="[None]" />
-                    <Var ObjectId="318767202" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="318767202" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="318767202" Name="ParentAttachBody" Value="" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098841" Name="Fear_Global" CreStamp="1608738096" ModStamp="1608738113" WorldPos="130.5 -36.25 85.75" Rotation="0 0 0" Scale="212.25 83 229" Active="true" Mesh="" UID="22 28 369098841" AreaType="Fear">
-                <UserVariables>
-                    <Var ObjectId="369098841" Name="Priority" Value="0" />
-                    <Var ObjectId="369098841" Name="Safe" Value="false" />
-                    <Var ObjectId="369098841" Name="NoFear" Value="false" />
-                    <Var ObjectId="369098841" Name="DarknessFear" Value="false" />
-                    <Var ObjectId="369098841" Name="BabyKickRateMultiplier" Value="1" />
-                    <Var ObjectId="369098841" Name="Locked" Value="false" />
-                    <Var ObjectId="369098841" Name="AllowProgressWithToken" Value="true" />
-                    <Var ObjectId="369098841" Name="AllowProgressWithoutToken" Value="false" />
-                    <Var ObjectId="369098841" Name="MaxProgressCount" Value="1" />
-                    <Var ObjectId="369098841" Name="ProgressAmount" Value="1" />
-                    <Var ObjectId="369098841" Name="SafeMusic" Value="fear_system_safe_01" />
-                    <Var ObjectId="369098841" Name="NonAgentRateCap" Value="0.8" />
-                    <Var ObjectId="369098841" Name="CC_Entities" Value="" />
-                    <Var ObjectId="369098841" Name="CC_Funcs" Value="" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098842" Name="OpenBigDoor" CreStamp="1608738422" ModStamp="1608738465" WorldPos="126.75 -44.75 69.75" Rotation="0 0 0" Scale="0.25 5.25 11.75" Active="true" Mesh="" UID="22 12181 369098842" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098842" Name="Note" Value="" />
-                    <Var ObjectId="369098842" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098842" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098842" Name="UserVar" Value="" />
-                    <Var ObjectId="369098842" Name="Static" Value="false" />
-                    <Var ObjectId="369098842" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098842" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098842" Name="CC_Entities" Value="player" />
-                    <Var ObjectId="369098842" Name="CC_Funcs" Value="Trigger_OpenBigDoor" />
-                    <Var ObjectId="369098842" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098842" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098842" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098842" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098842" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098842" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098842" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098842" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098842" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098842" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098843" Name="PathNode_1" CreStamp="1608739287" ModStamp="1608739292" WorldPos="93.75 -40 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12195 369098843" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098844" Name="PathNode_2" CreStamp="1608739300" ModStamp="1608739302" WorldPos="95.75 -40.5 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12196 369098844" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098845" Name="PathNode_3" CreStamp="1608739306" ModStamp="1608739311" WorldPos="99.6023 -41.5 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12194 369098845" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098846" Name="PathNode_4" CreStamp="1608739306" ModStamp="1608739311" WorldPos="97.6023 -41 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12193 369098846" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098851" Name="PathNode_5" CreStamp="1608739318" ModStamp="1608739324" WorldPos="107.426 -43.5855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12190 369098851" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098852" Name="PathNode_6" CreStamp="1608739318" ModStamp="1608739324" WorldPos="105.426 -43.0855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12188 369098852" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098853" Name="PathNode_7" CreStamp="1608739318" ModStamp="1608739324" WorldPos="103.574 -42.5855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12189 369098853" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098854" Name="PathNode_8" CreStamp="1608739318" ModStamp="1608739324" WorldPos="101.574 -42.0855 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12192 369098854" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098855" Name="PathNode_9" CreStamp="1608739330" ModStamp="1608739338" WorldPos="120.926 -47.233 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12167 369098855" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098856" Name="PathNode_10" CreStamp="1608739330" ModStamp="1608739338" WorldPos="118.926 -46.733 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12186 369098856" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098857" Name="PathNode_11" CreStamp="1608739330" ModStamp="1608739338" WorldPos="117.074 -46.233 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12191 369098857" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098858" Name="PathNode_12" CreStamp="1608739330" ModStamp="1608739338" WorldPos="115.074 -45.733 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12183 369098858" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098859" Name="PathNode_13" CreStamp="1608739330" ModStamp="1608739338" WorldPos="113.103 -45.1474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12187 369098859" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098860" Name="PathNode_14" CreStamp="1608739330" ModStamp="1608739338" WorldPos="111.103 -44.6474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12185 369098860" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098861" Name="PathNode_15" CreStamp="1608739330" ModStamp="1608739338" WorldPos="109.25 -44.1474 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12182 369098861" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098862" Name="PathNodeGenerator_1" CreStamp="1608739352" ModStamp="1608739383" WorldPos="126.75 -47.25 69.5" Rotation="0 0 0" Scale="10 0.5 3.5" Active="true" Mesh="" UID="22 12179 369098862" AreaType="PathNodeGenerator">
-                <UserVariables>
-                    <Var ObjectId="369098862" Name="Note" Value="" />
-                    <Var ObjectId="369098862" Name="MaxSlopeAmount" Value="0.5" />
-                    <Var ObjectId="369098862" Name="Density" Value="0.5" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098863" Name="PathNodeGenerator_2" CreStamp="1608739386" ModStamp="1608739414" WorldPos="143 -46.5 70" Rotation="0 0 0" Scale="19.75 1.75504 8" Active="true" Mesh="" UID="22 12180 369098863" AreaType="PathNodeGenerator">
-                <UserVariables>
-                    <Var ObjectId="369098863" Name="Note" Value="" />
-                    <Var ObjectId="369098863" Name="MaxSlopeAmount" Value="0.5" />
-                    <Var ObjectId="369098863" Name="Density" Value="1" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098864" Name="PathNodeGenerator_3" CreStamp="1608739417" ModStamp="1608739435" WorldPos="163.5 -51.25 53" Rotation="0 0 0" Scale="5.5 1.75504 20" Active="true" Mesh="" UID="22 12178 369098864" AreaType="PathNodeGenerator">
-                <UserVariables>
-                    <Var ObjectId="369098864" Name="Note" Value="" />
-                    <Var ObjectId="369098864" Name="MaxSlopeAmount" Value="0.5" />
-                    <Var ObjectId="369098864" Name="Density" Value="1" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098865" Name="PathNodeGenerator_4" CreStamp="1608739439" ModStamp="1608739482" WorldPos="163 -46.4185 90.25" Rotation="0 0 0" Scale="29.75 0.75 22" Active="true" Mesh="" UID="22 12176 369098865" AreaType="PathNodeGenerator">
-                <UserVariables>
-                    <Var ObjectId="369098865" Name="Note" Value="" />
-                    <Var ObjectId="369098865" Name="MaxSlopeAmount" Value="0.5" />
-                    <Var ObjectId="369098865" Name="Density" Value="1" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098866" Name="PathNodeGenerator_5" CreStamp="1608739651" ModStamp="1608739692" WorldPos="165.239 -46.4185 127.547" Rotation="0 0 0" Scale="37.75 1.5 53.5" Active="true" Mesh="" UID="22 12177 369098866" AreaType="PathNodeGenerator">
-                <UserVariables>
-                    <Var ObjectId="369098866" Name="Note" Value="" />
-                    <Var ObjectId="369098866" Name="MaxSlopeAmount" Value="0.5" />
-                    <Var ObjectId="369098866" Name="Density" Value="1" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098867" Name="PathNode_16" CreStamp="1608739701" ModStamp="1608739717" WorldPos="152.25 -47.25 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12149 369098867" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098868" Name="PathNode_17" CreStamp="1608739718" ModStamp="1608739721" WorldPos="152.25 -46.9701 71.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12146 369098868" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098870" Name="PathNode_19" CreStamp="1608739723" ModStamp="1608739726" WorldPos="152.25 -46.6919 67.5482" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12173 369098870" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098871" Name="PathNode_20" CreStamp="1608739727" ModStamp="1608739729" WorldPos="154.105 -47.0288 67.5482" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12151 369098871" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098872" Name="PathNode_21" CreStamp="1608739730" ModStamp="1608739733" WorldPos="155.029 -46.9302 66.1596" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12150 369098872" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098874" Name="PathNode_22" CreStamp="1608739733" ModStamp="1608739737" WorldPos="155.25 -46.734 64.1437" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12148 369098874" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098875" Name="PathNode_23" CreStamp="1608739738" ModStamp="1608739741" WorldPos="155.75 -46.734 62" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12147 369098875" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098876" Name="PathNode_24" CreStamp="1608739741" ModStamp="1608739769" WorldPos="156.25 -47.2163 60.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12152 369098876" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098877" Name="PathNode_25" CreStamp="1608739769" ModStamp="1608739775" WorldPos="156.831 -47.601 59.0071" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12164 369098877" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098878" Name="PathNode_26" CreStamp="1608739775" ModStamp="1608739777" WorldPos="156.831 -47.8724 57.4058" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12184 369098878" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098879" Name="PathNode_27" CreStamp="1608739778" ModStamp="1608739781" WorldPos="156.831 -48.0649 56.0522" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12165 369098879" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098880" Name="PathNode_28" CreStamp="1608739781" ModStamp="1608739783" WorldPos="156.831 -48.8161 54.3953" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12166 369098880" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098881" Name="PathNode_29" CreStamp="1608739784" ModStamp="1608739786" WorldPos="156.831 -49.42 52.7193" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12163 369098881" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098882" Name="PathNode_30" CreStamp="1608739787" ModStamp="1608739790" WorldPos="157.054 -50.1321 50.8995" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12162 369098882" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098883" Name="PathNode_31" CreStamp="1608739790" ModStamp="1608739793" WorldPos="157.054 -50.7294 48.7492" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12159 369098883" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098885" Name="PathNode_32" CreStamp="1608739797" ModStamp="1608739799" WorldPos="157.054 -51.1319 46.3008" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12161 369098885" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098886" Name="PathNode_33" CreStamp="1608739799" ModStamp="1608739803" WorldPos="159.165 -51.1319 46.3008" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12158 369098886" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098887" Name="PathNode_34" CreStamp="1608739803" ModStamp="1608739805" WorldPos="159.165 -51.1319 44.0065" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12157 369098887" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098888" Name="PathNode_35" CreStamp="1608739806" ModStamp="1608739807" WorldPos="161.179 -51.1319 43.5531" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12156 369098888" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098889" Name="PathNode_36" CreStamp="1608739808" ModStamp="1608739811" WorldPos="160.117 -50.6323 42.561" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12155 369098889" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098890" Name="PathNode_37" CreStamp="1608739812" ModStamp="1608739814" WorldPos="158.779 -50.8094 43.1933" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12153 369098890" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098891" Name="PathNode_38" CreStamp="1608739815" ModStamp="1608739817" WorldPos="162.133 -50.7672 42.8412" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12154 369098891" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098892" Name="PathNode_39" CreStamp="1608739822" ModStamp="1608739824" WorldPos="153.804 -47.1805 69.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12172 369098892" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098896" Name="PathNode_43" CreStamp="1608739832" ModStamp="1608739832" WorldPos="156.885 -46.734 64.1437" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12171 369098896" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098897" Name="PathNode_44" CreStamp="1608739834" ModStamp="1608739835" WorldPos="157.475 -46.734 62" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12170 369098897" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098898" Name="PathNode_45" CreStamp="1608739835" ModStamp="1608739838" WorldPos="157.683 -47.4527 60.0245" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12144 369098898" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098900" Name="PathNode_47" CreStamp="1608740208" ModStamp="1608740211" WorldPos="159.35 -47.6052 58.5637" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12160 369098900" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098901" Name="PathNode_48" CreStamp="1608740212" ModStamp="1608740216" WorldPos="159.834 -47.8192 58.0191" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12145 369098901" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098902" Name="PathNode_49" CreStamp="1608740308" ModStamp="1608740309" WorldPos="159.403 -47.8192 57.1403" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12140 369098902" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098903" Name="PathNode_50" CreStamp="1608740310" ModStamp="1608740312" WorldPos="158.336 -47.6696 57.992" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12143 369098903" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098904" Name="PathNode_51" CreStamp="1608740314" ModStamp="1608740317" WorldPos="160.843 -50.4139 57.1403" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12139 369098904" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098905" Name="PathNode_52" CreStamp="1608740317" ModStamp="1608740320" WorldPos="160.445 -50.4139 59.4914" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12142 369098905" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098906" Name="PathNode_53" CreStamp="1608740320" ModStamp="1608740324" WorldPos="161.802 -51.1123 58.5524" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12141 369098906" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098910" Name="Trigger_1" CreStamp="1608741005" ModStamp="1608741028" WorldPos="172.25 -45.0645 155.75" Rotation="0 0 0" Scale="3.81509 3.3408 0.75" Active="true" Mesh="" UID="22 12175 369098910" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098910" Name="Note" Value="" />
-                    <Var ObjectId="369098910" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098910" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098910" Name="UserVar" Value="" />
-                    <Var ObjectId="369098910" Name="Static" Value="false" />
-                    <Var ObjectId="369098910" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098910" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098910" Name="CC_Entities" Value="Player" />
-                    <Var ObjectId="369098910" Name="CC_Funcs" Value="Trigger_CloseDoor" />
-                    <Var ObjectId="369098910" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098910" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098910" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098910" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098910" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098910" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098910" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098910" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098910" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098910" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098922" Name="PathNode_1_MonkeBg_2" CreStamp="1608741896" ModStamp="1608742015" WorldPos="158.25 -34.25 47.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12202 369098922" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098923" Name="PathNode_40" CreStamp="1608741902" ModStamp="1608741915" WorldPos="158.894 -34.2996 47.354" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12201 369098923" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098924" Name="PathNode_41" CreStamp="1608741906" ModStamp="1608741907" WorldPos="159.5 -34.25 47" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12204 369098924" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098925" Name="PathNode_42" CreStamp="1608741918" ModStamp="1608741919" WorldPos="160 -34.25 46.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12203 369098925" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098926" Name="PathNode_46" CreStamp="1608741920" ModStamp="1608741923" WorldPos="160.5 -34.25 46.5" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12207 369098926" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098927" Name="PathNode_54" CreStamp="1608741923" ModStamp="1608741926" WorldPos="161 -34.25 46.2088" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12205 369098927" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098928" Name="PathNode_55" CreStamp="1608741926" ModStamp="1608741942" WorldPos="161.663 -34.3148 45.8763" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12220 369098928" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098929" Name="PathNode_56" CreStamp="1608741931" ModStamp="1608741941" WorldPos="162.24 -34.2815 45.5455" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12219 369098929" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098930" Name="PathNode_57" CreStamp="1608741933" ModStamp="1608741940" WorldPos="162.727 -34.3372 45.0721" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12206 369098930" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098931" Name="PathNode_58" CreStamp="1608741935" ModStamp="1608741938" WorldPos="163.351 -34.3576 44.986" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12221 369098931" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098932" Name="PathNode_59" CreStamp="1608741949" ModStamp="1608741951" WorldPos="164.032 -34.3576 45.4117" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12218 369098932" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098933" Name="PathNode_60" CreStamp="1608741952" ModStamp="1608741954" WorldPos="164.759 -34.3576 45.8299" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12213 369098933" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098934" Name="PathNode_61" CreStamp="1608741955" ModStamp="1608741959" WorldPos="165.513 -34.3187 46.3463" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12215 369098934" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098935" Name="PathNode_62" CreStamp="1608741959" ModStamp="1608741962" WorldPos="166.178 -34.3187 46.8254" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12214 369098935" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098936" Name="PathNode_63" CreStamp="1608741962" ModStamp="1608741965" WorldPos="166.933 -34.2687 47.2831" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12212 369098936" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098937" Name="PathNode_64" CreStamp="1608741966" ModStamp="1608741969" WorldPos="167.717 -34.2159 47.7347" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12200 369098937" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098938" Name="PathNode_65" CreStamp="1608741970" ModStamp="1608741971" WorldPos="168.374 -34.2159 48.1117" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12199 369098938" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098939" Name="PathNode_66" CreStamp="1608741972" ModStamp="1608741977" WorldPos="169.135 -34.1517 48.5325" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12217 369098939" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098940" Name="PathNode_67" CreStamp="1608741978" ModStamp="1608741979" WorldPos="169.943 -34.1517 48.9982" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12216 369098940" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098941" Name="Trigger_2" CreStamp="1608742166" ModStamp="1608742431" WorldPos="155.413 -44.75 67.3753" Rotation="0 -0.648771 0" Scale="5.75 4.75 0.25" Active="true" Mesh="" UID="22 12198 369098941" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098941" Name="Note" Value="" />
-                    <Var ObjectId="369098941" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098941" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098941" Name="UserVar" Value="" />
-                    <Var ObjectId="369098941" Name="Static" Value="false" />
-                    <Var ObjectId="369098941" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098941" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098941" Name="CC_Entities" Value="Player" />
-                    <Var ObjectId="369098941" Name="CC_Funcs" Value="Monke_RunAbove" />
-                    <Var ObjectId="369098941" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098941" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098941" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098941" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098941" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098941" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098941" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098941" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098941" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098941" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098944" Name="Trigger_1_Imported_1" CreStamp="1608742697" ModStamp="1608743601" WorldPos="175.25 -45.75 132.25" Rotation="0 -0.261799 0" Scale="2.81082 4.81856 3.21237" Active="true" Mesh="" UID="22 12615 369098944" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098944" Name="Note" Value="" />
-                    <Var ObjectId="369098944" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098944" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098944" Name="UserVar" Value="" />
-                    <Var ObjectId="369098944" Name="Static" Value="false" />
-                    <Var ObjectId="369098944" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098944" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098944" Name="CC_Entities" Value="monke_bg_2" />
-                    <Var ObjectId="369098944" Name="CC_Funcs" Value="Monke_Disappear" />
-                    <Var ObjectId="369098944" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098944" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098944" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098944" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098944" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098944" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098944" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098944" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098944" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098944" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098945" Name="GhoulHole_2" CreStamp="1608742697" ModStamp="1608742711" WorldPos="175.25 -46.25 132.25" Rotation="0 -0.261799 0" Scale="1 2 1" Active="true" Mesh="" UID="22 12620 369098945" AreaType="GhoulHole">
-                <UserVariables>
-                    <Var ObjectId="369098945" Name="Animation" Value="Low" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098947" Name="Trigger_3" CreStamp="1608742734" ModStamp="1608743606" WorldPos="152.177 -44.75 129.306" Rotation="0 0.523599 0" Scale="5.5 5.75 0.25" Active="true" Mesh="" UID="22 12630 369098947" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098947" Name="Note" Value="" />
-                    <Var ObjectId="369098947" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098947" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098947" Name="UserVar" Value="" />
-                    <Var ObjectId="369098947" Name="Static" Value="false" />
-                    <Var ObjectId="369098947" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098947" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098947" Name="CC_Entities" Value="player" />
-                    <Var ObjectId="369098947" Name="CC_Funcs" Value="Monke_RunCave" />
-                    <Var ObjectId="369098947" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098947" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098947" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098947" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098947" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098947" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098947" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098947" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098947" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098947" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098949" Name="GhoulHole_3" CreStamp="1608742904" ModStamp="1608743669" WorldPos="151.987 -46.25 122.259" Rotation="0 -0.261799 0" Scale="1 2 1" Active="true" Mesh="" UID="22 12627 369098949" AreaType="GhoulHole">
-                <UserVariables>
-                    <Var ObjectId="369098949" Name="Animation" Value="Low" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098950" Name="Trigger_1_Imported_2" CreStamp="1608742904" ModStamp="1608743669" WorldPos="151.987 -45.75 122.259" Rotation="0 -0.261799 0" Scale="3.46494 5.93991 3.95124" Active="true" Mesh="" UID="22 12628 369098950" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098950" Name="Note" Value="" />
-                    <Var ObjectId="369098950" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098950" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098950" Name="UserVar" Value="" />
-                    <Var ObjectId="369098950" Name="Static" Value="false" />
-                    <Var ObjectId="369098950" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098950" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098950" Name="CC_Entities" Value="monke_bg_3" />
-                    <Var ObjectId="369098950" Name="CC_Funcs" Value="Monke_Disappear" />
-                    <Var ObjectId="369098950" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098950" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098950" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098950" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098950" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098950" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098950" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098950" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098950" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098950" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098951" Name="Trigger_4" CreStamp="1608742923" ModStamp="1608743647" WorldPos="170.998 -44.75 125.248" Rotation="0 0.785398 0" Scale="5.5 5.75 0.25" Active="true" Mesh="" UID="22 12626 369098951" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098951" Name="Note" Value="" />
-                    <Var ObjectId="369098951" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098951" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098951" Name="UserVar" Value="" />
-                    <Var ObjectId="369098951" Name="Static" Value="false" />
-                    <Var ObjectId="369098951" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098951" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098951" Name="CC_Entities" Value="player" />
-                    <Var ObjectId="369098951" Name="CC_Funcs" Value="Monke_RunCave2" />
-                    <Var ObjectId="369098951" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098951" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098951" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098951" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098951" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098951" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098951" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098951" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098951" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098951" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098952" Name="PathNode_18" CreStamp="1608743455" ModStamp="1608743455" WorldPos="173.25 -46.5 140.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12617 369098952" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098953" Name="PathNode_68" CreStamp="1608743458" ModStamp="1608743460" WorldPos="172 -46.5 140.25" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12624 369098953" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098954" Name="PathNode_69" CreStamp="1608743461" ModStamp="1608743463" WorldPos="170.5 -46.5 140" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12618 369098954" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098955" Name="PathNode_70" CreStamp="1608743463" ModStamp="1608743465" WorldPos="168.75 -46.5 139.75" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12621 369098955" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098956" Name="PathNode_71" CreStamp="1608743465" ModStamp="1608743469" WorldPos="166.75 -46.5206 139" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12623 369098956" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098957" Name="PathNode_72" CreStamp="1608743469" ModStamp="1608743476" WorldPos="163.987 -46.7114 137.746" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12625 369098957" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098958" Name="PathNode_73" CreStamp="1608743477" ModStamp="1608743480" WorldPos="162.158 -46.2183 136.686" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12619 369098958" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098959" Name="PathNode_74" CreStamp="1608743481" ModStamp="1608743485" WorldPos="160.183 -46.003 135.266" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12622 369098959" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098960" Name="PathNode_75" CreStamp="1608743485" ModStamp="1608743575" WorldPos="157.973 -46.231 134.299" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12612 369098960" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098961" Name="PathNode_76" CreStamp="1608743564" ModStamp="1608743565" WorldPos="156.55 -46.4062 133.661" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12616 369098961" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098962" Name="PathNode_77" CreStamp="1608743566" ModStamp="1608743569" WorldPos="155.141 -46.6225 132.464" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12614 369098962" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098963" Name="PathNode_78" CreStamp="1608743570" ModStamp="1608743572" WorldPos="153.62 -46.7555 130.691" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12610 369098963" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098964" Name="PathNode_79" CreStamp="1608743671" ModStamp="1608743672" WorldPos="152.844 -46.7555 128.908" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12611 369098964" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098965" Name="PathNode_80" CreStamp="1608743673" ModStamp="1608743675" WorldPos="151.964 -46.8716 126.599" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12613 369098965" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098966" Name="PathNode_81" CreStamp="1608743676" ModStamp="1608743677" WorldPos="151.964 -46.8716 123.837" Rotation="0 0 0" Scale="0.5 0.5 0.5" Active="true" Mesh="" UID="22 12609 369098966" AreaType="PathNode">
-                <UserVariables />
-            </Area>
-            <Area ID="369098967" Name="Trigger_5" CreStamp="1608746655" ModStamp="1608746696" WorldPos="172.25 -45.0645 154.008" Rotation="0 0 0" Scale="3.81509 3.3408 0.75" Active="false" Mesh="" UID="22 12608 369098967" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098967" Name="Note" Value="" />
-                    <Var ObjectId="369098967" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098967" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098967" Name="UserVar" Value="" />
-                    <Var ObjectId="369098967" Name="Static" Value="false" />
-                    <Var ObjectId="369098967" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098967" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098967" Name="CC_Entities" Value="rock_enemy" />
-                    <Var ObjectId="369098967" Name="CC_Funcs" Value="Trigger_StopRock" />
-                    <Var ObjectId="369098967" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098967" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098967" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098967" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098967" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098967" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098967" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098967" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098967" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098967" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098968" Name="MonkeSource_1" CreStamp="1608748475" ModStamp="1608748484" WorldPos="161.25 -38 51.25" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="22 12607 369098968" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098968" Name="Note" Value="" />
-                    <Var ObjectId="369098968" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098968" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098968" Name="UserVar" Value="" />
-                    <Var ObjectId="369098968" Name="Static" Value="false" />
-                    <Var ObjectId="369098968" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098968" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098968" Name="CC_Entities" Value="" />
-                    <Var ObjectId="369098968" Name="CC_Funcs" Value="" />
-                    <Var ObjectId="369098968" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098968" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098968" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098968" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098968" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098968" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098968" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098968" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098968" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098968" Name="CustomInteractIcon" Value="Default" />
-                </UserVariables>
-            </Area>
-            <Area ID="369098969" Name="MonkeSource_2" CreStamp="1608757932" ModStamp="1608757949" WorldPos="173.5 -45 139.5" Rotation="0 0 0" Scale="1 1 1" Active="true" Mesh="" UID="22 12606 369098969" AreaType="Trigger">
-                <UserVariables>
-                    <Var ObjectId="369098969" Name="Note" Value="" />
-                    <Var ObjectId="369098969" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="369098969" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="369098969" Name="UserVar" Value="" />
-                    <Var ObjectId="369098969" Name="Static" Value="false" />
-                    <Var ObjectId="369098969" Name="QuickSave" Value="false" />
-                    <Var ObjectId="369098969" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="369098969" Name="CC_Entities" Value="" />
-                    <Var ObjectId="369098969" Name="CC_Funcs" Value="" />
-                    <Var ObjectId="369098969" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="369098969" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="369098969" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="369098969" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="369098969" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="369098969" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="369098969" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="369098969" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="369098969" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="369098969" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="369098915" Name="Note" Value="" />
+                    <Var ObjectId="369098915" Name="InteractParent" Value="SlideLock_TortureCell_1" />
+                    <Var ObjectId="369098915" Name="UseParentMainBody" Value="true" />
+                    <Var ObjectId="369098915" Name="OverrideParentMainBody" Value="false" />
+                    <Var ObjectId="369098915" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="369098915" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="369098915" Name="DeactivateOnInteract" Value="false" />
                 </UserVariables>
             </Area>
         </Objects>

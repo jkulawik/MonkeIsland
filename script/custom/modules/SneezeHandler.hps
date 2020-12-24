@@ -47,6 +47,8 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	
     void OnMapEnter(cLuxMap @apMap)
 	{
+		cLux_AddDebugMessage("[ Sneeze Handler ] Starting to sneeze in " + mfNextSneezeTime + " Seconds.");
+		
 		mBaseObj.Timer_Add("_Timer_DoSneeze", mfNextSneezeTime, "DoSneeze");
 	}
 	
@@ -54,6 +56,7 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	
     void OnMapLeave(cLuxMap @apMap) 
 	{
+		mfNextSneezeTime = mBaseObj.Timer_GetTimeLeft("_Timer_DoSneeze");
 		mBaseObj.Timer_ClearAll();
 	}
 	
@@ -89,6 +92,8 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 		
 		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
 		mBaseObj.Timer_Add("_Timer_DoSneeze", mfNextSneezeTime, "DoSneeze");
+		
+		cLux_AddDebugMessage("[ Sneeze Handler ] Starting to sneeze in " + mfNextSneezeTime + " seconds.");
 	}
 		
 	//-------------------------------------------------------
