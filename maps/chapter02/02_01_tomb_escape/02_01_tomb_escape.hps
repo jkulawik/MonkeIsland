@@ -160,7 +160,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			mfLightFadeRate = cMath_Easing(eEasing_Linear, 0.1f, 0, 1);
+			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
 		}
 	}
 
@@ -451,7 +451,19 @@ class cScrMap : iScrMap
 		}
 		
 		//-------------------------------------------------------
+		
+		bool FadeFog(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Map_FadeFogStart(5.0f, 1.0f);
+			Map_FadeFogEnd(70.0f, 1.0f);
+			
+			//Effect_ToneMapping_FadeWorldGrading("grading_hall", 3.0f);
+			
+			Game_AutoSave();
+			
+			return false;
+		}
 	 
 	//} END SCENE 1
- 
+	 
 }
