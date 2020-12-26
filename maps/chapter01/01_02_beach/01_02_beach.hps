@@ -673,7 +673,7 @@ class cScrMap : iScrMap
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
 			 			 			 
-			Map_AddTimer("ChangeMap", 0.75f, "Timer_ChangeMap");
+			 Map_AddTimer("ChangeMap", 0.75f, "Timer_ChangeMap");
 			 
              return false;
 		}

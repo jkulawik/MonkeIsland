@@ -196,6 +196,7 @@ class cScrMap : iScrMap
 		if (mbRevealPlayerPos)
 		{
 			Agent_RevealPlayerPosition("rock_enemy", true);
+			Agent_RevealPlayerPosition("rock_enemy_2", true);
 		}
 		
 		UpdateLampsColor(afTimeStep);
@@ -259,7 +260,7 @@ class cScrMap : iScrMap
 		
 		void Timer_PlayMusic(const tString&in asTimer)
 		{
-			Music_Play("monke_island_escape_temple", 0.69f, false, eMusicPrio_BigEvent);
+			Music_Play("monke_island_escape_temple", 0.7f, false, eMusicPrio_BigEvent);
 		}
 	 
 		//-------------------------------------------------------
@@ -460,6 +461,51 @@ class cScrMap : iScrMap
 			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
 			
 			Game_AutoSave();
+			
+			return false;
+		}
+		
+		bool Trigger_StartSecondChase(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			SlideDoor_SetClosed("SecondChaseDoor_1", false);
+			SlideDoor_SetClosed("SecondChaseDoor_2", false);
+			
+			Entity_SetActive("rock_enemy_2", true);
+			
+			Map_AddTimer("Timer_SecondChaseMusic", 0.65f, "Timer_SecondChaseMusic");
+			
+			Entity_SetActive("FloorBreak", true);
+			
+			mbRevealPlayerPos = true;
+			
+			return false;
+		}
+		
+		void Timer_SecondChaseMusic(const tString&in asTimer)
+		{
+			Music_Play("monke_island_escape_temple_2", 0.45f, false, eMusicPrio_BigEvent);
+			
+			Map_AddTimer("TryAgain", 124.0f, "Timer_TryAgain");
+		}
+		
+		void Timer_TryAgain(const tString&in asTimer)
+		{
+			Player_SetHealth(0);
+			
+			
+		}
+		
+		bool Trigger_FloorBreak(const tString &in asParent, const tString &in asChild, int alState)
+		{
+             Sound_CreateAtEntity("BridgeSmash", "03_03_herberts_hq/shadow_guardian/bridge_collapse_smash", "bridge");
+			 
+			 Entity_SetActive("bridge", false);
+			 
+			 Entity_SetActive("broken_bridge_piece_*", true);
+			 Entity_SetActive("BrokenBridge", true);
+			 
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
 			
 			return false;
 		}
