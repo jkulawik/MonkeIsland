@@ -160,7 +160,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
+			
 		}
 	}
 
@@ -457,7 +457,7 @@ class cScrMap : iScrMap
 			Map_FadeFogStart(5.0f, 1.0f);
 			Map_FadeFogEnd(70.0f, 1.0f);
 			
-			//Effect_ToneMapping_FadeWorldGrading("grading_hall", 3.0f);
+			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
 			
 			Game_AutoSave();
 			
