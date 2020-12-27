@@ -160,7 +160,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			
 		}
 	}
 
@@ -506,6 +505,41 @@ class cScrMap : iScrMap
 			 
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
+			 
+			 Map_AddTimer("RegainHelath", 2.0f, "Timer_RegainHealth");
+			
+			return false;
+		}
+		
+		void Timer_RegainHealth(const tString&in asTimer)
+		{
+			Player_AddHealth(100);
+		}
+		
+		bool Trigger_MonkeFall(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_4", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_4", "GhoulHole_4", true, false, true, eMonkeSpeed_Run);
+			
+			Map_AddTimer("RollRock", 0.85f, "Timer_RollRock");
+						
+			return false;
+		}
+		
+		void Timer_RollRock(const tString&in asTimer)
+		{
+			Entity_SetActive("rock_rolling", true);
+			Entity_AddImpulse("rock_rolling", cVector3f_Forward * 7, true, true);
+			Entity_AddImpulse("rock_rolling", cVector3f_Down * 5, true, true);
+		}
+		
+		bool Monke_Die(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("dielol", "monke/le_enemy/monke_short_alert", "monke_bg_4");
+			Sound_CreateAtEntity("dielol2", "monke/SFX/VO/wtf/teehee", "monke_bg_4");
+			
+			Entity_SetActive("monke_bg_4", false);
+			Entity_SetActive("rock_rolling", false);
 			
 			return false;
 		}

@@ -1,6 +1,8 @@
 <Entity>
     <ModelData>
-        <Entities />
+        <Entities>
+            <Sound ID="6" Name="Sound_1" CreStamp="1609097297" ModStamp="1609097353" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" SoundEntityFile="monke/sfx/stop_the_rock/they_see_me_rolling" MinDistance="1" MaxDistance="5" Volume="0.5" Active="true" UseCustomProperties="false" />
+        </Entities>
         <Mesh Filename="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.fbx">
             <SubMesh ID="0" Name="Sphere" CreStamp="0" ModStamp="1606067288" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" TriCount="528" Material="mods/MonkeIsland/entities/character/rock_enemy/rock_enemy.mat" Static="true" />
         </Mesh>
@@ -13,17 +15,16 @@
             <Shape ID="4" Name="ShapeSphere_1" CreStamp="1609018318" ModStamp="1609018321" WorldPos="0 0 0" Rotation="0 0 0" Scale="0.499539 0 0" RelativeTranslation="0 0 0" RelativeRotation="0 -0 0" RelativeScale="1 1 1" ShapeType="Sphere" />
         </Shapes>
         <Bodies>
-            <Body ID="5" Name="Body_1" CreStamp="0" ModStamp="1609018425" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" Material="stone_slab" Mass="25" AngularDamping="0.5" LinearDamping="0.1" MaxAngularSpeed="5" MaxLinearSpeed="100" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="true" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="true" BlocksLight="true">
+            <Body ID="5" Name="Body_1" CreStamp="0" ModStamp="1609097333" WorldPos="0 0 0" Rotation="0 0 0" Scale="1 1 1" Material="stone_slab" Mass="25" AngularDamping="0.5" LinearDamping="0.1" MaxAngularSpeed="5" MaxLinearSpeed="100" BuoyancyDensityMul="1" BlocksSound="false" ContinuousCollision="true" CanAttachCharacter="false" PushedByCharacterGravity="false" CollideCharacter="true" CollideNonCharacter="true" Volatile="false" UseSurfaceEffects="true" HasGravity="true" BlocksLight="true">
                 <Children>
+                    <Child ID="6" />
                     <Child ID="0" />
                 </Children>
                 <Shape ID="4" />
             </Body>
         </Bodies>
         <Joints />
-        <Animations>
-            <Animation Name="roll" File="mods/MonkeIsland/entities/character/rock_enemy/animations/roll.fbx" Layer="Default" Speed="0.2" />
-        </Animations>
+        <Animations />
         <ProcAnimations />
     </ModelData>
     <UserDefinedVariables EntityType="Prop_Rigid">
