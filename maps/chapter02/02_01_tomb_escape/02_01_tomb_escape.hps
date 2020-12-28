@@ -543,6 +543,27 @@ class cScrMap : iScrMap
 			
 			return false;
 		}
+		
+		bool EndLevel(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("rock_enemy_2", false);
+			
+			Music_StopAll(5.0f);
+			
+			cLux_SetGodModeActivated(true);
+			Effect_Fade_Out(1.0f);
+			
+			Player_SetActive(false);
+			
+			Map_AddTimer("ChangeMap", 1.5f, "Timer_ChangeMap");
+			
+			return false;
+		}
+		
+		void Timer_ChangeMap(const tString&in asTimer)
+		{
+			Map_ChangeMap("02_02_tomb_exit.hpm", "Start_Begin");
+		}
 	 
 	//} END SCENE 1
 	 
