@@ -418,7 +418,7 @@ class cScrPlayerCustom : cScrPlayer
 	void OnDamageTaken(float afAmount, int aType, tID a_idSource) override
 	{
 		if (cLux_GetPlayer().IsActive() 
-			&& (Player_GetHealth() <= 0.015f || aType == eDamageType_Death)
+			&& (Player_GetHealth() <= 0.015f || aType == eDamageType_Death || aType == eDamageType_CrushDeath)
 			&& Player_GetCanDie())
 		{
 			if (mBaseObj.IsInLiquid())
@@ -435,7 +435,9 @@ class cScrPlayerCustom : cScrPlayer
 			if (mbPlayDeathSoundEffects)
 			{
 				Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
-				Sound_PlayGui("player/foley/damage/player_fall_death", 1.0f, eSoundEntryType_GuiWorld);
+				
+				tString sSound = aType == eDamageType_Death ? "player/foley/damage/player_fall_death" : "monke_new/sfx/player/death/death_crush";
+				Sound_PlayGui(sSound, 1.0f, eSoundEntryType_GuiWorld);
 			}
 			
 			tString sSource = "";
@@ -444,6 +446,11 @@ class cScrPlayerCustom : cScrPlayer
 			if (pEnt !is null)
 			{
 				sSource = pEnt.GetName();
+			}
+			
+			if (aType == eDamageType_CrushDeath)
+			{	
+				Effect_Fade_Out(0.5f);
 			}
 			
 			Death_Start(sSource);
@@ -1424,7 +1431,7 @@ class cScrPlayerCustom : cScrPlayer
 					Effect_Screen_FadeAlpha(mlWaterHiding_ScreenId, 1.f, 0.5f);
 				}				
 				
-				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "player/vocalisations/underwater/underwater_breath_low", "player");
+				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "monke/Player/breaths/drown", "player");
 				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.5f, -1.f, false);
 			}
 			else if (mlWaterHiding_FeedbackStage == 1)
@@ -1435,7 +1442,7 @@ class cScrPlayerCustom : cScrPlayer
 				mlWaterHiding_FeedbackStage++;
 				
 				ParticleSystem_CreateAtEntity("PS_WaterHiding_Bubbles", "underwater.ps", "player", true);
-				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "player/vocalisations/underwater/underwater_breath_high", "player");
+				Sound_CreateAtEntity("Sound_WaterHiding_OutOfOxygen", "monke/Player/breaths/drown", "player");
 				
 				FearHandler_SetForcedAddFearRate(eFearForcedRateType_Underwater, 0.8f, -1.f, false);
 			}

@@ -1,0 +1,549 @@
+#include "interfaces/Map_Interface.hps"
+#include "base/Inputhandler_Types.hps"
+
+#include "helpers/helper_map.hps"
+#include "helpers/helper_agent.hps"
+#include "helpers/helper_props.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_sequences.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
+
+#include "helpers/custom/helper_props_custom.hps"
+#include "helpers/custom/helpers/helper_modules_custom.hps"
+#include "helpers/custom/helpers/helper_player_custom.hps"
+
+//--------------------------------------------------
+ 
+/*Place any global values here. These must be const variables as they will not be saved*/
+/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+ 
+//--------------------------------------------------
+ 
+class cScrMap : iScrMap
+{
+	//--------------------------------------------
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	////////////////////////////
+	// Set up map environment
+	void Setup()
+	{
+		GetBase().SetDisplayNameEntry("02-01-tomb-escape");
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		FearHandler_SetActive(true);
+		
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(true);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		
+		cScript_SetGlobalVarBool("HideAmuletBracelet", false);
+		
+		Entity_SetActive("monke_bg_1", true);
+		Monke_SetAllowPlayerThrow("monke_bg_1", false);
+				
+		/////////////////////////
+		// Debug
+		if(cLux_ScriptDebugOn())
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{	
+		Player_SetAmbientLight_Indoors(true);
+		
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(true);
+		Player_SetNightVisionBrightness(0.5f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		Player_SetAutoTeleportWhenBelowAltitude(-200.0f);
+		
+		Pregnancy_SetBarksActive(false);
+		
+		cLux_ClearAllMapSaveData();		
+		Game_AutoSave();
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// The player has died.
+	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// To get when player makes input (mostly used for debug)
+	void OnAction(int alAction, bool abPressed) 
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// This only used for pure debug purposes when info needs to printed.
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afY)
+	{
+		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
+		return afY;
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN CALLBACKS
+ 
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN FUNCTIONS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	bool mbRevealPlayerPos = false;
+ 
+	//-------------------------------------------------------
+ 
+	void Update(float afTimeStep)
+	{
+		if (mbRevealPlayerPos)
+		{
+			Agent_RevealPlayerPosition("rock_enemy", true);
+			Agent_RevealPlayerPosition("rock_enemy_2", true);
+		}
+		
+		UpdateLampsColor(afTimeStep);
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN FUNCTIONS
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE 1 START CHASE
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		 
+		//-------------------------------------------------------
+	 	 
+		bool Trigger_StartChase(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			MovingButton_SetSwitchedOn("pressureplate_1", true, true);
+			MovingButton_SetSwitchedOn("pressureplate_2", true, true);
+			
+			Map_AddTimer("Timer_CloseDoor", 0.5f, "Timer_CloseDoor");
+			
+			return false;
+		}
+		
+		void Timer_CloseDoor(const tString&in asTimer)
+		{
+			Player_SetActive(false);
+			
+			Map_AddTimer("RockFall", 0.5f, "Timer_OpenRockDoor");
+		}
+		
+		void Timer_OpenRockDoor(const tString&in asTimer)
+		{
+			PlayerEmotion_PlaySound(eEmotionPlaylistType_Breathing, eEmotionSoundType_OneShotEvent, 1, "monke/Player/breaths/air_fear");
+
+			SlideDoor_SetClosed("ChaseStartDoor", true);
+			Player_StartLookAt("ChaseStartDoor", 2.0f, 2.0f, 2.0f);
+			
+			Map_AddTimer("RockFall", 3.0, "Timer_RockFall");
+		}
+		
+		void Timer_RockFall(const tString&in asTimer)
+		{
+			SlideDoor_SetClosed("RockDoor", false);
+			Entity_SetActive("rock_enemy", true);
+			
+			Player_SetActive(true);
+			Player_StopLookAt(1.0f);
+			
+			mbRevealPlayerPos = true;
+			
+			Map_AddTimer("PlayerMusic", 0.9f, "Timer_PlayMusic");
+		}
+		
+		void Timer_PlayMusic(const tString&in asTimer)
+		{
+			Music_Play("monke_island_escape_temple", 0.7f, false, eMusicPrio_BigEvent);
+		}
+	 
+		//-------------------------------------------------------
+		
+		bool Monke_Disappear(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive(asChild, false);
+			
+			return true;
+		}
+		
+		bool Monke_RunAbove(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_1", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
+			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_1", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		
+		//} END General	
+	 
+		/////////////////////////////////////////
+		// Event *Name Of Event*
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+
+		int mlLeverCount = 0;
+		
+		tString msCurrentLamp = "";
+		cColor mpDestColor = cColor_White; // lol
+		
+		float mfLightFadeRate = 0.0f;
+			
+		//-------------------------------------------------------
+
+		bool Trigger_OpenBigDoor(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			SlideDoor_SetClosed("BigDoor_Left", false);
+			SlideDoor_SetClosed("BigDoor_Right", false);
+			
+			return false;
+		}
+
+		//-------------------------------------------------------
+		
+		void TombLevers_OnConnectionChangeState(const tString &in asEntity, int alState)
+		{
+			if (alState == 1)
+			{
+				mlLeverCount++;
+			}
+			
+			if (mlLeverCount == 3)
+			{
+				mbRevealPlayerPos = true;
+				
+				SlideDoor_SetClosed("CavesDoor", false);
+			}
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Monke_RunCave(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_2", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_2", "GhoulHole_2", true, false, true, eMonkeSpeed_Run);
+			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_2", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Monke_RunCave2(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_3", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_3", "GhoulHole_3", true, false, true, eMonkeSpeed_FastRun);
+			
+			Sound_CreateAtEntity("adhhh", "monke/le_enemy/monke_short_alert", "MonkeSource_2", 0.0f, false, 0.85f, 5.0f, 70.0f);
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
+		bool Trigger_CloseDoor(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("Trigger_5", true);
+			
+			SlideDoor_SetClosed("ChaseEndDoor", true);
+			
+			Music_StopAll(10.0f);
+			
+			Game_AutoSave();
+			
+			return false;
+		}
+		
+		bool Trigger_StopRock(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			mbRevealPlayerPos = false;
+			
+			Agent_RevealPlayerPosition("rock_enemy", false);
+			Agent_SetSensesActive("rock_enemy", false);
+			Agent_ResetPlayerDetectionState("rock_enemy");
+			
+			Rock_ForcePatrolState("rock_enemy");
+			
+			Pathfinder_Track_Add("rock_enemy", "PathNode_81");
+			Pathfinder_Track_Start("rock_enemy", false, 1.0f, "DisableRock");
+			
+			return false;
+		}
+		
+		void DisableRock(const tString&in asEntityName)
+		{
+			Entity_SetActive(asEntityName, false);
+		}
+		
+		//-------------------------------------------------------
+		
+		void UpdateLampsColor(float afTimeStep)
+		{
+			if (msCurrentLamp == "" || mpDestColor == cColor_White) return;
+			
+			cColor pIllumColor = Map_GetEntity(msCurrentLamp).GetMeshEntity().GetIlluminationColor();
+			
+			if (pIllumColor.r == mpDestColor) return;
+			
+			mfLightFadeRate += cMath_Clamp(afTimeStep * 2.0f, 0.0f, 1.0f);
+			if (mfLightFadeRate > 0.5f)
+			{
+				mfLightFadeRate = 0.0f;
+			}
+			
+			float fR = cMath_Easing(eEasing_Linear, mfLightFadeRate, pIllumColor.r, mpDestColor.r);
+			float fG = cMath_Easing(eEasing_Linear, mfLightFadeRate, pIllumColor.g, mpDestColor.g);
+						
+			cColor pNewColor = mpDestColor;
+			pNewColor.r = fR;
+			pNewColor.g = fG;
+			
+			Map_GetEntity(msCurrentLamp).GetMeshEntity().SetIlluminationColor(pNewColor);
+		}
+		
+		void MonkeButton_OnConnectionChangeState(const tString &in asEntity, int alState)
+		{
+			tString sLightName = Entity_GetVarString(asEntity, "");
+			msCurrentLamp = cString_ReplaceStringTo(sLightName, "Light", "Lamp");
+			
+			mpDestColor = alState == 1 ? cColor_Green : cColor_Red;
+			
+			Light_FadeTo(sLightName, mpDestColor, 2, 0.25f);
+			
+			Entity_SetActive("BlockBox_Door_*", !(!Button_IsSwitchedOn("SeeNoButton") && Button_IsSwitchedOn("HearNoButton")));
+		}
+		
+		//-------------------------------------------------------
+		
+		void TickLever_OnConnectionStateChange(const tString &in asEntity, int alState)
+		{
+			if (alState == 1)
+			{
+				Sound_CreateAtEntity("Tick", "monke_new/sfx/gameplay/tick_fast", "TickSource");
+				Sound_CreateAtEntity("DoorOpen", "level_entity_shared/doors/portcullis/portcullis_start_stop", "DoorSource", 0.0f, false, 1.0f, 3.0f, 11.0f);
+				
+				SlideDoor_SetClosed("SafeExitDoor", false);
+				
+				Lever_SetStuckState("TickLever", 1, false);
+				
+				Map_AddTimer("CloseGate", 4.0f, "Timer_CloseGate");
+			}
+		}
+		
+		void Timer_CloseGate(const tString&in asTimer)
+		{
+			SlideDoor_SetClosed("SafeExitDoor", true);
+			Sound_Stop("Tick", 0.0f);
+			
+			Sound_CreateAtEntity("DoorOpen", "level_entity_shared/doors/portcullis/portcullis_start_stop", "DoorSource", 0.0f, false, 1.0f, 3.0f, 11.0f);
+			
+			Lever_SetStuckState("TickLever", 0, false);
+		}
+		
+		//-------------------------------------------------------
+		
+		bool FadeFog(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Map_FadeFogStart(5.0f, 1.0f);
+			Map_FadeFogEnd(70.0f, 1.0f);
+			
+			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
+			
+			Game_AutoSave();
+			
+			return false;
+		}
+		
+		bool Trigger_StartSecondChase(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			SlideDoor_SetClosed("SecondChaseDoor_1", false);
+			SlideDoor_SetClosed("SecondChaseDoor_2", false);
+			
+			Entity_SetActive("rock_enemy_2", true);
+			
+			Map_AddTimer("Timer_SecondChaseMusic", 0.65f, "Timer_SecondChaseMusic");
+			
+			Entity_SetActive("FloorBreak", true);
+			
+			mbRevealPlayerPos = true;
+			
+			return false;
+		}
+		
+		void Timer_SecondChaseMusic(const tString&in asTimer)
+		{
+			Music_Play("monke_island_escape_temple_2", 0.45f, false, eMusicPrio_BigEvent);
+			
+			Map_AddTimer("TryAgain", 124.0f, "Timer_TryAgain");
+		}
+		
+		void Timer_TryAgain(const tString&in asTimer)
+		{
+			Player_SetHealth(0);
+			
+			
+		}
+		
+		bool Trigger_FloorBreak(const tString &in asParent, const tString &in asChild, int alState)
+		{
+             Sound_CreateAtEntity("BridgeSmash", "03_03_herberts_hq/shadow_guardian/bridge_collapse_smash", "bridge");
+			 
+			 Entity_SetActive("bridge", false);
+			 
+			 Entity_SetActive("broken_bridge_piece_*", true);
+			 Entity_SetActive("BrokenBridge", true);
+			 
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
+			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
+			 
+			 Map_AddTimer("RegainHelath", 2.0f, "Timer_RegainHealth");
+			
+			return false;
+		}
+		
+		void Timer_RegainHealth(const tString&in asTimer)
+		{
+			Player_AddHealth(100);
+		}
+		
+		bool Trigger_MonkeFall(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke_bg_4", true);
+			Monke_CommandGoToSpecificHole_Execute("monke_bg_4", "GhoulHole_4", true, false, true, eMonkeSpeed_Run);
+			
+			Map_AddTimer("RollRock", 0.85f, "Timer_RollRock");
+						
+			return false;
+		}
+		
+		void Timer_RollRock(const tString&in asTimer)
+		{
+			Entity_SetActive("rock_rolling", true);
+			Entity_AddImpulse("rock_rolling", cVector3f_Forward * 7, true, true);
+			Entity_AddImpulse("rock_rolling", cVector3f_Down * 5, true, true);
+		}
+		
+		bool Monke_Die(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_CreateAtEntity("dielol", "monke/le_enemy/monke_short_alert", "monke_bg_4");
+			Sound_CreateAtEntity("dielol2", "monke/SFX/VO/wtf/teehee", "monke_bg_4");
+			
+			Entity_SetActive("monke_bg_4", false);
+			Entity_SetActive("rock_rolling", false);
+			
+			return false;
+		}
+	 
+	//} END SCENE 1
+	 
+}
