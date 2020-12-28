@@ -1,0 +1,206 @@
+#include "props/Prop_Rigid.hps"
+#include "helpers/helper_player.hps"
+
+class cScrProDirectionSign : cScrPropRigid
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		cScrPropRigid::Init();
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void SetupAfterLoad(cWorld @apWorld, cResourceVarsObject@ apVars, cResourceVarsObject@ apInstanceVars)
+	{
+		cScrPropRigid::SetupAfterLoad(apWorld, apVars, apInstanceVars);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void ResetProperties()
+	{
+		mfBlinkTime = 0.0f;
+		mbIsPlayingSound = false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void BeforeEntityDestruction()
+	{
+	}
+		
+	//------------------------------------------------------------
+	
+	void OnStartMove()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnConnectionStateChange(iLuxEntity@ apEntity,int alState)
+	{
+	}
+		
+	//------------------------------------------------------------
+	
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnSetActive(bool abX)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void GiveDamage(iPhysicsBody@ apBodyHit, const cVector3f&in avOrigin, const cVector3f&in avHitPos, cLuxDamageProperties@ apDamageProps)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnHealthChange()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPhysicsCollision(iPhysicsBody @apBody, iPhysicsBody @apCollideBody, cPhysicsContactData&in apContactData)
+	{
+	}
+		
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnUpdate(float afTimeStep)
+	{
+		mfBlinkTime += afTimeStep;
+				
+		if (mfBlinkTime >= 0.5f)
+		{
+			mBaseObj.GetLightFromName("Light_Point_1").SetBrightness(1.0f);
+			mBaseObj.GetLightFromName("Light_Point_2").SetBrightness(0.0f);
+		}
+		
+		if (mfBlinkTime >= 1.0f)
+		{
+			mBaseObj.GetLightFromName("Light_Point_1").SetBrightness(0.0f);
+			mBaseObj.GetLightFromName("Light_Point_2").SetBrightness(1.0f);
+		}
+		
+		if (mfBlinkTime > 1.0f)
+		{
+			mfBlinkTime = 0.0f;
+		}
+		
+		
+		float fDist = Player_GetDistanceToEntity(mBaseObj.GetName());
+		
+		if (fDist <= 5.0f && !mbIsPlayingSound)
+		{
+			mBaseObj.PlaySound("_signal", "monke/SFX/signal", true, true);
+			mbIsPlayingSound = true;
+		}
+		
+		if (fDist > 5.0f && mbIsPlayingSound)
+		{
+			mbIsPlayingSound = false;
+		}
+	}
+	
+	
+	//------------------------------------------------------------
+		
+	bool CanInteract(int alType, iPhysicsBody@ apBody)
+	{
+		return false;
+	}
+	
+	//------------------------------------------------------------
+		
+	bool OnInteract(int alType, iPhysicsBody@ apBody, const cVector3f &in avFocusPos, const tString&in asData)
+	{
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetInteractIconId(int alType, iPhysicsBody@ apBody)
+	{
+		return cScrPropRigid::GetInteractIconId(alType, apBody);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool OnUpdateAutoSleep()
+	{
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// SPECIFIC ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void _Global_SetCustomInteractIcon()
+	{
+		cScrPropRigid::_Global_SetCustomInteractIcon();
+	}
+			
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// DEBUG
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afStartY)
+	{
+		return afStartY;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	[nosave] float mfBlinkTime;
+	bool mbIsPlayingSound;
+	
+	//------------------------------------------------------------
+}
