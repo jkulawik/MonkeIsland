@@ -73,7 +73,12 @@ class cScrMap : iScrMap
 		cScript_SetGlobalVarBool("HideAmuletBracelet", false);
 		
 		Entity_SetActive("monke_bg_1", true);
+		Entity_FadeEffectBaseColor("door_lamp", cColor_Red, 0.5f);
+		Entity_FadeEffectBaseColor("door_lamp_1", cColor_Red, 0.5f);
+		
 		Monke_SetAllowPlayerThrow("monke_bg_1", false);
+		
+		Amulet_StartTracking(true, "DoorOpener");
 				
 		/////////////////////////
 		// Debug
@@ -160,6 +165,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			Amulet_StartTracking(true, "DoorOpener");
 		}
 	}
 
@@ -202,6 +208,13 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
+	
+	void OnGuiDWNote(const tString&in asEntityName, float afTimeStep)
+	{
+		DWNote_RenderGUI(asEntityName, afTimeStep);
+	}
+	
+	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS
  
@@ -214,6 +227,35 @@ class cScrMap : iScrMap
 		/////////////////////////////////////////
 		// General
 		//{//////////////////////////////////////
+		
+		void DoorOpenerStages(const tString &in asRift, int alStage, bool abOpening, float afOpenAmount)
+		{
+			if(alStage == 1)
+			{
+				Entity_FadeEffectBaseColor("door_lamp", cColor_Blue, 0.5f);
+				Entity_FadeEffectBaseColor("door_lamp_1", cColor_Blue, 0.5f);
+				
+				Map_GetEntity("door_lamp_1").GetMeshEntity().SetIlluminationColor(cColor_Blue);
+				
+				SlideDoor_SetClosed("tin_hinan_slide_floor_up_1", false);
+			}
+			else
+			{
+				Entity_FadeEffectBaseColor("door_lamp", cColor_Red, 0.5f);
+				Entity_FadeEffectBaseColor("door_lamp_1", cColor_Red, 0.5f);
+				SlideDoor_SetClosed("tin_hinan_slide_floor_up_1", true);
+				
+				Map_GetEntity("door_lamp_1").GetMeshEntity().SetIlluminationColor(cColor_Red);
+			}
+		}
+		
+		bool StopTracking(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Amulet_StopTracking();
+			Entity_SetActive("DoorOpener", false);
+			
+			return false;
+		}
 		 
 		//-------------------------------------------------------
 	 	 
@@ -562,7 +604,7 @@ class cScrMap : iScrMap
 		
 		void Timer_ChangeMap(const tString&in asTimer)
 		{
-			Map_ChangeMap("02_02_tomb_exit.hpm", "Start_Begin");
+			Map_ChangeMap("02_02_tomb_exit.hpm", "Start_Begin", "", "");
 		}
 	 
 	//} END SCENE 1
