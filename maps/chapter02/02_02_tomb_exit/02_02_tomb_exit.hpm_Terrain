@@ -1,0 +1,25 @@
+<HPLMapTrack_Terrain ID="8228A5EF9743A19BF5350A2AD76C3B07D12E885" MajorVersion="1" MinorVersion="1">
+    <Terrain Active="true" GeometryPatchSize="32" TexturePatchSize="32" HeightMapSize="1024" MaxHeight="50" UnitSize="1" UndergrowthGridSize="10" UndergrowthFadeStart="18" UndergrowthFadeEnd="20" BaseMaterialFile="mods/MonkeIsland/textures/terrain/soil/grass_tiling03.mat" BaseMaterialTileAmount="0.45" BaseMaterialStartFadeValue="0" BaseMaterialDetailTextureAmount="1 0 0" BaseMaterialHeightMapScale="0" MaterialSpecularPower="0.3" MaterialTextureLayerNum="10" MaterialTextureFalloff="10" CliffTextureDiffuse="mods/MonkeIsland/textures/terrain/soil/dirt_road_tiling.dds" CliffTextureNMap="mods/MonkeIsland/textures/terrain/soil/dirt_road_tiling_nrm.dds" CliffTextureSize="1" CliffTextureFadeAngleMul="1">
+        <DetailTextures DetailFadeStart="10" DetailFadeEnd="20">
+            <DetailTexture ID="0" File="" Scale="1" />
+            <DetailTexture ID="1" File="" Scale="1" />
+            <DetailTexture ID="2" File="" Scale="1" />
+        </DetailTextures>
+        <BlendLayers>
+            <BlendLayer ID="0">
+                <Material File="mods/MonkeIsland/textures/terrain/soil/dirt_road_tiling.mat" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+                <Material File="" TileAmount="0.25" StartFadeValue="0" DetailTextureAmount="1 0 0" HeightMapScale="0" />
+            </BlendLayer>
+        </BlendLayers>
+        <Sections>
+            <Section Name="10911851120317680304">
+                <FileIndex_TerrainDecals NumOfFiles="0" />
+                <Decals />
+                <FileIndex_UndergrowthMaterials NumOfFiles="0" />
+                <Undergrowth />
+            </Section>
+        </Sections>
+    </Terrain>
+</HPLMapTrack_Terrain>

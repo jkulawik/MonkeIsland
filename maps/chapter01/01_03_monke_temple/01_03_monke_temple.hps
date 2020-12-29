@@ -504,6 +504,7 @@ class cScrMap : iScrMap
 			else if(Sequence_DoStepAndWait(0.5f))
 			{
 				Sound_CreateAtEntity("Woosh2", "level_entity_shared/fire/campfire/campfire_ignite", "Player");
+				Sound_CreateAtEntity("screech", "monke/le_enemy/monke_short_alert", "Player", 0.0f, false, 0.5f);
 				
 				Lamp_SetLit("dwf_torch_02_1", true, true);
 				Lamp_SetLit("dwf_torch_02_5", true, true);

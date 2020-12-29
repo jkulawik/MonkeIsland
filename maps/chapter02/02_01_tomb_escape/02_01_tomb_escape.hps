@@ -78,12 +78,12 @@ class cScrMap : iScrMap
 		
 		Monke_SetAllowPlayerThrow("monke_bg_1", false);
 		
-		Amulet_StartTracking(true, "DoorOpener");
+		Lantern_SetAmount(0.5f);
 				
-		/////////////////////////
-		// Debug
-		if(cLux_ScriptDebugOn())
+		if(!cLux_ScriptDebugOn())
 		{
+			Effect_Fade_Out(0);
+			Map_AddTimer("Timer_WakeUp", 2.0f, "Timer_WakeUp");
 		}
 	}
 
@@ -165,7 +165,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Amulet_StartTracking(true, "DoorOpener");
 		}
 	}
 
@@ -228,6 +227,40 @@ class cScrMap : iScrMap
 		// General
 		//{//////////////////////////////////////
 		
+		void Timer_WakeUp(const tString&in asTimer)
+		{
+			Seq_WakeUp("");
+		}
+
+		cSequenceStatesData mWakeUpSequence;
+		void Seq_WakeUp(const tString&in asTimer)
+		{
+			Sequence_Begin("Seq_WakeUp", mWakeUpSequence);
+			
+			if(Sequence_DoStepAndWait(2.508f))
+			{
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "",0);
+			}
+			else if(Sequence_DoStepAndWait(3.0f))
+			{
+				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_WorldAll);
+				
+				Effect_Fade_In(1.0f);
+			}
+			else if(Sequence_DoStepAndContinue())
+			{				
+				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 0.85f, "OnFinishWakingUp");
+			}
+			
+			Sequence_End();
+		}
+		
+		void OnFinishWakingUp(const tString &in asAnimName)
+		{
+			Amulet_StartTracking(true, "DoorOpener");
+			Game_AutoSave();
+		}
+		
 		void DoorOpenerStages(const tString &in asRift, int alStage, bool abOpening, float afOpenAmount)
 		{
 			if(alStage == 1)
@@ -252,7 +285,7 @@ class cScrMap : iScrMap
 		bool StopTracking(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Amulet_StopTracking();
-			Entity_SetActive("DoorOpener", false);
+			Entity_Destroy("DoorOpener");
 			
 			return false;
 		}
@@ -309,6 +342,8 @@ class cScrMap : iScrMap
 		bool Monke_Disappear(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Entity_SetActive(asChild, false);
+			
+			Hint_ShowHint("Hints", "HintSlow");
 			
 			return true;
 		}
