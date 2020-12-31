@@ -7,6 +7,9 @@
 
 const float gfTotalStayTime = 5.0f;
 
+const float gfEndYPos = 0.88f;
+const float gfStartYPos = 1.0f;
+
 //----------------------------------------------------------------------------------------
 
 class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
@@ -22,6 +25,7 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     void Init()
 	{
 		mbIsShowing = false;
+		mbGoingDown = false;
 		mfStayTime = 0.0f;
 		
 		msTitle = "";
@@ -93,9 +97,18 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
     void OnGui(float afTimeStep)
 	{
-		if (!mbIsShowing) return;
+		//if (!mbIsShowing) return;
 		
 		mfStayTime += afTimeStep;
+		
+		if (mfStayTime > 5.0f)
+		{
+			mfStayTime -= afTimeStep;
+		}
+		else
+		{
+			mfStayTime += afTimeStep;
+		}
 		
 		cVector3f vPos;
 		vPos.x = -cLux_GetHudVirtualOffset().x;
@@ -104,13 +117,20 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 		
 		ImGui_GroupBegin(vPos, ImGui_GetSize());
 			cImGuiGfx frame = cImGuiGfx("achievement_frame");
-			frame.mvOffset = ImGui_NrmPosGroup(0.28, 0.98, 0.0);
-			
-			cImGuiGfx image = cImGuiGfx("achievement_image_" + msImage);
-			
-			
+			cImGuiGfx thumbnail = cImGuiGfx("achievement_thumb_nate");
+						
+			float fY = cMath_Easing(eEasing_Linear, cMath_Min(mfStayTime - 0.5, 0.5f) / 0.5f, gfStartYPos, gfEndYPos);
+
+			ImGui_DrawGfx(frame, ImGui_NrmPosGroup(0.69f, fY, 1.0));
+			ImGui_DrawGfx(thumbnail, ImGui_NrmPosGroup(0.695f, fY + 0.015, 0.0));
 		ImGui_GroupEnd();
+		
+		cLux_AddDebugMessage("" + mfStayTime);
 	}
+	
+	//-------------------------------------------------------
+	
+	
     
     //-------------------------------------------------------
     
@@ -126,7 +146,9 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
 	[nosave] bool mbIsShowing;
 	[nosave] float mfStayTime;
-	
+		
+	bool mbGoingDown;
+		
 	[nosave] tString msTitle;
 	[nosave] tString msImage;
 	
