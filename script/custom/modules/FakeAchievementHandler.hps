@@ -1,0 +1,136 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "modules/ModuleInterfaces.hps"
+
+#include "helpers/helper_imgui.hps"
+
+//----------------------------------------------------------------------------------------
+
+const float gfTotalStayTime = 5.0f;
+
+//----------------------------------------------------------------------------------------
+
+class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
+{
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ==============
+    // MAIN CALLBACKS
+    // ==============
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+    void Init()
+	{
+		mbIsShowing = false;
+		mfStayTime = 0.0f;
+		
+		msTitle = "";
+		msImage = "";
+	}
+	
+	//-------------------------------------------------------
+	
+	
+    void Update(float afTimeStep) {}
+    void PostUpdate(float afTimeStep) {}
+    void VariableUpdate(float afDeltaTime) {}
+    void Reset() {}
+    void OnDraw(float afFrameTime) {}
+    void OnPostRender(float afFrameTime) {}
+    void LoadUserConfig() {}
+    void SaveUserConfig() {}
+    void OnMapEnter(cLuxMap @apMap) {}
+    void OnMapLeave(cLuxMap @apMap) {}
+    void CreateWorldEntities(cLuxMap @apMap) {}
+    void DestroyWorldEntities(cLuxMap @apMap) {}
+    void PreloadData(cLuxMap @apMap) {}
+    void OnEnterContainer(const tString&in asOldContainer) {}
+    void OnLeaveContainer(const tString&in asNewContainer) {}
+    void OnExitPressed() {}
+    void OnAction(int alAction,  bool abPressed) {}
+    void OnAnalogInput(int alAnalogId,  const cVector3f &in avAmount) {}
+    void AppGotInputFocus() {}
+    void AppLostInputFocus() {}
+    
+    //-------------------------------------------------------
+
+	private void Unlock(const tString&in asTitle, const tString&in asImage)
+	{
+		msTitle = asTitle;
+		msImage = asImage;
+		
+		mbIsShowing = true;
+	}
+
+	//-------------------------------------------------------
+    
+    //} END MAIN CALLBACKS
+    
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ================
+    // GLOBAL FUNCTIONS
+    // ================
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+	
+	void _Global_UnlockFakeAchievement()
+	{
+		Unlock(cScript_GetGlobalArgString(0), cScript_GetGlobalArgString(1));
+	}
+    
+    //-------------------------------------------------------
+    
+    //} END GLOBAL FUNCTIONS
+    
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // =============
+    // GUI CALLBACKS
+    // =============
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+    void OnGui(float afTimeStep)
+	{
+		if (!mbIsShowing) return;
+		
+		mfStayTime += afTimeStep;
+		
+		cVector3f vPos;
+		vPos.x = -cLux_GetHudVirtualOffset().x;
+		vPos.y = -cLux_GetHudVirtualOffset().y;
+		vPos.z = 0.0f;
+		
+		ImGui_GroupBegin(vPos, ImGui_GetSize());
+			cImGuiGfx frame = cImGuiGfx("achievement_frame");
+			frame.mvOffset = ImGui_NrmPosGroup(0.28, 0.98, 0.0);
+			
+			cImGuiGfx image = cImGuiGfx("achievement_image_" + msImage);
+			
+			
+		ImGui_GroupEnd();
+	}
+    
+    //-------------------------------------------------------
+    
+    //} END GUI CALLBACKS
+	
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ================
+    // PROPERTIES
+    // ================
+    //{///////////////////////////////////////////////////////////////////////////////////////
+    
+    //-------------------------------------------------------
+    
+	[nosave] bool mbIsShowing;
+	[nosave] float mfStayTime;
+	
+	[nosave] tString msTitle;
+	[nosave] tString msImage;
+	
+    //-------------------------------------------------------
+    
+    //} END PROPERTIES
+}
