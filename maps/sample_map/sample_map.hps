@@ -127,10 +127,6 @@ class cScrMap : iScrMap
 		{
 			Sketchbook_AddAllIdeas(true);
 		}
-		if(alAction == eAction_Test3)
-		{
-			FakeAchievement_Unlock("nate");
-		}
 	}
 	
 	void Timer_StartPuke(const tString&in asTimer)

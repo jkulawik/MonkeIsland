@@ -19,11 +19,12 @@
 #include "helpers/custom/helper_props_custom.hps"
 #include "helpers/custom/helpers/helper_modules_custom.hps"
 #include "helpers/custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_fake_achievements.hps"
+
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+int glRockDeathCount = 2;
  
 //--------------------------------------------------
  
@@ -124,7 +125,11 @@ class cScrMap : iScrMap
 	////////////////////////////
 	// The player has died.
 	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
-	{
+	{		
+		if (asSource == "rock_enemy" || asSource == "rock_enemy_2" && alRecentDeaths == 2)
+		{
+			FakeAchievement_Unlock("rock");
+		}
 	}
 	
 	//-------------------------------------------------------
@@ -133,15 +138,6 @@ class cScrMap : iScrMap
 	// Called when player HP reaches 0
 	bool OnDeath(const tString &in asSource)
 	{
-		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
-		
-		if (asSource == "SomeReason")
-		{
-			Effect_Fade_Out(1.0f);
-			return true; // return true to completely override base behaviour
-		}
-		
-		// return false for default behaviour
 		return false;
 	}
 	
@@ -165,6 +161,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			FakeAchievement_Unlock("rock");
 		}
 	}
 
@@ -190,7 +187,7 @@ class cScrMap : iScrMap
 	//{///////////////////////////////////////////////////////////////////////////////////////
  
 	//-------------------------------------------------------
- 
+	
 	bool mbRevealPlayerPos = false;
  
 	//-------------------------------------------------------

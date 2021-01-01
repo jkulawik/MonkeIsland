@@ -16,9 +16,9 @@
 #include "helpers/helper_message.hps"
 #include "helpers/helper_rotation.hps"
 
-#include "helpers/custom/helper_props_custom.hps"
 #include "custom/helpers/helper_modules_custom.hps"
 #include "custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_fake_achievements.hps"
  
 class cScrMap : iScrMap
 {
@@ -431,6 +431,15 @@ class cScrMap : iScrMap
 	//{//////////////////////////////////////////////////////////////////////////////////////
 	
 	//-------------------------------------------------------
+	
+	bool dielol(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		FakeAchievement_Unlock("cliff");
+		
+		return false;
+	}
+	
+	//-------------------------------------------------------
 		
 	bool mbIsInsideSpeedTest = false;
 	bool mbPlayingBuildupMusic = false;
@@ -482,6 +491,8 @@ class cScrMap : iScrMap
 			
 			if (mfTotalRunningTime >= 2.0f && !mbPlayingAnimation && Entity_GetCollide("player", "BridgeJump") && Player_GetVelocity().y > 1.0f)
 			{
+				Entity_SetActive("die", false);
+				
 				Music_PlayExt("bridge_jump_no_buildup.ogg", false, 0.5f, 1.0f, 1.0f, 1.0f, eMusicPrio_BigEvent, false);
 				CameraAnimation_Begin("BridgeJumpAnimation", "", true);
 				
@@ -672,7 +683,9 @@ class cScrMap : iScrMap
 			 
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_1", "smoke_oneshot_grate_break.ps", "player", false);
 			 ParticleSystem_CreateAtEntity("PS_BridgeBreak_2", "smoke_oneshot_grate_break.ps", "player", false);
-			 			 			 
+			 	
+			 Effect_Fade_Out(0.75f);
+						
 			 Map_AddTimer("ChangeMap", 0.75f, "Timer_ChangeMap");
 			 
              return false;

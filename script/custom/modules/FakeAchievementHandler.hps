@@ -23,14 +23,12 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     //-------------------------------------------------------
     
     void Init()
-	{
+	{		
 		mbIsMoving = false;
 		mbIsAchivementDisplayed = false;
 		
-		mfCurrentPos = 0.0f;
 		mfDisplayTimer = 0.0f;
-		
-		msName = "";
+		mfCurrentPos = 0.0f;
 	}
 	
 	//-------------------------------------------------------
@@ -43,11 +41,7 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 	
     void Reset() 
 	{
-		mbIsMoving = true;
-		mbIsAchivementDisplayed = true;
-		
-		mfCurrentPos = 0.0f;
-		mfDisplayTimer = 0.0f;
+		msName = "";
 	}
 	
 	//-------------------------------------------------------
@@ -75,7 +69,8 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 	{
 		msName = asName;
 		
-		Reset();
+		mbIsMoving = true;
+		mbIsAchivementDisplayed = true;
 	}
 
 	//-------------------------------------------------------
@@ -125,7 +120,13 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 			else
 			{
 				mfCurrentPos = cMath_IncreaseTo(mfCurrentPos, afTimeStep, 0);
-				if (mfCurrentPos == 0) mbIsAchivementDisplayed = false;
+				if (mfCurrentPos == 0)
+				{
+					mbIsMoving = false;
+					mbIsAchivementDisplayed = false;
+					
+					mfDisplayTimer = 0.0f;
+				}
 			}
 		}
 
@@ -138,10 +139,10 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 			cImGuiGfx frame = cImGuiGfx("achievement_frame_" + msName);
 			cImGuiGfx thumbnail = cImGuiGfx("achievement_thumb_" + msName);
 						
-			float fY = cMath_Easing(eEasing_Linear, cMath_Min(mfCurrentPos - 0.5f, 0.5f) / 0.5f, gfStartYPos, gfEndYPos);
+			float fY = cMath_Easing(eEasing_Linear, cMath_Min(mfCurrentPos - 0.5f, 0.2f) / 0.2f, gfStartYPos, gfEndYPos);
 
-			ImGui_DrawGfx(frame, ImGui_NrmPosGroup(0.724f, fY, 1.0f), cVector2f(182.0f, 66.0f));
-			ImGui_DrawGfx(thumbnail, ImGui_NrmPosGroup(0.729f, fY + 0.01f, 0.0f), cVector2f(51.5f, 51.5f));
+			ImGui_DrawGfx(frame, ImGui_NrmPosGroup(0.724f, fY, 15.0f), cVector2f(182.0f, 66.0f));
+			ImGui_DrawGfx(thumbnail, ImGui_NrmPosGroup(0.729f, fY + 0.01f, 15.0f), cVector2f(51.5f, 51.5f));
 		ImGui_GroupEnd();
 	}
     
