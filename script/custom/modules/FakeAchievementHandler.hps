@@ -7,7 +7,7 @@
 
 const float gfTotalStayTime = 5.0f;
 
-const float gfEndYPos = 0.88f;
+const float gfEndYPos = 0.915f;
 const float gfStartYPos = 1.0f;
 
 //----------------------------------------------------------------------------------------
@@ -24,21 +24,34 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
     void Init()
 	{
-		mbIsShowing = false;
-		mbGoingDown = false;
-		mfStayTime = 0.0f;
+		mbIsMoving = false;
+		mbIsAchivementDisplayed = false;
 		
-		msTitle = "";
-		msImage = "";
+		mfCurrentPos = 0.0f;
+		mfDisplayTimer = 0.0f;
+		
+		msName = "";
 	}
 	
 	//-------------------------------------------------------
 	
-	
     void Update(float afTimeStep) {}
     void PostUpdate(float afTimeStep) {}
     void VariableUpdate(float afDeltaTime) {}
-    void Reset() {}
+	
+	//-------------------------------------------------------
+	
+    void Reset() 
+	{
+		mbIsMoving = true;
+		mbIsAchivementDisplayed = true;
+		
+		mfCurrentPos = 0.0f;
+		mfDisplayTimer = 0.0f;
+	}
+	
+	//-------------------------------------------------------
+	
     void OnDraw(float afFrameTime) {}
     void OnPostRender(float afFrameTime) {}
     void LoadUserConfig() {}
@@ -58,12 +71,11 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
     //-------------------------------------------------------
 
-	private void Unlock(const tString&in asTitle, const tString&in asImage)
+	private void Unlock(const tString&in asName)
 	{
-		msTitle = asTitle;
-		msImage = asImage;
+		msName = asName;
 		
-		mbIsShowing = true;
+		Reset();
 	}
 
 	//-------------------------------------------------------
@@ -80,7 +92,7 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
 	
 	void _Global_UnlockFakeAchievement()
 	{
-		Unlock(cScript_GetGlobalArgString(0), cScript_GetGlobalArgString(1));
+		Unlock(cScript_GetGlobalArgString(0));
 	}
     
     //-------------------------------------------------------
@@ -97,40 +109,41 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
     void OnGui(float afTimeStep)
 	{
-		//if (!mbIsShowing) return;
+		if (!mbIsAchivementDisplayed) return;
 		
-		mfStayTime += afTimeStep;
-		
-		if (mfStayTime > 5.0f)
+		if (mbIsMoving)
 		{
-			mfStayTime -= afTimeStep;
+			mfCurrentPos = cMath_IncreaseTo(mfCurrentPos, afTimeStep, 1);
+			if (mfCurrentPos == 1.0f) mbIsMoving = false;
 		}
 		else
 		{
-			mfStayTime += afTimeStep;
+			if (mfDisplayTimer < gfTotalStayTime)
+			{
+				mfDisplayTimer = cMath_IncreaseTo(mfDisplayTimer, afTimeStep, gfTotalStayTime);
+			}
+			else
+			{
+				mfCurrentPos = cMath_IncreaseTo(mfCurrentPos, afTimeStep, 0);
+				if (mfCurrentPos == 0) mbIsAchivementDisplayed = false;
+			}
 		}
-		
+
 		cVector3f vPos;
 		vPos.x = -cLux_GetHudVirtualOffset().x;
 		vPos.y = -cLux_GetHudVirtualOffset().y;
 		vPos.z = 0.0f;
 		
 		ImGui_GroupBegin(vPos, ImGui_GetSize());
-			cImGuiGfx frame = cImGuiGfx("achievement_frame");
-			cImGuiGfx thumbnail = cImGuiGfx("achievement_thumb_nate");
+			cImGuiGfx frame = cImGuiGfx("achievement_frame_" + msName);
+			cImGuiGfx thumbnail = cImGuiGfx("achievement_thumb_" + msName);
 						
-			float fY = cMath_Easing(eEasing_Linear, cMath_Min(mfStayTime - 0.5, 0.5f) / 0.5f, gfStartYPos, gfEndYPos);
+			float fY = cMath_Easing(eEasing_Linear, cMath_Min(mfCurrentPos - 0.5f, 0.5f) / 0.5f, gfStartYPos, gfEndYPos);
 
-			ImGui_DrawGfx(frame, ImGui_NrmPosGroup(0.69f, fY, 1.0));
-			ImGui_DrawGfx(thumbnail, ImGui_NrmPosGroup(0.695f, fY + 0.015, 0.0));
+			ImGui_DrawGfx(frame, ImGui_NrmPosGroup(0.724f, fY, 1.0f), cVector2f(182.0f, 66.0f));
+			ImGui_DrawGfx(thumbnail, ImGui_NrmPosGroup(0.729f, fY + 0.01f, 0.0f), cVector2f(51.5f, 51.5f));
 		ImGui_GroupEnd();
-		
-		cLux_AddDebugMessage("" + mfStayTime);
 	}
-	
-	//-------------------------------------------------------
-	
-	
     
     //-------------------------------------------------------
     
@@ -144,13 +157,12 @@ class cScrFakeAchievementHandler : iScrUserModule, iScrUserModule_Interface
     
     //-------------------------------------------------------
     
-	[nosave] bool mbIsShowing;
-	[nosave] float mfStayTime;
-		
-	bool mbGoingDown;
-		
-	[nosave] tString msTitle;
-	[nosave] tString msImage;
+	[nosave] bool mbIsAchivementDisplayed;
+	[nosave] bool mbIsMoving;
+	[nosave] float mfCurrentPos;
+	[nosave] float mfDisplayTimer;
+				
+	[nosave] tString msName;
 	
     //-------------------------------------------------------
     

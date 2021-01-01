@@ -14,9 +14,10 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 
-#include "helpers/custom/helper_props_custom.hps"
+#include "custom/helpers/helper_props_custom.hps"
 #include "custom/helpers/helper_modules_custom.hps"
 #include "custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_fake_achievements.hps"
 
 //--------------------------------------------------
  
@@ -128,7 +129,7 @@ class cScrMap : iScrMap
 		}
 		if(alAction == eAction_Test3)
 		{
-
+			FakeAchievement_Unlock("nate");
 		}
 	}
 	
