@@ -40,7 +40,7 @@ class cScrMap : iScrMap
 	{
 		GetBase().SetDisplayNameEntry("02-02-tomb-exit");
 		
-		// Set up color grading etc.
+		Effect_DoF_Start(0, 200, 1.5f, 1.0f);
 	}
 	
 	//-------------------------------------------------------
@@ -90,6 +90,8 @@ class cScrMap : iScrMap
 		Player_SetVertigoActive(true);
 		Player_SetAllowCheckBaby(false);
 		Player_SetAutoTeleportWhenBelowAltitude(0.0f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetCanDie(true);
 		
 		Pregnancy_SetBarksActive(false);
 		
@@ -176,20 +178,146 @@ class cScrMap : iScrMap
 	//{///////////////////////////////////////////////////////////////////////////////////////
  
 	//-------------------------------------------------------
- 
-	/*Put any variables that are used in more than one scene here.*/
- 
+	
+	bool mbInteractingWithCannon = false;
+	bool mbCannonFired = false;
+	
+	int mlTurretControlStage = 2;
+	
+	float[] mfPromptAlpha = {0.f, 0.f};
+	float mfPromptFrameTime = 0.f;
+	
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
- 
+	void OnGui(float afTimeStep)
+	{
+		if (mbInteractingWithCannon == false)
+			return;
+			
+		/////////////////////
+		// Time
+		mfPromptFrameTime += afTimeStep;
+		
+		/////////////////////
+		// Setup
+		cVector3f vPos = cVector3f_Zero;
+		vPos.x = -cLux_GetHudVirtualOffset().x;
+		vPos.y = -cLux_GetHudVirtualOffset().y;
+		vPos.z = 0.0f;
+			
+		cVector2f vScreenSize = ImGui_GetSize();
+		cVector2f vSize = vScreenSize;
+
+		vSize.x = vSize.y / 9.f * 16.f;
+		vPos.x -= (vSize.x - vScreenSize.x) / 2.f;
+			
+		cLuxScreenTextFormatParameters formatParams;
+		formatParams.mLabelText.mColorBase = cColor(1.f);
+		formatParams.mLabelText.mFontAlign = eFontAlign_Left;
+		formatParams.mLabelText.mFont.SetFile("work_56.fnt");
+		formatParams.mLabelText.mFont.mvSize = cVector2f(22.f);
+		formatParams.mfIconGamepadHeight = formatParams.mLabelText.mFont.mvSize.y;
+		formatParams.mfIconKeyHeight = formatParams.mLabelText.mFont.mvSize.y;
+		formatParams.mfIconMouseHeight = formatParams.mLabelText.mFont.mvSize.y;
+			
+		/////////////////////
+		// Start group
+		ImGui_GroupBegin(vPos, vSize);
+		ImGui_SetTransCategory("");
+			
+		cVector3f vPromptPos = ImGui_NrmPosGroup(0.75f, 0.8f, 2.f);
+		cVector2f vPromptSize = ImGui_NrmSizeGroup(0.5f, 0.03f);		
+			
+		/////////////////////
+		// Iterate prompts
+		tString[] sPrompts = { "HintFireTankCannon", "HintExitTankState" };			
+		bool bGamepad  = cLux_GetInputHandler().GetGamepadWasLastDeviceUsed();
+	
+		for (int i = 1; i >= 0; --i)
+		{	
+			/////////////////////
+			// Determine category
+			tString sCategory = "Hints";
+			if (bGamepad && cLux_HasTranslation("HintsGamepad", sPrompts[i]))
+				sCategory = "HintsGamepad";
+				
+			/////////////////////
+			// Alpha
+			float fAlphaGoal = mlTurretControlStage == 2 ? 1.f : 0.f;
+			if (i == 0 && mbCannonFired)
+				fAlphaGoal = 0.f;
+			
+			mfPromptAlpha[i] = cMath_IncreaseTo(mfPromptAlpha[i], (1.f / 0.3f) * afTimeStep, fAlphaGoal);
+				
+			cColor color = formatParams.mLabelText.mColorBase;
+			color.a = mfPromptAlpha[i];
+			ImGui_SetModColorMul(color);
+				
+			/////////////////////
+			// Parse prompt
+			array<tWString> vCurrentPromptLines;
+			array<cLuxScreenTextIcon@> vCurrentPromptIcons;
+			array<array<int>> vCurrentPromptIconsPerLine;
+				
+			float fLineHeight = 0.f;
+			float fDisplayTime = 0.f;
+			cLux_ParseStringIntoScreenText(cLux_Translate(sCategory, sPrompts[i]), cLux_GetGameHudImGui(), formatParams, vCurrentPromptLines, 
+										   vCurrentPromptIcons, vCurrentPromptIconsPerLine, fLineHeight, fDisplayTime, bGamepad);
+				
+			/////////////////////
+			// Draw prompt in parts for better spacing
+			tWString sLineOnly = vCurrentPromptLines[0];
+			tWString sSeparator = "-";
+					
+			int lPos = cString_GetFirstStringPosW(sLineOnly, sSeparator);
+			int lLineLength = sLineOnly.length();
+			
+			vCurrentPromptLines[0] = cString_SubW(vCurrentPromptLines[0], 0, lPos);
+			sLineOnly = cString_SubW(sLineOnly, lPos + 1, lLineLength);
+					
+			cVector3f vSeparatorPos = vPromptPos + ImGui_NrmPosGroup(0.035f, 0.f, 0.f);
+			ImGui_DoLabelExt(cString_To8Char(sSeparator), formatParams.mLabelText, vSeparatorPos, vPromptSize);
+				
+			cVector3f vLineOnlyPos = vPromptPos + ImGui_NrmPosGroup(0.055f, 0.f, 0.f);
+			ImGui_DoLabelExt(cString_To8Char(sLineOnly), formatParams.mLabelText, vLineOnlyPos, vPromptSize);
+			
+			/////////////////////
+			// Draw prompt!
+			cLux_DrawScreenText(cLux_GetGameHudImGui(), mfPromptFrameTime, formatParams.mLabelText, vPromptPos, vPromptSize.x, 1.f, 
+								vCurrentPromptLines, vCurrentPromptIcons, vCurrentPromptIconsPerLine);
+									
+			vPromptPos.y -= vPromptSize.y;
+		}		
+			
+		/////////////////////
+		// End group
+		ImGui_ResetModifiers();
+		ImGui_GroupEnd();
+	}
+	 
+	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		if (mbInteractingWithCannon == false)
+			return;
+			
+		if(cInput_CheckForInput())
+		{			
+			if (cInput_BecameTriggered(eAction_Interact))
+			{
+				cLux_AddDebugMessage("Interacted!");
+			}
+		}
+	}
+	
 	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS
  
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ==============
-	// SCENE X *NAME OF SCENE*
+	// SCENE 1 cliff
 	// ==============
 	//{//////////////////////////////////////////////////////////////////////////////////////
  
@@ -199,18 +327,86 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		bool LadderHint(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Hint_ShowHint("Hints", "HintLadder");
+			
+			return false;
+		}
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		bool FallTheLadder(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sketchbook_SetInventoryEnabled(false);
+			
+			bool bPlayerClimbing = Entity_IsInteractedWith("Ladder_1");
+				
+			Entity_SetActive("Ladder_1", false);
+			Player_ChangeStateToNormal();
+				
+			cLux_AddDebugMessage("Player climbing? "+bPlayerClimbing);
+			if (bPlayerClimbing==false) return false;
+				
+			CameraAnimation_Begin("LadderFallAnim", "", true);
+			
+			Sound_CreateAtEntity("Break", "02_04_living_quarters/tower/beam_snap", "Player", 0, false, 0.7f);
+				
+			Effect_Shake_Start(0.075, 0, 0, 0.5);
+			Effect_Rumble_Start(0.7, 0.7);
+			
+			return false;
+		}
+		
+		bool CameraAnimation_LadderFall(const tString &in asEntity, int alDirection)
+		{
+			Sound_CreateAtEntity("Fall", "monke/Player/falling_woosh/falling_aaaah_woosh", "Player", 0.0f, false, 0.09f);
+			
+			Player_AddBodyForce(cVector3f_Down * 400, false);
+			GameOver_SetCustomGameOverScreenText("GameOver", "Ladder");
+			
+			return false;
+		}
+		
+		bool StopFallingSound(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_Stop("Fall", 0.1f);
+			
+			return false;
+		}
+		
+		void Trigger_7_OnPlayerInteract(const tString &in asEntity)
+		{
+			Message_Set("02_02_tomb_exit", "BallsInteract");
+		}
+	 
+		//-------------------------------------------------------
+	 
+		void CannonInteract(const tString &in asEntity)
+		{
+			Player_SetActive(false);
+			
+			Effect_Fade_Out(1.0f);
+			Map_AddTimer("GetIntoCannon", 0.9f, "Timer_GetIntoCannon");
+		}
+		
+		void Timer_GetIntoCannon(const tString&in asTimer)
+		{
+			Sound_CreateAtEntity("Sound_LookExit", "new_sounds/animations/tank_window_exit", "player");
+			Player_SetActive(true);
+			
+			mbInteractingWithCannon = true;
+		
+			CameraAnimation_Begin("CannonPlace", "", false);
+			Effect_Fade_In(1.0f);
+		}
 	 
 		//-------------------------------------------------------
 		
 		//} END General	
 	 
 		/////////////////////////////////////////
-		// Event *Name Of Event*
+		// Event ignite cannon
 		//{//////////////////////////////////////
 
 		//-------------------------------------------------------
@@ -219,12 +415,15 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
-
+		void CannonString_OnPlayerInteract(const tString &in asEntity)
+		{
+			
+		}
+		
 		//-------------------------------------------------------
 
-		//} END Event *Name Of Event*
+		//} END Event ignite cannon
 	 
-	//} END SCENE X
+	//} END SCENE 1
  
 }
