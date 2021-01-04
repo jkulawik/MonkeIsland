@@ -17,11 +17,6 @@
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
-//--------------------------------------------------
- 
 class cScrMap : iScrMap
 {
 	//--------------------------------------------
@@ -55,7 +50,9 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
-		FearHandler_SetActive(true);
+		FearHandler_SetActive(false);
+		
+		cLux_SetGodModeActivated(false);
 		
 		FearHandler_SetPermaFailEnabled(false);
 		FearHandler_SetWhispersActive(true);
@@ -69,10 +66,22 @@ class cScrMap : iScrMap
 		
 		cScript_SetGlobalVarBool("HideAmuletBracelet", false);
 		
+		ParticleSystem_SetVisible("PS_20", false);
+				
+		Light_FadeBrightnessTo("Light_Point_3", 0, 0.5f);
+		Light_FadeBrightnessTo("Light_Point_2", 0, 0.5f);
+		Light_FadeBrightnessTo("Light_Point_1", 0, 0.5f);
+				
+		Billboard_SetVisible("Billboard_6", false);
+		Billboard_SetVisible("Billboard_7", false);
+		Billboard_SetVisible("Billboard_8", false);
+
 		/////////////////////////
 		// Debug
-		if(cLux_ScriptDebugOn())
+		if(!cLux_ScriptDebugOn())
 		{
+			Effect_Fade_Out(0);
+			Map_AddTimer("StartFall", 3.0f, "Timer_startfall");
 		}
 	}
 
@@ -181,6 +190,7 @@ class cScrMap : iScrMap
 	
 	bool mbInteractingWithCannon = false;
 	bool mbCannonFired = false;
+	bool mbIgnitedCannon = false;
 	
 	int mlTurretControlStage = 2;
 	
@@ -244,7 +254,7 @@ class cScrMap : iScrMap
 			/////////////////////
 			// Alpha
 			float fAlphaGoal = mlTurretControlStage == 2 ? 1.f : 0.f;
-			if (i == 0 && mbCannonFired)
+			if (mbCannonFired)
 				fAlphaGoal = 0.f;
 			
 			mfPromptAlpha[i] = cMath_IncreaseTo(mfPromptAlpha[i], (1.f / 0.3f) * afTimeStep, fAlphaGoal);
@@ -304,9 +314,15 @@ class cScrMap : iScrMap
 			
 		if(cInput_CheckForInput())
 		{			
-			if (cInput_BecameTriggered(eAction_Interact))
+			if (cInput_GetAction(eAction_Interact).IsTriggered())
 			{
-				cLux_AddDebugMessage("Interacted!");
+				if (!mbCannonFired)
+					FireCannon();
+			}
+			else if (cInput_GetAction(eAction_InteractCancel).IsTriggered())
+			{
+				if (!mbCannonFired)
+					ExitCannon();
 			}
 		}
 	}
@@ -325,6 +341,38 @@ class cScrMap : iScrMap
 		// General
 		//{//////////////////////////////////////
 		 
+		//-------------------------------------------------------
+		
+		void Timer_startfall(const tString&in asTimer)
+		{
+			Effect_Fade_In(0.5f);
+			CameraAnimation_Begin("FallAnim", "", true);
+			Sound_PlayGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.15f);
+		}
+		
+		bool FallAnim_2_CameraNodePassed(const tString &in asEntity, int alDirection)
+		{
+			Effect_Fade_Out(0);
+			Sound_StopGui("monke/Player/falling_woosh/falling_aaaah_woosh", 0.0f);
+			Sound_CreateAtEntity("Boom", "player/foley/damage/player_fall_death", "Player");
+			Player_Teleport("Start_Begin");
+			
+			Map_AddTimer("Lol", 3.0f, "Timer_WakeupForTheTenthFuckingTImeIntHISMOD");
+			
+			return false;
+		}
+		
+		void Timer_WakeupForTheTenthFuckingTImeIntHISMOD(const tString&in asTimer)
+		{
+			Effect_Fade_In(3.0f);
+			PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "OnFinishWakingUp");
+		}
+		
+		void OnFinishWakingUp(const tString &in asAnimName)
+		{
+			Game_AutoSave();
+		}
+		
 		//-------------------------------------------------------
 	 
 		bool LadderHint(const tString &in asParent, const tString &in asChild, int alState)
@@ -386,19 +434,79 @@ class cScrMap : iScrMap
 		{
 			Player_SetActive(false);
 			
+			Sound_CreateAtEntity("Sound_LookExit", "new_sounds/animations/tank_window_enter", "player");
+			
 			Effect_Fade_Out(1.0f);
-			Map_AddTimer("GetIntoCannon", 0.9f, "Timer_GetIntoCannon");
+			Map_AddTimer("EnterCannon", 0.9f, "Timer_CannonAction");
 		}
 		
-		void Timer_GetIntoCannon(const tString&in asTimer)
+		void ExitCannon()
 		{
-			Sound_CreateAtEntity("Sound_LookExit", "new_sounds/animations/tank_window_exit", "player");
-			Player_SetActive(true);
+			Effect_Fade_Out(1.0f);
+			Map_AddTimer("ExitCannon", 0.9f, "Timer_CannonAction");
 			
-			mbInteractingWithCannon = true;
+			mbInteractingWithCannon = false;
+		}
 		
-			CameraAnimation_Begin("CannonPlace", "", false);
+		void Timer_CannonAction(const tString&in asTimer)
+		{
+			Player_SetActive(true);
+			Sound_CreateAtEntity("Sound_LookExit", "new_sounds/animations/tank_window_exit", "player");
+			
+			if (asTimer == "EnterCannon")
+			{
+				CameraAnimation_Begin("CannonPlace", "", false);
+				
+				mbInteractingWithCannon = true;
+			}
+			else if(asTimer == "ExitCannon")
+			{
+				Sound_CreateAtEntity("Sound_LookExit", "new_sounds/animations/tank_window_exit", "player");
+				
+				CameraAnimation_End();
+				Player_Teleport("ExitCannon");
+			}
+		
 			Effect_Fade_In(1.0f);
+		}
+		
+		void FireCannon()
+		{
+			if (mbIgnitedCannon)
+			{
+				Entity_SetActive("Trigger_4", false);
+				
+				CameraAnimation_End();
+				CameraAnimation_Begin("CannonFire", "", false);
+				
+				Effect_Flash_Start(1.0f, 15.0f, 1.0f);
+				Effect_Shake_Start(1, 1, 0.2f, 1.0f);
+				
+				Sound_CreateAtEntity("BOOM", "monke/SFX/cannon", "Player");
+				Sound_CreateAtEntity("BOOM2", "monke/SFX/kaboom", "Player", 0.0f, false, 0.5f);
+				
+				Sound_CreateAtEntity("Fall", "monke/Player/falling_woosh/falling_aaaah_woosh", "Player", 0.0f, false, 0.32f);
+								
+				Map_AddTimer("EndLevel", 4.0f, "Timer_EndLevel");
+				
+				mbCannonFired = true;
+			}
+			else
+			{
+				Message_Set("02_02_tomb_exit", "Missing");
+			}
+		}
+		
+		void Timer_EndLevel(const tString&in asTimer)
+		{
+			Sound_CreateAtEntity("lol", "monke/SFX/cannon_after", "Player");
+			
+			Map_AddTimer("switchmap", 5.0f, "Timer_Switchmap");
+		}
+		
+		void Timer_Switchmap(const tString&in asTimer)
+		{
+			Map_ChangeMap("02_03_fabachino_jungle", "Start_Begin");
 		}
 	 
 		//-------------------------------------------------------
@@ -411,13 +519,35 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
+		bool Music(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Music_Play("A2_2_6_Tin_Hinan_Sing", 0.55f, false, eMusicPrio_BigEvent);
+					
+			return false;
+		}
 
 		//-------------------------------------------------------
 
-		void CannonString_OnPlayerInteract(const tString &in asEntity)
+		void LampInteract_OnPlayerInteract(const tString &in asEntity)
 		{
-			
+			if (Match_IsHeldAndBurning())
+			{
+				ParticleSystem_SetVisible("PS_20", true);
+				
+				Light_FadeBrightnessTo("Light_Point_3", 5, 0.5f);
+				Light_FadeBrightnessTo("Light_Point_2", 45, 0.5f);
+				Light_FadeBrightnessTo("Light_Point_1", 55, 0.5f);
+				
+				Billboard_SetVisible("Billboard_6", true);
+				Billboard_SetVisible("Billboard_7", true);
+				Billboard_SetVisible("Billboard_8", true);
+				
+				Sound_CreateAtEntity("ignite", "player/tools/match/match_ignite", asEntity);
+				
+				Entity_SetActive(asEntity, false);
+				
+				mbIgnitedCannon = true;
+			}
 		}
 		
 		//-------------------------------------------------------
