@@ -88,12 +88,12 @@ class cScrMap : iScrMap
 		PlayerBody_SetActive(true);
 		Player_SetMapDeepShadow(0.05f);
 		Player_SetNightVisionEnabled(false);
-		Player_SetNightVisionBrightness(0.5f);
+		Player_SetNightVisionBrightness(1.0f);
 		Player_SetNightVisionRadius(5.5f);
 		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
-		Player_SetAutoTeleportWhenBelowAltitude(-5.0f);
+		Player_SetAutoTeleportWhenBelowAltitude(-25.0f);
 		
 		Pregnancy_SetBarksActive(false);
 		
@@ -155,6 +155,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			Map_SetSkyBoxColor(cColor(0,0,0,0));
 		}
 	}
 
@@ -255,20 +256,52 @@ class cScrMap : iScrMap
 		//} END General	
 	 
 		/////////////////////////////////////////
-		// Event *Name Of Event*
+		// Event *SECRET*
 		//{//////////////////////////////////////
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
+		bool PrepareSecret(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			cLux_SetGodModeActivated(true);
+			FearHandler_SetActive(false);
+			
+			return false;
+		}
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		bool ActivateSecret(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Map_SetSkyBoxColor(cColor(0,0,0,0));
+			
+			Sketchbook_Close();
+			Sketchbook_SetInventoryEnabled(false);
+						
+			Player_SetNightVisionEnabled(true);
+			Player_SetRunBreathingDisabled(true);
+			Player_SetJumpDisabled(true);
+			Player_SetCrouching(false, true);
+			Player_SetCrouchDisabled(true);
+			Player_SetLeanDisabled(true);
+			PlayerBody_SetActive(false);
+			Player_Teleport("Secret");
+			
+			return false;
+		}
 
 		//-------------------------------------------------------
+		
+		bool StartSecret(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Music_PlayExt("truth_1", true, 0.9f, 1.0f, 1.0f, 1.0f, eMusicPrio_BgAmb, true);
+	
+			return false;
+		}
+		
+		//-------------------------------------------------------
 
-		//} END Event *Name Of Event*
+		//} END Event *Secret*
 	 
 	//} END SCENE X 
 }

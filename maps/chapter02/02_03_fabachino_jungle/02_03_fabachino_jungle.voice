@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<VoiceData>
+ <Characters>
+  <Character ID="5" Name="Player" DisplayName="Tasi" Actor="Alix" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1" ReverbVolume="1.22" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+  <Character ID="10" Name="Observer" DisplayName="Unknown" Actor="Rachel" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="False" AffectedByReverb="False" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="GUI" Volume="1" ReverbVolume="0.7" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+ </Characters>
+ <Effects />
+ <Scenes>
+  <Scene ID="2" Name="TasiComments" FocusPrio="1" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
+  <Scene ID="4" Name="Memory" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
+  <Scene ID="6" Name="MemoryCylinder" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
+ </Scenes>
+ <Sections>
+  <Section Name="General Comments" />
+ </Sections>
+ <Subjects>
+  <Subject Desc="Cylinder to be found in the observation space." Name="Cylinder_Discord" UseSingleRandomLine="False" SceneId="6" EffectId="-1" Section="General Comments">
+   <Line CharacterId="10" Context="TRANSLATION: &quot;Kharangi&quot; is a person's name. &quot;the Seven&quot; is a star-sign. &quot;third rise, second calling&quot; is a time of day." Prio="0" TextStatus="ToTranslators" AudioStatus="Final">
+    <Sound Text="And so, we have decided. This will be our last one." Timestamp="2021-01-09 02:38" />
+    <Sound Text="This is something we must do before we drift apart." Timestamp="2021-01-09 02:38" />
+   </Line>
+  </Subject>
+ </Subjects>
+</VoiceData>
