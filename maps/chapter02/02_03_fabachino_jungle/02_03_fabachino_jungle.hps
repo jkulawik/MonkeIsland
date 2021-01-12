@@ -70,6 +70,9 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
 		
+		Entity_SetActive("monke_sight", true);
+		Entity_SetActive("monke", true);
+		
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
@@ -155,7 +158,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Map_SetSkyBoxColor(cColor(0,0,0,0));
+			Monke_CommandGoToSpecificHole_Execute("monke", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
 		}
 	}
 
@@ -203,12 +206,35 @@ class cScrMap : iScrMap
 		//{//////////////////////////////////////
 		 
 		//-------------------------------------------------------
+		
+		void monke_sight_OnPlayerLookAt(const tString &in asEntity, int alState)
+		{
+			MonkeGoBrrrrrr();
+		}
+		
+		bool ForceMonke(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			if(Entity_IsActive("monke_sight"))
+			{
+				MonkeGoBrrrrrr();
+			}
+			
+			return false;
+		}
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		void MonkeGoBrrrrrr()
+		{
+			Monke_CommandGoToSpecificHole_Execute("monke_sight", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
+		}
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		bool Monke_Disappear(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive(asChild, false);
+			
+			return true;
+		}
 	 
 		//-------------------------------------------------------
 		
@@ -224,7 +250,22 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		bool ActivateMonke(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Monke_SetAllowPlayerThrow("monke", false);
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_1");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_2");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_3");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_4");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_5");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_6");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_6");
+			Monke_CommandPatrol_Execute("monke", true, 999);
+			
+			Music_PlayExt("water", true, 0.65f, 1.0f, 2.0f, 1.0f, eMusicPrio_BgAmb, true);
+			
+			return false;
+		}
 
 		//-------------------------------------------------------
 
@@ -285,15 +326,24 @@ class cScrMap : iScrMap
 			Player_SetCrouchDisabled(true);
 			Player_SetLeanDisabled(true);
 			PlayerBody_SetActive(false);
-			Player_Teleport("Secret");
+			
+			Effect_Fade_Out(0.0f);
+			
+			Map_AddTimer("te", 3.0f, "Timer_Teleport");
 			
 			return false;
+		}
+		
+		void Timer_Teleport(const tString&in asTimer)
+		{
+			Player_Teleport("Secret");
 		}
 
 		//-------------------------------------------------------
 		
 		bool StartSecret(const tString &in asParent, const tString &in asChild, int alState)
 		{
+			Effect_Fade_In(1.0f);
 			Music_PlayExt("truth_1", true, 0.9f, 1.0f, 1.0f, 1.0f, eMusicPrio_BgAmb, true);
 	
 			return false;
