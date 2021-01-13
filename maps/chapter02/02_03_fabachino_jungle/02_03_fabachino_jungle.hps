@@ -158,7 +158,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Monke_CommandGoToSpecificHole_Execute("monke", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
 		}
 	}
 
@@ -246,10 +245,6 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any variables that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
 		bool ActivateMonke(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Monke_SetAllowPlayerThrow("monke", false);
@@ -263,6 +258,16 @@ class cScrMap : iScrMap
 			Monke_CommandPatrol_Execute("monke", true, 999);
 			
 			Music_PlayExt("water", true, 0.65f, 1.0f, 2.0f, 1.0f, eMusicPrio_BgAmb, true);
+			
+			return false;
+		}
+
+		//-------------------------------------------------------
+				
+		bool StopChase(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("Trigger_9", true);
+			Monke_CommandGoToSpecificHole_Execute("monke", "GhoulHole_1", true, false, true, eMonkeSpeed_Run);
 			
 			return false;
 		}
@@ -290,7 +295,10 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		void herberts_memory_cylinder_1_OnPlayerInteract(const tString &in asEntity)
+		{
+			Entity_SetActive("head", true);
+		}
 	 
 		//-------------------------------------------------------
 		
