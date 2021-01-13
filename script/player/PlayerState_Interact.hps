@@ -1,0 +1,216 @@
+#include "interfaces/PlayerState_Interface.hps"
+#include "base/InputHandler_Types.hps"
+#include "player/Player_Types.hps"
+#include "helpers/helper_modules.hps"
+
+//------------------------------------------------------------
+
+tString[] gsInteractionHints = { "HintDoors", "HintGrabRotate", "HintGrabMove", "HintGrabThrow", "HintWheel", "HintSlider" };
+
+//------------------------------------------------------------
+
+class iScrPlayerState_Interact : iScrPlayerState
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GLOBAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAttachBodyToStickyArea()
+	{
+		mBaseObj.mpPlayer.ChangeState(mlPreviousState);
+	}	
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void SetupInteractVars()
+	{
+		tID lEntityId = cScript_GetGlobalArgID(0);
+		int lBodyId = 	cScript_GetGlobalArgInt(1);
+		mvFocusPos = 	cScript_GetGlobalArgVector3f(2);
+		
+		mPropID = lEntityId;
+		cLuxProp@ pProp = cLux_ID_Prop(mPropID);
+
+		iPhysicsBody@ pBody = pProp.GetBodyFromID(lBodyId);
+		mBodyID = pBody.GetID();
+		
+		pProp.SetIsInteractedWith(true);
+		
+		//If attached to sticky area (and can be removed), detach.
+		if(pProp !is null && pProp.GetParentType() == eParentType_Sticky)
+		{
+			cScript_RunGlobalFunc(pProp.GetParentName(), "", "_Global_BodyIsInteractedWith");
+		}
+		
+		//Get the local offset. 
+		cMatrixf mtxInvBody = cMath_MatrixInverse(pBody.GetLocalMatrix());
+		mvLocalBodyOffset = cMath_MatrixMul(mtxInvBody, mvFocusPos);
+	}
+
+	//-----------------------------------------------------------------------
+
+	void EnterInteractState(int alPrevStateId)
+	{
+		//////////////////////////
+		// Setup vars
+		if(alPrevStateId<0) mlPreviousState = ePlayerState_Normal;
+		else				mlPreviousState = alPrevStateId;
+		
+		//////////////////////////
+		// Hints
+		mbHintShown = false;
+		tString sCurrentHint = Hint_GetCurrentEntry();
+		
+		bool bStopHint = false;		
+		for (int i = 0; i < gsInteractionHints.length(); ++i)
+		{
+			if (sCurrentHint == gsInteractionHints[i] && sCurrentHint != msHint)
+			{
+				bStopHint = true;
+				break;
+			}
+		}
+		
+		if (bStopHint)
+			Hint_StopHint();
+		
+		if (msHint != "")
+			mlHintId = Hint_ShowHint_Hold("Hints", msHint, true, 1.5f);
+	}
+	
+	//-----------------------------------------------------------------------
+
+	void LeaveInteractState()
+	{
+		cLuxProp@ pProp = cLux_ID_Prop(mPropID);
+		if (pProp is null) return;
+		
+		pProp.SetIsInteractedWith(false);
+		
+		//////////////
+		// Interaction leave callback
+		if (pProp.HasPlayerInteractLeaveCallback())
+			pProp.RunPlayerInteractLeaveCallback();
+		
+		//////////////
+		// Hints
+		if (mfHintShowCount > 2.f && mbHintShown)
+		{
+			mlHintGivenTimeStamp = cLux_GetCurrentMap().GetTimeStamp();
+			Hint_AddAsGiven(mlHintId);
+		}
+		
+		Hint_Release(mlHintId);		
+		
+		if (Hint_GetCurrentEntry() == msHint)
+			Hint_StopHint(1.f);
+	}
+
+	//-----------------------------------------------------------------------
+	
+	void UpdateHints(float afTimeStep)
+	{
+		if (mbHintShown == false && Hint_GetCurrentEntry() == msHint)
+			mbHintShown = true;
+			
+		if (mbHintShown)
+			mfHintShowCount += afTimeStep;
+	}
+	
+	//-----------------------------------------------------------------------
+	
+	bool CheckShouldUpdate()
+	{
+		cLuxProp@ pProp = cLux_ID_Prop(mPropID);
+		if(pProp is null || pProp.IsInteractedWith()==false)
+		{
+			mBaseObj.mpPlayer.ChangeState(mlPreviousState);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//-----------------------------------------------------------------------
+
+	void ResetPropInteractVars()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	cVector2f GetCurrentFocusScreenPos()
+	{
+		cCamera @pCam = cLux_GetPlayer().GetCamera();
+		
+		cVector3f vFocusPos =  cMath_MatrixMul(cLux_ID_Body(mBodyID).GetLocalMatrix(), mvLocalBodyOffset);
+		
+		cVector3f vProjPos = cMath_MatrixMul(pCam.GetViewMatrix(), vFocusPos);
+		vProjPos = cMath_MatrixMulDivideW(pCam.GetProjectionMatrix(),vProjPos);
+		
+		return cVector2f( (vProjPos.x+1)*0.5f * cLux_GetHudVirtualSize().x, ((-vProjPos.y)+1)*0.5f * cLux_GetHudVirtualSize().y);
+	}
+	
+	//------------------------------------------------------------
+	
+	void CheckOutsideAtScreenEdgeAndMove(float afTimeStep)
+	{
+		iCharacterBody @pCharBody = cLux_GetPlayer().GetCharacterBody();
+		cCamera @pCam = cLux_GetPlayer().GetCamera();
+		
+		cVector2f vScreenPos = GetCurrentFocusScreenPos();
+		
+		cVector2f vMin = cVector2f(200, 150);
+		cVector2f vMax = cLux_GetHudVirtualSize() - vMin;
+		cVector2f vCamMove = cVector2f(0);
+		
+		if(vScreenPos.x < vMin.x) vCamMove.x += (vScreenPos.x - vMin.x);
+		if(vScreenPos.y < vMin.y) vCamMove.y += (vScreenPos.y - vMin.y);
+		if(vScreenPos.x > vMax.x) vCamMove.x += (vScreenPos.x - vMax.x);
+		if(vScreenPos.y > vMax.y) vCamMove.y += (vScreenPos.y - vMax.y);
+		
+		pCharBody.AddYaw(vCamMove.x * -0.01 * afTimeStep);
+		pCam.AddPitch(vCamMove.y * -0.01 * afTimeStep);
+	}
+	
+		
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	tID mPropID;
+	tID mBodyID;
+	
+	cVector3f mvFocusPos;
+	cVector3f mvLocalBodyOffset;
+	
+	int mlPreviousState;
+		
+	int mlHintId = -1;
+	int mlHintGivenTimeStamp = -1;
+	float mfHintShowCount = 0.f;
+	bool mbHintShown = false;
+	tString msHint = "";
+		
+	//------------------------------------------------------------
+}

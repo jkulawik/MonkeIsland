@@ -206,6 +206,15 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 		
+		bool Hint(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Hint_ShowHint("Hints", "HintForest");
+			
+			return false;
+		}
+		
+		//-------------------------------------------------------
+		
 		void monke_sight_OnPlayerLookAt(const tString &in asEntity, int alState)
 		{
 			MonkeGoBrrrrrr();
@@ -291,7 +300,13 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		bool AutoSave(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke", false);
+			Game_AutoSave();
+			
+			return false;
+		}
 	 
 		//-------------------------------------------------------
 	 
@@ -301,6 +316,13 @@ class cScrMap : iScrMap
 			Entity_SetActive("Trigger_11", true);
 		}
 	 
+		//-------------------------------------------------------
+		
+		void Trigger_13_OnPlayerInteract(const tString &in asEntity)
+		{
+			Message_Set("02_03_fabachino_jungle", "ExamineTank");
+		}
+		
 		//-------------------------------------------------------
 		
 		//} END General	
