@@ -298,6 +298,7 @@ class cScrMap : iScrMap
 		void herberts_memory_cylinder_1_OnPlayerInteract(const tString &in asEntity)
 		{
 			Entity_SetActive("head", true);
+			Entity_SetActive("Trigger_11", true);
 		}
 	 
 		//-------------------------------------------------------
@@ -358,6 +359,11 @@ class cScrMap : iScrMap
 		}
 		
 		//-------------------------------------------------------
+		
+		bool ChangeMap(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			return false;
+		}
 
 		//} END Event *Secret*
 	 
