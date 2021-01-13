@@ -14,7 +14,7 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
-#include "helpers/helper_rotation.hps"
+#include "helpers/helper_rotafontion.hps"
 
 //--------------------------------------------------
  
@@ -422,7 +422,7 @@ class cScrMap : iScrMap
 		{
 			Visibility_SetMainActive(true);
 			
-			Player_SetGravity(cVector3f(0, 0, 0));
+			Player_SetGravity(cVector3f(0, -12, 0));
 			
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
