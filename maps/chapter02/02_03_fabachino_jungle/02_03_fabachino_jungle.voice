@@ -6,7 +6,7 @@
  </Characters>
  <Effects />
  <Scenes>
-  <Scene ID="2" Name="TasiComments" FocusPrio="1" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
+  <Scene ID="2" Name="Comment" FocusPrio="1" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
   <Scene ID="4" Name="Memory" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
   <Scene ID="6" Name="MemoryCylinder" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
  </Scenes>
@@ -16,8 +16,13 @@
  <Subjects>
   <Subject Desc="Cylinder to be found in the observation space." Name="Cylinder_Discord" UseSingleRandomLine="False" SceneId="6" EffectId="-1" Section="General Comments">
    <Line CharacterId="10" Context="TRANSLATION: &quot;Kharangi&quot; is a person's name. &quot;the Seven&quot; is a star-sign. &quot;third rise, second calling&quot; is a time of day." Prio="0" TextStatus="ToTranslators" AudioStatus="Final">
-    <Sound Text="And so, we have decided. This will be our last one." Timestamp="2021-01-09 02:38" />
-    <Sound Text="This is something we must do before we drift apart." Timestamp="2021-01-09 02:38" />
+    <Sound Text="And so, we have decided. This creation shall be our last." FileName="memorycylinder_cylinder_discord_001_observer_001" Timestamp="2021-01-15 09:54" />
+    <Sound Text="This is something we must do before we drift apart." FileName="memorycylinder_cylinder_discord_001_observer_002" Timestamp="2021-01-09 02:38" />
+   </Line>
+  </Subject>
+  <Subject Name="MonkeComment" UseSingleRandomLine="False" SceneId="2" EffectId="-1" Section="General Comments">
+   <Line CharacterId="5" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="There are monkys... I must be on the good track." FileName="comment_monkecomment_001_player_001" Timestamp="2021-01-15 09:54" />
    </Line>
   </Subject>
  </Subjects>

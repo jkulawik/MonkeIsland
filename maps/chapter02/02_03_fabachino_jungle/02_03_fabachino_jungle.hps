@@ -50,6 +50,9 @@ class cScrMap : iScrMap
 		
 	void PreloadData()
 	{
+		ParticleSystem_Preload("grenade_explosion.ps");
+		ParticleSystem_Preload("wooden_brace_damage.ps");
+		ParticleSystem_Preload("wood_collapse.ps");
 	}
 	
 	//-------------------------------------------------------
@@ -184,14 +187,184 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	void Trigger_15_OnPlayerInteract(const tString &in asEntity)
+	{
+		Message_Set("02_03_fabachino_jungle", "GrenadePlace");
+	}
+	
+	void grenade_OnPlayerInteract(const tString &in asEntity)
+	{
+		Message_Set("02_03_fabachino_jungle", "Grenade");
+	}
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	bool PlaceGrenade(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Entity_SetActive(asChild, false);
+		Entity_SetActive("grenade_place", true);
+		
+		Grenade_Activate();
+		
+		return false;
+	}
  
 	//-------------------------------------------------------
- 
+	
+	void Grenade_Activate()
+	{			
+		Entity_SetActive("Trigger_15", false);
+		
+		Sound_CreateAtEntity("Sound_GrenadePin", "02_03_arsenal/grenade/grenade_pin", "grenade_place");
+			
+		Voice_StopAll();
+		
+		Map_AddTimer("Timer_Explosion",4.3f,"OnTimer_Explosion");
+	}
+	
+	void OnTimer_Explosion(const tString &in asTimer)
+	{
+		Prop_SetActiveAndFade("arab_chair_destroyed_*", true, 1.0f);
+		
+		Prop_SetActiveAndFade("rock_debris_*", true, 1.0f);
+		Prop_SetActiveAndFade("debris_*", true, 1.0f);
+		
+		Prop_SetActiveAndFade("french_gate_1", false, 1.0f);
+		Prop_SetActiveAndFade("dirt_small_rock_*", false, 1.0f);
+		
+		float fDist = Entity_GetDeltaToEntity("grenade_place", "player").Length();
+				
+		if (fDist < 1.5f)
+		{
+			Grenade_RadiusDud();
+		}
+		else
+		{					
+			Effect_Shake_Start(0.5f, 0.5f, 0.2f, 0.75f, 0.75f, 0);
+					
+			if (fDist < 6)
+			{		
+				bool bLOS1 = cLux_CheckLineOfSight(Map_GetEntity("grenade_place").GetPosition(), cLux_GetPlayer().GetCamera().GetPosition(), false, false, null);
+				bool bLOS2 = cLux_CheckLineOfSight(Map_GetEntity("grenade_place").GetPosition(), cLux_GetPlayer().GetCharacterBody().GetFeetPosition()+cVector3f(0,0.05f,0), false, false, null);
+					
+				Debug_Log("HEAD: "+bLOS1+" FEET "+bLOS2);
+						
+				if (bLOS1 == false && bLOS2 == false) 
+					Grenade_RadiusSafe();
+				else
+					Grenade_RadiusDamage();
+						
+			}
+			else
+				Grenade_RadiusSafe();
+		}
+	}
+	
+	//-------------------------------------------------------
+	
+		void Grenade_RadiusDamage()
+		{
+			// DAMAGE
+			Player_AddBodyForce(cVector3f(0, 2000000, 0), false);
+			
+			Debug_Log("DAMAGE");
+			ParticleSystem_CreateAtEntity("PS_Explode","grenade_explosion.ps","grenade_place",true);
+			
+			Entity_ExplodeSurrounding("grenade_place",10,10);
+			
+			Player_GiveDamage(0.5f, 0.0f, eDamageType_Default, "grenade_place");
+						
+			Entity_SetActive("grenade_place",false);
+			
+			Sound_CreateAtEntity("Sound_GrenadeDamage", "02_03_arsenal/grenade/grenade_near", "player");
+			Sound_CreateAtEntity("Sound_GrenadeDamage", "monke/SFX/auugh", "player");
+		}
+	
+		void Grenade_RadiusSafe()
+		{
+			// SAFE
+			ParticleSystem_CreateAtEntity("PS_Explode","grenade_explosion.ps","grenade_place",true);
+			Entity_SetActive("grenade_place",false);
+			
+			Entity_ExplodeSurrounding("grenade_place",15,10);
+			
+			Debug_Log("SAFE");
+			if (cLux_GetPlayer().GetCharacterBody().IsOnGround())
+			{
+				Player_ChangeStateToNormal();
+				Player_SetCrouching(false,true,true);
+				PlayerBody_PlayCutsceneAnimation("protects_herself_from_the_explosion",false,0.3f);
+			}
+			
+			Effect_ImageTrail_Start(1.5,0.8f,10,5);
+			Sound_CreateAtEntity("Sound_GrenadeExplode", "02_03_arsenal/grenade/grenade_explode", "grenade_place");
+			Sound_CreateAtEntity("Sound_GrenadeExplodeDebris", "02_03_arsenal/grenade/grenade_debris", "grenade_place");
+			
+			Music_Play("A2_2_3_Grenade_Detonated.ogg", 0.4f, false, eMusicPrio_BigEvent);
+		}
+		
+		//-------------------------------------------------------
+		
+		void Grenade_RadiusDud()
+		{			
+			Player_GiveDamage(0.5f, 0.0f, eDamageType_Default, "grenade_place");
+			
+			Player_AddBodyForce(cVector3f(0, 2000000, 0), false);
+			Player_Jump();
+			
+			Map_AddTimer("Timer_DudReaction",2.6f, "OnTimer_DudReaction");
+			
+			Sound_Stop("Sound_GrenadeFuse", 0.2f);
+			Sound_CreateAtEntity("Sound_GrenadeDud", "02_03_arsenal/grenade/grenade_dud", "grenade_place");
+		}
+		
+		//-------------------------------------------------------
+		
+		void Entity_ExplodeSurrounding(const tString &in asEntity, float afDist, float afImpulse)
+		{
+			cLux_ProfileStart("EXPLODE");
+			
+			cVector3f vPos = cLux_GetCurrentMap().GetEntityByName(asEntity).GetPosition();
+			
+			array<iPhysicsBody@> vNearbyBodies;
+			array<iPhysicsBody@> vClosestBodies;
+			array<iLuxEntity@> vNearbyEntities;
+			
+			cVector3f vMin = vPos - cVector3f_One*afDist*0.6f;
+			cVector3f vMax = vPos + cVector3f_One*afDist*0.6f;
+			
+			vMin = vPos - cVector3f_One*afDist/2;
+			vMax = vPos + cVector3f_One*afDist/2;
+			cLux_GetCurrentMap().GetPhysicsWorld().GetBodiesInAABB(vMin,vMax,vClosestBodies);
+			cLux_AddDebugMessage("BODIES: "+vClosestBodies.length());
+			for (int i = 0; i < vClosestBodies.length(); i++)
+			{
+				// PUSH
+				iPhysicsBody@ pBody = vClosestBodies[i];
+				if (pBody is null) continue;
+				iLuxEntity@ pEnt = cLux_GetBodyEntity(pBody);
+				if (pEnt is null) continue;
+				if (pEnt.GetEntityType() != eLuxEntityType_Prop) continue;		
+				if (pEnt.GetClassName() == "cScrPropPickup" ||
+					pEnt.GetClassName() == "cScrPropReadable")
+				{
+					continue;
+				}
+				
+				cVector3f vDir = pBody.GetWorldPosition() - cLux_GetCurrentMap().GetEntityByName(asEntity).GetPosition();
+				float fDist = vDir.Length();
+				vDir.Normalize();
+				float fDistMul = 1 - (fDist/afDist);
+				fDistMul = cMath_Clamp(fDistMul, 0.1f, 1);
+				float fMassMul = 1 - cMath_Clamp(pBody.GetMass(),0,1);
+				fMassMul = cMath_Clamp(fMassMul, 0.5f,1);
+				cVector3f vFinalImpulse = vDir*afImpulse*fDistMul*fMassMul;
+				pBody.AddImpulse(vFinalImpulse);
+			}
+		}
+		
+		//-------------------------------------------------------
+		
 	//} END MAIN FUNCTIONS
  
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -305,6 +478,8 @@ class cScrMap : iScrMap
 			Entity_SetActive("monke", false);
 			Game_AutoSave();
 			
+			Voice_Play("MonkeComment");
+			
 			return false;
 		}
 	 
@@ -384,7 +559,18 @@ class cScrMap : iScrMap
 		
 		bool ChangeMap(const tString &in asParent, const tString &in asChild, int alState)
 		{
+			Light_FadeBrightnessTo("Light_Face", 1.0f, 0.5f);
+			Map_AddTimer("ChangeMap", 0.6f, "Timer_ChangeMap");
+			
 			return false;
+		}
+		
+		void Timer_ChangeMap(const tString&in asTimer)
+		{
+			if(!cLux_ScriptDebugOn())
+			{
+				Map_ChangeMap("02_04_monke_town", "Start_Begin", "", "");
+			}
 		}
 
 		//} END Event *Secret*
