@@ -1,5 +1,39 @@
 <HPLMapTrack_Area ID="AADDC3FB896F29144CED818E8F5D9FE4C4B245D9" MajorVersion="1" MinorVersion="1">
     <Section Name="10911851120317680304">
-        <Objects />
+        <Objects>
+            <Area ID="268435622" Name="AMB_Global" CreStamp="1610830697" ModStamp="1610830806" WorldPos="-9.25 30.75 -301.5" Rotation="0 0 0" Scale="177.5 74 301.75" Active="true" Mesh="" UID="16 12648 268435622" AreaType="Soundscape">
+                <UserVariables>
+                    <Var ObjectId="268435622" Name="Note" Value="" />
+                    <Var ObjectId="268435622" Name="UseReverb" Value="true" />
+                    <Var ObjectId="268435622" Name="ReverbType" Value="ExtraOpenAreas" />
+                    <Var ObjectId="268435622" Name="ReverbPrio" Value="0" />
+                    <Var ObjectId="268435622" Name="ReverbAmount" Value="1.1" />
+                    <Var ObjectId="268435622" Name="ReverbFadeTime" Value="1" />
+                    <Var ObjectId="268435622" Name="Prio" Value="0" />
+                    <Var ObjectId="268435622" Name="Level" Value="2: Room" />
+                    <Var ObjectId="268435622" Name="BG_Sound" Value="05_02/amb/background/field" />
+                    <Var ObjectId="268435622" Name="BG_Volume" Value="1" />
+                    <Var ObjectId="268435622" Name="BG_FadeInTime" Value="1" />
+                    <Var ObjectId="268435622" Name="BG_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435622" Name="BG_FadeTransitionSpeed" Value="1" />
+                    <Var ObjectId="268435622" Name="BG_ParentVolMul" Value="1" />
+                    <Var ObjectId="268435622" Name="SoundEnt_InNames" Value="" />
+                    <Var ObjectId="268435622" Name="SoundEnt_OutNames" Value="" />
+                    <Var ObjectId="268435622" Name="SoundEnt_FadeInTime" Value="1" />
+                    <Var ObjectId="268435622" Name="SoundEnt_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435622" Name="SoundPrefixPrio" Value="0" />
+                    <Var ObjectId="268435622" Name="SoundPrefix" Value="[None]" />
+                    <Var ObjectId="268435622" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435622" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435622" Name="ParentAttachBody" Value="" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435623" Name="Start_Begin" CreStamp="1610830709" ModStamp="1610830715" WorldPos="14.75 11.5 -416.25" Rotation="0 0 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 12649 268435623" AreaType="PlayerStart">
+                <UserVariables>
+                    <Var ObjectId="268435623" Name="Note" Value="" />
+                    <Var ObjectId="268435623" Name="Crouching" Value="false" />
+                </UserVariables>
+            </Area>
+        </Objects>
     </Section>
 </HPLMapTrack_Area>
