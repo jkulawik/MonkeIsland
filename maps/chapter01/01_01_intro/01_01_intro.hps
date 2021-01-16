@@ -85,6 +85,7 @@ class cScrMap : iScrMap
 	{
 		cScript_SetGlobalVarBool("InIntro", true);
 		cScript_SetGlobalVarBool("HideAmuletBracelet", true);
+		cScript_SetGlobalVarBool("SalimsRingVisible", false);
 		
 		// Player Setup
 		PlayerBody_SetActive(true);
@@ -220,7 +221,7 @@ class cScrMap : iScrMap
 		}
 		if(alAction == eAction_Test3)
 		{
-			RotateScreenUp();
+			Sound_CreateAtEntity("radio_music", "monke_new/sfx/special/airplane_crash/radio", "sound_cockpit", 0.0f, false, 0.2f);
 		}
 	}
 
@@ -526,6 +527,7 @@ class cScrMap : iScrMap
 				
 				ParticleSystem_CreateAtEntityExt("glassbreak_1", "grass_breaking_small.ps", "WindowParticleSource_1", true, cColor(1, 1, 1, 0.35f));
 				Sound_CreateAtEntity("Sound_WindowCreak_1", "physics/glass/glass_shard/glass_bottle_break", "WindowParticleSource_1");
+				Sound_CreateAtEntity("Sound_WindowCreak_1", "02_04_living_quarters/chain_door_remove/chained_door_break", "WindowParticleSource_1", 0.0f, false, 0.5f);
 				
 				Entity_PlayAnimation("munshi", "hit", 0.1f, false, true, "OnMunshiAnimationEnd");
 
@@ -671,7 +673,7 @@ class cScrMap : iScrMap
 			if (mbPlayRaio)
 			{
 				Sound_CreateAtEntity("radio_loop", "02_04_living_quarters/radio/static_loop", "sound_cockpit");
-				//Sound_CreateAtEntity("radio_music", "monke/SFX/airplane_crash_sequence/voice_system", "sound_cockpit");
+				Sound_CreateAtEntity("radio_music", "monke_new/sfx/special/airplane_crash/radio", "sound_cockpit", 0.0f, false, 0.45f);
 				
 				NPC_MoveToNode("women", "Trip", "womenFall");
 			}

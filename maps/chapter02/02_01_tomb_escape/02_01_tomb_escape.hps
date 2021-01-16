@@ -71,6 +71,15 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
 		
+		Sketchbook_SetInventoryEnabled(true);
+		if(cScript_GetGlobalVarBool("PickedLantern"))
+		{
+			Item_AddToInventory("Lantern");
+			Item_SetContent(ItemType_GetFirstInInventory("Lantern"), "Oil", 5);
+		}
+		
+		Item_AddToInventory("CurseMedallion");
+		
 		cScript_SetGlobalVarBool("HideAmuletBracelet", false);
 		
 		Entity_SetActive("monke_bg_1", true);

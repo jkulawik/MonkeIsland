@@ -371,6 +371,8 @@ class cScrMap : iScrMap
 			FearHandler_SetActive(true);
 			FearHandler_SetDarknessFactorActive(true);
 			Player_SetNightVisionEnabled(true);
+			
+			cScript_SetGlobalVarBool("PickedLantern", true);
 		}
 		
 		void OnTimer_LanternAmount(const tString &in asTimer)
