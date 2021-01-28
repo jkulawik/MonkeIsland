@@ -16,10 +16,6 @@
 #include "helpers/helper_message.hps"
 #include "helpers/helper_rotation.hps"
 
-#include "helpers/custom/helper_props_custom.hps"
-#include "helpers/custom/helpers/helper_modules_custom.hps"
-#include "helpers/custom/helpers/helper_player_custom.hps"
-
 
 //--------------------------------------------------
  
@@ -71,11 +67,17 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
 		
-		/////////////////////////
-		// Debug
-		if(cLux_ScriptDebugOn())
+		Effect_Fade_In(1.0f);
+		
+		Entity_SetActive("monke", true);
+		Monke_SetAllowPlayerThrow("monke", false);
+		
+		for (int i = 1; i <= 36; i++)
 		{
+			Monke_CommandPatrol_AddNode("monke", "Patrol_" + i);
 		}
+
+		Monke_CommandPatrol_Execute("monke", true, 999);
 	}
 
 	//-------------------------------------------------------
@@ -94,8 +96,11 @@ class cScrMap : iScrMap
 		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
 		Player_SetVertigoActive(false);
 		Player_SetAllowCheckBaby(false);
-		//Player_SetAutoTeleportWhenBelowAltitude(-55.0f);
 		
+		Player_SetJumpDisabled(false);
+		Player_SetCrouchDisabled(false);
+		Player_SetLeanDisabled(false);
+				
 		Pregnancy_SetBarksActive(false);
 		
 		cLux_ClearAllMapSaveData();		

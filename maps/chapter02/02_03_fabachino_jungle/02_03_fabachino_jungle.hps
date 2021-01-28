@@ -569,7 +569,9 @@ class cScrMap : iScrMap
 		{
 			if(!cLux_ScriptDebugOn())
 			{
-				Map_ChangeMap("02_04_monke_town", "Start_Begin", "", "");
+				Effect_Fade_Out(0.0f);
+				Music_StopAll(0.0f);
+				Map_ChangeMap("02_04_monke_town.hpm", "Start_Begin", "", "");
 			}
 		}
 

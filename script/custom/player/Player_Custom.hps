@@ -436,7 +436,7 @@ class cScrPlayerCustom : cScrPlayer
 			{
 				Sound_PlayGui("monke/Player/reaction/air/hurt" + Player_GetReactionSoundSuffix(), 1.f);
 				
-				tString sSound = aType == eDamageType_Death ? "player/foley/damage/player_fall_death" : "monke_new/sfx/player/death/death_crush";
+				tString sSound = aType == eDamageType_CrushDeath ? "monke_new/sfx/player/death/death_crush" : "player/foley/damage/player_fall_death";
 				Sound_PlayGui(sSound, 1.0f, eSoundEntryType_GuiWorld);
 			}
 			
