@@ -653,6 +653,9 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWait(6.0f))
 			{
+				Item_PutAway(eItemHandlerHand_Left);
+				Item_PutAway(eItemHandlerHand_Right);
+				
 				Sound_FadeGlobalVolume(0.0f, 3.0f);
 			}
 			else if(Sequence_DoStepAndContinue())
