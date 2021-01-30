@@ -161,7 +161,11 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			CameraAnimation_Begin("DeathAnim", "", true);
+			Seq_Monke("");
+		}
+		if(alAction == eAction_Test2)
+		{
+			Map_ChangeMap("01_04_dream.hpm", "Start_Begin", "", "", false);
 		}
 	}
 

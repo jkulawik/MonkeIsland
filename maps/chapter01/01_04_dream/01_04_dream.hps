@@ -76,6 +76,10 @@ class cScrMap : iScrMap
 			Effect_Fade_Out(0);
 			Map_AddTimer("Timer_WakeUp", 2.0f, "Timer_WakeUp");
 		}
+		else
+		{
+			Effect_Fade_In(1.0f);
+		}
 	}
 
 	//-------------------------------------------------------
@@ -238,9 +242,6 @@ class cScrMap : iScrMap
 		Entity_SetVarString("Teleporter_1", "VisAreaToEnable", "VisibilityArea_2");
 		Entity_SetVarString("Teleporter_2", "VisAreaToDisable", "VisibilityArea_2");
 		Entity_SetVarString("Teleporter_2", "VisAreaToEnable", "VisibilityArea_3");
-				
-		FogArea_SetVisible("FogArea_Hide_1", false);
-		FogArea_SetVisible("FogArea_Hide_2", false);
 	}
  
 	//-------------------------------------------------------
