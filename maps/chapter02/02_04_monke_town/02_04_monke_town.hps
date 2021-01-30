@@ -213,7 +213,26 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		bool End(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sound_FadeGlobalVolume(0.f, 0.f, eSoundEntryType_All);
+			
+			Player_SetActive(false);
+			Entity_SetActive("monke", false);
+			Music_StopAll(0);
+			
+			Sketchbook_Close();
+			Sketchbook_SetInventoryEnabled(false);
+
+			Credits_Start("Credits_Monke.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "Monke_Ending");
+			
+			return false;
+		}
+		
+		void OnEndOfCredits()
+		{
+			Map_ChangeMap("main_menu.hpm","PlayerStartArea_1","","",false);
+		}
 	 
 		//-------------------------------------------------------
 		
