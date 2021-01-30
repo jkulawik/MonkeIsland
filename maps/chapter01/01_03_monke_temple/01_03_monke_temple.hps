@@ -600,7 +600,6 @@ class cScrMap : iScrMap
 				Amulet_StopTracking();
 				
 				Item_Unequip(ItemType_GetFirstInInventory("CurseMedallion"));
-				Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
 				
 				Sketchbook_Close();
 				Sketchbook_SetInventoryEnabled(false);
@@ -651,8 +650,11 @@ class cScrMap : iScrMap
 				Player_SetCrouching(true);
 				Player_StartLookAt("rip", 1.0f, 1.0f, 1.0f);
 			}
-			else if(Sequence_DoStepAndWait(6.0f))
+			else if(Sequence_DoStepAndWait(12.0f))
 			{
+				Item_PutAway(eItemHandlerHand_Left);
+				Item_PutAway(eItemHandlerHand_Right);
+				
 				Sound_FadeGlobalVolume(0.0f, 3.0f);
 			}
 			else if(Sequence_DoStepAndContinue())
