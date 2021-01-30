@@ -402,7 +402,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndContinue())
 			{				
-				cLux_SetGodModeActivated(true);
+				//cLux_SetGodModeActivated(true);
 				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 0.85f, "OnFinishWakingUp");
 			}
 			
@@ -426,7 +426,7 @@ class cScrMap : iScrMap
 			
 			Player_SetCanDie(true);
 			
-			cLux_SetGodModeActivated(false);
+			//cLux_SetGodModeActivated(false);
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
 			return false;
