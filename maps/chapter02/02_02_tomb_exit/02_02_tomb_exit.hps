@@ -52,7 +52,7 @@ class cScrMap : iScrMap
 	{
 		FearHandler_SetActive(false);
 		
-		cLux_SetGodModeActivated(false);
+		Player_SetCanDie(true);
 		
 		FearHandler_SetPermaFailEnabled(false);
 		FearHandler_SetWhispersActive(true);

@@ -633,7 +633,7 @@ class cScrMap : iScrMap
 			
 			Music_StopAll(5.0f);
 			
-			cLux_SetGodModeActivated(true);
+			Player_SetCanDie(false);
 			Effect_Fade_Out(1.0f);
 			
 			Player_SetActive(false);
