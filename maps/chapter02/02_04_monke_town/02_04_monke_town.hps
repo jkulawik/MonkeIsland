@@ -193,8 +193,13 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
- 
+	bool Music(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Music_Play("jungle_of_lies", 0.85f, true, eMusicPrio_BgAmb);
+		
+		return false;
+	} 
+	
 	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS

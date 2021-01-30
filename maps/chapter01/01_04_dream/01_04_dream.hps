@@ -16,6 +16,10 @@
 #include "helpers/helper_message.hps"
 #include "helpers/helper_rotation.hps"
 
+#include "custom/helpers/helper_modules_custom.hps"
+#include "custom/helpers/helper_player_custom.hps"
+#include "custom/helpers/helper_fake_achievements.hps"
+
 //--------------------------------------------------
  
 class cScrMap : iScrMap
@@ -34,6 +38,9 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
+		cLux_CleanupData();
+		cLux_ClearAllMapSaveData();
+		
 		GetBase().SetDisplayNameEntry("01-04-dream");
 		
 		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-2), cMath_ToRad(5), cMath_ToRad(0)));
@@ -73,12 +80,7 @@ class cScrMap : iScrMap
 		
 		if(!cLux_ScriptDebugOn())
 		{
-			Effect_Fade_Out(0);
 			Map_AddTimer("Timer_WakeUp", 2.0f, "Timer_WakeUp");
-		}
-		else
-		{
-			Effect_Fade_In(1.0f);
 		}
 	}
 
@@ -99,12 +101,7 @@ class cScrMap : iScrMap
 		Player_SetAllowCheckBaby(false);
 		Player_SetGravity(cVector3f(0, -5.5f, 0));
 		
-		cLux_SetGodModeActivated(true);
-		
 		Pregnancy_SetBarksActive(false);
-		
-		cLux_ClearAllMapSaveData();		
-		Game_AutoSave();
 	}
 
 	//-------------------------------------------------------
@@ -113,7 +110,6 @@ class cScrMap : iScrMap
 	// Run when leaving map
 	void OnLeave()
 	{
-		cLux_SetGodModeActivated(false);
 		Player_SetCanDie(true);
 	}
 
@@ -406,6 +402,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndContinue())
 			{				
+				cLux_SetGodModeActivated(true);
 				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 0.85f, "OnFinishWakingUp");
 			}
 			
@@ -427,9 +424,9 @@ class cScrMap : iScrMap
 			
 			Player_SetGravity(cVector3f(0, -12.0f, 0));
 			
-			cLux_SetGodModeActivated(false);
 			Player_SetCanDie(true);
 			
+			cLux_SetGodModeActivated(false);
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
 			return false;

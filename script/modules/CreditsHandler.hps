@@ -12,8 +12,8 @@
 //---------------------------------------------------
 
 const tString gsFont_Credits = "work_56.fnt";
-const float gfPreCreditsPause = 8.0f;
-const float gfPreCreditsAlpha = 4.0f;
+const float gfPreCreditsPause = 2.0f;
+const float gfPreCreditsAlpha = 2.0f;
 
 //---------------------------------------------------
 
@@ -33,9 +33,9 @@ enum eCreditsStage
 
 float[] gvTimes = 
 {
-	3.0f,	// PreBlack
+	4.0f,	// PreBlack
 	4.0f,	// Music
-	6.0f,	// Text
+	3.0f,	// Text
 	9.0f,	// Fade In
 	45.0f,	// Zoom
 	0.0f, // Hold - Ignored
