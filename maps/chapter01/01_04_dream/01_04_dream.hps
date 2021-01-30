@@ -109,6 +109,7 @@ class cScrMap : iScrMap
 	// Run when leaving map
 	void OnLeave()
 	{
+		cLux_SetGodModeActivated(false);
 	}
 
 	//-------------------------------------------------------
@@ -424,6 +425,7 @@ class cScrMap : iScrMap
 			
 			Player_SetGravity(cVector3f(0, -12.0f, 0));
 			
+			cLux_SetGodModeActivated(false);
 			Map_ChangeMap("02_01_tomb_escape.hpm", "Start_Begin", "", "");
 			
 			return false;
