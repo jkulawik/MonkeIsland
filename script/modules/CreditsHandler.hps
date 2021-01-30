@@ -1,0 +1,1057 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "modules/ModuleInterfaces.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "custom/helpers/helper_modules_custom.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_menu.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_effects.hps"
+#include "base/InputHandler_Types.hps"
+
+//---------------------------------------------------
+
+const tString gsFont_Credits = "work_56.fnt";
+const float gfPreCreditsPause = 8.0f;
+const float gfPreCreditsAlpha = 4.0f;
+
+//---------------------------------------------------
+
+enum eCreditsStage
+{
+	eCreditsStage_None=-1,
+	eCreditsStage_PreBlack,
+	eCreditsStage_Music,
+	eCreditsStage_Text,
+	eCreditsStage_FadeIn,
+	eCreditsStage_Zoom,
+	eCreditsStage_Hold,
+	eCreditsStage_FadeOut,
+	eCreditsStage_PostBlack,
+	eCreditsStage_Done
+}
+
+float[] gvTimes = 
+{
+	3.0f,	// PreBlack
+	4.0f,	// Music
+	6.0f,	// Text
+	9.0f,	// Fade In
+	45.0f,	// Zoom
+	0.0f, // Hold - Ignored
+	4.0f, // Fade Out
+	2.0f, // PosBlack
+	0.0f // Done - Ignored
+};
+
+class cCreditsStyle
+{
+	cCreditsStyle()
+	{
+		mfMaxWidth = 1.0f;
+		mfPaddingBottom = 2.0f;
+		mfPaddingTop = 0.0f;
+	}
+	cCreditsStyle(const tString &in asName)	
+	{
+		this = cCreditsStyle(); 
+		msName = asName; 
+	}
+	
+	void LoadFromXml(cXmlElement @apXmlElem)
+	{
+		//mLabelData.mbUseBackgroundGfx = true; 
+		//mLabelData.mGfxBackground.mColor = cColor(1,0,0,1);
+		tString sFont = "";
+		tString sElement = apXmlElem.GetAttributeString("Name", "");
+		if (sElement == "LHeader")
+			sFont = FontHandler_GetFont(eFontType_Credits, 56);
+		else if (sElement == "MHeader")
+			sFont = FontHandler_GetFont(eFontType_Credits, 96);
+		else if (sElement == "Title")
+			sFont = FontHandler_GetFont(eFontType_Credits, 72);
+		else if (sElement == "Name")
+			sFont = FontHandler_GetFont(eFontType_Credits, 72);
+		else if (sElement == "LeftCol")
+			sFont = FontHandler_GetFont(eFontType_Credits, 72);
+		else if (sElement == "RightCol")
+			sFont = FontHandler_GetFont(eFontType_Credits, 72);
+		else
+			sFont = FontHandler_GetFont(eFontType_Credits, 72);
+		
+		mLabelData.mFont.SetFile(sFont);
+		mLabelData.mFont.mvSize = cVector2f(apXmlElem.GetAttributeFloat("FontSize", mLabelData.mFont.mvSize.x));
+		
+		mfPaddingBottom = apXmlElem.GetAttributeFloat("BottomPadding", mfPaddingBottom);
+		mfPaddingTop = apXmlElem.GetAttributeFloat("TopPadding", mfPaddingTop);
+		
+		array<tString> vAlignStrings = { "left", "right", "center" };
+		tString sAlign = cString_ToLowerCase(apXmlElem.GetAttributeString("FontAlign", "center"));
+		for(int i=0; i<vAlignStrings.length(); ++i)
+		{
+			if(sAlign==vAlignStrings[i])
+			{
+				mLabelData.mFontAlign = eFontAlign(i);
+				break;
+			}
+		}
+		
+		mfMaxWidth = apXmlElem.GetAttributeFloat("MaxWidth", mfMaxWidth);
+	}
+	
+	tString 		msName;
+	cImGuiLabelData mLabelData;
+	float			mfMaxWidth;
+	
+	float mfPaddingBottom;
+	float mfPaddingTop;
+}
+
+enum eCreditsItemType
+{
+	eCreditsItemType_TabbedLine		=0,
+	eCreditsItemType_Space			=1,		// <Space/>
+	eCreditsItemType_Image			=2,		// <Image>...</Image>
+	eCreditsItemType_Text			=3		// <Text
+}
+
+class cListedCreditsItem
+{
+	eCreditsItemType mType;
+	int mlIndex;
+}
+
+class iCreditsItem
+{
+	iCreditsItem(eCreditsItemType aType) { mType=aType; mfLineHeight=0.0f; }
+	
+	void CreateFromXmlElement(cXmlElement @apXmlElem, cScrCreditsHandler @apCreditsHandler) {}
+	void Draw(float afY, cScrCreditsHandler @apCreditsHandler, cColor col, bool abTabbed=false) {}
+	
+	float GetLineHeight() { return mfLineHeight; }
+	
+	eCreditsItemType mType;
+	float mfLineHeight;
+}
+
+class cCreditsItemTabbedLine : iCreditsItem
+{
+	cCreditsItemTabbedLine() { super(eCreditsItemType_TabbedLine); }
+	
+	void CreateFromXmlElement(cXmlElement @apXmlElem, cScrCreditsHandler @apCreditsHandler)
+	{
+		mfWidth = apXmlElem.GetAttributeFloat("Width", -1.0f);
+		mfTabSpace = apXmlElem.GetAttributeFloat("TabSpace", 0.5f);
+		
+		cXmlNodeListIterator @it = apXmlElem.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement @pXmlItem = it.Next().ToElement();
+			mvItems.push_back(apCreditsHandler.CreateItemFromXmlElement(pXmlItem));
+		}
+		
+		for(int i=0; i<mvItems.length(); ++i)
+		{
+			iCreditsItem@ pItem = apCreditsHandler.GetCreditsItem(mvItems[i]);
+		
+			float fHeight = pItem.GetLineHeight();
+			if(mfLineHeight<fHeight)
+				mfLineHeight = fHeight;
+		}
+	}
+	
+	void Draw(float afY, cScrCreditsHandler @apCreditsHandler, cColor col, bool abTabbed=false)
+	{
+		cVector2f vSize(mfWidth, -1);
+		if(vSize.x < 0.0f)
+			vSize.x = ImGui_NrmSize(1.0f,0.0f).x;
+				
+		cVector3f vPos = ImGui_NrmPos(0.0f, 0.0f, 20.0f);
+		vPos.x += (ImGui_NrmSize(1, 0).x-vSize.x)/2.0f;
+		vPos.y = afY;
+			
+		//cLux_AddDebugMessage("Width: " + vSize.x + " PosX: " + vPos.x, true);
+		
+		cVector2f vSpacing(mfTabSpace*vSize.x, 0);
+		
+		ImGui_LayoutBegin(eImGuiLayout_X_Tabbed, vPos, vSize, vSpacing);
+		for(int i=0; i<mvItems.length(); ++i)
+		{
+			iCreditsItem@ pItem = apCreditsHandler.GetCreditsItem(mvItems[i]);
+			pItem.Draw(afY, apCreditsHandler, col, true);
+		}
+		ImGui_LayoutEnd();
+		
+		// Shadow
+		ImGui_LayoutBegin(eImGuiLayout_X_Tabbed, vPos+cVector3f(1.0f,1.0f,-1.0f), vSize, vSpacing);
+		for(int i=0; i<mvItems.length(); ++i)
+		{
+			iCreditsItem@ pItem = apCreditsHandler.GetCreditsItem(mvItems[i]);
+			pItem.Draw(afY, apCreditsHandler, cColor(0), true);
+		}
+		ImGui_LayoutEnd();
+	}
+	
+	float mfWidth;
+	float mfTabSpace;
+	
+	array<cListedCreditsItem> mvItems;
+}
+
+class cCreditsItemSpace : iCreditsItem
+{
+	cCreditsItemSpace() { super(eCreditsItemType_Space); mfLineHeight=20.0f;}
+}
+
+class cCreditsItemImage : iCreditsItem
+{
+	cCreditsItemImage() { super(eCreditsItemType_Image); }
+	
+	tString msFile;
+}
+
+class cCreditsItemText : iCreditsItem
+{
+	cCreditsItemText() { super(eCreditsItemType_Text); }
+	
+	void CreateFromXmlElement(cXmlElement @apXmlElem, cScrCreditsHandler @apCreditsHandler)
+	{
+		mlStyle = apCreditsHandler.GetTextStyle(apXmlElem.GetValue());
+				
+		tString sText = apXmlElem.GetFirstText().GetValue();
+		
+		if (cString_GetFirstStringPos(sText,"$") == 0) 
+		{
+			tString sID = cString_ReplaceCharTo(sText,"$","");
+			msText = cResources_Translate(apCreditsHandler.msTranslateCat, sID);
+		}	
+		else
+		{
+			msText = cString_GetDecodedString(sText);
+			
+			// Convert to 16 char directly
+			//msText.resize(sText.length());
+			//for(int i = 0; i < sText.length(); ++i) msText[i] = sText[i];
+		}
+		
+		cCreditsStyle @pStyle = apCreditsHandler.mvTextStyles[mlStyle];
+		mfLineHeight = pStyle.mLabelData.mFont.mvSize.y + pStyle.mfPaddingBottom + pStyle.mfPaddingTop;
+	}
+	
+	void Draw(float afY, cScrCreditsHandler @apCreditsHandler, cColor col, bool abTabbed=false)
+	{
+		cCreditsStyle @pStyle = apCreditsHandler.mvTextStyles[mlStyle];
+		
+		afY += pStyle.mfPaddingTop;
+		
+		cVector3f vPos = cVector3f_Zero;
+		cVector2f vSize = cVector2f_MinusOne;
+
+		if(abTabbed==false)
+		{
+			vPos = ImGui_NrmPos(0, 0, 20);
+			vPos.y = afY;
+			
+			vSize = ImGui_NrmSize(1.0f, -1.0f);
+		}
+		vSize.y = pStyle.mLabelData.mFont.mvSize.y + 2.0f;
+		
+		cLux_GetCurrentImGui().SetModColorMul(col);
+		cLux_GetCurrentImGui().DoLabel(msText, pStyle.mLabelData, vPos, vSize, 1);
+		
+		if (!abTabbed)
+		{
+			cVector3f vShadowPos = vPos + cVector3f(1.0f,1.0f,-1.0f);
+			cLux_GetCurrentImGui().SetModColorMul(cColor(0));
+			cLux_GetCurrentImGui().DoLabel(msText, pStyle.mLabelData, vShadowPos, vSize, 1);
+		}
+	}
+	
+	int mlStyle;
+	tWString msText;
+}
+
+class cScrCreditsHandler : iScrUserModule, iScrUserModule_Interface, iScrCreditsHandler_Interface
+{
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		// Set up fonts
+		mLabelNormal.mFontAlign = eFontAlign_Center;
+		mLabelHeader.mFontAlign = eFontAlign_Center;
+		mLabelHeader.mFont.mvSize *= 1.25f;
+		mLabelHeader.mFont.SetFile(gsFont_Credits);
+		
+		mbRollCredits = false;
+		mbSkipAllowed = false;
+		mbSkipActive = false;
+		mfSkipAlpha = 0.f;
+		mfSkipTimer = 1.f;
+		mCreditsStage = eCreditsStage_None;
+		
+		mFormatParamsSkip.mLabelText.mFont = cImGuiFont(gsFont_Credits, cVector2f(22));
+		mFormatParamsSkip.mLabelText.mFontAlign = eFontAlign_Right;
+	}
+	
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	//MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+	}
+	
+	void OnMapLeave(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+		
+	void PreloadData(cLuxMap @apMap)
+	{
+		apMap.PreloadGuiGfx("simple_black.dds", eImGuiGfx_Texture);
+		// TO DO: Preload backgrounds
+	}
+
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool IsActive()
+	{
+		return true;
+	}
+	
+	//------------------------------------------------------- 
+	
+	void ChangeCreditsStage(int aStage)
+	{
+		if (aStage==mCreditsStage)
+			return;
+			
+		mCreditsStage = aStage;
+		if (aStage>=0)
+			mfStageTimer = gvTimes[aStage];
+			
+		if (mCreditsStage==eCreditsStage_Text)
+		{
+			Effect_Fade_In(0.0f);
+		}
+		if (mCreditsStage==eCreditsStage_PostBlack)
+		{
+			Effect_Fade_Out(0.0f);
+		}
+		else if (mCreditsStage==eCreditsStage_Done)
+		{
+			Music_Stop(2.0f,eMusicPrio_OverrideAll);
+			PauseMenu_Enabled(true);
+			mCreditsStage = eCreditsStage_None;
+			if (msCompleteCallback!="")
+			{
+				tString sCompleteCallback = msCompleteCallback;
+				msCompleteCallback = "";
+				
+				cLuxMap@ pMap = cLux_GetCurrentMap();
+				if(pMap.ScriptPrepare("void "+sCompleteCallback+"()" ) )
+				{
+					pMap.ScriptExecute();
+				}
+				else
+					Error("Cannot find credits completion callback "+sCompleteCallback+"()");
+			}
+		}
+	}
+	
+	//------------------------------------------------------- 
+	
+	void NextCreditsStage()
+	{
+		if (mCreditsStage == eCreditsStage_Done)
+			return;
+			
+		ChangeCreditsStage(mCreditsStage+1);
+	}
+	
+	//------------------------------------------------------- 
+	
+	void StartCredits(const tString &in asCreditsFile, const tString &in asCompleteCallback, const tString &in asBackgroundGfx, cVector3f avZoomOffset, const tString &in asMusic, float afRollSpeedStart, float afRollSpeedGoal, float afRollSpeedFadeTime)
+	{
+		mbRollCredits = false;
+		mfRollAmount = 0;
+		mbSkipAllowed = false;
+		mbSkipActive = false;
+		mfSkipAlpha = 0.f;
+		mfSkipTimer = 1.f;
+		ChangeCreditsStage(eCreditsStage_PreBlack);
+		
+		Game_LogStats(true);
+		
+		if(LoadCreditsFile(asCreditsFile)==false)
+			return;
+	
+		PauseMenu_Enabled(false);
+							
+		msBackgroundGfx = asBackgroundGfx;
+		mvZoomOffset = avZoomOffset;
+		mvMusic.resize(0);
+		msCurrentSong = "";
+		if (asMusic!="")
+		{
+			cString_GetStringVec(asMusic, mvMusic,",");
+		}
+		
+		/////////////////////////////////////
+		// Credits complete callback
+		msCompleteCallback = asCompleteCallback;
+		
+		/////////////////////////////////////
+		// Compute total credits length
+		mfCreditsLength = cLux_GetGameHudImGui().GetCurrentGroupSize().y*1.5f;
+		
+		int lNumImages = 0;
+		float fImageHeight = 0.0f;
+		for(int i=0; i<mvItems.length(); ++i)
+		{
+			iCreditsItem @pItem = GetCreditsItem(mvItems[i]);
+			
+			mfCreditsLength += pItem.GetLineHeight();
+		}
+	
+		/////////////////////////////////////
+		// Start the thing!
+		mbRollCredits = true;
+		mfRollSpeedStart = mfRollCurrentSpeed = afRollSpeedStart;
+		SetCreditsRollSpeed(afRollSpeedGoal, afRollSpeedFadeTime);
+	}
+	
+	//------------------------------------------------------- 
+	
+	void SetCreditsRollSpeed(float afRollSpeedGoal, float afRollSpeedFadeTime)
+	{
+		mfRollSpeedGoal = afRollSpeedGoal;
+		
+		if(afRollSpeedFadeTime<=0.0f)
+			mfRollSpeedStart = mfRollSpeedGoal;
+		else
+		{
+			mfRollSpeedStart = mfRollCurrentSpeed;
+			mfRollSpeedFadeStep = (mfRollSpeedGoal-mfRollSpeedStart)/afRollSpeedFadeTime;
+		}
+	}
+	
+	//------------------------------------------------------- 
+	
+	void StopCredits(float afFadeTime)
+	{
+		mbRollCredits = false;
+		
+		mvItems.resize(0);
+		mvTabbedLines.resize(0);
+		mvSpaces.resize(0);
+		mvImages.resize(0);
+		mvTexts.resize(0);
+		
+		mfRollAmount = mfRollSpeedStart = mfRollSpeedGoal = mfRollSpeedFadeStep = 0.0f;
+	}
+
+	//------------------------------------------------------------
+	
+	array<tString> mvItemTypeNames = { "tabbedline", "space", "image" };
+	eCreditsItemType GetItemType(const tString &in asItemTag)
+	{
+		tString sLowerCase = cString_ToLowerCase(asItemTag);
+		
+		eCreditsItemType type = eCreditsItemType_Text;
+		
+		for(int i=0; i<mvItemTypeNames.length(); ++i)
+		{
+			if(sLowerCase==mvItemTypeNames[i])
+			{
+				type = eCreditsItemType(i);
+				break;
+			}
+		}
+		
+		return type;
+	}
+	
+	//------------------------------------------------------- 
+	
+	cListedCreditsItem CreateItemFromXmlElement(cXmlElement @apXmlElem)
+	{
+		cListedCreditsItem listedItem;
+		eCreditsItemType type = GetItemType(apXmlElem.GetValue());
+		
+		int lIndex;
+		iCreditsItem @pItem = null;
+		switch(type)
+		{
+			case eCreditsItemType_TabbedLine:
+			{
+				cCreditsItemTabbedLine line;
+				lIndex = mvTabbedLines.length();
+				mvTabbedLines.push_back(line);
+				
+				@pItem = mvTabbedLines[lIndex];
+				
+				break;
+			}
+			case eCreditsItemType_Space:
+			{
+				cCreditsItemSpace space;
+				lIndex = mvSpaces.length();
+				mvSpaces.push_back(space);
+				
+				@pItem = mvSpaces[lIndex];
+				
+				break;
+			}
+			case eCreditsItemType_Image:
+			{
+				cCreditsItemImage image;
+				lIndex = mvImages.length();
+				mvImages.push_back(image);
+				
+				@pItem = mvImages[lIndex];
+				
+				break;
+			}
+			case eCreditsItemType_Text:
+			{
+				cCreditsItemText text;
+				lIndex = mvTexts.length();			
+				mvTexts.push_back(text);
+				
+				@pItem = mvTexts[lIndex];
+				
+				break;
+			}
+		}
+		
+		pItem.CreateFromXmlElement(apXmlElem, this);
+		
+		listedItem.mType = type;
+		listedItem.mlIndex = lIndex;
+		
+		return listedItem;
+	}
+	
+	//------------------------------------------------------- 
+	
+	int GetTextStyle(const tString &in asTag)
+	{
+		tString sLowerCase = cString_ToLowerCase(asTag);
+		//cLux_AddDebugMessage("Looking for style matching '" + sLowerCase + "'");
+		int lIndex = 0;
+		for(int i=1; i<mvTextStyles.length(); ++i)
+		{
+			if(sLowerCase==mvTextStyles[i].msName)
+			{
+				lIndex = i;
+							
+				break;
+			}
+		}
+		
+		return lIndex;
+	}
+	
+	//------------------------------------------------------- 
+	
+	iCreditsItem @GetCreditsItem(cListedCreditsItem @apListedItem)
+	{
+		iCreditsItem @pItem = null;
+		switch(apListedItem.mType)
+		{
+			case eCreditsItemType_TabbedLine:
+				@pItem = mvTabbedLines[apListedItem.mlIndex];	break;
+			case eCreditsItemType_Space:
+				@pItem = mvSpaces[apListedItem.mlIndex];		break;
+			case eCreditsItemType_Image:
+				@pItem = mvImages[apListedItem.mlIndex];		break;
+			case eCreditsItemType_Text:
+				@pItem = mvTexts[apListedItem.mlIndex];			break;
+		}
+		
+		return pItem;
+	}
+	
+	//------------------------------------------------------- 
+	
+	bool LoadCreditsFile(const tString &in asFile)
+	{
+		mvItems.resize(0);
+		mvTabbedLines.resize(0);
+		mvSpaces.resize(0);
+		mvImages.resize(0);
+		mvTexts.resize(0);
+		
+		msTranslateCat = "";
+		
+		// Reset Text style
+		mvTextStyles.resize(0);
+		mvTextStyles.push_back(cCreditsStyle("default"));
+				
+		/////////////////////////////////////
+		// Load document. Break on not found
+		iXmlDocument @pCreditsDoc = cResources_LoadXmlDocument(asFile);
+		if(pCreditsDoc is null || pCreditsDoc.GetValue()!="Credits")
+			return false;
+			
+		/////////////////////////////////////
+		// Set up credits
+		///////////////////////////////////// 
+					
+		// Set up styles
+			
+		cXmlElement @pXmlStyles = pCreditsDoc.GetFirstElement("Styles");
+		if(pXmlStyles !is null)
+		{
+			cXmlNodeListIterator @itStyles = pXmlStyles.GetChildIterator();
+			while(itStyles.HasNext())
+			{
+				cXmlElement @pXmlStyle = itStyles.Next().ToElement();
+				tString sStyleType = cString_ToLowerCase(pXmlStyle.GetValue());
+							
+				if(sStyleType!="text")
+					continue;
+
+				tString sStyleName = cString_ToLowerCase(pXmlStyle.GetAttributeString("Name", ""));
+				int lStyleID = GetTextStyle(sStyleName);
+				
+				if(sStyleName.length()>0)
+				{
+					lStyleID = mvTextStyles.length();
+					cCreditsStyle style(sStyleName);
+					
+					mvTextStyles.push_back(style);
+				}
+							
+				cCreditsStyle @pStyle = mvTextStyles[lStyleID];
+				pStyle.LoadFromXml(pXmlStyle);
+			}
+		}
+		
+		for(int i=0; i<mvTextStyles.length(); ++i)
+		{
+			cCreditsStyle @pStyle = mvTextStyles[i];
+			//cLux_AddDebugMessage("Style present: " + pStyle.msName);
+		}
+		
+		cXmlElement @pXmlContent = pCreditsDoc.GetFirstElement("Content");
+		if(pXmlContent !is null)
+		{
+			msTranslateCat = pXmlContent.GetAttributeString("TranslationCategory", "");
+			//cLux_AddDebugMessage("Category: "+msTranslateCat);
+			
+			cXmlNodeListIterator @it = pXmlContent.GetChildIterator();
+			while(it.HasNext())
+			{
+				cXmlElement @pXmlCreditsItem = it.Next().ToElement();
+				
+				mvItems.push_back(CreateItemFromXmlElement(pXmlCreditsItem));
+			}
+		}
+		
+		cResources_DestroyXmlDocument(pCreditsDoc);
+		
+		return mvItems.length()>0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnCreditsComplete()
+	{
+		ChangeCreditsStage(eCreditsStage_FadeOut);
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+	
+	}
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void VariableUpdate(float afTimeStep)
+	{
+	}
+		
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep)
+	{
+	}
+	
+	void UpdateMusic(float afDeltaTime)
+	{
+		if ((mCreditsStage>=eCreditsStage_Music)&&(mCreditsStage<eCreditsStage_PostBlack))
+		{
+			if (mvMusic.length()>0)
+			{
+				if ((msCurrentSong=="") or (!Music_IsSongPlaying(msCurrentSong)))
+				{
+					msCurrentSong = mvMusic[0];
+					mvMusic.removeAt(0);
+					mvMusic.insertLast(msCurrentSong);
+					Music_FadeVolumeMul(1.0f,0.0f);
+					Music_Play(msCurrentSong,1.0f,false,eMusicPrio_OverrideAll);
+					
+				}
+			}
+		}
+	}
+	
+	void Update(float afDeltaTime)
+	{	
+		//Debug_Log("Stage:"+mCreditsStage+" Timer:"+mfStageTimer);
+		if (mCreditsStage<=eCreditsStage_None)
+			return;
+			
+		UpdateMusic(afDeltaTime);
+		
+		mfStageTimer-=afDeltaTime;
+		if ((mfStageTimer<=0.0f) && (mCreditsStage!=eCreditsStage_Hold))
+		{
+			NextCreditsStage();
+		}
+		
+		mbSkipAllowed = false;
+		
+		if (mCreditsStage<eCreditsStage_Text)
+			return;
+		
+		if ((mCreditsStage>=eCreditsStage_Zoom) && (mCreditsStage<=eCreditsStage_Hold))
+		{
+			mbSkipAllowed = true;
+			if (mfSkipAlpha < 1)
+				mfSkipAlpha += 0.2f*afDeltaTime;
+		}
+			
+		if(mbRollCredits && mvItems.length()>0)
+		{
+			float fPixelSpeed = 100.f;
+			mfRollAmount += mfRollCurrentSpeed*afDeltaTime*fPixelSpeed;
+			
+			if(mfRollCurrentSpeed!=mfRollSpeedGoal)
+			{
+				float fDiff = mfRollSpeedGoal-mfRollCurrentSpeed;
+				
+				if(fDiff*fDiff>0.001f)
+					mfRollCurrentSpeed += mfRollSpeedFadeStep*afDeltaTime;
+				else
+					mfRollCurrentSpeed = mfRollSpeedGoal;
+			}
+		
+			if (mfRollAmount>=mfCreditsLength)
+			{
+				mbRollCredits = false;
+				if (!mbSkipActive)
+					OnCreditsComplete();
+			}
+		}
+		
+		if (mbSkipAllowed)
+		{
+			if (mbSkipActive)
+			{
+				mfSkipTimer -= afDeltaTime;
+				if (mfSkipTimer <= 0)
+				{
+					//StopCredits(1.f);
+					OnCreditsComplete();
+				}
+			}
+			else
+				mfSkipTimer = 1.f;
+		}
+	}
+	void Reset()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnGui(float afFrameTime)
+	{
+		DrawCredits(mfRollAmount, 1.0f);
+	}
+	
+	void OnDraw(float afFrameTime)
+	{
+		if (cLux_GetGamePaused()) return;
+		
+		
+	}
+	
+	void OnPostRender(float afFrameTime)
+	{
+	
+	}
+		
+	float mfZoomProgress = 0.0f;
+	
+	void DrawCredits(float afRollAmount, float afFadeAmount)
+	{
+		// Black Background
+		if ((mCreditsStage>=eCreditsStage_PreBlack) && (mCreditsStage<=eCreditsStage_PostBlack))
+		{	
+			cImGuiGfx blackGfx("simple_black.dds", eImGuiGfx_Texture);
+			ImGui_DoImage(blackGfx, ImGui_FullScreenPos(8.0f), ImGui_FullScreenSize());
+		}
+		
+		// Colour Background
+		if ( (mCreditsStage>=eCreditsStage_FadeIn) && (mCreditsStage<=eCreditsStage_FadeOut) )
+		{
+			float fStageTime = gvTimes[mCreditsStage];
+			float fBGAlpha = 1.0f;
+			if (mCreditsStage==eCreditsStage_FadeIn)
+				fBGAlpha = (fStageTime-mfStageTimer)/fStageTime;
+			else if (mCreditsStage==eCreditsStage_FadeOut)
+				fBGAlpha = mfStageTimer/fStageTime;
+				
+			
+			ImGui_SetModColorMul(cColor(1.0f, fBGAlpha));		
+			
+			// Background image
+			float fZoomStart = 1.0f;
+			if (mvZoomOffset.SqrLength()>0.0f)
+				fZoomStart = mvZoomOffset.z;
+				
+			if ((mCreditsStage>=eCreditsStage_FadeIn) && (mCreditsStage<=eCreditsStage_Zoom))
+			{
+				float fTotalZoomTime = gvTimes[eCreditsStage_FadeIn] + gvTimes[eCreditsStage_Zoom];
+				float fZoomTime = fStageTime-mfStageTimer;
+				if (mCreditsStage>eCreditsStage_FadeIn)
+					fZoomTime += gvTimes[eCreditsStage_FadeIn];
+				mfZoomProgress = fZoomTime/fTotalZoomTime;
+			}
+			
+			float fZoomSize = cMath_Easing(eEasing_SineInOut, mfZoomProgress, fZoomStart, 1.12f); // Magic numbers were used to make sure it works on 90% safe zone
+			cVector3f pos = cVector3f( cMath_Easing(eEasing_SineInOut, mfZoomProgress, mvZoomOffset.x, -0.057f),
+							 cMath_Easing(eEasing_SineInOut, mfZoomProgress, mvZoomOffset.y, -0.06f),
+							 10.0f);
+							 
+			tString sBackgroundGfx = (msBackgroundGfx == "") ? "simple_black.dds" : msBackgroundGfx;
+			cImGuiGfx backgroundGfx(sBackgroundGfx, eImGuiGfx_Texture);
+			cColor baseCol = cColor(0.8, 0.69, 0.60, fBGAlpha);
+			ImGui_SetModColorMul(baseCol);
+			ImGui_DoImage(backgroundGfx, ImGui_NrmPos(pos), ImGui_NrmSize(cVector2f(fZoomSize,fZoomSize)));
+		}
+		
+		ImGui_ResetModifiers();
+		
+		if ((mCreditsStage<eCreditsStage_Text)||(mCreditsStage>eCreditsStage_FadeOut))
+			return;
+			
+		cColor col = cColor_White;
+		if (mCreditsStage==eCreditsStage_FadeOut)
+		{
+			float fAlpha = mfStageTimer/gvTimes[mCreditsStage];
+			col = cColor(1.0f,fAlpha);
+		}
+	
+		array<float> vRowAdd = {mLabelNormal.mFont.mvSize.y+2, mLabelHeader.mFont.mvSize.y+2};
+		float fScreenHeight = ImGui_GetSize().y+30;
+		float fY = fScreenHeight - afRollAmount;
+									
+		ImGui_SetTransCategory("");
+		
+		for(int i=0; i<mvItems.length(); ++i)
+		{
+			if(fY > fScreenHeight) break;
+			
+			iCreditsItem@ pItem = GetCreditsItem(mvItems[i]);
+			
+			if(fY > -pItem.GetLineHeight())
+				pItem.Draw(fY, this, col);
+				
+			fY += pItem.GetLineHeight();
+		}
+		
+		if (mbSkipAllowed)
+		{		
+			cLuxScreenTextFormatParameters formatParams;
+			formatParams.mLabelText.mColorBase = cColor(1,1,1,mfSkipAlpha);
+			
+			formatParams.mLabelText.mFontAlign = eFontAlign_Left;
+			formatParams.mLabelText.mFont.mvSize = cVector2f(18);
+			formatParams.mLabelText.mFont.SetFile(FontHandler_GetFont(eFontType_Credits,56));
+			formatParams.mfIconGamepadHeight = 20.0f;
+			formatParams.mfIconKeyHeight = 20.0f;
+			formatParams.mfIconMouseHeight = 20.0f;
+			formatParams.mLabelText.mFontAlign = eFontAlign_Center;
+				
+			ImGui_GroupBegin(ImGui_NrmPosGroup(cVector3f(0,0,0)), ImGui_NrmSizeGroup(cVector2f(1,1)));
+			
+			cVector3f vPromptPos = ImGui_NrmPos(cVector3f(0.4f, 0.9f, 11.f));
+			cVector2f vPromptSize = ImGui_NrmSize(cVector2f(1.f));
+			ImGui_SetModColorMul(formatParams.mLabelText.mColorBase);
+			Hint_DrawExplicit("CreditsPrompts", "Skip", vPromptPos, vPromptSize, formatParams);
+			ImGui_GroupEnd();
+		}
+		
+		ImGui_ResetModifiers();
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+		if(mbRollCredits == false) return;
+			
+		if (abPressed)
+		{
+			if (alAction == eAction_Interact)
+			{
+				if (mbSkipAllowed)
+				{
+					mbSkipActive = true;
+				}
+				//SetCreditsRollSpeed(mfRollSpeedGoal*2.5f,0);
+			}
+		}
+		else
+		{
+			if (alAction == eAction_Interact)
+			{
+				mbSkipActive = false;
+				//SetCreditsRollSpeed(mfRollSpeedGoal/2.5f,0);
+			}
+		}
+	}
+	
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppGotInputFocus()
+	{
+	
+	}
+	void AppLostInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+		
+	//------------------------------------------------------------
+		
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbRollCredits;
+	
+	cLuxScreenTextFormatParameters mFormatParamsSkip;
+	tWString msSkipText;
+	bool mbSkipAllowed;
+	bool mbSkipActive;
+	float mfSkipAlpha;
+	float mfSkipTimer;
+	
+	float mfRollCurrentSpeed;
+	float mfRollSpeedStart;
+	float mfRollSpeedGoal;
+	float mfRollSpeedFadeStep;
+	
+	float mfStageTimer = 0.0f;
+	float mfCreditsLength;
+	float mfRollAmount;
+	
+	tString msCompleteCallback;
+	tString msBackgroundGfx;
+	cVector3f mvZoomOffset;
+	array<tString> mvMusic;
+	tString msCurrentSong;
+			
+	//array<tWString>	mvTextRows;
+	[nosave]	cImGuiLabelData	mLabelHeader;
+	[nosave]	cImGuiLabelData	mLabelNormal;
+	
+	cCamera @mpCamera;
+	
+	tString msTranslateCat;
+	array<cCreditsStyle> mvTextStyles;
+	
+	array<cCreditsItemTabbedLine> mvTabbedLines;
+	array<cCreditsItemSpace> mvSpaces;
+	array<cCreditsItemImage> mvImages;
+	array<cCreditsItemText> mvTexts;
+	
+	array<cListedCreditsItem> mvItems;
+	
+	int mCreditsStage;
+		
+	//------------------------------------------------------------
+	
+	//------------------------------------------------------------
+	
+	//------------------------------------------------------------
+	
+	//------------------------------------------------------------
+}

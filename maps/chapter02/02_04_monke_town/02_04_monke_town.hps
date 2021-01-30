@@ -103,6 +103,8 @@ class cScrMap : iScrMap
 				
 		Pregnancy_SetBarksActive(false);
 		
+		Sketchbook_SetInventoryEnabled(true);
+		
 		cLux_ClearAllMapSaveData();		
 		Game_AutoSave();
 	}
