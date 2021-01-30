@@ -441,6 +441,7 @@ class cScrMap : iScrMap
 						
 			if(Sequence_DoStepAndWaitUntil(2.0f))
 			{
+				CameraAnimation_Begin("IntroAnimation", "", false);
 				Effect_Fade_In(0);
 				PauseMenu_Enabled(false);
 				
@@ -467,7 +468,6 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWaitUntil(15.0f))
 			{
-				CameraAnimation_Begin("IntroAnimation", "", false);
 				PlayerBody_SetVisible(false);
 				PlayerHands_SetActive(false);
 				
