@@ -213,10 +213,25 @@ class cScrMap : iScrMap
 		/////////////////////////////////////////
 		// General
 		//{//////////////////////////////////////
+		
+		bool mbDoHappy = false;
+		bool mbDoHell = false;
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		void OnGui(float afTimeStep)
+		{
+			if (mbDoHell)
+			{
+				cImGuiGfx hell("hell.dds", eImGuiGfx_Texture);
+				ImGui_DoImage(hell, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
+			}
+			
+			if (!mbDoHappy) return;
+			
+			cImGuiGfx happy("happy.dds", eImGuiGfx_Texture);
+			ImGui_DoImage(happy, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
+		}
 	 
 		//-------------------------------------------------------
 	 
@@ -231,14 +246,32 @@ class cScrMap : iScrMap
 			Sketchbook_Close();
 			Sketchbook_SetInventoryEnabled(false);
 
+			mbDoHell = true;
+			
+			Map_AddTimer("DO", 0.15f, "hiDoggy");
+			
 			Credits_Start("Credits_Monke.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "Monke_Ending");
 			
 			return false;
 		}
 		
+		void hiDoggy(const tString&in asTimer)
+		{
+			mbDoHell = false;
+		}
+		
 		void OnEndOfCredits()
 		{
-			Map_ChangeMap("main_menu.hpm","PlayerStartArea_1","","",false);
+			mbDoHappy = true;
+			Music_Play("happy", 0.5f, true, eMusicPrio_BigEvent);
+			
+			Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+		}
+		
+		void Timer_GtfoToMenu(const tString&in asTimer)
+		{
+			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("it was something behind you wasn't it"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
+			cEngine_Exit();
 		}
 	 
 		//-------------------------------------------------------

@@ -6,6 +6,7 @@
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_audio.hps"
 #include "helpers/helper_effects.hps"
+#include "helpers/helper_imgui.hps"
 
 //----------------------------------------------------------------------------------------
 
@@ -25,17 +26,46 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
     
     void Init()
 	{
+		mlLostFocusCount = 0;
+		mbFuckThePlayerUp = false;
 		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
 	}
 	
     void Reset() 
 	{
+		mlLostFocusCount = 0;
+		mbFuckThePlayerUp = false;
 		mfNextSneezeTime = cMath_RandRectf(gfSneezeTime.x, gfSneezeTime.y);
 	}
 	
 	//-------------------------------------------------------
 	
-    void Update(float afTimeStep) {}
+    void Update(float afTimeStep) 
+	{
+		if(!cSystem_HasWindowFocus(tWString("Monke Island")))
+		{
+			mbLostFocus = true;
+		}
+		else
+		{
+			if (mbLostFocus)
+			{
+				Debug_Log("Raised");
+				
+				mlLostFocusCount++;
+				mbLostFocus = false;
+			}
+			
+			if (mlLostFocusCount == 5)
+			{
+				mbFuckThePlayerUp = true;
+				Rip();
+			}
+		}
+	}
+	
+	//-------------------------------------------------------
+	
     void PostUpdate(float afTimeStep) {}
 	void VariableUpdate(float afDeltaTime) {}
     void OnDraw(float afFrameTime) {}
@@ -108,7 +138,27 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
     
     //-------------------------------------------------------
     
-    void OnGui(float afTimeStep) {}
+    void OnGui(float afTimeStep)
+	{
+		if(mbFuckThePlayerUp)
+		{
+			cImGuiGfx happy("happy.dds", eImGuiGfx_Texture);
+			ImGui_DoImage(happy, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
+		}
+	}
+	
+	void Rip()
+	{
+		Music_Play("happy", 0.5f, true, eMusicPrio_BigEvent);
+			
+		mBaseObj.Timer_Add("Crash", 2.0, "Crash");
+	}
+		
+	void Crash(uint64 alID)
+	{
+		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("botherations?"), tWString("https://youtu.be/j1aJiAcQcVI"));
+		cEngine_Exit();
+	}
     
     //-------------------------------------------------------
     
@@ -122,7 +172,12 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
     
     //-------------------------------------------------------
     
+	int mlLostFocusCount = 0;
+	
 	float mfNextSneezeTime;
+	
+	bool mbLostFocus = false;
+	bool mbFuckThePlayerUp = false;
 	
     //-------------------------------------------------------
     
