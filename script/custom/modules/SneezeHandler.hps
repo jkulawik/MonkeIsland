@@ -149,7 +149,7 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	
 	void Rip()
 	{
-		Music_Play("happy", 0.5f, true, eMusicPrio_BigEvent);
+		Music_Play("happy", 0.25f, true, eMusicPrio_BigEvent);
 			
 		mBaseObj.Timer_Add("Crash", 2.0, "Crash");
 	}

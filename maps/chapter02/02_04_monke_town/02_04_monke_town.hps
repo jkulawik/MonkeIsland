@@ -262,15 +262,18 @@ class cScrMap : iScrMap
 		
 		void OnEndOfCredits()
 		{
-			mbDoHappy = true;
-			Music_Play("happy", 0.5f, true, eMusicPrio_BigEvent);
-			
-			Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+			if (Credits_GetIsSkipActive())
+			{
+				mbDoHappy = true;
+				Music_Play("happy", 0.25f, true, eMusicPrio_BigEvent);
+				
+				Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+			}
 		}
 		
 		void Timer_GtfoToMenu(const tString&in asTimer)
 		{
-			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("it was something behind you wasn't it"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
+			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
 			cEngine_Exit();
 		}
 	 

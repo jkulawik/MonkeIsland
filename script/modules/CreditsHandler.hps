@@ -957,7 +957,6 @@ class cScrCreditsHandler : iScrUserModule, iScrUserModule_Interface, iScrCredits
 				{
 					mbSkipActive = true;
 				}
-				//SetCreditsRollSpeed(mfRollSpeedGoal*2.5f,0);
 			}
 		}
 		else
@@ -965,7 +964,6 @@ class cScrCreditsHandler : iScrUserModule, iScrUserModule_Interface, iScrCredits
 			if (alAction == eAction_Interact)
 			{
 				mbSkipActive = false;
-				//SetCreditsRollSpeed(mfRollSpeedGoal/2.5f,0);
 			}
 		}
 	}
@@ -994,6 +992,11 @@ class cScrCreditsHandler : iScrUserModule, iScrUserModule_Interface, iScrCredits
 	}
 	
 	//------------------------------------------------------------
+	
+	void _Global_GetIsSkipActive()
+	{
+		cScript_SetGlobalReturnBool(mbSkipActive);
+	}
 		
 	//------------------------------------------------------------
 		

@@ -1648,6 +1648,12 @@ void Credits_Stop(float afFadeTime=0.0f)
 	pCreditsHandler.StopCredits(afFadeTime);
 }
 
+bool Credits_GetIsSkipActive()
+{
+	cScript_RunGlobalFunc("", "cScrCreditsHandler", "_Global_GetIsSkipActive");
+	return cScript_GetGlobalReturnBool();
+}
+
 //-------------------------------------------------------
 
 /////////////////////////////////////////
