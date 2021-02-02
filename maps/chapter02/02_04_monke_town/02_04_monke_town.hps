@@ -189,7 +189,12 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	bool Drink(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Voice_Play("Pepsi");
+		
+		return false;
+	}
  
 	//-------------------------------------------------------
  

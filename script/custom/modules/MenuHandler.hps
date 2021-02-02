@@ -749,8 +749,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 				}
 				else
 				{
-					// Set it to false if english
-					mpConfig.SetBool("Sound", "ShowSubtitles", mpConfig.GetBool("Sound", "ShowSubtitles", false));
+					mpConfig.SetBool("Sound", "ShowSubtitles", mpConfig.GetBool("Sound", "ShowSubtitles", true));
 					
 				}
 			}
@@ -5304,7 +5303,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			
 			if(bValue != bNewValue)
 			{
-				mpConfig.SetBool("Sound", "ShowSubtitles", bNewValue);
+				mpConfig.SetBool("Sound", "ShowSubtitles", true);
 			}
 			
 			msSelectedAudioButton = OptionMenu_UpdateFocusCustom(vMenuItems,vMenuItems[mlCurrentItemId], msSelectedAudioButton);
@@ -5886,7 +5885,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			
 			if(bValue != bNewValue)
 			{
-				mpConfig.SetBool("Sound", "ShowSubtitles", bNewValue);
+				mpConfig.SetBool("Sound", "ShowSubtitles", true);
 			}
 			
 			msSelectedSubtitlesButton = OptionMenu_UpdateFocusCustom(vMenuItems,vMenuItems[mlCurrentItemId], msSelectedSubtitlesButton);

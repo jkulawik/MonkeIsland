@@ -74,7 +74,6 @@ class cScrMap : iScrMap
 		Sketchbook_SetInventoryEnabled(true);
 		if(cScript_GetGlobalVarBool("PickedLantern"))
 		{
-			Item_AddToInventory("Lantern");
 			Item_SetContent(ItemType_GetFirstInInventory("Lantern"), "Oil", 5);
 		}
 		
@@ -170,7 +169,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			FakeAchievement_Unlock("rock");
+			Debug_Log(cScript_GetGlobalVarBool("PickedLantern"));
 		}
 	}
 

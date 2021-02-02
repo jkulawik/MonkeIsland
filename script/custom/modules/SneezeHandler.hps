@@ -42,6 +42,8 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	
     void Update(float afTimeStep) 
 	{
+		if(cLux_ScriptDebugOn()) return;
+		
 		if(!cSystem_HasWindowFocus(tWString("Monke Island")))
 		{
 			mbLostFocus = true;

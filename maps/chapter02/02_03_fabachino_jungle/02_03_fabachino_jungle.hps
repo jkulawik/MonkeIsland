@@ -518,12 +518,21 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
+		int mlMatchCount;
 		bool ActivateSecret(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Map_SetSkyBoxColor(cColor(0,0,0,0));
 			
 			Sketchbook_Close();
 			Sketchbook_SetInventoryEnabled(false);
+			
+			if(cScript_GetGlobalVarBool("PickedLantern"))
+			{
+				mlMatchCount = Matches_GetCount();
+				
+				Item_RemoveFromInventory(ItemType_GetFirstInInventory("Lantern"));
+				Item_ReduceContentCount("Matchbook", 0);
+			}
 						
 			Player_SetNightVisionEnabled(true);
 			Player_SetRunBreathingDisabled(true);
@@ -569,6 +578,13 @@ class cScrMap : iScrMap
 		{
 			if(!cLux_ScriptDebugOn())
 			{
+				if(cScript_GetGlobalVarBool("PickedLantern"))
+				{
+					Item_AddToInventory("Lantern");
+				}
+				
+				Item_SetAmount("Matchbook", mlMatchCount);
+				
 				Player_SetCanDie(true);
 				Effect_Fade_Out(0.0f);
 				Music_StopAll(0.0f);

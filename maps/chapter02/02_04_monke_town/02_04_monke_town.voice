@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<VoiceData>
+ <Characters>
+  <Character ID="5" Name="Player" DisplayName="Tasi" Actor="Alix" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1" ReverbVolume="1.22" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+ </Characters>
+ <Effects />
+ <Scenes>
+  <Scene ID="2" Name="Comment" FocusPrio="1" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.7" />
+ </Scenes>
+ <Sections>
+  <Section Name="General Comments" />
+ </Sections>
+ <Subjects>
+  <Subject Name="Pepsi" UseSingleRandomLine="False" SceneId="2" EffectId="-1" Section="General Comments">
+   <Line CharacterId="5" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="Boy oh boy, I sure am thirsty! " FileName="comment_pepsi_001_player_001" Timestamp="2021-02-02 08:31" />
+   </Line>
+  </Subject>
+ </Subjects>
+</VoiceData>
