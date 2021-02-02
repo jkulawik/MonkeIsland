@@ -149,14 +149,14 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	
 	void Rip()
 	{
-		Music_Play("happy", 0.25f, true, eMusicPrio_BigEvent);
+		Music_Play("happy", 0.11f, true, eMusicPrio_BigEvent);
 			
 		mBaseObj.Timer_Add("Crash", 2.0, "Crash");
 	}
 		
 	void Crash(uint64 alID)
 	{
-		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("botherations?"), tWString("https://youtu.be/j1aJiAcQcVI"));
+		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("botherations?"), tWString("https://youtu.be/97cctIN2ISA"));
 		cEngine_Exit();
 	}
     

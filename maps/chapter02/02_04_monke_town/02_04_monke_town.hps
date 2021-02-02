@@ -248,7 +248,7 @@ class cScrMap : iScrMap
 
 			mbDoHell = true;
 			
-			Map_AddTimer("DO", 0.15f, "hiDoggy");
+			Map_AddTimer("DO", 0.1f, "hiDoggy");
 			
 			Credits_Start("Credits_Monke.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "Monke_Ending");
 			
@@ -265,9 +265,13 @@ class cScrMap : iScrMap
 			if (Credits_GetIsSkipActive())
 			{
 				mbDoHappy = true;
-				Music_Play("happy", 0.25f, true, eMusicPrio_BigEvent);
+				Music_Play("happy", 0.11f, true, eMusicPrio_BigEvent);
 				
 				Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+			}
+			else
+			{
+				Map_ChangeMap("main_menu.hpm","PlayerStartArea_1","","",false);
 			}
 		}
 		

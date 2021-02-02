@@ -995,7 +995,7 @@ class cScrCreditsHandler : iScrUserModule, iScrUserModule_Interface, iScrCredits
 	
 	void _Global_GetIsSkipActive()
 	{
-		cScript_SetGlobalReturnBool(mbSkipActive);
+		cScript_SetGlobalReturnBool(mfSkipTimer <= 0);
 	}
 		
 	//------------------------------------------------------------
