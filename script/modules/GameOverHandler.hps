@@ -75,7 +75,7 @@ class cScrGameOverHandler : iScrUserModule, iScrUserModule_Interface, iScrGameOv
 	
 	void PreloadData(cLuxMap @apMap)
 	{
-		ImGui_PreloadImage("death_backdrop", eImGuiGfx_Texture);
+		ImGui_PreloadImage("death_backdrop_monke", eImGuiGfx_Texture);
 	}
 
 	void CreateWorldEntities(cLuxMap @apMap)
@@ -167,7 +167,7 @@ class cScrGameOverHandler : iScrUserModule, iScrUserModule_Interface, iScrGameOv
 			// Background
 			mfBackgroundAlpha = cMath_IncreaseTo(mfBackgroundAlpha, afTimeStep*1.0f, 1.0f);
 			ImGui_SetModColorMul(cColor(1,1,1,mfBackgroundAlpha));
-			ImGui_DoImage(cImGuiGfx("death_backdrop", eImGuiGfx_Texture), ImGui_NrmPosGroup(0,0,1), ImGui_NrmSizeGroup(1,1));
+			ImGui_DoImage(cImGuiGfx("death_backdrop_monke", eImGuiGfx_Texture), ImGui_NrmPosGroup(0,0,1), ImGui_NrmSizeGroup(1,1));
 
 			ImGui_ResetModifiers();
 
