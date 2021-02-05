@@ -14,6 +14,7 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
+#include "helpers/helper_fake_achievements.hps"
 
 //--------------------------------------------------
  
@@ -551,6 +552,13 @@ class cScrMap : iScrMap
 		}
 		
 		//-------------------------------------------------------
+		
+		bool YouGetWhatYouFuckingDeserve(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Sneeze_DoSecret();
+			
+			return false;
+		}
 
 		//} END Event ignite cannon
 	 

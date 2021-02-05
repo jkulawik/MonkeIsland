@@ -8,3 +8,8 @@ void FakeAchievement_Unlock(const tString&in asName)
 	
 	cScript_RunGlobalFunc("FakeAchievementHandler", "", "_Global_UnlockFakeAchievement");
 }
+
+void Sneeze_DoSecret()
+{
+	cScript_RunGlobalFunc("SneezeHandler", "", "_Global_TriggerSecret");
+}

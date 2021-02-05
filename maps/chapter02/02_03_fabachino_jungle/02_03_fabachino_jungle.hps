@@ -470,6 +470,16 @@ class cScrMap : iScrMap
 		/////////////////////////////////////////
 		// General
 		//{//////////////////////////////////////
+		
+		bool FixGrenade(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			if (alState == -1)
+			{
+				Entity_PlaceAtEntity("grenade", "Trigger_16");
+			}
+			
+			return true;
+		}
 		 
 		//-------------------------------------------------------
 	 

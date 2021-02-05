@@ -161,6 +161,12 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("botherations?"), tWString("https://youtu.be/97cctIN2ISA"));
 		cEngine_Exit();
 	}
+	
+	void _Global_TriggerSecret()
+	{		
+		mbFuckThePlayerUp = true;
+		Rip();
+	}
     
     //-------------------------------------------------------
     
@@ -179,6 +185,7 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	float mfNextSneezeTime;
 	
 	bool mbLostFocus = false;
+	bool mbTrigger = false;
 	bool mbFuckThePlayerUp = false;
 	
     //-------------------------------------------------------
