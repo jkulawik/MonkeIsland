@@ -13,3 +13,8 @@ void Sneeze_DoSecret()
 {
 	cScript_RunGlobalFunc("SneezeHandler", "", "_Global_TriggerSecret");
 }
+
+void Sneeze_Do()
+{
+	cScript_RunGlobalFunc("SneezeHandler", "", "_Global_StartJumpsacre");
+}

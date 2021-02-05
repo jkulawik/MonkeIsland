@@ -126,6 +126,11 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 		mBaseObj.Timer_Add("_Timer_DoSneeze", mfNextSneezeTime, "DoSneeze");
 		
 		cLux_AddDebugMessage("[ Sneeze Handler ] Starting to sneeze in " + mfNextSneezeTime + " seconds.");
+		
+		if (mbDoJumpscare)
+		{
+			_Global_StartJumpsacre();
+		}
 	}
 		
 	//-------------------------------------------------------
@@ -167,6 +172,11 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 		mbFuckThePlayerUp = true;
 		Rip();
 	}
+	
+	void _Global_StartJumpsacre()
+	{		
+		mbDoJumpscare = true;
+	}
     
     //-------------------------------------------------------
     
@@ -185,6 +195,7 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 	float mfNextSneezeTime;
 	
 	bool mbLostFocus = false;
+	bool mbDoJumpscare = false;
 	bool mbTrigger = false;
 	bool mbFuckThePlayerUp = false;
 	

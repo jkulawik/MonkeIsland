@@ -698,5 +698,11 @@ class cScrMap : iScrMap
 		}
 	
 	//} END SCENE 3
+	
+		void dontFuckingDoIt_OnPlayerInteract(const tString &in asEntity)
+		{
+			Message_Set("01_02_beach", "Button");
+			Sneeze_Do();
+		}
  
 }
