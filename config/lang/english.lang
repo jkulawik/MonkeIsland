@@ -8,6 +8,17 @@
     <Entry Name="banana_desc">An edible banana. Is tasty and will restore health.</Entry>
     <Entry Name="CrystalPepsi">Crystal Pepsi</Entry>
     <Entry Name="CrystalPepsi_desc">I suppose I could enjoy this 20 year old crystal pepsi.</Entry>
+
+	<Entry Name="Lantern">Lantern</Entry>
+	<Entry Name="Lantern_Desc">An oil lantern, found near Salim's body parts.</Entry>
+	<Entry Name="CurseMedallion">Monke Amulet</Entry>
+	<Entry Name="CurseMedallion_Desc">A amulet inscribed with monke symbols. It was on my wrist when I last checked.</Entry>
+	<Entry Name="Matchbook">Matchbook</Entry>
+	<Entry Name="Matchbook_Desc">Collect them all</Entry>
+	<Entry Name="HerbertOil">Lamp Oil</Entry>
+	<Entry Name="HerbertOil_Desc">A flask holding a medium amount of monki juice.</Entry>
+    <Entry Name="ModernOil">Lamp Oil (Small)</Entry>
+	<Entry Name="ModernOil_Desc">A flask holding a small monki.</Entry>
   </CATEGORY>
   <CATEGORY Name="InventoryUI">
     <Entry Name="HintInventoryUseBanana">Consoom $Input{InventoryUse}</Entry>
@@ -21,27 +32,27 @@
     <Entry Name="Info">INFO</Entry>
   </CATEGORY>
   <CATEGORY Name="Hints">
-    <Entry Name="HintLookAround">Use the mouse to look around (Not a living mouse).</Entry>
+    <Entry Name="HintLookAround">Use a mouse to look around (Not a living mouse).</Entry>
     <Entry Name="HintMoveAround">you press the move key to move[br]</Entry>
     <Entry Name="HintDoors">Do I really need to explain it cmon you know the drill</Entry>
-    <Entry Name="HintGrabRotate">You can press and hold $Input{InteractRotate} and move the mouse to rotate objects.</Entry>
-    <Entry Name="HintGrabMove">You can use $Input{ScrollDown} or $Input{ScrollUp} while holding an object to move it closer or further.</Entry>
-    <Entry Name="HintGrabThrow">Press $Input{Throw} while holding an object to throw it. Press for longer to go further.</Entry>
+    <Entry Name="HintGrabRotate">You can press and hold $Input{InteractRotate} and move the mouse to orbit the world around your object.</Entry>
+    <Entry Name="HintGrabMove">You can use $Input{ScrollDown} or $Input{ScrollUp} while holding object to translate it closer or less closer.</Entry>
+    <Entry Name="HintGrabThrow">Press $Input{Throw} to throw thing. Press for longer if you wish.</Entry>
     <Entry Name="HintGrabHowTo">Hold $Input{Interact} to grab an object.</Entry>
     <Entry Name="HintWheel">Move the mouse in circles while holding a wheel to turn it.</Entry>
-    <Entry Name="HintSlider">Use the mouse while holding slideable objects to pull/push them.</Entry>
-    <Entry Name="HintInteract">Objects can be interacted with using $Input{Interact}</Entry>
-    <Entry Name="HintPickUpItem">Items can be picked up with the interact button $Input{Interact}</Entry>
-    <Entry Name="HintRun">Press and hold $Input{Run} while moving to run.</Entry>
-    <Entry Name="HintJump">Press $Input{Jump} to jump.</Entry>
-    <Entry Name="HintInventory">Press $Input{OpenInventory} to open your inventory.</Entry>
+    <Entry Name="HintSlider">Use the mouse while holding slideable objects to slideable them.</Entry>
+    <Entry Name="HintInteract">Objects can be interacted with :)</Entry>
+    <Entry Name="HintPickUpItem">Items can be picked up with the pick up item button $Input{Interact}</Entry>
+    <Entry Name="HintRun">Press and hold $Input{Run} while moving to go fastr man.</Entry>
+    <Entry Name="HintJump">Press jump button to jump button.</Entry>
+    <Entry Name="HintInventory">you can open inventory sometimes</Entry>
     <Entry Name="HintUseEquippedItem">If you're holding an item from your inventory, you can use it on an object in the world by pressing $Input{Interact}</Entry>
-    <Entry Name="HintCrouch">Press $Input{Crouch} to crouch.</Entry>
-    <Entry Name="HintSneak">Moving while crouching (press $Input{Crouch}) is less noisy and reduces the chance of being noticed.</Entry>
-    <Entry Name="HintFlashlight">To toggle your lantern, press $Input{Flashlight}</Entry>
-    <Entry Name="HintLanternOveruse">Keep in mind that using the lantern drains oil.</Entry>
-    <Entry Name="HintLean">Press $Input{LeanLeft} or $Input{LeanRight} to lean left or right.</Entry>
-    <Entry Name="HintStruggle">Use the mouse and ($Input{Forward}$Input{Backward}$Input{Left}$Input{Right}) to struggle.</Entry>
+    <Entry Name="HintCrouch">you can crouch btw</Entry>
+    <Entry Name="HintSneak">Moving while crouching (press $Input{Crouch}) is less noisy and reduces the chance of testicular cancer.</Entry>
+    <Entry Name="HintFlashlight">To lantern, press $Input{Flashlight}</Entry>
+    <Entry Name="HintLanternOveruse">Keep in mind that using the lantern drains sanity.</Entry>
+    <Entry Name="HintLean">Press $Input{LeanLeft} or $Input{LeanRight} to lean left or right but not while moving</Entry>
+    <Entry Name="HintStruggle">struggle.</Entry>
     <Entry Name="HintBirthStart">Press $Input{Jump} to start pushing.</Entry>
     <Entry Name="HintStruggleBirth">Use the mouse to focus.</Entry>
     <Entry Name="HintDarkness">Staying in the dark without a light source will increase your fear!</Entry>
@@ -100,7 +111,7 @@
     <Entry Name="02-04-monke-town">Monke Town</Entry>
   </CATEGORY>
   <CATEGORY Name="LastTimeOn">
-	<Entry Name=”01-01-intro”>
+	<Entry Name="01-01-intro">
 	It is 2014. Special Agent David has been dispatched to deal with the crisis on Monke Island, an island which has been taken over by monkeys. He must stop them from destroying the world. If he fails, the safety of the world may be in jeopardy.
 	</Entry>
 	<Entry Name="01-02-beach">
@@ -166,7 +177,7 @@
   </CATEGORY>
   <CATEGORY Name="02_04_monke_town" />
   <CATEGORY Name="Voices_01_01_intro">
-    <Entry Name="main_dialogue_munshi_briefing_001_colonel_001">In1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_001">In 1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island in the territory of Nigeria was taken over by monkeys.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_002">The island was never taken back - the monkeys developed strong defenses around the island perimeter.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_003">Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years.</Entry>
     <Entry Name="main_dialogue_munshi_briefing_001_colonel_004">However, the delicate equilibrium has been recently destroyed by the monkeys. They have captured Jordan Anderson, the chief of the weapons lab of the Compeny.</Entry>
