@@ -486,6 +486,7 @@ class cScrMap : iScrMap
 				Effect_Rumble_Start(0.1f,0.1f,0.0f,0.5f);
 				Effect_Shake_Start(0.0005f,1.0f,0.3f,1.0f);
 				m_nConstShake = Effect_Shake_Start(0.0005f,1000.0f,0.3f,0.5f);
+				Music_FadeVolumeMul(0.6, 1.0f);
 				
 				Description_Add("01_01_intro", "IntroMessage", 1.0f, false);
 			}
@@ -531,7 +532,6 @@ class cScrMap : iScrMap
 				Sound_CreateAtEntity("Sound_WindowCreak_1", "02_04_living_quarters/chain_door_remove/chained_door_break", "WindowParticleSource_1", 0.0f, false, 0.5f);
 				
 				Entity_PlayAnimation("munshi", "hit", 0.1f, false, true, "OnMunshiAnimationEnd");
-
 			}
 			else if(Sequence_DoStepAndWaitUntil(29.7f))
 			{
@@ -552,9 +552,10 @@ class cScrMap : iScrMap
 			else if(Sequence_DoStepAndWaitUntil(32.0f))
 			{
 				cLux_AddDebugMessage("Big Shake");
+				Timer_SpawnBananas("");
 				
 				Effect_Shake_FadeOut(m_nConstShake,0.1f);
-				Effect_Rumble_Start(1.0f,0.1f,0.0f,0.5f);
+				Effect_Rumble_Start(2.0f,0.1f,0.0f,0.5f);
 				m_nConstShake = Effect_Shake_Start(0.003f,100.0f,0.0f,0.2f);
 				
 				Light_SetVisible("ExtLight_*", false);
@@ -565,7 +566,8 @@ class cScrMap : iScrMap
 				Sound_CreateAtEntity("Sound_LightsOff", "01_01_intro/crash_event/lights_02", "sound_lights");
 				Sound_CreateAtEntity("Sound_GlassRattle_2", "01_01_intro/crash_event/glass_sweet", "sound_glass");
 				Sound_CreateAtEntity("Sound_Alarms", "01_01_intro/crash_event/cockpit_sweet", "sound_cockpit");
-				
+				Sound_CreateAtEntity("Sound_BuyMyShit", "nword/intro/buy_my_shit", "sound_plane_rear", 3.0f, false, 0.2f);
+
 				Sound_PlayGui("01_01_intro/crash_event/crash_01", 1.0);
 				Sound_PlayGui("01_01_intro/crash_event/stingers", 1.0);
 				
@@ -613,8 +615,11 @@ class cScrMap : iScrMap
 				CameraAnimation_Begin("CrashAnimation", "", false);
 				
 				Entity_PlayAnimation("munshi", "run_jump");
+				Sound_CreateAtEntity("oof", "nword/intro/oof", "munshi");
+				Timer_ThrowShitAround("throw_shit_around");
 				
 				Sound_CreateAtEntity("Sound_EngineExplode", "01_01_intro/crash_event/explosion", "sound_engine");
+				Sound_CreateAtEntity("Sound_RattlingShit", "nword/intro/rattling_shit", "sound_plane_rear", 2.0f, false, 0.05f);
 			}
 			else if(Sequence_DoStepAndWaitUntil(45.0f))
 			{
@@ -622,15 +627,27 @@ class cScrMap : iScrMap
 				
 				Voice_Play("Dialogue_Run", -1, "OnVoiceSubjectSequenceDonePlaying");
 			}
-			else if(Sequence_DoStepAndWaitUntil(57.5f))
+			else if(Sequence_DoStepAndWait(2.0f))
 			{
 				mbPlayRaio = true;
 				Voice_Play("Dialogue_WhereIsRadio", -1, "OnVoiceSubjectSequenceDonePlaying");
+			}
+			else if(Sequence_DoStepAndWaitUntil(51.0f))
+			{
+				Sound_CreateAtEntity("Sound_RadioTuning", "nword/intro/radio_tuning", "sound_cockpit");
+			}
+			else if(Sequence_DoStepAndWaitUntil(57.5f))
+			{
+				Billboard_SetVisible("seatbelt_1", false);
+				Sound_CreateAtEntity("ding", "nword/intro/seatbelt_ding", "munshi");
 			}
 			else if(Sequence_DoStepAndWait(2.5f))
 			{
 				Sound_CreateAtEntity("Sound_EngineExplode", "monke/SFX/kaboom", "player", 0.0f, false, 0.5f);
 				Sound_Stop("radio_music", 0.1f);
+				Sound_Stop("Sound_RattlingShit", 0.5f);
+				Sound_Stop("Terain2", 0.3f);
+				Map_RemoveTimer("throw_shit_around");
 				
 				Effect_Shake_Start(0.03f,0.2f,0.0f,0.2f);
 				Effect_Shake_FadeOut(m_nConstShake,0.1f);
@@ -666,6 +683,34 @@ class cScrMap : iScrMap
 			Sequence_End();
 		}
 		
+		int bananaCount = 0;
+		void Timer_SpawnBananas(const tString &in asTimer)
+		{
+			Entity_CreateAtEntity("superbanana_"+bananaCount, "banana_throw.ent", "Trigger_BananaSpawner", false);
+			
+			bananaCount++;
+			if (bananaCount < 25)
+			{
+				Map_AddTimer("bananaloop", 0.1f, "Timer_SpawnBananas");
+			}
+		}
+		
+		void Timer_ThrowShitAround(const tString &in asTimer)
+		{
+			cVector3f dir = cVector3f(
+				cMath_RandRectf(-1000.0f, 1000.0f), 
+				cMath_RandRectf(0.0f, 1000.0f), 
+				cMath_RandRectf(-1000.0f, 1000.0f)
+			);
+			
+			for (int i = 0; i < 25; ++i)
+			{
+				Body_AddForce("superbanana_" + i + "_Body_1", dir, true);
+			}
+			
+			Map_AddTimer(asTimer, cMath_RandRectf(0.2f, 0.6f), "Timer_ThrowShitAround");
+		}
+		
 		bool mbPlayRaio = false;
 		void OnVoiceSubjectSequenceDonePlaying(const tString&in asScene, const tString&in asSubject)
 		{
@@ -674,7 +719,8 @@ class cScrMap : iScrMap
 			if (mbPlayRaio)
 			{
 				Sound_CreateAtEntity("radio_loop", "02_04_living_quarters/radio/static_loop", "sound_cockpit");
-				Sound_CreateAtEntity("radio_music", "monke_new/sfx/special/airplane_crash/radio", "sound_cockpit", 0.0f, false, 0.45f);
+				Sound_CreateAtEntity("radio_music", "nword/intro/lieblingsfach", "sound_cockpit", 0.0f, false, 0.45f);
+				Sound_CreateAtEntity("Terain2", "monke/SFX/airplane_crash_sequence/terrain", "sound_cockpit");
 				
 				NPC_MoveToNode("women", "Trip", "womenFall");
 			}
