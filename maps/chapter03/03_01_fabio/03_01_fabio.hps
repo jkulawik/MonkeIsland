@@ -53,6 +53,8 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
+		Effect_Fade_In(1.0f);
+		
 		FearHandler_SetActive(true);
 		
 		FearHandler_SetPermaFailEnabled(false);
