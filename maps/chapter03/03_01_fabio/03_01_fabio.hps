@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
 #include "helpers/helper_audio.hps"
@@ -10,6 +11,9 @@
 #include "helpers/helper_game.hps"
 #include "helpers/helper_modules.hps"
 #include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
 
 //--------------------------------------------------
  
@@ -34,27 +38,13 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		// Put display name entry in english.lang / Levels
-		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
-		
-		// Set up color grading etc.
+		GetBase().SetDisplayNameEntry("03-01-fabio");
 	}
 	
 	//-------------------------------------------------------
 		
 	void PreloadData()
 	{
-		/////////////////
-		// Preload gui
-		//ImGui_PreloadImage("some_image");
-
-		///////////////
-		// Preload particles
-		//ParticleSystem_Preload("some_particle.ps");
-
-		//////////////
-		// Preload screen effects
-		//Material_Preload("some_material.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -63,7 +53,19 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
-		// Any general setup of script / entities
+		FearHandler_SetActive(true);
+		
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(true);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		
+		Music_Play("A2_2_4_SafeArea", 0.7f, true, eMusicPrio_BgAmb);
 		
 		/////////////////////////
 		// Debug
@@ -78,6 +80,26 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		Player_SetAmbientLight_Outdoors(true);
+		
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(false);
+		Player_SetNightVisionBrightness(1.0f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		
+		Player_SetJumpDisabled(false);
+		Player_SetCrouchDisabled(false);
+		Player_SetLeanDisabled(false);
+				
+		Pregnancy_SetBarksActive(false);
+		
+		Sketchbook_SetInventoryEnabled(true);
+		
+		cLux_ClearAllMapSaveData();		
 		Game_AutoSave();
 	}
 
