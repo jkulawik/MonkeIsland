@@ -64,11 +64,7 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
-		
-		Music_Play("A2_2_4_SafeArea", 0.7f, true, eMusicPrio_BgAmb);
-		
-		Entity_PlayAnimation("fabio", "look_out_window_01", 0.1f, true);
-		
+						
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
@@ -82,7 +78,7 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
-		Player_SetAmbientLight_Outdoors(false);
+		Player_SetAmbientLight_Indoors(true);
 		
 		PlayerBody_SetActive(true);
 		Player_SetMapDeepShadow(0.05f);

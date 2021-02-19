@@ -1,13 +1,13 @@
 <HPLMapTrack_Area ID="4ED674651B6725672479DCE3665285F11533B4C4" MajorVersion="1" MinorVersion="1">
     <Section Name="10911851120317680304">
         <Objects>
-            <Area ID="268435456" Name="Soundscape_1" CreStamp="1613748036" ModStamp="1613749341" WorldPos="1 2 -1" Rotation="0 0 0" Scale="20.75 11.25 19.5" Active="true" Mesh="" UID="16 3892 268435456" AreaType="Soundscape">
+            <Area ID="268435456" Name="Soundscape_1" CreStamp="1613748036" ModStamp="1613763209" WorldPos="1 2 -1" Rotation="0 0 0" Scale="20.75 11.25 19.5" Active="true" Mesh="" UID="16 3892 268435456" AreaType="Soundscape">
                 <UserVariables>
                     <Var ObjectId="268435456" Name="Note" Value="" />
                     <Var ObjectId="268435456" Name="UseReverb" Value="true" />
-                    <Var ObjectId="268435456" Name="ReverbType" Value="ExtraRoomMedium" />
+                    <Var ObjectId="268435456" Name="ReverbType" Value="ExtraRoomLarge" />
                     <Var ObjectId="268435456" Name="ReverbPrio" Value="0" />
-                    <Var ObjectId="268435456" Name="ReverbAmount" Value="1.1" />
+                    <Var ObjectId="268435456" Name="ReverbAmount" Value="1.3" />
                     <Var ObjectId="268435456" Name="ReverbFadeTime" Value="1" />
                     <Var ObjectId="268435456" Name="Prio" Value="0" />
                     <Var ObjectId="268435456" Name="Level" Value="2: Room" />
@@ -32,6 +32,34 @@
                 <UserVariables>
                     <Var ObjectId="268435457" Name="Note" Value="" />
                     <Var ObjectId="268435457" Name="Crouching" Value="false" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435671" Name="TalkArea" CreStamp="1613762853" ModStamp="1613763299" WorldPos="-1.76524 1.89929 -1.29177" Rotation="0 -0.417912 0" Scale="0.90738 1.04963 0.997012" Active="true" Mesh="" UID="16 3866 268435671" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435671" Name="Note" Value="" />
+                    <Var ObjectId="268435671" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435671" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435671" Name="UserVar" Value="" />
+                    <Var ObjectId="268435671" Name="Static" Value="false" />
+                    <Var ObjectId="268435671" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435671" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435671" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435671" Name="CC_Funcs" Value="" />
+                    <Var ObjectId="268435671" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435671" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435671" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435671" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435671" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435671" Name="PlayerInteractCallback" Value="TalkArea_OnPlayerInteract" />
+                    <Var ObjectId="268435671" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435671" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435671" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435671" Name="CustomInteractIcon" Value="Talk" />
                 </UserVariables>
             </Area>
         </Objects>
