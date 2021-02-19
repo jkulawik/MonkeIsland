@@ -4,7 +4,9 @@
         <SkyBox Active="true" Color="1 1 1 1" Texture="C:/Program Files (x86)/Steam/steamapps/common/Amnesia Rebirth/textures/environment/ab_temp/skybox_oasis.dds" Brightness="1" />
         <DirLight Active="false" ShadowCasterDist="35" ShadowDistance="-1" DiffuseColor="1 1 1 1" Brightness="1 1 1 1" Gobo="" GoboAnimMode="None" GoboAnimStartTime="0" GoboAnimFrameTime="0" GoboScale="1 1" Direction="0.57735 -0.57735 0.57735" CastShadows="false" SkyCol="1 1 1 1" GroundCol="1 1 1 1" ShadowMapBiasMul="3" ShadowMapSlopeScaleBiasMul="2.5" AutoShadowSliceSettings="true" AutoShadowSliceLogTerm="0.9" />
         <SSAO NormalMap="false" NumOfDirections="0" NumOfSteps="0" AngleBias="0" Power="4.4" Radius="2" BufferSizeDiv="2" />
-        <EnvParticles Active="false" />
+        <EnvParticles Active="false">
+            <EnvParticle Name="" Color="1 1 1 1" Brightness="1" BoxDistance="30" GravityVelocity="0 0 0" GravitySpeedRandomAmount="0" WindVelocity="0 0 0" WindSpeedRandomAmount="0" WindDirRandomAmount="0" RotateVelocity="0 0 0" RotateSpeedRandomAmount="0" RotateBothDirs="false" NumIterations="1" FadeInStart="0.2" FadeInEnd="1" FadeOutStart="10" FadeOutEnd="20" BoxSize="30" NumParticles="100" ParticleSize="1 1" SubDivUV="1 1" AffectedByLight="false" Texture="" Visible="false" />
+        </EnvParticles>
         <PostEffects ToneMappingKey="0.6" ToneMappingExposure="0.25" ToneMappingWhiteCut="3" ColorGradingTexture="textures/colorgrading/grading_living_quarters.dds" />
         <DistanceCulling Active="false" MinRange="0" ScreenSize="0.05" RandomSize="0.25" />
     </GlobalSettings>

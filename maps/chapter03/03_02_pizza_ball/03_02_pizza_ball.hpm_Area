@@ -28,37 +28,93 @@
                     <Var ObjectId="268435456" Name="ParentAttachBody" Value="" />
                 </UserVariables>
             </Area>
-            <Area ID="268435570" Name="Start_Begin" CreStamp="1613764764" ModStamp="1613764771" WorldPos="21.5 1 0" Rotation="0 4.71239 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 13 268435570" AreaType="PlayerStart">
+            <Area ID="268435457" Name="Start_Begin" CreStamp="1613764764" ModStamp="1613764771" WorldPos="21.5 1 0" Rotation="0 4.71239 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 13 268435457" AreaType="PlayerStart">
                 <UserVariables>
-                    <Var ObjectId="268435570" Name="Note" Value="" />
-                    <Var ObjectId="268435570" Name="Crouching" Value="false" />
+                    <Var ObjectId="268435457" Name="Note" Value="" />
+                    <Var ObjectId="268435457" Name="Crouching" Value="false" />
                 </UserVariables>
             </Area>
-            <Area ID="268435941" Name="Soundscape_2" CreStamp="1613772030" ModStamp="1613772151" WorldPos="0.25 2 1.75" Rotation="0 0 0" Scale="27.75 6.26413 33.5" Active="true" Mesh="" UID="16 12662 268435941" AreaType="Soundscape">
+            <Area ID="268435458" Name="Soundscape_2" CreStamp="1613772030" ModStamp="1613772151" WorldPos="0.25 2 1.75" Rotation="0 0 0" Scale="27.75 6.26413 33.5" Active="true" Mesh="" UID="16 12662 268435458" AreaType="Soundscape">
                 <UserVariables>
-                    <Var ObjectId="268435941" Name="Note" Value="" />
-                    <Var ObjectId="268435941" Name="UseReverb" Value="true" />
-                    <Var ObjectId="268435941" Name="ReverbType" Value="ExtraRoomMedium" />
-                    <Var ObjectId="268435941" Name="ReverbPrio" Value="0" />
-                    <Var ObjectId="268435941" Name="ReverbAmount" Value="1.1" />
-                    <Var ObjectId="268435941" Name="ReverbFadeTime" Value="1" />
-                    <Var ObjectId="268435941" Name="Prio" Value="0" />
-                    <Var ObjectId="268435941" Name="Level" Value="2: Room" />
-                    <Var ObjectId="268435941" Name="BG_Sound" Value="level_amb_shared/amb/background/03_05_vitae_station/med_room" />
-                    <Var ObjectId="268435941" Name="BG_Volume" Value="1" />
-                    <Var ObjectId="268435941" Name="BG_FadeInTime" Value="1" />
-                    <Var ObjectId="268435941" Name="BG_FadeOutTime" Value="1" />
-                    <Var ObjectId="268435941" Name="BG_FadeTransitionSpeed" Value="1" />
-                    <Var ObjectId="268435941" Name="BG_ParentVolMul" Value="1" />
-                    <Var ObjectId="268435941" Name="SoundEnt_InNames" Value="" />
-                    <Var ObjectId="268435941" Name="SoundEnt_OutNames" Value="" />
-                    <Var ObjectId="268435941" Name="SoundEnt_FadeInTime" Value="1" />
-                    <Var ObjectId="268435941" Name="SoundEnt_FadeOutTime" Value="1" />
-                    <Var ObjectId="268435941" Name="SoundPrefixPrio" Value="0" />
-                    <Var ObjectId="268435941" Name="SoundPrefix" Value="[None]" />
-                    <Var ObjectId="268435941" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="268435941" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="268435941" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435458" Name="Note" Value="" />
+                    <Var ObjectId="268435458" Name="UseReverb" Value="true" />
+                    <Var ObjectId="268435458" Name="ReverbType" Value="ExtraRoomMedium" />
+                    <Var ObjectId="268435458" Name="ReverbPrio" Value="0" />
+                    <Var ObjectId="268435458" Name="ReverbAmount" Value="1.1" />
+                    <Var ObjectId="268435458" Name="ReverbFadeTime" Value="1" />
+                    <Var ObjectId="268435458" Name="Prio" Value="0" />
+                    <Var ObjectId="268435458" Name="Level" Value="2: Room" />
+                    <Var ObjectId="268435458" Name="BG_Sound" Value="level_amb_shared/amb/background/03_05_vitae_station/med_room" />
+                    <Var ObjectId="268435458" Name="BG_Volume" Value="1" />
+                    <Var ObjectId="268435458" Name="BG_FadeInTime" Value="1" />
+                    <Var ObjectId="268435458" Name="BG_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435458" Name="BG_FadeTransitionSpeed" Value="1" />
+                    <Var ObjectId="268435458" Name="BG_ParentVolMul" Value="1" />
+                    <Var ObjectId="268435458" Name="SoundEnt_InNames" Value="" />
+                    <Var ObjectId="268435458" Name="SoundEnt_OutNames" Value="" />
+                    <Var ObjectId="268435458" Name="SoundEnt_FadeInTime" Value="1" />
+                    <Var ObjectId="268435458" Name="SoundEnt_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435458" Name="SoundPrefixPrio" Value="0" />
+                    <Var ObjectId="268435458" Name="SoundPrefix" Value="[None]" />
+                    <Var ObjectId="268435458" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435458" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435458" Name="ParentAttachBody" Value="" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435706" Name="Trigger_1" CreStamp="1613773111" ModStamp="1613773150" WorldPos="20.9906 1.84226 -3.75" Rotation="0 0 0" Scale="0.317701 0.168794 0.361427" Active="true" Mesh="" UID="16 12610 268435706" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435706" Name="Note" Value="" />
+                    <Var ObjectId="268435706" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435706" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435706" Name="UserVar" Value="" />
+                    <Var ObjectId="268435706" Name="Static" Value="false" />
+                    <Var ObjectId="268435706" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435706" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435706" Name="CC_Entities" Value="pizza_ball" />
+                    <Var ObjectId="268435706" Name="CC_Funcs" Value="Goal" />
+                    <Var ObjectId="268435706" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435706" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435706" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435706" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435706" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435706" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435706" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435706" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435706" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435706" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435707" Name="Trigger_2" CreStamp="1613773198" ModStamp="1613773341" WorldPos="16.3064 0.677977 -2.83499" Rotation="0 -0.014035 0" Scale="3.25 1.34149 9.59922" Active="true" Mesh="" UID="16 12609 268435707" AreaType="Trigger">
+                <UserVariables>
+                    <Var ObjectId="268435707" Name="Note" Value="" />
+                    <Var ObjectId="268435707" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435707" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435707" Name="UserVar" Value="" />
+                    <Var ObjectId="268435707" Name="Static" Value="false" />
+                    <Var ObjectId="268435707" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435707" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435707" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435707" Name="CC_Funcs" Value="PizzaCheck" />
+                    <Var ObjectId="268435707" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435707" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435707" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435707" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435707" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435707" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435707" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435707" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435707" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435707" Name="CustomInteractIcon" Value="Default" />
                 </UserVariables>
             </Area>
         </Objects>

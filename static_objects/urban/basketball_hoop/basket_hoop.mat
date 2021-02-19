@@ -1,7 +1,7 @@
 <Material>
     <Main Type="translucent" DepthTest="true" ForceFullScaleTextures="false" UVSubDivs="1 1" UseAlpha="false" PhysicsMaterial="Default" BlendMode="Alpha" />
     <TextureUnits>
-        <Diffuse MipMaps="true" Compress="false" File="mods/MonkeIsland/static_objects/urban/basketball_hoop/basket_hoop.png" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
+        <Diffuse MipMaps="true" Compress="true" File="mods/MonkeIsland/static_objects/urban/basketball_hoop/basket_hoop.dds" Type="2D" Wrap="Repeat" AnimMode="None" AnimFrameTime="0" AnimStartTime="0" />
     </TextureUnits>
     <SpecificVariables>
         <Var ObjectId="4294967295" Name="Refraction" Value="false" />
@@ -11,9 +11,9 @@
         <Var ObjectId="4294967295" Name="RefractionScale" Value="0.1" />
         <Var ObjectId="4294967295" Name="FrenselBias" Value="0.2" />
         <Var ObjectId="4294967295" Name="FrenselPow" Value="8" />
-        <Var ObjectId="4294967295" Name="RimLightMul" Value="0" />
+        <Var ObjectId="4294967295" Name="RimLightMul" Value="1" />
         <Var ObjectId="4294967295" Name="RimLightPow" Value="8" />
-        <Var ObjectId="4294967295" Name="AffectedByLightLevel" Value="false" />
+        <Var ObjectId="4294967295" Name="AffectedByLightLevel" Value="true" />
         <Var ObjectId="4294967295" Name="FogWeight" Value="1" />
         <Var ObjectId="4294967295" Name="SwayActive" Value="false" />
         <Var ObjectId="4294967295" Name="SwayForceFieldAffected" Value="true" />

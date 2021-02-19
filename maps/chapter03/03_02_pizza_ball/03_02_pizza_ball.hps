@@ -181,11 +181,29 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any variables that are used in more than one scene here.*/
+	bool mbPlayPizza = false;
+ 
+	bool PizzaCheck(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		mbPlayPizza = alState == 1;
+		
+		return true;
+	}
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	bool Goal(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		if (mbPlayPizza)
+		{
+			Music_Play("PIZZABALL2", 1.0f, false, eMusicPrio_BigEvent);
+			SwingDoor_SetLocked("door", false, true);
+				
+			return false;
+		}
+		
+		return true;
+	}
  
 	//-------------------------------------------------------
  
