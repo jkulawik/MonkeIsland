@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
 #include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
@@ -197,6 +198,7 @@ class cScrMap : iScrMap
 		if (mbPlayPizza)
 		{
 			Music_Play("PIZZABALL2", 1.0f, false, eMusicPrio_BigEvent);
+			Music_PlayOverlay("YES", 0.5f);
 			SwingDoor_SetLocked("door", false, true);
 				
 			return false;
@@ -224,8 +226,13 @@ class cScrMap : iScrMap
 		/*Put any variables that are used by many events in Scene X here.*/
 	 
 		//-------------------------------------------------------
-	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+			 
+		bool Facility(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Music_PlayExt("fear_system_safe_01", true, 0.85f, 1.0f, 5.0f, 1.0f, eMusicPrio_BgAmb, true);
+			
+			return false;
+		}
 	 
 		//-------------------------------------------------------
 		
@@ -241,7 +248,10 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		bool SeeMunshi(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			return false;
+		}
 
 		//-------------------------------------------------------
 

@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
 #include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
@@ -75,6 +76,8 @@ class cScrMap : iScrMap
 		
 		Entity_SetActive("monke_sight", true);
 		Entity_SetActive("monke", true);
+		
+		LastTimeOnGame_SetText("02-03-fabachino-jungle");
 		
 		/////////////////////////
 		// Debug

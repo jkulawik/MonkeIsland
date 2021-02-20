@@ -1,0 +1,64 @@
+<HPLMapTrack_Area ID="9EB82C22E57AB1392819BE6324258425C7BD91D1" MajorVersion="1" MinorVersion="1">
+    <Section Name="10911851120317680304">
+        <Objects>
+            <Area ID="268435456" Name="PathNodeGenerator_1" CreStamp="1613840262" ModStamp="1613840277" WorldPos="-3.25 0 0" Rotation="0 0 0" Scale="30.5 1 18.25" Active="true" Mesh="" UID="16 10324 268435456" AreaType="PathNodeGenerator">
+                <UserVariables>
+                    <Var ObjectId="268435456" Name="Note" Value="" />
+                    <Var ObjectId="268435456" Name="MaxSlopeAmount" Value="0.5" />
+                    <Var ObjectId="268435456" Name="Density" Value="1" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435457" Name="Soundscape_1" CreStamp="1613840329" ModStamp="1613840620" WorldPos="-2.75 6 0" Rotation="0 0 0" Scale="53.75 25.25 54.5" Active="true" Mesh="" UID="16 10323 268435457" AreaType="Soundscape">
+                <UserVariables>
+                    <Var ObjectId="268435457" Name="Note" Value="" />
+                    <Var ObjectId="268435457" Name="UseReverb" Value="true" />
+                    <Var ObjectId="268435457" Name="ReverbType" Value="ExtraMarbleLarge" />
+                    <Var ObjectId="268435457" Name="ReverbPrio" Value="0" />
+                    <Var ObjectId="268435457" Name="ReverbAmount" Value="1.1" />
+                    <Var ObjectId="268435457" Name="ReverbFadeTime" Value="1" />
+                    <Var ObjectId="268435457" Name="Prio" Value="0" />
+                    <Var ObjectId="268435457" Name="Level" Value="2: Room" />
+                    <Var ObjectId="268435457" Name="BG_Sound" Value="level_amb_shared/amb/background/01_04_dark_world_ledge/darkworld_room" />
+                    <Var ObjectId="268435457" Name="BG_Volume" Value="1" />
+                    <Var ObjectId="268435457" Name="BG_FadeInTime" Value="1" />
+                    <Var ObjectId="268435457" Name="BG_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435457" Name="BG_FadeTransitionSpeed" Value="1" />
+                    <Var ObjectId="268435457" Name="BG_ParentVolMul" Value="1" />
+                    <Var ObjectId="268435457" Name="SoundEnt_InNames" Value="" />
+                    <Var ObjectId="268435457" Name="SoundEnt_OutNames" Value="" />
+                    <Var ObjectId="268435457" Name="SoundEnt_FadeInTime" Value="1" />
+                    <Var ObjectId="268435457" Name="SoundEnt_FadeOutTime" Value="1" />
+                    <Var ObjectId="268435457" Name="SoundPrefixPrio" Value="0" />
+                    <Var ObjectId="268435457" Name="SoundPrefix" Value="[None]" />
+                    <Var ObjectId="268435457" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435457" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435457" Name="ParentAttachBody" Value="" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435458" Name="Start_Begin" CreStamp="1613840948" ModStamp="1613840953" WorldPos="9.75 1 0" Rotation="0 4.71239 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 10317 268435458" AreaType="PlayerStart">
+                <UserVariables>
+                    <Var ObjectId="268435458" Name="Note" Value="" />
+                    <Var ObjectId="268435458" Name="Crouching" Value="false" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435810" Name="Fear_1" CreStamp="1613846495" ModStamp="1613846515" WorldPos="-3 9 0.25" Rotation="0 0 0" Scale="77.75 77.75 77.75" Active="true" Mesh="" UID="16 10315 268435810" AreaType="Fear">
+                <UserVariables>
+                    <Var ObjectId="268435810" Name="Priority" Value="0" />
+                    <Var ObjectId="268435810" Name="Safe" Value="false" />
+                    <Var ObjectId="268435810" Name="NoFear" Value="false" />
+                    <Var ObjectId="268435810" Name="DarknessFear" Value="false" />
+                    <Var ObjectId="268435810" Name="BabyKickRateMultiplier" Value="1" />
+                    <Var ObjectId="268435810" Name="Locked" Value="false" />
+                    <Var ObjectId="268435810" Name="AllowProgressWithToken" Value="true" />
+                    <Var ObjectId="268435810" Name="AllowProgressWithoutToken" Value="false" />
+                    <Var ObjectId="268435810" Name="MaxProgressCount" Value="1" />
+                    <Var ObjectId="268435810" Name="ProgressAmount" Value="1" />
+                    <Var ObjectId="268435810" Name="SafeMusic" Value="fear_system_safe_01" />
+                    <Var ObjectId="268435810" Name="NonAgentRateCap" Value="0.8" />
+                    <Var ObjectId="268435810" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435810" Name="CC_Funcs" Value="" />
+                </UserVariables>
+            </Area>
+        </Objects>
+    </Section>
+</HPLMapTrack_Area>

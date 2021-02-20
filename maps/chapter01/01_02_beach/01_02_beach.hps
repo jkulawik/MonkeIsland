@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
 #include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
@@ -76,6 +77,8 @@ class cScrMap : iScrMap
 		Player_SetAutoTeleportWhenBelowAltitude(10.0f);
 		
 		Pregnancy_SetBarksActive(false);
+		
+		LastTimeOnGame_SetText("01-02-beach");
 		
 		Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_All);
 		if(!cLux_ScriptDebugOn())
