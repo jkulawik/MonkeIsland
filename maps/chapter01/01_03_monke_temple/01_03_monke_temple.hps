@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
 #include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
@@ -73,6 +74,8 @@ class cScrMap : iScrMap
 
 		SetupTombLights();
 		SetupEntities();
+		
+		LastTimeOnGame_SetText("01-03-monke-temple-caves");
 
 		/////////////////////////
 		// Debug
@@ -453,6 +456,8 @@ class cScrMap : iScrMap
 		bool Autosave(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Game_AutoSave();
+			
+			LastTimeOnGame_SetText("01-03-monke-temple-temple");
 			
 			return false;
 		}

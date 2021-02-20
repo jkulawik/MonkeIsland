@@ -2,23 +2,23 @@
   <CATEGORY Name="GameOver">
     <Entry Name="DefaultMessage">You were returned to monke</Entry>
     <Entry Name="Ladder">I think that I will die if I use this ladder</Entry>
+    <Entry Name="TooSlow">You were too slow and the chase music stopped. Try again.</Entry>
   </CATEGORY>
   <CATEGORY Name="Inventory">
     <Entry Name="banana">Banana</Entry>
     <Entry Name="banana_desc">An edible banana. Is tasty and will restore health.</Entry>
     <Entry Name="CrystalPepsi">Crystal Pepsi</Entry>
     <Entry Name="CrystalPepsi_desc">I suppose I could enjoy this 20 year old crystal pepsi.</Entry>
-
-	<Entry Name="Lantern">Lantern</Entry>
-	<Entry Name="Lantern_Desc">An oil lantern, found near Salim's body parts.</Entry>
-	<Entry Name="CurseMedallion">Monke Amulet</Entry>
-	<Entry Name="CurseMedallion_Desc">A amulet inscribed with monke symbols. It was on my wrist when I last checked.</Entry>
-	<Entry Name="Matchbook">Matchbook</Entry>
-	<Entry Name="Matchbook_Desc">Collect them all</Entry>
-	<Entry Name="HerbertOil">Lamp Oil</Entry>
-	<Entry Name="HerbertOil_Desc">A flask holding a medium amount of monki juice.</Entry>
+    <Entry Name="Lantern">Lantern</Entry>
+    <Entry Name="Lantern_Desc">An oil lantern, found near Salim's body parts.</Entry>
+    <Entry Name="CurseMedallion">Monke Amulet</Entry>
+    <Entry Name="CurseMedallion_Desc">A amulet inscribed with monke symbols. It was on my wrist when I last checked.</Entry>
+    <Entry Name="Matchbook">Matchbook</Entry>
+    <Entry Name="Matchbook_Desc">Collect them all</Entry>
+    <Entry Name="HerbertOil">Lamp Oil</Entry>
+    <Entry Name="HerbertOil_Desc">A flask holding a medium amount of monki juice.</Entry>
     <Entry Name="ModernOil">Lamp Oil (Small)</Entry>
-	<Entry Name="ModernOil_Desc">A flask holding a small monki.</Entry>
+    <Entry Name="ModernOil_Desc">A flask holding a small monki.</Entry>
   </CATEGORY>
   <CATEGORY Name="InventoryUI">
     <Entry Name="HintInventoryUseBanana">Consoom $Input{InventoryUse}</Entry>
@@ -111,36 +111,16 @@
     <Entry Name="02-04-monke-town">Monke Town</Entry>
   </CATEGORY>
   <CATEGORY Name="LastTimeOn">
-	<Entry Name="01-01-intro">
-	It is 2014. Special Agent David has been dispatched to deal with the crisis on Monke Island, an island which has been taken over by monkeys. He must stop them from destroying the world. If he fails, the safety of the world may be in jeopardy.
-	</Entry>
-	<Entry Name="01-02-beach">
-	After a plane crash, David woke up on the beach wreckage of the plane. But something is wrong. He is tired, it seems several minutes have passed, and the rest is missing, including her husband, Salim. He must find him. 
-	</Entry>
-	<Entry Name="01-03-monke-temple-caves">
-	After his plane crashed at the beach, David followed the trail of the monkeys into the caves, where he hopes the Colonial will be. Only he can tell him what he needs to do, which is to find the secret of Monke Island, Nigeria, and to stop the monkeys from committing acts of domestic terrorism against the United States, before it is too late.
-	</Entry>
-	<Entry Name="01-03-monke-temple-temple">
-	David was exploring the monke caves in search of the Colonial, but cannot find him, for he is not there. He has now arrived in what appears to be an ancient monkey stronghold. He must find a way out.
-	</Entry>
-	<Entry Name="01-04-dream">
-	David has awoken in a strange dream sequence after falling asleep in Monke Island, Nigeria. He thought he found away to escape from the monke temple, but he did not, because instead this is happening.
-	</Entry>
-	<Entry Name="02-01-tomb-escape">
-	David, alone, heavily pregnant, and very sick, is trying to reach a monke town, where the monkeys are. But after having a strange dream that made him question his humanity, he has woken up to find that he is not in the monke town yet, and he is somewhere in a tomb deep below the island. He must escape.
-	</Entry>
-	<Entry Name="02-02-tomb-exit">
-	After a plane crash, David explored desert caves in search of the Colonial, Munshi, but he was missing. He then decided to try and find the monke town, but ended up falling asleep and having a strange dream instead. After escaping the tomb and figuring out the secret of monke island, he finds himself somewhere else entirely…
-	</Entry>
-	<Entry Name="02-03-fabachino-jungle">
-	This is not fabachino forest, this is fabachino jungle for
-	</Entry>
-	<Entry Name="02-04-monke-town-crystal-pepsi">
-	David has finally made it to the monke town, where the monkeys are, and he is just about to enjoy a nice, refreshing Crystal Pepsi™.
-	</Entry>
-	<Entry Name="02-04-monke-town-monke">
-	David has finally made it to the monke town, where the monkeys are, in hopes of finding the secret of Monke Island and stopping the monkeys from destroying the world. He is unsure what is going to happen next…
-	</Entry>
+    <Entry Name="01-01-intro">[br]	It is 2014. Special Agent David has been dispatched to deal with the crisis on Monke Island, an island which has been taken over by monkeys. He must stop them from destroying the world. If he fails, the safety of the world may be in jeopardy.[br]    </Entry>
+    <Entry Name="01-02-beach">[br]	After a plane crash, David woke up on the beach wreckage of the plane. But something is wrong. He is tired, it seems several minutes have passed, and the rest is missing, including her husband, Salim. He must find him. [br]    </Entry>
+    <Entry Name="01-03-monke-temple-caves">[br]	After his plane crashed at the beach, David followed the trail of the monkeys into the caves, where he hopes the Colonial will be. Only he can tell him what he needs to do, which is to find the secret of Monke Island, Nigeria, and to stop the monkeys from committing acts of domestic terrorism against the United States, before it is too late.[br]    </Entry>
+    <Entry Name="01-03-monke-temple-temple">[br]	David was exploring the monke caves in search of the Colonial, but cannot find him, for he is not there. He has now arrived in what appears to be an ancient monkey stronghold. He must find a way out.[br]    </Entry>
+    <Entry Name="01-04-dream">[br]	David has awoken in a strange dream sequence after falling asleep in Monke Island, Nigeria. He thought he found away to escape from the monke temple, but he did not, because instead this is happening.[br]    </Entry>
+    <Entry Name="02-01-tomb-escape">[br]	David, alone, heavily pregnant, and very sick, is trying to reach a monke town, where the monkeys are. But after having a strange dream that made him question his humanity, he has woken up to find that he is not in the monke town yet, and he is somewhere in a tomb deep below the island. He must escape.[br]    </Entry>
+    <Entry Name="02-02-tomb-exit">[br]	After a plane crash, David explored desert caves in search of the Colonial, Munshi, but he was missing. He then decided to try and find the monke town, but ended up falling asleep and having a strange dream instead. After escaping the tomb and figuring out the secret of monke island, he finds himself somewhere else entirely[u8230][br]    </Entry>
+    <Entry Name="02-03-fabachino-jungle">[br]	This is not fabachino forest, this is fabachino jungle for[br]    </Entry>
+    <Entry Name="02-04-monke-town-crystal-pepsi">[br]	David has finally made it to the monke town, where the monkeys are, and he is just about to enjoy a nice, refreshing Crystal Pepsi[u8482].[br]    </Entry>
+    <Entry Name="02-04-monke-town-monke">[br]	David has finally made it to the monke town, where the monkeys are, in hopes of finding the secret of Monke Island and stopping the monkeys from destroying the world. He is unsure what is going to happen next[u8230][br]    </Entry>
   </CATEGORY>
   <CATEGORY Name="01_01_intro">
     <Entry Name="Quote">"The mind is a monkey, hopping around from thought to thought, image to image. Rarely do more than a few seconds go by in which the mind can remain single-pointed, empty."</Entry>
@@ -178,24 +158,24 @@
   </CATEGORY>
   <CATEGORY Name="02_04_monke_town" />
   <CATEGORY Name="Voices_01_01_intro">
-        <Entry Name="main_dialogue_munshi_briefing_001_colonel_001">In 1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island, in the territory of Nigeria, was taken over by monkeys.</Entry>
-        <Entry Name="main_dialogue_munshi_briefing_001_colonel_002">The island was never taken back - the monkeys developed strong defenses around the island perimeter. Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years.</Entry>
-        <Entry Name="main_dialogue_munshi_briefing_001_colonel_003">However, the delicate equilibrium has recently been disturbed. The monkeys have captured Jordan Anderson, the Compeny&apos;s weapons lab chief.</Entry>
-        <Entry Name="main_dialogue_munshi_briefing_001_colonel_004">They are demanding that the American Government turn over complete control on the banana economy, and they say if their demands aren&apos;t met in the next 24 hours, they will launch a nuclear attack.</Entry>
-        <Entry Name="main_dialogue_munshi_briefing_001_colonel_005">You&apos;ll have two mission objectives. First, you&apos;re to rescue the Compeny chief. Second, you&apos;re to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do.</Entry>
-        <Entry Name="main_dialogue_questions_001_player_001">What&apos;s the insertion method?</Entry>
-        <Entry Name="main_dialogue_questions_002_colonel_001">You will be parachuting to the island.</Entry>
-        <Entry Name="main_dialogue_questions_003_player_001">Anyone going with me?</Entry>
-        <Entry Name="main_dialogue_questions_004_colonel_001">As usual, this is a one-man infiltration mission. This is why we chose your unit.</Entry>
-        <Entry Name="main_dialogue_questions_005_player_001">GOLIRA special forces, huh. Weapons and equipment on-site procurement?</Entry>
-        <Entry Name="main_dialogue_questions_006_colonel_001">Affirmative. This is a top-secret black op. Besides, the monkeys can detect any unplanned electronic interference and would be alerted of your presence immediately.</Entry>
-        <Entry Name="main_dialogue_banana_001_player_001">Whoa, what the hell?</Entry>
-        <Entry Name="main_dialogue_banana_002_colonel_001">We&apos;re under attack!</Entry>
-        <Entry Name="pilot_dialogue_crashpanic_001_pilot_1_001">Ah shit! Daymay, Daymay!</Entry>
-        <Entry Name="pilot_dialogue_crashpanic_002_pilot_2_001">Dude it&apos;s Mayday, not Daymay.</Entry>
-        <Entry Name="pilot_dialogue_run_001_pilot_1_001">To all passengers: The plane is about to crash! RUN!</Entry>
-        <Entry Name="pilot_dialogue_whereisradio_001_pilot_1_001">Where is the radio god damnit!</Entry>
-    </CATEGORY>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_001">In 1942, following a major deployment of Nigerian forces to the battlefields of World War II, the archeological site at Monke Island, in the territory of Nigeria, was taken over by monkeys.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_002">The island was never taken back - the monkeys developed strong defenses around the island perimeter. Nigeria and the CHimp Autonomous Zone, as the island has been dubbed, have remained in a cold war for years.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_003">However, the delicate equilibrium has recently been disturbed. The monkeys have captured Jordan Anderson, the Compeny's weapons lab chief.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_004">They are demanding that the American Government turn over complete control on the banana economy, and they say if their demands aren't met in the next 24 hours, they will launch a nuclear attack.</Entry>
+    <Entry Name="main_dialogue_munshi_briefing_001_colonel_005">You'll have two mission objectives. First, you're to rescue the Compeny chief. Second, you're to investigate whether or not the monkeys have the ability to launch a nuclear attack - and stop them if they do.</Entry>
+    <Entry Name="main_dialogue_questions_001_player_001">What's the insertion method?</Entry>
+    <Entry Name="main_dialogue_questions_002_colonel_001">You will be parachuting to the island.</Entry>
+    <Entry Name="main_dialogue_questions_003_player_001">Anyone going with me?</Entry>
+    <Entry Name="main_dialogue_questions_004_colonel_001">As usual, this is a one-man infiltration mission. This is why we chose your unit.</Entry>
+    <Entry Name="main_dialogue_questions_005_player_001">GOLIRA special forces, huh. Weapons and equipment on-site procurement?</Entry>
+    <Entry Name="main_dialogue_questions_006_colonel_001">Affirmative. This is a top-secret black op. Besides, the monkeys can detect any unplanned electronic interference and would be alerted of your presence immediately.</Entry>
+    <Entry Name="main_dialogue_banana_001_player_001">Whoa, what the hell?</Entry>
+    <Entry Name="main_dialogue_banana_002_colonel_001">We're under attack!</Entry>
+    <Entry Name="pilot_dialogue_crashpanic_001_pilot_1_001">Ah shit! Daymay, Daymay!</Entry>
+    <Entry Name="pilot_dialogue_crashpanic_002_pilot_2_001">Dude it's Mayday, not Daymay.</Entry>
+    <Entry Name="pilot_dialogue_run_001_pilot_1_001">To all passengers: The plane is about to crash! RUN!</Entry>
+    <Entry Name="pilot_dialogue_whereisradio_001_pilot_1_001">Where is the radio god damnit!</Entry>
+  </CATEGORY>
   <CATEGORY Name="Voices_01_02_beach">
     <Entry Name="main_wakeup_001_player_001">Ugh... My Head. Colonel? Are you here?</Entry>
     <Entry Name="main_motivated_001_player_001">I cannot let down my comrades, I will fight for the death even if I die.</Entry>

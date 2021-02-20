@@ -2,6 +2,7 @@
 #include "base/Inputhandler_Types.hps"
 
 #include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
 #include "helpers/helper_agent.hps"
 #include "helpers/helper_props.hps"
 #include "helpers/helper_effects.hps"
@@ -72,6 +73,8 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
+		
+		LastTimeOnGame_SetText("01-04-dream");
 		
 		Item_RemoveFromInventory(ItemType_GetFirstInInventory("CurseMedallion"));
 		cScript_SetGlobalVarBool("HideAmuletBracelet", true);
