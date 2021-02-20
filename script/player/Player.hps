@@ -193,7 +193,9 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 		{
 			mbUseLargeDefaultCursor = pConfig.GetBool("Gameplay", "UseLargeDefaultCursor", false);
 		}
+		
 		mbUseNoHintsCursor = pConfig.GetBool("Gameplay", "CrossHairStyleSimple", false);
+		mbEnableCrosshair = pConfig.GetBool("Game", "ToggleCrosshair", true);
 	}
 	
 	void SaveUserConfig()
@@ -2230,6 +2232,7 @@ class cScrPlayer : iScrPlayerBase, iScrPlayer_Interface
 	int mlHidingInTheDarkUpdateIndex = 0;
 	bool mbUseLargeDefaultCursor = false;
 	bool mbUseNoHintsCursor = false;
+	bool mbEnableCrosshair = false;
 	float mfPlayerLightLevel = 0.0f;
 	float mfPlayerVisibilityMul= 1.0f;
 	bool mbLanternOn = false;
