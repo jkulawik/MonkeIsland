@@ -35,10 +35,28 @@
                     <Var ObjectId="268435457" Name="ParentAttachBody" Value="" />
                 </UserVariables>
             </Area>
-            <Area ID="268435828" Name="Start_Begin" CreStamp="1613840948" ModStamp="1613840953" WorldPos="9.75 1 0" Rotation="0 4.71239 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 10317 268435828" AreaType="PlayerStart">
+            <Area ID="268435458" Name="Start_Begin" CreStamp="1613840948" ModStamp="1613840953" WorldPos="9.75 1 0" Rotation="0 4.71239 0" Scale="0.7 1.9 0.7" Active="true" Mesh="" UID="16 10317 268435458" AreaType="PlayerStart">
                 <UserVariables>
-                    <Var ObjectId="268435828" Name="Note" Value="" />
-                    <Var ObjectId="268435828" Name="Crouching" Value="false" />
+                    <Var ObjectId="268435458" Name="Note" Value="" />
+                    <Var ObjectId="268435458" Name="Crouching" Value="false" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435810" Name="Fear_1" CreStamp="1613846495" ModStamp="1613846515" WorldPos="-3 9 0.25" Rotation="0 0 0" Scale="77.75 77.75 77.75" Active="true" Mesh="" UID="16 10315 268435810" AreaType="Fear">
+                <UserVariables>
+                    <Var ObjectId="268435810" Name="Priority" Value="0" />
+                    <Var ObjectId="268435810" Name="Safe" Value="false" />
+                    <Var ObjectId="268435810" Name="NoFear" Value="false" />
+                    <Var ObjectId="268435810" Name="DarknessFear" Value="false" />
+                    <Var ObjectId="268435810" Name="BabyKickRateMultiplier" Value="1" />
+                    <Var ObjectId="268435810" Name="Locked" Value="false" />
+                    <Var ObjectId="268435810" Name="AllowProgressWithToken" Value="true" />
+                    <Var ObjectId="268435810" Name="AllowProgressWithoutToken" Value="false" />
+                    <Var ObjectId="268435810" Name="MaxProgressCount" Value="1" />
+                    <Var ObjectId="268435810" Name="ProgressAmount" Value="1" />
+                    <Var ObjectId="268435810" Name="SafeMusic" Value="fear_system_safe_01" />
+                    <Var ObjectId="268435810" Name="NonAgentRateCap" Value="0.8" />
+                    <Var ObjectId="268435810" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435810" Name="CC_Funcs" Value="" />
                 </UserVariables>
             </Area>
         </Objects>
