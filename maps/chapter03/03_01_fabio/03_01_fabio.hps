@@ -68,7 +68,7 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
 		
-		Music_Play("A2_2_4_SafeArea", 0.7f, true, eMusicPrio_BgAmb);
+		Music_Play("A2_Early_Human_Music_A", 0.7f, true, eMusicPrio_BgAmb);
 		
 		Entity_PlayAnimation("fabio", "look_out_window_01", 0.1f, true);
 		
