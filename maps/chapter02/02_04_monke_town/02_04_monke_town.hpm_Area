@@ -275,32 +275,50 @@
                     <Var ObjectId="268435514" Name="Density" Value="1" />
                 </UserVariables>
             </Area>
-            <Area ID="268435712" Name="Trigger_3" CreStamp="1612292538" ModStamp="1612292594" WorldPos="12 14 -410.25" Rotation="0 0 0" Scale="44 6.75 0.5" Active="true" Mesh="" UID="16 12810 268435712" AreaType="Trigger">
+            <Area ID="268435515" Name="Trigger_3" CreStamp="1612292538" ModStamp="1612292594" WorldPos="12 14 -410.25" Rotation="0 0 0" Scale="44 6.75 0.5" Active="true" Mesh="" UID="16 12810 268435515" AreaType="Trigger">
                 <UserVariables>
-                    <Var ObjectId="268435712" Name="Note" Value="" />
-                    <Var ObjectId="268435712" Name="BlocksLineOfSight" Value="false" />
-                    <Var ObjectId="268435712" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="268435712" Name="UserVar" Value="" />
-                    <Var ObjectId="268435712" Name="Static" Value="false" />
-                    <Var ObjectId="268435712" Name="QuickSave" Value="false" />
-                    <Var ObjectId="268435712" Name="FullGameSave" Value="false" />
-                    <Var ObjectId="268435712" Name="CC_Entities" Value="player" />
-                    <Var ObjectId="268435712" Name="CC_Funcs" Value="Drink" />
-                    <Var ObjectId="268435712" Name="ParentAttachEntity" Value="" />
-                    <Var ObjectId="268435712" Name="ParentAttachUseRotation" Value="true" />
-                    <Var ObjectId="268435712" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="268435712" Name="ParentAttachLocked" Value="false" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtCallback" Value="" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtCheckRayIntersection" Value="true" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtMaxDistance" Value="-1" />
-                    <Var ObjectId="268435712" Name="PlayerLookAtCallbackDelay" Value="0" />
-                    <Var ObjectId="268435712" Name="PlayerInteractCallback" Value="" />
-                    <Var ObjectId="268435712" Name="PlayerInteractCallbackAutoRemove" Value="false" />
-                    <Var ObjectId="268435712" Name="CanInteractWithoutCallback" Value="false" />
-                    <Var ObjectId="268435712" Name="MaxFocusDistance" Value="-1" />
-                    <Var ObjectId="268435712" Name="CustomInteractIcon" Value="Default" />
+                    <Var ObjectId="268435515" Name="Note" Value="" />
+                    <Var ObjectId="268435515" Name="BlocksLineOfSight" Value="false" />
+                    <Var ObjectId="268435515" Name="EventInstanceTag" Value="" />
+                    <Var ObjectId="268435515" Name="UserVar" Value="" />
+                    <Var ObjectId="268435515" Name="Static" Value="false" />
+                    <Var ObjectId="268435515" Name="QuickSave" Value="false" />
+                    <Var ObjectId="268435515" Name="FullGameSave" Value="false" />
+                    <Var ObjectId="268435515" Name="CC_Entities" Value="player" />
+                    <Var ObjectId="268435515" Name="CC_Funcs" Value="Drink" />
+                    <Var ObjectId="268435515" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435515" Name="ParentAttachUseRotation" Value="true" />
+                    <Var ObjectId="268435515" Name="ParentAttachBody" Value="" />
+                    <Var ObjectId="268435515" Name="ParentAttachLocked" Value="false" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtCallback" Value="" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtCallbackAutoRemove" Value="true" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtCheckCenterOfScreen" Value="true" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtCheckRayIntersection" Value="true" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtMaxDistance" Value="-1" />
+                    <Var ObjectId="268435515" Name="PlayerLookAtCallbackDelay" Value="0" />
+                    <Var ObjectId="268435515" Name="PlayerInteractCallback" Value="" />
+                    <Var ObjectId="268435515" Name="PlayerInteractCallbackAutoRemove" Value="false" />
+                    <Var ObjectId="268435515" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435515" Name="MaxFocusDistance" Value="-1" />
+                    <Var ObjectId="268435515" Name="CustomInteractIcon" Value="Default" />
+                </UserVariables>
+            </Area>
+            <Area ID="268435733" Name="Fear_1" CreStamp="1613942768" ModStamp="1613942791" WorldPos="-19.9668 23.4448 -315.989" Rotation="0 0 0" Scale="267.771 134.712 302.812" Active="true" Mesh="" UID="16 12818 268435733" AreaType="Fear">
+                <UserVariables>
+                    <Var ObjectId="268435733" Name="Priority" Value="0" />
+                    <Var ObjectId="268435733" Name="Safe" Value="false" />
+                    <Var ObjectId="268435733" Name="NoFear" Value="false" />
+                    <Var ObjectId="268435733" Name="DarknessFear" Value="false" />
+                    <Var ObjectId="268435733" Name="BabyKickRateMultiplier" Value="1" />
+                    <Var ObjectId="268435733" Name="Locked" Value="false" />
+                    <Var ObjectId="268435733" Name="AllowProgressWithToken" Value="true" />
+                    <Var ObjectId="268435733" Name="AllowProgressWithoutToken" Value="false" />
+                    <Var ObjectId="268435733" Name="MaxProgressCount" Value="1" />
+                    <Var ObjectId="268435733" Name="ProgressAmount" Value="1" />
+                    <Var ObjectId="268435733" Name="SafeMusic" Value="fear_system_safe_01" />
+                    <Var ObjectId="268435733" Name="NonAgentRateCap" Value="0.8" />
+                    <Var ObjectId="268435733" Name="CC_Entities" Value="" />
+                    <Var ObjectId="268435733" Name="CC_Funcs" Value="" />
                 </UserVariables>
             </Area>
         </Objects>
