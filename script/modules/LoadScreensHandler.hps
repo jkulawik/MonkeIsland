@@ -307,20 +307,20 @@ class cScrLoadScreensHandler : iScrUserModule, iScrUserModule_Interface, iScrLoa
 	tString msLastTimeOnSketch="";
 	
 	array<tString> gvPreviouslyOnSketches = {
-		"01-01-intro",						"loadscreen_1aa",
-		"01-02-beach",						"loadscreen_1aa",
-		"01-03-monke-temple-caves",			"loadscreen_1b",
-		"01-03-monke-temple-temple",		"loadscreen_1b",
-		"01-04-dream",		                "loadscreen_1b",
-		"02-01-tomb-escape",		        "loadscreen_1e",
-		"02-02-tomb-exit",				    "loadscreen_1f",
-		"02-03-fabachino-jungle",			"loadscreen_1f",
-		"02-04-monke-town-crystal-pepsi",	"loadscreen_1f",
-		"02-04-monke-town-monke",			"loadscreen_2b",
-		"03-01-fabio",			            "loadscreen_2d",
-		"03-02-pizzaball-court",			"loadscreen_2f",
-		"03-02-pizzaball-bitcoin",			"loadscreen_2i",
-		"03-03-finale",						"loadscreen_2i"
+		"01-01-intro",						"loadscreen_1",
+		"01-02-beach",						"loadscreen_2",
+		"01-03-monke-temple-caves",			"loadscreen_3a",
+		"01-03-monke-temple-temple",		"loadscreen_3b",
+		"01-04-dream",		                "loadscreen_4",
+		"02-01-tomb-escape",		        "loadscreen_5",
+		"02-02-tomb-exit",				    "loadscreen_6",
+		"02-03-fabachino-jungle",			"loadscreen_7",
+		"02-04-monke-town-crystal-pepsi",	"loadscreen_8a",
+		"02-04-monke-town-monke",			"loadscreen_8b",
+		"03-01-fabio",			            "loadscreen_9",
+		"03-02-pizzaball-court",			"loadscreen_10a",
+		"03-02-pizzaball-bitcoin",			"loadscreen_10b",
+		"03-03-finale",						"loadscreen_11"
 	};
 	
 	void SetLastTimeOn(const tString& in asMapName)
@@ -332,19 +332,19 @@ class cScrLoadScreensHandler : iScrUserModule, iScrUserModule_Interface, iScrLoa
 		if (asMapName=="01-03-monke-temple")
 		{
 			lastTimeOnText="01-03-monke-temple-caves";
-			if (cScript_GetGlobalVarBool("Caves_Deeper"))
+			if (cScript_GetGlobalVarBool("Temple_Discovered"))
 				lastTimeOnText="01-03-monke-temple-temple";
 		}
 		else if (asMapName=="02-04-monke-town")
 		{
 			lastTimeOnText="02-04-monke-town-crystal-pepsi";
-			if (cScript_GetGlobalVarBool("DWL_ReachedVista"))
+			if (cScript_GetGlobalVarBool("Crystal_Pepsi"))
 				lastTimeOnText="02-04-monke-town-monke";
 		}			
 		else if (asMapName=="03-02-pizzaball")
 		{
 			lastTimeOnText="03-02-pizzaball-court";
-			if (cScript_GetGlobalVarBool("Caves_FoundSalim"))
+			if (cScript_GetGlobalVarBool("Pizzaball_Dunk"))
 				lastTimeOnText="03-02-pizzaball-bitcoin";
 		}
 		

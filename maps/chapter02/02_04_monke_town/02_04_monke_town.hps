@@ -195,6 +195,7 @@ class cScrMap : iScrMap
 	bool Drink(const tString &in asParent, const tString &in asChild, int alState)
 	{
 		Voice_Play("Pepsi");
+		cScript_SetGlobalVarBool("Crystal_Pepsi", true);
 		
 		return false;
 	}

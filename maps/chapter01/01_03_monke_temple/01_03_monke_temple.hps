@@ -457,7 +457,8 @@ class cScrMap : iScrMap
 		{
 			Game_AutoSave();
 			
-			LastTimeOnGame_SetText("01-03-monke-temple-temple");
+			//LastTimeOnGame_SetText("01-03-monke-temple-temple");
+			cScript_SetGlobalVarBool("Temple_Discovered", true);
 			
 			return false;
 		}
