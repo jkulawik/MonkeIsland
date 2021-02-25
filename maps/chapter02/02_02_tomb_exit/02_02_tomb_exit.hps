@@ -79,7 +79,7 @@ class cScrMap : iScrMap
 		Billboard_SetVisible("Billboard_8", false);
 		
 		LastTimeOnGame_SetText("02-02-tomb-exit");
-
+		
 		/////////////////////////
 		// Debug
 		if(!cLux_ScriptDebugOn())
@@ -523,11 +523,26 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		bool Music(const tString &in asParent, const tString &in asChild, int alState)
+		void Timer_StopRagdoll(const tString &in asTimer)
+		{
+			Entity_SetActive("monke_ragdoll", false);
+			Entity_SetActive("monke_flip", true);
+		}
+
+		bool TriggerOutside(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Music_Play("A2_2_6_Tin_Hinan_Sing", 0.55f, false, eMusicPrio_BigEvent);
-					
+			Entity_PlayAnimation("monke_flip", "monke_flip");
+			Map_AddTimer("monke_doll", 1.1f, "Timer_SwapMonkeIntoRagdoll");
+			
 			return false;
+		}
+		
+		void Timer_SwapMonkeIntoRagdoll(const tString &in asTimer)
+		{
+			Entity_SetActive("monke_flip", false);
+			Entity_SetActive("monke_ragdoll", true);
+			Body_AddForce("monke_ragdoll_Body_1", cVector3f(0, 0, 1000), true);
 		}
 
 		//-------------------------------------------------------
