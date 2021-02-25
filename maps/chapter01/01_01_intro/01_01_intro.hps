@@ -138,6 +138,8 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{
+		cLux_ClearAllMapSaveData();
+		Game_AutoSave();
 	}
 
 	//-------------------------------------------------------
