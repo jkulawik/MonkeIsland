@@ -512,7 +512,7 @@ class cScrMap : iScrMap
 		
 		void TickLever_OnConnectionStateChange(const tString &in asEntity, int alState)
 		{
-			if (alState == 1)
+			if (alState == 1 || alState == -1)
 			{
 				Sound_CreateAtEntity("Tick", "monke_new/sfx/gameplay/tick_fast", "TickSource");
 				Sound_CreateAtEntity("DoorOpen", "level_entity_shared/doors/portcullis/portcullis_start_stop", "DoorSource", 0.0f, false, 1.0f, 3.0f, 11.0f);
@@ -539,12 +539,12 @@ class cScrMap : iScrMap
 		
 		bool FadeFog(const tString &in asParent, const tString &in asChild, int alState)
 		{
+			Game_AutoSave();
+			
 			Map_FadeFogStart(5.0f, 1.0f);
 			Map_FadeFogEnd(70.0f, 1.0f);
 			
 			Effect_ToneMapping_FadeWorldGrading("grading_monke_hall", 3.0f);
-			
-			Game_AutoSave();
 			
 			return false;
 		}

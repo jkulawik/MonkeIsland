@@ -67,15 +67,21 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
+		Sketchbook_SetInventoryEnabled(true);
 		
-		Music_Play("A2_Early_Human_Music_A", 0.5f, true, eMusicPrio_BgAmb);
+		Sound_FadeGlobalVolume(1.f, 0.f, eSoundEntryType_All);
+		
+		Music_Play("A2_Early_Human_Music_A", 0.4f, true, eMusicPrio_BgAmb);
 		
 		Entity_PlayAnimation("fabio", "look_out_window_01", 0.1f, true);
+		
+		Hint_ShowHint("Hints", "HintHumanMusic");
 		
 		/////////////////////////
 		// Debug
 		if(cLux_ScriptDebugOn())
 		{
+			LevelDoor_SetLocked("exit", false);
 		}
 	}
 
@@ -85,6 +91,8 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		cScript_SetGlobalVarInt("NumOfPizzBalls", 1);
+		
 		Player_SetAmbientLight_Outdoors(false);
 		
 		PlayerBody_SetActive(true);
@@ -192,8 +200,41 @@ class cScrMap : iScrMap
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	void TalkArea_OnPlayerInteract(const tString &in asEntity)
+	{		
+		Voice_Play("Fabio", -1, "OnVoiceSubjectDonePlaying");
+		Player_StartLookAt("Trigger_2", 1, 1, 1, true);
+		Player_SetActive(false);
+		
+		Music_FadeVolumeMul(0.15f, 1.0f);
+	}
  
+	//-------------------------------------------------------
+	
+	bool Rescue(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Voice_Play("Release", -1, "OnVoiceSubjectDonePlaying");
+		Player_StartLookAt("Trigger_2", 1, 1, 1, true);
+		Player_SetActive(false);
+		
+		LevelDoor_SetLocked("exit", false);
+		
+		Music_FadeVolumeMul(0.15f, 1.0f);
+		
+		return false;
+	}
+	
+	void OnVoiceSubjectDonePlaying(const tString&in asScene, const tString&in asSubject)
+	{
+		Music_FadeVolumeMul(0.4f, 1.0f);
+		
+		SwingDoor_SetLocked("door", false, true);
+		
+		Player_StopLookAt(1.0f);
+		Player_SetActive(true);
+	}
+		
+	
 	//-------------------------------------------------------
  
 	//} END MAIN FUNCTIONS

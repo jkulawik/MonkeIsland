@@ -65,6 +65,16 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
+		
+		Debug_Log("LALALALALALA: " + cScript_GetGlobalVarInt("NumOfPizzBalls"));
+		
+		for (int i = 1; i <= cScript_GetGlobalVarInt("NumOfPizzBalls"); i++)
+		{
+			Entity_CreateAtEntity("pizza_ball_" + i, "pizza_ball.ent", "PizzaBallSpawner", false);
+	
+			Entity_AddCollideCallback("pizza_ball_" + i, "Trigger_1", "Goal");
+			Entity_AddCollideCallback("pizza_ball_" + i, "Trigger_5", "LoadNewMap");
+		}
 						
 		/////////////////////////
 		// Debug
@@ -156,6 +166,8 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
+			Debug_Log("LALALALALALA: " + cScript_GetGlobalVarInt("NumOfPizzBalls"));
+			Debug_Log(Map_GetEntity("pizza_ball_1").GetPosition().y);
 		}
 	}
 
@@ -223,7 +235,13 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		bool LoadNewMap(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			cScript_SetGlobalVarInt("NumOfPizzBalls", cScript_GetGlobalVarInt("NumOfPizzBalls") + 1);
+			Map_ChangeMap("03_02_pizza_ball.hpm", "Start_Begin", "", "");
+			
+			return true;
+		}
 	 
 		//-------------------------------------------------------
 			 
