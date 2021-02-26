@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-16"?>
 <VoiceData>
  <Characters>
-  <Character ID="0" Name="Colonel" DisplayName="Colonel" Actor="Mudbill" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1.5" ReverbVolume="1" SpeakerSpread="70" EntitySource="Voice_Munshi" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+  <Character ID="0" Name="Colonel" DisplayName="Colonel" Actor="Mudbill" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="2" ReverbVolume="0.75" SpeakerSpread="70" EntitySource="munshi" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
  </Characters>
  <Effects />
  <Scenes>
@@ -14,33 +14,38 @@
  <Subjects>
   <Subject Name="Munshi_Monologue" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Monologue">
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="Ah, David. I was wondering if you were going to show up." Timestamp="2021-02-25 09:21" />
+    <Sound Text="Ah, David. I was wondering if you were going to show up." FileName="monologue_munshi_monologue_001_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="Yes, that is correct, I am sided with the monkeys." Timestamp="2021-02-25 09:21" />
+    <Sound Text="Yes, that is correct, I am sided with the monkeys." FileName="monologue_munshi_monologue_002_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="You see, when we crashed, I was taken into custody, but then I saw something incredible: Farms." Timestamp="2021-02-25 09:21" />
+    <Sound Text="You see, when we crashed, I was taken into custody, but then I saw something incredible: Farms." FileName="monologue_munshi_monologue_003_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="And no, they were not banana farms; they were bitcoin farms." Timestamp="2021-02-25 09:21" />
+    <Sound Text="And no, they were not banana farms; they were bitcoin farms." FileName="monologue_munshi_monologue_004_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="The monkeys managed to get richer than anyone else. Not only do they control the banana economy, but the entire world." Timestamp="2021-02-25 09:21" />
+    <Sound Text="The monkeys managed to get richer than anyone else. Not only do they control the banana economy, but the entire world." FileName="monologue_munshi_monologue_005_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="There is no need to fight back." Timestamp="2021-02-25 09:21" />
+    <Sound Text="There is no need to fight back." FileName="monologue_munshi_monologue_006_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="I offered them my tactical knowledge and they accepted. With my guns and their brains we can rule over the entire planet! Everyone will return to monke, and there is nothing you can do to stop us!" Timestamp="2021-02-25 09:21" />
+    <Sound Text="I offered them my tactical knowledge and they accepted. With my guns and their brains we can rule over the entire planet! Everyone will return to monke, and there is nothing you can do to stop us!" FileName="monologue_munshi_monologue_007_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="Cum, let us become monke together." Timestamp="2021-02-25 09:21" />
+    <Sound Text="Cum, let us become monke together." FileName="monologue_munshi_monologue_008_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
   </Subject>
   <Subject Name="Munshi_Beautiful" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Beautiful">
    <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="Do you see? A whole other world... Isn't it beautiful?" Timestamp="2021-02-25 09:21" />
+    <Sound Text="Do you see? A whole other form... monke form. Isn't it beautiful? " FileName="monologue_munshi_beautiful_001_colonel_001" Timestamp="2021-02-26 10:11" />
+   </Line>
+  </Subject>
+  <Subject Name="Munshi_Fight" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Beautiful">
+   <Line CharacterId="0" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="So it seems we won't be working together. No regrets, David." FileName="monologue_munshi_beautiful1_001_colonel_001" Timestamp="2021-02-26 10:36" />
    </Line>
   </Subject>
  </Subjects>

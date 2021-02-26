@@ -7110,7 +7110,7 @@ class cScrAgentMonke : cScrAgentHumanoid
 	cVector3f mvHunt_GoingAroundPos;
 	float mfHunt_SuperHuntCounter = 0;
 	bool mbHunt_SuperHunt = false;
-	bool mbHunt_SuperHuntEnabled = true;
+	bool mbHunt_SuperHuntEnabled = false;
     bool mbHunt_AdaptiveSpeed = false;
     float mfHunt_AdaptiveSpeed = 5.2f;
     float mfHunt_AdaptiveSpeedTarDist = 15.f;

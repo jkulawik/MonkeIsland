@@ -17,6 +17,9 @@
 #include "helpers/helper_message.hps"
 #include "helpers/helper_rotation.hps"
 
+#include "helpers/custom/helper_props_custom.hps"
+#include "helpers/custom/helpers/helper_modules_custom.hps"
+#include "helpers/custom/helpers/helper_player_custom.hps"
 
 //--------------------------------------------------
  
@@ -303,8 +306,11 @@ class cScrMap : iScrMap
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
-
+		void Tablet_OnGui(const tString&in asEntityName, float afTimeStep)
+		{
+			DWNote_RenderGUI(asEntityName, afTimeStep);
+		}
+		
 		//-------------------------------------------------------
 
 		//} END Event *Name Of Event*

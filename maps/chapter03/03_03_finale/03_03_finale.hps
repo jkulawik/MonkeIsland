@@ -15,11 +15,20 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
+#include "helpers/helper_imgui_options.hps"
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
+const cVector2f kScreenCenter = cVector2f(512, 384); // Virtual size: 1024x768
+
+const cVector2f kMainMenuButtonPos = cVector2f(250, 400);
+const cVector2f kTitlePos = cVector2f(80, 110);
+const cVector2f kTitleSize = cVector2f(460, 200);
+
+const cColor kMainMenuButtonBgColor = cColor(69.0 / 255.0, 139.0 / 255.0, 139.0 / 255.0, 1);
+const cColor kDisabledColor = cColor(100.0 / 255.0, 1);
+
+const tString[] gvBattleName = {" C ", " O ", " L ", " O ", " N ", " E ", " L ", "  ", " M ", " U ", " N ", " S ", " H ", " I "};
  
 //--------------------------------------------------
  
@@ -39,27 +48,23 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		// Put display name entry in english.lang / Levels
-		GetBase().SetDisplayNameEntry("xx-xx-dummy-level");
+		GetBase().SetDisplayNameEntry("03-03-finale");
 		
 		Map_SetSkyboxRotation(cVector3f(cMath_ToRad(-10), cMath_ToRad(-60), cMath_ToRad(-5)));
+		
+		// Set up color grading etc.
+		Map_Preset_SetupDirLight("Preset_Default", true, cColor(0.257,0.354,0.365,1), 1.f, cVector3f(0.334, -0.882, 0.332), cColor(0.093,0.108,0.123,1), cColor(0.108,0.176,0.186,1));
+		Map_Preset_SetupColorGrading("Preset_Default", "grading_dwfb.dds");
+		Map_Preset_SetupBloom("Preset_Default", 256.f, 0.4f, 0.5f, cColor_White);
+		
+		Map_Preset_SetupDirLight("Preset_LightningFull", true, cColor(1,1.5,2,1), 5, cVector3f(0.334, -0.882, 0.332), cColor(0.092,0.069,0.069,1), cColor(0.092,0.069,0.069,1));
+		Map_Preset_SetupBloom("Preset_LightningFull", 4.f, 0.02f, 1.5f, cColor(1.f, 2.f, 2.f, 1.f));
 	}
 	
 	//-------------------------------------------------------
 		
 	void PreloadData()
 	{
-		/////////////////
-		// Preload gui
-		//ImGui_PreloadImage("some_image");
-
-		///////////////
-		// Preload particles
-		//ParticleSystem_Preload("some_particle.ps");
-
-		//////////////
-		// Preload screen effects
-		//Material_Preload("some_material.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -170,7 +175,12 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			
+			mbShowBattleText = !mbShowBattleText;
+			Map_AddTimer("AddLetters", 0.0f, "Timer_AddLetters");
+		}
+		if(alAction == eAction_Test2)
+		{
+			mfTextAlphaTarget = 0.0f;
 		}
 	}
 
@@ -196,12 +206,304 @@ class cScrMap : iScrMap
 	//{///////////////////////////////////////////////////////////////////////////////////////
  
 	//-------------------------------------------------------
+	
+	float mfTransitionAlpha = 1;
+	tString msSelectedMainMenuButton;
+	
+	int mlClickedSuccumb = -1;
+	int mlClickedFight = -1;
+	
+	float mfTextAlphaTarget = 1.0f;
+	float mfTextAlpha = 1.0f;
+	float mfAlphaFadeSpeed = 1.0f;
+	
+	//-------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+		if(mbShowDialogPrompt)
+		{
+			ImGui_SetTransCategory("");
+
+			cLux_GetGuiHandler().SetGameHudInputFocus(true);
+			ImGui_SetModUseInput(true); 
+			
+			int lEntryPos = 0;
+			cImGuiLabelData disabledLabelData;
+			disabledLabelData.mFont.SetFile(FontHandler_GetFont(eFontType_MainMenu, 72));
+			disabledLabelData.mFont.mvSize = cVector2f(36, 36);
+			disabledLabelData.mFont.mColor = cColor(kDisabledColor.r,kDisabledColor.g,kDisabledColor.b,mfTransitionAlpha/2);
+			
+			if(OptionMenu_MainMenuButton("Succumb and Return to Monke", cVector2f(kMainMenuButtonPos.x + 250, kMainMenuButtonPos.y - 250), lEntryPos, 1, msSelectedMainMenuButton, mlClickedSuccumb, mfTransitionAlpha))
+			{
+				cLux_GetGuiHandler().SetGameHudInputFocus(false);
+				ImGui_SetModUseInput(false);
+				
+				mlClickedSuccumb = 1;
+				SequenceStates_Resume("Seq_Finale");	
  
-	/*Put any variables that are used in more than one scene here.*/
+			}
+			
+			msSelectedMainMenuButton = OptionMenu_UpdateFocus("Succumb and Return to Monke", msSelectedMainMenuButton);
+			
+			lEntryPos++;
+							
+			if(OptionMenu_MainMenuButton("Fight Back", cVector2f(kMainMenuButtonPos.x + 330, kMainMenuButtonPos.y + 50), lEntryPos, 2, msSelectedMainMenuButton, mlClickedFight, mfTransitionAlpha))
+			{
+				cLux_GetGuiHandler().SetGameHudInputFocus(false);
+				ImGui_SetModUseInput(false); 
+				
+				mlClickedFight = 2;
+				
+				mbFight = true;
+				
+				SequenceStates_Resume("Seq_Finale");
+			}
+			
+			msSelectedMainMenuButton = OptionMenu_UpdateFocus("Fight Back", msSelectedMainMenuButton);
+		}
+		
+		if (mbShowBattleText)
+		{
+			ImGui_SetModColorMul(cColor(1.0f, mfTextAlpha));
+			
+			ImGui_SetTransCategory("");
+			
+			cVector3f vPos;
+			vPos.x = -cLux_GetHudVirtualOffset().x;
+			vPos.y = -cLux_GetHudVirtualOffset().y;
+			vPos.z = 0.0f;
+			ImGui_GroupBegin(vPos, ImGui_GetSize());
+			
+				cImGuiLabelData label = ImGui_GetDefaultLabel();
+				label.mFont.SetFile(FontHandler_GetFont(eFontType_MainMenu, 72));
+				label.mFont.mvSize = cVector2f(36, 36);
+				label.mFont.mColor = cColor_White;
+				label.mFontAlign = eFontAlign_Center;
+				
+				cVector3f vTextPos;
+				vTextPos = ImGui_NrmPosGroup(0.2, 0.5, 0.0);
+				vTextPos = cVector3f(vTextPos.x, vTextPos.y, vTextPos.z);
+				
+				ImGui_DoLabelExt(msBattleLetters, label, vTextPos, cVector2f_MinusOne, 2.0f);
+			
+			ImGui_GroupEnd();
+		}
+	}
+	
+	//-------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		if(mbMoveForward)
+		{
+			Player_MoveForward(1.0f);
+		}
+	}
+	
+	void PostUpdate(float afTimeStep)
+	{
+		mfTextAlpha = GuiElementFadeController(mfTextAlpha, mfTextAlphaTarget, afTimeStep);
+	}
+	
+	float GuiElementFadeController(float afAlpha, float afAlphaTarget, float afTimeStep)
+	{
+		if (afAlpha != afAlphaTarget)
+		{
+			if (mfAlphaFadeSpeed == 0.0f)
+				afAlpha = afAlphaTarget;
+			else
+				afAlpha = cMath_IncreaseTo(afAlpha, afTimeStep / mfAlphaFadeSpeed, afAlphaTarget);
+		}
+		
+		return afAlpha;
+	}
+	
+	//-------------------------------------------------------
+	
+	bool mbMoveForward = false;
+	bool mbShowDialogPrompt = false;
+	bool mbFight = false;
+	
+	bool mbShowBattleText = false;
+	tString msBattleLetters = "";
+	
+	//-------------------------------------------------------
+	
+	bool FinaleCutscene(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Seq_Finale("");
+		
+		return false;
+	}
+ 
+	cSequenceStatesData mFinaleSequence;	
+	void Seq_Finale(const tString&in asTimer)
+	{
+		Sequence_Begin("Seq_Finale", mFinaleSequence);
+		
+		if(Sequence_DoStepAndWait(2.0f))
+		{
+			Player_SetMoveSpeedMul(0.5f);
+			Player_StartLookAt("rift_simple_1", 1.0f, 1.0f, 1.0f, true);
+			Player_SetActive(false);
+			Music_Play("Monkus", 1.0f, false, eMusicPrio_BigEvent);
+		}
+		else if(Sequence_DoStepAndWait(1.5f))
+		{
+			mbMoveForward = true;
+		}
+		else if(Sequence_DoStepAndWait(7.0f))
+		{
+			Seq_DarkWorldLightning("");
+		}
+		else if(Sequence_DoStepAndPause(0.0f))
+		{
+			mbMoveForward = false;
+			Player_StopLookAt(1.0f);
+			Player_SetActive(true);
+			Player_SetMoveSpeedMul(1.0f);
+			
+			Voice_Play("Munshi_Monologue", -1, "OnVoiceSubjectDonePlaying");
+			
+			Music_FadeVolumeMul(0.5f, 1.0f);
+			Entity_SetActive("block_*", true);
+		}
+		else if(Sequence_DoStepAndPause(2.0f))
+		{
+			mbShowDialogPrompt = false;
+			Player_SetActive(true);
+			
+			if (mbFight)
+			{
+				Voice_Play("Munshi_Fight", -1, "StartFight");
+			}
+			else
+			{
+				
+			}
+		}
+		else if(Sequence_DoStepAndWait(1.0f))
+		{
+			if (mbFight)
+			{								
+				Effect_Fade_In(0.5f);
+				
+				Player_SetCrossHairEnabled(false);
+				
+				Player_SetActive(false);
+				CameraAnimation_Begin("BossCamera", "", false);
+			}
+		}
+		else if(Sequence_DoStepAndWait(1.0f))
+		{
+			if (mbFight)
+			{				
+				mbShowBattleText = true;
+				Music_PlayExt("final_boss", true, 1.0f, 1.0f, 0.0f, 0.0f, eMusicPrio_BgAmb, true);
+				
+				Map_AddTimer("AddLetters", 0.0f, "Timer_AddLetters");
+			}
+		}
+		
+		Sequence_End();
+	}
+	
+	void OnVoiceSubjectDonePlaying(const tString&in asScene, const tString&in asSubject)
+	{
+		Game_AutoSave();
+		
+		mbShowDialogPrompt = true;
+		Player_SetCrossHairEnabled(false);
+		PauseMenu_Enabled(false);
+		
+		SequenceStates_Pause("Seq_Finale");
+	}
+	
+	void StartFight(const tString&in asScene, const tString&in asSubject)
+	{
+		Entity_SetActive("block_*", false);
+		Player_SetCrossHairEnabled(true);
+		PauseMenu_Enabled(true);
+		
+		Music_StopAll(1.0f);
+		Effect_Fade_Out(1.0f);
+		
+		SequenceStates_Resume("Seq_Finale");
+	}
+	
+	bool BossCamera_5_CameraNodePassed(const tString &in asEntity, int alDirection)
+	{
+		Map_AddTimer("StopAnimation", 2.0f, "Timer_StopAnimation");
+		
+		return false;
+	}
+	
+	void Timer_StopAnimation(const tString&in asTimer)
+	{
+		Player_SetActive(true);
+		
+		CameraAnimation_End();
+		CameraAnimation_RemoveAttachedEntity();
+		
+		Player_SetCrossHairEnabled(true);
+		
+		Player_ChangeStateToNormal();
+		Player_Teleport("Start_Begin");
+		
+		mfTextAlphaTarget = 0.0f;
+		
+		Entity_SetActive("Trigger_2", true);
+	}
+	
+	int mlLetterIndex = 0;
+	void Timer_AddLetters(const tString&in asTimer)
+	{
+		if(gvBattleName[mlLetterIndex] != "  ")
+		{
+			Sound_PlayGui("special_fx/frontend/frontend_menu_select", 1.0f, eSoundEntryType_Gui);
+		}
+		
+		msBattleLetters += gvBattleName[mlLetterIndex];
+		mlLetterIndex++;
+		
+		Map_AddTimer("AddLetters", 0.25f, "Timer_AddLetters");
+	}
  
 	//-------------------------------------------------------
  
-	/*Put any functions that are used in more than one scene here.*/
+	cSequenceStatesData mSeqDataDarkWorldLightning;	
+	void Seq_DarkWorldLightning(const tString &in asTimer)
+	{
+		Sequence_Begin("Seq_DarkWorldLightning", mSeqDataDarkWorldLightning);
+		if (Sequence_DoStepAndWait(0.1f))
+		{
+			Sound_CreateAtEntity("Sound_Lightning", "01_02_caves/events/darkworld_thunder", "player");
+		}
+		else if (Sequence_DoStepAndWait(0.06f))
+		{
+			Map_Preset_Fade("Preset_LightningFull", 0.1f);
+			Light_FadeBrightnessTo("Light_Point_20", 150.f, 0.1f, eEasing_SineIn);
+		}
+		else if (Sequence_DoStepAndWait(1.f))
+		{
+			Map_Preset_Fade("Preset_Default", 1.f);
+			Light_FadeBrightnessTo("Light_Point_20", 0.f, 1.f, eEasing_SineOut);
+			Map_AddTimer("Timer_DoDarkWorldLightning", cMath_RandRectf(25.f, 45.f), "OnTimer_DoDarkWorldLightning");
+		}
+		Sequence_End();
+	}
+	
+	void OnTimer_DoDarkWorldLightning(const tString &in asTimer)
+	{
+		if (!SequenceStates_IsActive("Seq_AlertShadow"))
+		{
+			Seq_DarkWorldLightning("");
+			return;
+		}
+			 
+		Map_AddTimer("Timer_DoDarkWorldLightning", 25.f, "OnTimer_DoDarkWorldLightning");
+	}
  
 	//-------------------------------------------------------
  
@@ -223,7 +525,24 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		bool ActivateMonke(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			SlideDoor_SetClosed("door_right", false);
+			SlideDoor_SetClosed("door_left", false);
+			
+			Entity_SetActive("monke", true);
+			
+			Monke_SetAllowPlayerThrow("monke", false);
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_1");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_2");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_3");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_4");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_5");
+			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_6");
+			Monke_CommandPatrol_Execute("monke", true, 1);
+			
+			return false;
+		}
 	 
 		//-------------------------------------------------------
 		

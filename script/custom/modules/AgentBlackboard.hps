@@ -1,0 +1,2257 @@
+//----------------------------------------------------------------------------------------
+
+#include "interfaces/UserModule_Interface.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "base/Player_Types.hps"
+#include "base/InputHandler_Types.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_map.hps"
+#include "helpers/helper_imgui.hps"
+#include "custom/helpers/helper_agent.hps";
+#include "custom/helpers/helper_modules_custom.hps";
+#include "helpers/helper_player.hps";
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_game.hps"
+
+//----------------------------------------------------------------------------------------
+
+bool gbDebug = false;
+
+//----------------------------------------------------------------------------------------
+
+class cAgentInfo
+{
+	tID m_idAgent;
+	bool mbHunting;
+	bool mbInsideLiquidArea;
+	float mfHideModeTimer = 0;
+	bool mbInvestigate;
+}
+
+class cGhoulHoleNetwork
+{
+	tString msName = "";
+	tString msConnections = "";
+	tString msPlayerPath = "";
+	array<cGhoulHoleInfo> mvGhoulHoles;
+	array<cGhoulHoleConnection> mvConnections;
+	array<cPlayerPathNode> mvPlayerPathNodes;
+}
+
+class cGhoulHoleInfo
+{
+	tID m_idHole;
+	tID m_idAgent;
+	int mlPosPlayerPathIndex;
+	float mfPosPlayerPathDistanceSqr;
+	float mfPosPlayerPathDistance;
+}
+
+class cGhoulHoleConnection
+{
+	tID m_idConnection;
+	tID m_idGoalExit;
+	cVector3f mvNode1;
+	cVector3f mvNode2;
+}
+
+class cPlayerPathNode
+{
+	tID m_idNode;
+	int mlSuffix;
+	
+	int opCmp(const cPlayerPathNode &in other)
+	{
+		if (mlSuffix < other.mlSuffix) return -1;
+		if (mlSuffix > other.mlSuffix) return 1;
+		return 0;
+	}
+}
+
+class cAgentDistance
+{
+	tID m_idAgent;
+	float mfDistance;
+	
+	int opCmp(const cAgentDistance &in other)
+	{
+		if (mfDistance < other.mfDistance) return -1;
+		if (mfDistance > other.mfDistance) return 1;
+		return 0;
+	}
+}
+
+class cGhoulHoleScore
+{
+	tID m_idHole;
+	float mfScore;
+	
+	int opCmp(const cGhoulHoleScore &in other)
+	{
+		if (mfScore < other.mfScore) return -1;
+		if (mfScore > other.mfScore) return 1;
+		return 0;
+	}
+}
+
+class cAgentEnvironmentEventInfo
+{
+	tID m_idEntity;
+	eAgentEnvironmentEvent mType;
+	float mfCooldown;
+}
+
+class cWraithPartnership
+{
+	tID m_idLeader;
+	tID m_idServant;
+}
+
+class cWraithBillboard
+{
+	tID m_idBillboard = tID_Invalid;
+	tID m_idWraith = tID_Invalid;
+}
+
+//----------------------------------------------------------------------------------------
+
+class cScrAgentBlackboardModule : iScrUserModule, iScrUserModule_Interface, iScrAgentBlackboardModule_Interface
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		mbProximityEventsActive = false;
+	}
+		
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+
+	/////////////////////////////////////////
+	// MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		cLux_AddDebugMessage("[Blackboard] Agent Blackboard is live");
+		
+		mbOverlookAchievementDetectionActive = true;
+		
+		for (int i = 0; i < eAgentEnvironmentEvent_LastEnum; ++i)
+		{
+			mvEnvironmentEventTypeCooldowns.push_back(-1.0f);
+		}
+
+		mfNextProximityEventCooldown = mfTimeBetweenProximityEvents + cMath_RandRectf(-mfTimeBetweenProximityEventsVariance, mfTimeBetweenProximityEventsVariance);
+		mfNextProximityEventCooldown *= 0.5f;
+		
+		mfGlobalEnvironmentEventCooldown = mfTimeBetweenEnvironmentEvents + cMath_RandRectf(-mfTimeBetweenEnvironmentEventsVariance, mfTimeBetweenEnvironmentEventsVariance);
+		mfGlobalEnvironmentEventCooldown *= 0.5f;
+		
+		/////////////////////////
+		// Liquid areas
+		apMap.GetEntityArrayID("*", eLuxEntityType_LiquidArea, "", mvLiquidAreas);
+	}
+
+	//------------------------------------------------------------
+
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		mvAgents.resize(0);
+		mvBreadcrumbs.resize(0);
+		mvLiquidAreas.resize(0);
+		mvWraith_SpotlightBillboards.resize(0);
+		mlWraith_SpotlightBillboardFree = 0;
+		mlHuntingAgentCount = 0;
+		mlInvestigatingAgentCount = 0;
+		m_idWraithStruggleOwner = tID_Invalid;
+		mfStruggleCooldown = 0;
+		
+		mbInvestigateMusicActive = false;
+		mfInvestigateMusicFadeInTimer = 0;
+		mfInvestigateMusicFadeOutTimer = 0;
+		
+		Music_StopAll(0);
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfAvgDirTimer = 0.0f;
+	float mfAvgDirUpdateTime = 0.2f;
+	cVector3f mvAvgDir;
+	
+	void UpdateAverageDirection(float afTimeStep)
+	{
+		mfAvgDirTimer += afTimeStep;
+		if (mfAvgDirTimer >= mfAvgDirUpdateTime)
+		{
+			mfAvgDirTimer = 0.0f;
+			cVector3f vFwd = cLux_GetPlayer().GetCamera().GetForward();
+			mvAvgDir += vFwd * 0.4f;
+			mvAvgDir.Normalize();
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnRenderSolid(cRendererCallbackFunctions@ apFunctions)
+	{
+		if (cLux_ScriptDebugOn() == false) return;
+		if (gbDebug == false) return;
+		
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mbPickedUp) continue;
+			apFunctions.GetLowLevelGfx().DrawSphere(pBread.mvPosition, pBread.mfRadius, cColor(5, 5, 0));
+			apFunctions.GetLowLevelGfx().DrawSphere(pBread.mvPosition, 0.2f, cColor(5, 5, 0));
+		}
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvConnections.size(); ++j)
+			{
+				cGhoulHoleConnection@ pConnection = pNetwork.mvConnections[j];
+				apFunctions.GetLowLevelGfx().DrawSphere(pConnection.mvNode1, 0.2f, cColor(5, 2, 2));
+				apFunctions.GetLowLevelGfx().DrawSphere(pConnection.mvNode2, 0.2f, cColor(5, 2, 2));
+			}
+			
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pHole = pNetwork.mvGhoulHoles[j];
+				apFunctions.GetLowLevelGfx().DrawSphere(cLux_ID_Entity(pHole.m_idHole).GetPosition(), 0.2f, cColor(5, 5, 0));
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void VariableUpdate(float afDeltaTime)
+	{
+		UpdateProximityEvents(afDeltaTime);
+		UpdateEnvironmentEvents(afDeltaTime);
+		UpdateCollisionCourse(afDeltaTime);
+		UpdateAverageDirection(afDeltaTime);
+		UpdateBreadcrumbs(afDeltaTime);
+		UpdateIsInLiquidArea(afDeltaTime);
+		UpdateOverlookedAchievement(afDeltaTime);
+		UpdateStruggle(afDeltaTime);
+		UpdateInvestigateMusic(afDeltaTime);
+	}
+	
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+	}
+	
+	//------------------------------------------------------------
+
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppGotInputFocus()
+	{
+	
+	}
+	void AppLostInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERFACE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void SetDebugMode(bool abActive)
+	{
+		gbDebug = abActive;
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddAgent(tID aEnemy)
+	{
+		// Sanity check - make sure enemy isn't already in here
+		for	(uint i=0; i<mvAgents.length();++i)
+		{
+			if (mvAgents[i].m_idAgent == aEnemy) return;
+		}
+		
+		cAgentInfo agent;
+		agent.m_idAgent = aEnemy;
+		agent.mbHunting = false;
+		agent.mbInvestigate = false;
+		
+		mvAgents.push_back(agent);
+		
+		cLux_AddDebugMessage("[Blackboard] Enemy Count : " + mvAgents.length());
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveAgent(tID aEnemy)
+	{
+		for (uint i=0; i<mvAgents.length();++i)
+		{
+			cAgentInfo@ pAgent = mvAgents[i];
+			if (pAgent.m_idAgent == aEnemy)
+			{
+				if (pAgent.mbHunting) --mlHuntingAgentCount;
+				if (pAgent.mfHideModeTimer > mfOverlookAchievementHideTime) Achievement_Unlock(eAchievement_Overlooked);
+				mvAgents.removeAt(i);
+				break;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetAgentHunt(tID aEnemy, bool abHunt)
+	{
+		for (uint i=0; i<mvAgents.length();++i)
+		{
+			cAgentInfo@ pAgent = mvAgents[i];
+			if (pAgent.m_idAgent == aEnemy)
+			{
+				if (pAgent.mbHunting && abHunt == false)
+				{
+					--mlHuntingAgentCount;
+				}
+				else if (pAgent.mbHunting == false && abHunt)
+				{
+					++mlHuntingAgentCount;
+				}
+				pAgent.mbHunting = abHunt;
+				break;
+			}		
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetAgentInvestigate(tID aEnemy, bool abInvestigate)
+	{
+		for (uint i=0; i<mvAgents.length();++i)
+		{
+			cAgentInfo@ pAgent = mvAgents[i];
+			if (pAgent.m_idAgent == aEnemy)
+			{
+				if (pAgent.mbInvestigate != abInvestigate)
+				{
+					if (abInvestigate) ++mlInvestigatingAgentCount;
+					else --mlInvestigatingAgentCount;
+				}
+				pAgent.mbInvestigate = abInvestigate;
+				break;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetAgentCount()
+	{
+		return mvAgents.size();
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetHuntingAgentCount()
+	{
+		return mlHuntingAgentCount;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetHuntingAgentCountInRadius(const cVector3f &in avPos, float afRadius)
+	{
+		int lCount = 0;
+		for (uint i=0; i<mvAgents.length();++i)
+		{
+			cAgentInfo@ pAgentInfo = mvAgents[i];
+			if (pAgentInfo.mbHunting == false) continue;
+			cLuxAgent@ pAgent = cLux_ID_Agent(pAgentInfo.m_idAgent);
+			float fDistSqr = cMath_Vector3DistSqr(avPos, pAgent.GetCharBody().GetFeetPosition());
+			if (fDistSqr > afRadius * fDistSqr) continue;
+			++lCount;
+		}
+		return lCount;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetAlert()
+	{
+		mlAlertCount++;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetAlertLevel()
+	{
+		return mlAlertCount;
+	}
+	
+	//------------------------------------------------------------
+	
+	void ReduceAlertLevel(int alMin=1, int alMax=3)
+	{
+		mlAlertCount -= cMath_RandRectl(alMin,alMax);
+		if (mlAlertCount<0)
+			mlAlertCount = 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void ResetAlertLevel()
+	{
+		mlAlertCount = 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	int RegisterGhoulHoleNetwork(cLuxMap@ apMap, const tString &in asNetworkName, const tString &in asPlayerPath = "", const tString &in asConnectionsName = "")
+	{
+		if (asNetworkName == "") return -1;
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			if (pNetwork.msName == asNetworkName)
+			{
+				return i;
+			}
+		}
+		
+		cGhoulHoleNetwork newNetwork;
+		newNetwork.msName = asNetworkName;
+		
+		array<iLuxEntity@> vPlayerPathNodes;
+		apMap.GetEntityArray(asPlayerPath, eLuxEntityType_Area, "", vPlayerPathNodes);
+		for (int i = 0; i < vPlayerPathNodes.size(); ++i)
+		{
+			cPlayerPathNode newNode;
+			newNode.m_idNode = vPlayerPathNodes[i].GetID();
+			newNode.mlSuffix = cString_ToInt(cString_GetNumericSuffix(vPlayerPathNodes[i].GetName()), -1);
+			
+			newNetwork.mvPlayerPathNodes.push_back(newNode);
+		}
+		newNetwork.mvPlayerPathNodes.sortAsc();
+
+		array<tString> vNetworks;
+		cString_GetStringVec(asNetworkName, vNetworks, " ");
+		for (int i = 0; i < vNetworks.size(); ++i)
+		{
+			array<iLuxEntity@> vGhoulHoles;
+			if (apMap.GetEntityArray(vNetworks[i], eLuxEntityType_Area, "", vGhoulHoles) == false) continue;
+			for (int j = 0; j < vGhoulHoles.size(); ++j)
+			{
+				iLuxEntity@ pHole = vGhoulHoles[j];
+				
+				cGhoulHoleInfo newHole;
+				newHole.m_idHole = pHole.GetID();
+				newHole.m_idAgent = tID_Invalid;
+				
+				float fClosestDist = -1.0f;
+				int lClosestIndex = -1;
+				GetClosestPlayerPathNode(newNetwork, pHole.GetPosition(), lClosestIndex, fClosestDist);
+				
+				newHole.mlPosPlayerPathIndex = lClosestIndex;
+				newHole.mfPosPlayerPathDistanceSqr = fClosestDist;
+				newHole.mfPosPlayerPathDistance = cMath_Sqrt(fClosestDist);
+						
+				newNetwork.mvGhoulHoles.push_back(newHole);
+			}
+		}
+		
+		array<tString> vConnectionGroups;
+		cString_GetStringVec(asConnectionsName, vConnectionGroups, " ");
+		for (int i = 0; i < vConnectionGroups.size(); ++i)
+		{
+			array<iLuxEntity@> vConnections;
+			if (apMap.GetEntityArray(vConnectionGroups[i], eLuxEntityType_Area, "", vConnections) == false) continue;
+			for (int j = 0; j < vConnections.size(); ++j)
+			{
+				cLuxArea@ pArea = cLux_ID_Area(vConnections[j].GetID());
+				if (pArea is null) continue;
+				
+				cGhoulHoleConnection newConnection;
+				newConnection.m_idConnection = vConnections[j].GetID();
+				
+				newConnection.mvNode1 = pArea.GetSize() / 2.0f;
+				newConnection.mvNode1 = cMath_MatrixMul(pArea.GetMatrix().GetRotation(), newConnection.mvNode1);
+				newConnection.mvNode1 += pArea.GetPosition();
+				
+				newConnection.mvNode2 = pArea.GetSize() / -2.0f;
+				newConnection.mvNode2 = cMath_MatrixMul(pArea.GetMatrix().GetRotation(), newConnection.mvNode2);
+				newConnection.mvNode2 += pArea.GetPosition();
+				
+				newConnection.m_idGoalExit = tID_Invalid;
+				
+				newNetwork.mvConnections.push_back(newConnection);
+			}
+		}
+		
+		for (int i = 0; i < newNetwork.mvGhoulHoles.size(); ++i)
+		{
+			cGhoulHoleInfo@ pHole = newNetwork.mvGhoulHoles[i];
+			
+			float fMinDist = -1.0f;
+			cGhoulHoleConnection@ pClosestConnection = null;
+			for (int j = 0; j < newNetwork.mvConnections.size(); ++j)
+			{
+				cGhoulHoleConnection@ pConnection = newNetwork.mvConnections[j];
+				float fDist1 = cMath_Vector3DistSqr(pConnection.mvNode1, cLux_ID_Entity(pHole.m_idHole).GetPosition());
+				float fDist2 = cMath_Vector3DistSqr(pConnection.mvNode2, cLux_ID_Entity(pHole.m_idHole).GetPosition());
+				if (fMinDist < 0 || fDist1 <= fMinDist)
+				{
+					fMinDist = fDist1;
+					@pClosestConnection = pConnection;
+				}
+				if (fMinDist < 0 || fDist2 <= fMinDist)
+				{
+					fMinDist = fDist2;
+					@pClosestConnection = pConnection;
+				}
+			}
+			
+			if (pClosestConnection !is null)
+			{
+				pClosestConnection.m_idGoalExit = pHole.m_idHole;
+			}
+		}
+		
+		mvGhoulHoleNetworks.push_back(newNetwork);
+		return mvGhoulHoleNetworks.size() - 1;
+	}
+	
+	//------------------------------------------------------------
+	
+	array<tID> GetGhoulHoleNetwork(int mlId)
+	{
+		array<tID> vGhoulHoles;
+		if (IsGhoulNetworkdIdValid(mlId) == false) return vGhoulHoles;
+		
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[mlId];
+		for (int i = 0; i < pNetwork.mvGhoulHoles.size(); ++i)
+		{
+			cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[i];
+			vGhoulHoles.push_back(pGhoulHole.m_idHole);
+		}
+
+		return vGhoulHoles;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetGhoulHoleUsed(tID a_idHole, tID a_idAgent)
+	{
+		if (a_idHole == tID_Invalid) return;
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+				if (pGhoulHole.m_idHole == a_idHole)
+				{
+					pGhoulHole.m_idAgent = a_idAgent;
+					mlUsedHoleCount += a_idAgent == tID_Invalid ? -1 : 1;
+					break;
+				}
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveGhoulHoleUsed(tID a_idHole)
+	{
+		if (a_idHole == tID_Invalid) return;
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+				if (pGhoulHole.m_idHole == a_idHole)
+				{
+					pGhoulHole.m_idAgent = tID_Invalid;
+					--mlUsedHoleCount;
+					break;
+				}
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveGhoulHolesUsedBy(tID a_idAgent)
+	{
+		if (a_idAgent == tID_Invalid) return;
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+				if (pGhoulHole.m_idAgent == a_idAgent)
+				{
+					pGhoulHole.m_idAgent = tID_Invalid;
+					--mlUsedHoleCount;
+				}
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetGhoulHoleUsed(tID a_idHole)
+	{
+		if (a_idHole == tID_Invalid) return true;
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+				if (pGhoulHole.m_idHole == a_idHole && pGhoulHole.m_idAgent != tID_Invalid)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	tID GetGhoulHoleUsedBy(tID a_idHole)
+	{
+		if (a_idHole == tID_Invalid) return tID_Invalid;
+		
+		for (int i = 0; i < mvGhoulHoleNetworks.size(); ++i)
+		{
+			cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[i];
+			for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+			{
+				cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+				if (pGhoulHole.m_idHole == a_idHole && pGhoulHole.m_idAgent != tID_Invalid)
+				{
+					return pGhoulHole.m_idAgent;
+				}
+			}
+		}
+
+		return tID_Invalid;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetFreeGhoulHoleCount(int alNetworkId)
+	{
+		int lCount = 0;
+		
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		for (int j = 0; j < pNetwork.mvGhoulHoles.size(); ++j)
+		{
+			cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[j];
+			if (pGhoulHole.m_idAgent != tID_Invalid) continue;
+			iLuxEntity@ pEntity = cLux_ID_Entity(pGhoulHole.m_idHole);
+			if (pEntity is null || pEntity.IsActive() == false) continue;
+			++lCount;
+		}
+		
+		return lCount;
+	}
+
+	//------------------------------------------------------------
+	
+	tID GetClosestGhoulHole(int alNetworkId, const cVector3f &in avPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = true, bool abAheadOfPlayer = false, bool abBehindPlayer = false, bool abOnlyOutOfPlayerSight = false, array<tID>@ avExcludeHoles = null)
+	{
+		cLux_AddAIDebugMessage("[Blackboard] GetClosestGhoulHole");
+		array<tID>@ vHoles = FilterGhoulHoles(alNetworkId, avPos, true, afMinRadius, afMaxRadius, abOnlyFree, abAheadOfPlayer, abBehindPlayer, abOnlyOutOfPlayerSight, avExcludeHoles);
+		if (vHoles.size() == 0) return tID_Invalid;
+		
+		cLux_AddAIDebugMessage("[Blackboard] Chosen: " + cLux_ID_Entity(vHoles[0]).GetName());
+		return vHoles[0];
+	}
+	
+	tID GetRandomGhoulHole(int alNetworkId, const cVector3f &in avPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f, bool abOnlyFree = true, bool abAheadOfPlayer = false, bool abBehindPlayer = false, bool abOnlyOutOfPlayerSight = false, array<tID>@ avExcludeHoles = null)
+	{
+//		cLux_AddAIDebugMessage("[Blackboard] GetRandomGhoulHole");
+		array<tID>@ vHoles = FilterGhoulHoles(alNetworkId, avPos, true, afMinRadius, afMaxRadius, abOnlyFree, abAheadOfPlayer, abBehindPlayer, abOnlyOutOfPlayerSight, avExcludeHoles);
+		if (vHoles.size() == 0) return tID_Invalid;
+		
+		tID idRandomHole = vHoles[cMath_RandRectl(0, vHoles.size() - 1)];
+//		cLux_AddAIDebugMessage("[Blackboard] Chosen: " + cLux_ID_Entity(idRandomHole).GetName());
+		return idRandomHole;
+	}
+	
+	array<tID>@ FilterGhoulHoles(int alNetworkId, const cVector3f &in avPos, bool abClosest, float afMinRadius, float afMaxRadius, bool abOnlyFree,
+									bool abAheadOfPlayer, bool abBehindPlayer, bool abOnlyOutOfPlayerSight, array<tID>@ avExcludeHoles)
+	{
+		cLux_AddAIDebugMessage("[Blackboard] FilterGhoulHoles");
+		
+		array<tID> vValidHoles;
+		float fMinDist = -1.0f;
+		tID idClosest = tID_Invalid;
+		
+		if (IsGhoulNetworkdIdValid(alNetworkId) == false) return vValidHoles;
+
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		float fPosPathDistance = -1.0f;
+		int lPosPathIndex = -1;
+		GetClosestPlayerPathNode(pNetwork, avPos, lPosPathIndex, fPosPathDistance);
+				
+		for (int i = 0; i < pNetwork.mvGhoulHoles.size(); ++i)
+		{
+			cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[i];
+			iLuxEntity@ pEntity = cLux_ID_Entity(pGhoulHole.m_idHole);
+			
+			cLux_AddAIDebugMessage("[Blackboard] Considering " + cLux_ID_Entity(pGhoulHole.m_idHole).GetName());
+			
+			if (pEntity is null || pEntity.IsActive() == false) continue;
+			if (abOnlyFree && pGhoulHole.m_idAgent != tID_Invalid) continue;
+						
+			//////////////
+			// Exclude specified holes
+			bool bExcludeHole = false;
+			if (avExcludeHoles !is null)
+			{
+				for (int j = 0; j < avExcludeHoles.size(); ++j)
+				{
+					if (pGhoulHole.m_idHole == avExcludeHoles[j])
+					{
+						bExcludeHole = true;
+						break;
+					}
+				}
+			}
+			if (bExcludeHole) continue;
+//			cLux_AddAIDebugMessage("[Blackboard] Exlusion check passsed");
+						
+			//////////////
+			// Exclude according to player path
+			if (pNetwork.mvPlayerPathNodes.size() > 0 && (abAheadOfPlayer || abBehindPlayer))
+			{
+				if (abAheadOfPlayer && (pGhoulHole.mlPosPlayerPathIndex <= lPosPathIndex)) continue;
+				else if (abBehindPlayer && (pGhoulHole.mlPosPlayerPathIndex >= lPosPathIndex)) continue;
+			}
+//			cLux_AddAIDebugMessage("[Blackboard] Player path check passsed");
+			
+			//////////////
+			// Check if hole is within radiuses
+			float fDist = cMath_Vector3Dist(avPos, pEntity.GetPosition());
+			if (afMinRadius >= 0.0f && fDist < afMinRadius) continue;
+			if (afMaxRadius >= 0.0f && fDist > afMaxRadius) continue;
+//			cLux_AddAIDebugMessage("[Blackboard] Radius check passsed");
+
+			if (abOnlyOutOfPlayerSight)
+			{
+//				cLux_AddAIDebugMessage("[Blackboard] Out of sight check");
+				if (cLux_CheckLineOfSight(pEntity.GetPosition(), Player_GetPosition(), true, false)) continue;
+			}
+//			cLux_AddAIDebugMessage("[Blackboard] Out of sight check passed");
+			
+			vValidHoles.push_back(pGhoulHole.m_idHole);
+						
+			//////////////
+			// Select closest hole
+			if (fMinDist < 0 || fDist < fMinDist)
+			{
+				fMinDist = fDist;
+				idClosest = pGhoulHole.m_idHole;
+			}
+		}
+		
+		if (abClosest == false) return vValidHoles;
+		
+		vValidHoles.resize(0);		
+		if (idClosest != tID_Invalid)
+			vValidHoles.push_back(idClosest);
+		
+		return vValidHoles;
+	}
+	
+	tID GetBestGhoulHole(int alNetworkId, const cVector3f &in avPos, tID a_idAgent)
+	{
+		array<cGhoulHoleScore>@ vHoles = GetRankedGhoulHoles(alNetworkId, avPos, a_idAgent);
+		if (vHoles.size() == 0) return tID_Invalid;
+		return vHoles[0].m_idHole;
+	}
+	
+	array<cGhoulHoleScore>@ GetRankedGhoulHoles(int alNetworkId, const cVector3f &in avPos, tID a_idAgent)
+	{
+		array<cGhoulHoleScore> vHoles;
+		if (IsGhoulNetworkdIdValid(alNetworkId) == false) return vHoles;
+				
+		cVector3f vPlayerPos = cLux_GetCurrentMap().GetPlayerEntity().GetPosition();
+		bool bIsPlayer = cMath_Vector3DistSqr(vPlayerPos, avPos) < 0.2f;
+		int lPathIndex = GetPlayerPathIndex(alNetworkId, avPos);
+		
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		for (int i = 0; i < pNetwork.mvGhoulHoles.size(); ++i)
+		{
+			cGhoulHoleInfo@ pGhoulHole = pNetwork.mvGhoulHoles[i];
+			iLuxEntity@ pEntity = cLux_ID_Entity(pGhoulHole.m_idHole);
+			if (pEntity is null || pEntity.IsActive() == false) continue;
+			if (pGhoulHole.m_idAgent != tID_Invalid && pGhoulHole.m_idAgent != a_idAgent) continue;
+			
+//			float fDist = cMath_Vector3Dist(avPos, pEntity.GetPosition());
+//			float fDistFactor = 1.0f - (fDist / 30.0f);
+			
+			float fPathDist = GetPlayerPathDistance(alNetworkId, lPathIndex, pGhoulHole.mlPosPlayerPathIndex) + pGhoulHole.mfPosPlayerPathDistance;
+			float fDistFactor = 1.0f - (fPathDist / 60.0f);
+			
+			float fDirFactor = 0.0f;
+			if (bIsPlayer)
+			{
+				cVector3f vToPlayer = pEntity.GetPosition() - avPos;
+				vToPlayer.y = 0;
+				vToPlayer.Normalize();
+				cVector3f vAvgPlayerDir = mvAvgDir;
+				vAvgPlayerDir.y = 0;
+				vAvgPlayerDir.Normalize();
+				float fAngle = cMath_ToDeg(cMath_Vector3Angle(vToPlayer, vAvgPlayerDir));
+				fDirFactor = 1.0f - cMath_Clamp(((fAngle - 40.0f) / (180.0f - 40.0f)), 0.0f, 1.0f);
+			}
+			
+			float fAheadFactor = 0.0f;
+			if (pNetwork.mvPlayerPathNodes.size() > 0)
+			{
+				if (pGhoulHole.mlPosPlayerPathIndex > lPathIndex) fAheadFactor = 1.0f;
+				if (pGhoulHole.mlPosPlayerPathIndex == lPathIndex) fAheadFactor = 0.5f;
+			}
+			
+			cGhoulHoleScore vNewScore;
+			vNewScore.m_idHole = pGhoulHole.m_idHole;
+			vNewScore.mfScore = fDistFactor + fDirFactor * 0.5 + fAheadFactor * 0.3;
+			vHoles.push_back(vNewScore);			
+		}
+		
+		vHoles.sortDesc();
+		
+		return vHoles;
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetPlayerPathIndex(int alNetworkId, const cVector3f &in avPos)
+	{
+		if (IsGhoulNetworkdIdValid(alNetworkId) == false) return -1;
+		
+		float fClosestDist = -1.0f;
+		int lClosestIndex = -1;
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		for (int i = 0; i < pNetwork.mvPlayerPathNodes.size(); ++i)
+		{
+			cPlayerPathNode@ pNode = pNetwork.mvPlayerPathNodes[i];
+			float fDist = cMath_Vector3DistSqr(cLux_ID_Entity(pNode.m_idNode).GetPosition(), avPos);
+			if (fClosestDist < 0 || fDist < fClosestDist)
+			{
+				fClosestDist = fDist;
+				lClosestIndex = i;
+			}
+		}
+		
+		return lClosestIndex;
+	}
+	
+	float GetPlayerPathDistance(int alNetworkId, int alIndex1, int alIndex2)
+	{
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		if (alIndex1 < 0 || alIndex1 >= pNetwork.mvPlayerPathNodes.size()) return -1.0f;
+		if (alIndex2 < 0 || alIndex2 >= pNetwork.mvPlayerPathNodes.size()) return -1.0f;
+		if (alIndex1 == alIndex2) return 0.0f;
+		
+//		cLux_AddDebugMessage("GetPlayerPathDistance " + alIndex1 + " " + alIndex2);
+		
+		float fDist = 0.0f;
+		if (alIndex1 > alIndex2)
+		{
+			for (int i = alIndex1; i >= alIndex2; --i)
+			{
+				if (i - 1 < 0) continue;
+				float add = cMath_Vector3Dist(cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i].m_idNode).GetPosition(), cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i - 1].m_idNode).GetPosition());;
+				fDist += cMath_Vector3Dist(cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i].m_idNode).GetPosition(), cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i - 1].m_idNode).GetPosition());
+//				cLux_AddDebugMessage("DIST " + (i) + " " + (i - 1) + " " + add);
+			}
+		}
+		else
+		{
+			for (int i = alIndex1; i <= alIndex2; ++i)
+			{
+				if (i + 1 >= pNetwork.mvPlayerPathNodes.size()) continue;
+				float add = cMath_Vector3Dist(cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i].m_idNode).GetPosition(), cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i + 1].m_idNode).GetPosition());
+				fDist += cMath_Vector3Dist(cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i].m_idNode).GetPosition(), cLux_ID_Entity(pNetwork.mvPlayerPathNodes[i + 1].m_idNode).GetPosition());
+//				cLux_AddDebugMessage("DIST " + (i) + " " + (i + 1) + " " + add);
+			}
+		}
+		return fDist;
+	}
+	
+	//------------------------------------------------------------
+	
+	array<cVector3f> GetClosestWallConnection(int alNetworkId, const cVector3f &in avPos, const cVector3f &in avGoalPos, float afMinRadius = -1.0f, float afMaxRadius = -1.0f)
+	{
+		if (afMinRadius > 0) afMinRadius *= afMinRadius;
+		if (afMaxRadius > 0) afMaxRadius *= afMaxRadius;
+		
+		array<cVector3f> vConnection;
+		if (IsGhoulNetworkdIdValid(alNetworkId) == false) return vConnection;
+		
+		float fMinDist = -1.0f;
+		cGhoulHoleConnection@ pClosestConnection = null;
+		float fPosGoalDist = cMath_Vector3DistSqr(avPos, avGoalPos);
+		if (fPosGoalDist <= 0.05f) return vConnection;
+		
+		cGhoulHoleNetwork@ pNetwork = mvGhoulHoleNetworks[alNetworkId];
+		
+		for (int i = 0; i < pNetwork.mvConnections.size(); ++i)
+		{
+			cGhoulHoleConnection@ pConnection = pNetwork.mvConnections[i];
+
+			//////////////
+			// Check if any of the connection nodes are inside the specified radiuses
+			float fDist1 = cMath_Vector3DistSqr(avPos, pConnection.mvNode1);
+			float fDist2 = cMath_Vector3DistSqr(avPos, pConnection.mvNode2);
+			
+			bool bInsideRadius1 = (afMinRadius < 0.0f || fDist1 >= afMinRadius) && (afMaxRadius < 0.0f || fDist1 <= afMaxRadius);
+			bool bInsideRadius2 = (afMinRadius < 0.0f || fDist2 >= afMinRadius) && (afMaxRadius < 0.0f || fDist2 <= afMaxRadius);			
+			if (bInsideRadius1 == false && bInsideRadius2 == false) continue;
+			if (fDist1 <= 0.02f || fDist2 <= 0.02f)
+			{
+				if (pConnection.m_idGoalExit != tID_Invalid && cMath_Vector3DistSqr(cLux_ID_Entity(pConnection.m_idGoalExit).GetPosition(), avGoalPos) < 0.05f)
+				{
+					return vConnection;
+				} 
+				continue;
+			}
+
+			//////////////
+			// Check if any of the nodes are closer to the goal than we are at the moment
+			float fGoalDist1 = cMath_Vector3DistSqr(pConnection.mvNode1, avGoalPos);
+			float fGoalDist2 = cMath_Vector3DistSqr(pConnection.mvNode2, avGoalPos);
+//			if (fGoalDist1 >= fPosGoalDist && fGoalDist2 >= fPosGoalDist) continue;
+			
+			//////////////
+			// Don't go to a point that is closer to the goal but farther away from you than you are from the goal
+//			if (cMath_Min(fDist1, fDist2) > fPosGoalDist) continue;
+			
+			//////////////
+			// Select the connection with the node closest to our current position
+			if (fMinDist < 0.0f || fGoalDist1 < fMinDist)
+			{
+				fMinDist = fGoalDist1;
+				@pClosestConnection = pConnection;
+			}
+			if (fMinDist < 0.0f || fGoalDist2 < fMinDist)
+			{
+				fMinDist = fGoalDist2;
+				@pClosestConnection = pConnection;
+			}
+		}
+		
+		if (pClosestConnection is null) return vConnection;
+		
+		//////////////
+		// Create result vector, closest node first
+		float fDist1 = cMath_Vector3DistSqr(avPos, pClosestConnection.mvNode1);
+		float fDist2 = cMath_Vector3DistSqr(avPos, pClosestConnection.mvNode2);
+		if (fDist1 < fDist2)
+		{
+			vConnection.push_back(pClosestConnection.mvNode1);
+			vConnection.push_back(pClosestConnection.mvNode2);
+		}
+		else
+		{
+			vConnection.push_back(pClosestConnection.mvNode2);
+			vConnection.push_back(pClosestConnection.mvNode1);
+		}
+
+		return vConnection;
+	}
+	
+	//------------------------------------------------------------
+	
+	void RequestBackup(tID a_idAgent, const cVector3f &in avPointOfInterest, int alRequestedState, int alRequestedBackupCount, float afMaxDistance, bool abOnlyIfNotAggressive = true, bool abClosest = true)
+	{
+		array<cAgentDistance> vDistances;
+		for (int i = 0; i < mvAgents.size(); ++i)
+		{
+			cAgentInfo@ pAgentInfo = mvAgents[i];
+			cLuxAgent@ pAgent = cLux_ID_Agent(pAgentInfo.m_idAgent);
+			if (pAgentInfo.m_idAgent == a_idAgent) continue;
+			if (abOnlyIfNotAggressive)
+			{
+				cScript_RunGlobalFunc(pAgent.GetName(), "", "_Global_GetStateIsAggressive");
+				if (cScript_GetGlobalReturnBool()) continue;
+			}
+			
+			cAgentDistance dist;
+			dist.m_idAgent = pAgentInfo.m_idAgent;
+			dist.mfDistance = cMath_Vector3DistSqr(cLux_ID_Agent(a_idAgent).GetPosition(), cLux_ID_Agent(dist.m_idAgent).GetPosition());
+			if (dist.mfDistance > cMath_Pow(afMaxDistance, 2.0f)) continue;
+			vDistances.push_back(dist);
+		}
+		
+		if (vDistances.size() == 0) return;
+		if (abClosest) vDistances.sortAsc();
+		
+		int lBackupCount = alRequestedBackupCount < 0 ? vDistances.size() : cMath_Min(alRequestedBackupCount, vDistances.size());
+		for (int i = 0; i < lBackupCount; ++i)
+		{
+			cLuxAgent@ pAgent = cLux_ID_Agent(vDistances[i].m_idAgent);
+			cScript_SetGlobalArgVector3f(0, avPointOfInterest);
+			cScript_SetGlobalArgInt(1, alRequestedState);
+			cScript_RunGlobalFunc(pAgent.GetName(), "", "_Global_BlackboardBackupRequest");
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void AgentBlockedByDoor(tID a_idAgent, const cVector3f &in avSourcePos)
+	{
+		for (int i = 0; i < mvAgents.size(); ++i)
+		{
+			cLuxAgent@ pAgent = cLux_ID_Agent(mvAgents[i].m_idAgent);
+			if (a_idAgent == pAgent.GetID()) continue;
+			if (cMath_Vector3DistSqr(avSourcePos, pAgent.GetPosition()) >= 50.0f) continue;
+			cScript_SetGlobalArgVector3f(0, avSourcePos);
+			cScript_RunGlobalFunc(pAgent.GetName(), "", "_Global_BlackboardAgentBlockedByDoor");
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void ForceProximityEvent(eAgentProximityEvent aEventType = eAgentProximityEvent_Random)
+	{
+		if (mvAgents.size() < 2) return;
+		
+		cLuxAgent@ pClosestAgent1;
+		cLuxAgent@ pClosestAgent2;
+		float lClosestDistance = -1;
+		for (int i = 0; i < mvAgents.size(); ++i)
+		{
+			for (int j = 0; j < mvAgents.size(); ++j)
+			{
+				cLuxAgent@ pAgent1 = cLux_ID_Agent(mvAgents[i].m_idAgent);
+				cLuxAgent@ pAgent2 = cLux_ID_Agent(mvAgents[j].m_idAgent);
+				if (pAgent1.GetID() == pAgent2.GetID()) continue;
+				
+				float lDist = cMath_Vector3DistSqr(pAgent1.GetPosition(), pAgent2.GetPosition());
+				if (lDist < lClosestDistance || lClosestDistance < 0)
+				{
+					lClosestDistance = lDist;
+					@pClosestAgent1 = @pAgent1;
+					@pClosestAgent2 = @pAgent2;
+				}
+			}
+		}
+		
+		if (lClosestDistance < 0) return;
+		
+		if (AgentsEligibleForProximityEvent(pClosestAgent1, pClosestAgent2, false))
+		{
+			ExecuteProximityEvent(pClosestAgent1, pClosestAgent2, aEventType);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void ForceProximityEvent(tID a_idAgent1, tID a_idAgent2, eAgentProximityEvent aEventType = eAgentProximityEvent_Random)
+	{
+		if (mvAgents.size() < 2) return;
+		
+		cLuxAgent@ pAgent1 = cLux_ID_Agent(a_idAgent1);
+		cLuxAgent@ pAgent2 = cLux_ID_Agent(a_idAgent2);
+		if (pAgent1 is null || pAgent2 is null) return;
+		
+		ExecuteProximityEvent(pAgent1, pAgent2, aEventType);
+	}
+	
+	void ForceGhoulFollow(tID a_idAgent1, tID a_idAgent2, bool abMeetMidway, const cVector3f &in avMeetPos, bool abMoveToSpecificPos, const cVector3f &in avMoveToPos)
+	{
+		if (mvAgents.size() < 2) return;
+		
+		cLuxAgent@ pAgent1 = cLux_ID_Agent(a_idAgent1);
+		cLuxAgent@ pAgent2 = cLux_ID_Agent(a_idAgent2);
+		if (pAgent1 is null || pAgent2 is null) return;
+		if (pAgent1.GetID() == pAgent2.GetID()) return;
+		cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_IsInEligibleStateForEvent");
+		if (cScript_GetGlobalReturnBool() == false) return;
+		cScript_RunGlobalFunc(pAgent2.GetName(), "", "_Global_IsInEligibleStateForEvent");
+		if (cScript_GetGlobalReturnBool() == false) return;
+		
+		mfNextProximityEventCooldown = mfTimeBetweenProximityEvents + cMath_RandRectf(-mfTimeBetweenProximityEventsVariance, mfTimeBetweenProximityEventsVariance);
+		
+		cScript_SetGlobalArgBool(0, true);
+		cScript_SetGlobalArgID(1, pAgent2.GetID());
+		cScript_SetGlobalArgBool(2, abMeetMidway);
+		cScript_SetGlobalArgVector3f(3, avMeetPos);
+		cScript_SetGlobalArgBool(4, abMoveToSpecificPos);
+		cScript_SetGlobalArgVector3f(5, avMoveToPos);
+		cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_ForcedFollow");
+		
+		cScript_SetGlobalArgBool(0, false);
+		cScript_SetGlobalArgID(1, pAgent1.GetID());
+		cScript_SetGlobalArgBool(2, abMeetMidway);
+		cScript_SetGlobalArgVector3f(3, avMeetPos);
+		cScript_SetGlobalArgBool(4, abMoveToSpecificPos);
+		cScript_SetGlobalArgVector3f(5, avMoveToPos);
+		cScript_RunGlobalFunc(pAgent2.GetName(), "", "_Global_ForcedFollow");
+
+		cLux_AddDebugMessage("[Blackboard] Forced ghoul follow between " + pAgent1.GetName() + " and " + pAgent2.GetName());
+	}
+	
+	//------------------------------------------------------------
+	
+	void AddEnvironmentEvent(const tString &in asEntityName, eAgentEnvironmentEvent aEventType)
+	{
+		cAgentEnvironmentEventInfo event;
+		event.m_idEntity = cLux_GetCurrentMap().GetEntityByName(asEntityName).GetID();
+		event.mType = aEventType;
+		event.mfCooldown = -1.0f;
+		mvEnvironmentEvents.push_back(event);
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetProximityEventsActive(bool abActive)
+	{
+		mbProximityEventsActive = abActive;
+	}
+    
+    //-----------------------------------------------------------
+    
+    void SetCheckCollisionCourse(bool abX)
+    {
+        mbCheckCollisionCourse = abX;
+    }
+	
+	//------------------------------------------------------------
+	
+	tID GetClosestAgent(const cVector3f &in avPos)
+	{
+		tID idClosest = tID_Invalid;
+		float fMinDist = -1.0f;
+		for (int i = 0; i < mvAgents.size(); ++i)
+		{
+			cLuxAgent@ pAgent = cLux_ID_Agent(mvAgents[i].m_idAgent);
+			float fDist = cMath_Vector3DistSqr(avPos, pAgent.GetPosition());
+			if (fDist < fMinDist || fMinDist < 0.0f)
+			{
+				fMinDist = fMinDist;
+				idClosest = pAgent.GetID();
+			}
+		}
+		return idClosest;
+	}
+	
+	//------------------------------------------------------------
+	
+	cBreadcrumb@ GetStrongestBreadcrumb(const cVector3f &in avPos, float afRadius)
+	{
+		cBreadcrumb@ pStrongest = null;
+		float fMaxRadius = -1.0f;
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mbPickedUp) continue;
+			float fDist = cMath_Vector3Dist(pBread.mvPosition, avPos);
+			if (fDist > afRadius + pBread.mfRadius) continue;
+			if (pBread.mfRadius > fMaxRadius)
+			{
+				fMaxRadius = pBread.mfRadius;
+				@pStrongest = pBread;
+			}
+		}
+		return pStrongest;
+	}
+	
+	cBreadcrumb@ GetStrongestBreadcrumbCenter(const cVector3f &in avPos, float afRadius)
+	{
+		cBreadcrumb@ pStrongest = null;
+		float fMaxRadius = -1.0f;
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mbPickedUp) continue;
+			float fDist = cMath_Vector3Dist(pBread.mvPosition, avPos);
+			if (fDist > afRadius) continue;
+			if (pBread.mfRadius > fMaxRadius)
+			{
+				fMaxRadius = pBread.mfRadius;
+				@pStrongest = pBread;
+			}
+		}
+		return pStrongest;
+	}
+	
+	cBreadcrumb@ GetClosestBreadcrumb(const cVector3f &in avPos)
+	{
+		cBreadcrumb@ pClosest = null;
+		float fMinDist = -1.0f;
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mbPickedUp) continue;
+			float fDist = cMath_Vector3Dist(pBread.mvPosition, avPos);
+			if (fMinDist < 0.0f || fDist < fMinDist)
+			{
+				fMinDist = fDist;
+				@pClosest = pBread;
+			}
+		}
+		return pClosest;
+	}
+	
+	cBreadcrumb@ GetBreadcrumb(int alId)
+	{
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mbPickedUp) return null;
+			if (pBread.mlId == alId)
+			{
+				return pBread;
+			}
+		}
+		return null;
+	}
+		
+	void RemoveBreadCrumb(int alId)
+	{
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			if (pBread.mlId == alId)
+			{
+//				mvBreadcrumbs.removeAt(i);
+				pBread.mbPickedUp = true;
+				return;
+			}
+		}
+	}
+	
+	void RemoveAllBreadCrumbs()
+	{
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			pBread.mbPickedUp = true;
+		}
+	}
+	
+	void AddWraithPartnership(tID a_idLeader, tID a_idServant)
+	{
+		cWraithPartnership newPart;
+		newPart.m_idLeader = a_idLeader;
+		newPart.m_idServant = a_idServant;
+		mvWraithPartnerships.push_back(newPart);
+	}
+	
+	void RemoveWraithPartnership(tID a_idLeader, tID a_idServant)
+	{
+		for (int i = 0; i < mvWraithPartnerships.size(); ++i)
+		{
+			if (mvWraithPartnerships[i].m_idLeader == a_idLeader && mvWraithPartnerships[i].m_idServant == a_idServant)
+			{
+				mvWraithPartnerships.removeAt(i);
+				return;
+			}
+		}
+	}
+	
+	int GetWraithServantCount(tID a_idLeader)
+	{
+		int lCount = 0;
+		for (int i = 0; i < mvWraithPartnerships.size(); ++i)
+		{
+			if (mvWraithPartnerships[i].m_idLeader == a_idLeader)
+			{
+				++lCount;
+			}
+		}
+		return lCount;
+	}
+	
+	void WraithNotifyPlayerSpotted(tID a_idWraith, cVector3f mvPos)
+	{
+		for (int i = 0; i < mvWraithPartnerships.size(); ++i)
+		{
+			if (mvWraithPartnerships[i].m_idLeader == a_idWraith)
+			{
+				cLuxAgent@ pAgent = cLux_ID_Agent(mvWraithPartnerships[i].m_idServant);
+				if (pAgent !is null)
+				{
+					cScript_SetGlobalArgVector3f(0, mvPos);
+					cScript_RunGlobalFunc(pAgent.GetName(), "", "_Global_LeaderSpottedPlayer");
+				}
+			}
+		}
+		
+	}
+	
+	void AddWraithDetectingPlayer(tID a_idWraith)
+	{
+		if (mvWraithsDetectingPlayer.find(a_idWraith) >= 0) return;
+		mvWraithsDetectingPlayer.push_back(a_idWraith);
+	}
+	
+	void RemoveWraithDetectingPlayer(tID a_idWraith)
+	{
+		for (int i = 0; i < mvWraithsDetectingPlayer.size(); ++i)
+		{
+			if (mvWraithsDetectingPlayer[i] == a_idWraith)
+			{
+				mvWraithsDetectingPlayer.removeAt(i);
+				return;
+			}
+		}
+	}
+	
+	void AddWraithBillboards(const tString &in asBillboards)
+	{
+		cBillboardIterator@ pBillboards = cLux_GetCurrentMap().GetWorld().GetBillboardIterator();
+		int lAdded = 0;
+		while (pBillboards.HasNext())
+		{
+			cBillboard@ pBillboard = pBillboards.Next();
+			if (cString_GetFirstStringPos(pBillboard.GetName(), asBillboards) < 0) continue;
+			
+			++lAdded;
+			cWraithBillboard newBillboard;
+			newBillboard.m_idBillboard = pBillboard.GetID();
+			mvWraith_SpotlightBillboards.push_back(newBillboard);
+		}
+		
+		mlWraith_SpotlightBillboardFree += lAdded;
+		
+		cLux_AddDebugMessage("[BlackBoard] AddWraithBillboards Added: " + lAdded + " Total: " + mvWraith_SpotlightBillboards.size());
+	}
+	
+	void GetWraithBillboards(tID a_idWraith, int alNum, array<tID> &out avBillboards)
+	{
+		int lTaken = 0;
+		for (int i = 0; i < mvWraith_SpotlightBillboards.size(); ++i)
+		{
+			if (lTaken >= alNum) break;
+			
+			cWraithBillboard@ pBillboard = mvWraith_SpotlightBillboards[i];
+			if (pBillboard.m_idWraith != tID_Invalid) continue;
+			
+			++lTaken;
+			pBillboard.m_idWraith = a_idWraith;
+			avBillboards.push_back(pBillboard.m_idBillboard);
+		}
+		
+		mlWraith_SpotlightBillboardFree -= lTaken;
+		
+		cLux_AddDebugMessage("[Blackboard] GetWraithBillboards Got: " + lTaken + " Free: " + mlWraith_SpotlightBillboardFree);
+	}
+	
+	void ReleaseWraithBillboards(tID a_idWraith, array<tID> &in avBillboards)
+	{
+		int lReleased = 0;
+		for (int i = 0; i < avBillboards.size(); ++i)
+		{
+			tID idBillboard = avBillboards[i];
+			for (int j = 0; j < mvWraith_SpotlightBillboards.size(); ++j)
+			{
+				cWraithBillboard@ pBillboard = mvWraith_SpotlightBillboards[j];
+				if (idBillboard != pBillboard.m_idBillboard) continue;
+				
+				++lReleased;
+				pBillboard.m_idWraith = tID_Invalid;
+			}
+		}
+		
+		mlWraith_SpotlightBillboardFree += lReleased;
+		
+		cLux_AddDebugMessage("[Blackboard] ReleaseWraithBillboards Released: " + lReleased + " Free: " + mlWraith_SpotlightBillboardFree);
+	}
+	
+	void SetWraithStruggleOwner(tID a_idWraith)
+	{
+		m_idWraithStruggleOwner = a_idWraith;
+	}
+	
+	tID GetWraithStruggleOwner()
+	{
+		return m_idWraithStruggleOwner;
+	}
+	
+	float GetStruggleCooldown()
+	{
+		return mfStruggleCooldown;
+	}
+	
+	void SetStruggleCooldown(float afCooldown)
+	{
+		mfStruggleCooldown = afCooldown;
+	}
+	
+	void SetOverlookedAchievementDetectionActive(bool abX)
+	{
+		mbOverlookAchievementDetectionActive = abX;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// BLACKBOARD
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	int lProximityOuterIndex = 0;
+	int lProximityInnerIndex = 0;
+	
+	//////////////
+	// Check one pair of agents per frame
+	void UpdateProximityEvents(float afTimeStep)
+	{
+		if (mbProximityEventsActive == false) return;
+		
+		if (mfNextProximityEventCooldown > 0.0f)
+		{
+			mfNextProximityEventCooldown -= afTimeStep;
+			return;
+		}
+
+		if (mvAgents.size() < 2) return;
+		
+		//////////////
+		// Update the two indices representing two agents that could be eligible for a proxy event
+		++lProximityInnerIndex;
+		if (lProximityInnerIndex >= mvAgents.size())
+		{
+			lProximityInnerIndex = 0;
+			++lProximityOuterIndex;
+			lProximityOuterIndex %= mvAgents.size();
+		}
+		if (lProximityOuterIndex >= mvAgents.size())
+			lProximityOuterIndex = 0;
+			
+		cLuxAgent@ pAgent1 = cLux_ID_Agent(mvAgents[lProximityOuterIndex].m_idAgent);
+		cLuxAgent@ pAgent2 = cLux_ID_Agent(mvAgents[lProximityInnerIndex].m_idAgent);
+				
+		if (lProximityOuterIndex != lProximityInnerIndex && AgentsEligibleForProximityEvent(pAgent1, pAgent2))
+		{
+			ExecuteProximityEvent(pAgent1, pAgent2);
+		}
+	}
+	
+	bool AgentsEligibleForProximityEvent(cLuxAgent@ pAgent1, cLuxAgent@ pAgent2, bool abProximityCheck = true)
+	{
+		if (pAgent1 is null || pAgent2 is null || pAgent1.GetID() == pAgent2.GetID()) 
+			return false;
+		
+		//////////////
+		// Check proximity
+		if (abProximityCheck)
+		{
+			if (cMath_Vector3DistSqr(pAgent1.GetPosition(), pAgent2.GetPosition()) > mfProximityEventMaxDistance * mfProximityEventMaxDistance) return false;
+		}
+		
+		//////////////
+		// Check if agents are in an eligible state
+		cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_CanParticipateInEvent");
+		if (cScript_GetGlobalReturnBool() == false) return false;
+		cScript_RunGlobalFunc(pAgent2.GetName(), "", "_Global_CanParticipateInEvent");
+		if (cScript_GetGlobalReturnBool() == false) return false;
+		return true;
+	}
+	
+	void ExecuteProximityEvent(cLuxAgent@ pAgent1, cLuxAgent@ pAgent2, eAgentProximityEvent aEventType = eAgentProximityEvent_GhoulRandom)
+	{
+		if (pAgent1 is null || pAgent2 is null) return;
+		
+		//////////////
+		// Set cooldown length
+		mfNextProximityEventCooldown = mfTimeBetweenProximityEvents + cMath_RandRectf(-mfTimeBetweenProximityEventsVariance, mfTimeBetweenProximityEventsVariance);
+		
+		//////////////
+		// Get the next event from an agent
+		int lProxyEventId = aEventType;
+		if (aEventType == eAgentProximityEvent_GhoulRandom)
+		{
+			cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_GetNextProximityEvent");
+			lProxyEventId = cScript_GetGlobalReturnInt();
+		}
+
+		//////////////
+		// Run the event
+		cScript_SetGlobalArgInt(0, lProxyEventId);
+		cScript_SetGlobalArgBool(1, true);
+		cScript_SetGlobalArgID(2, pAgent2.GetID());
+		cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_BlackboardProximityEvent");
+		cScript_SetGlobalArgInt(0, lProxyEventId);
+		cScript_SetGlobalArgBool(1, false);
+		cScript_SetGlobalArgID(2, pAgent1.GetID());
+		cScript_RunGlobalFunc(pAgent2.GetName(), "", "_Global_BlackboardProximityEvent");
+		
+		cLux_AddDebugMessage("[Blackboard] Proximity event between " + pAgent1.GetName() + " and " + pAgent2.GetName());
+	}
+	
+	//------------------------------------------------------------
+	
+	int lCollisionOuterIndex = 0;
+	int lCollisionInnerIndex = 0;
+	
+	void UpdateCollisionCourse(float afTimeStep)
+	{
+		if (mbCheckCollisionCourse == false) return;
+		if (mvAgents.size() < 2) return;
+		
+		++lCollisionInnerIndex;
+		if (lCollisionInnerIndex >= mvAgents.size())
+		{
+			lCollisionInnerIndex = 0;
+			++lCollisionOuterIndex;
+			lCollisionOuterIndex %= mvAgents.size();
+		}
+		if (lCollisionOuterIndex >= mvAgents.size())
+			lCollisionOuterIndex = 0;
+		
+		cLuxAgent@ pAgent1 = cLux_ID_Agent(mvAgents[lCollisionOuterIndex].m_idAgent);
+		cLuxAgent@ pAgent2 = cLux_ID_Agent(mvAgents[lCollisionInnerIndex].m_idAgent);
+		
+		float fSpeed1 = pAgent1.GetCharBody().GetVelocity(afTimeStep).Length();
+		float fSpeed2 = pAgent2.GetCharBody().GetVelocity(afTimeStep).Length();
+		
+		if (lCollisionOuterIndex != lCollisionInnerIndex && fSpeed1 > 0.5f && fSpeed2 > 0.5f)
+		{
+			int lIndex1 = mvCollisionWaitAgents.find(pAgent1.GetID());
+			int lIndex2 = mvCollisionWaitAgents.find(pAgent2.GetID());
+			
+			cVector3f vIntersection;
+			if (AgentsOnCollisionCourse(pAgent1, pAgent2, vIntersection))
+			{
+				if (lIndex1 < 0 && lIndex2 < 0)
+				{
+					cLuxAgent@ pFurthestAgent = cMath_Vector3DistSqr(vIntersection, pAgent1.GetPosition()) >= cMath_Vector3DistSqr(vIntersection, pAgent2.GetPosition()) ? @pAgent1 : @pAgent2;
+					mvCollisionWaitAgents.push_back(pFurthestAgent.GetID());
+					cScript_RunGlobalFunc(pFurthestAgent.GetName(), "", "_Global_BlackboardOnCollisionCourse");
+					cLux_AddDebugMessage("[Blackboard] " + pFurthestAgent.GetName() + " is on collision course, wait");
+				}
+			}	
+			else
+			{
+				if (lIndex1 >= 0)
+				{
+					mvCollisionWaitAgents.removeAt(lIndex1);
+					cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_BlackboardOnCollisionCourseEnd");
+					cLux_AddDebugMessage("[Blackboard] " + pAgent1.GetName() + " is no longer on collision course, resume");
+				}
+			}
+		}
+	}
+		
+	bool AgentsOnCollisionCourse(cLuxAgent@ pAgent1, cLuxAgent@ pAgent2, cVector3f &out avIntersection)
+	{
+		if (pAgent1 is null || pAgent2 is null) return false;
+		
+		cVector3f vPos1 = pAgent1.GetPosition();
+		cVector3f vPos2 = pAgent2.GetPosition();
+				
+		if (cMath_Vector3DistSqr(vPos1, vPos2) >= 5.0f * 5.0f) return false;
+		
+		cScript_RunGlobalFunc(pAgent1.GetName(), "", "_Global_GetCollisionCourseActive");
+		if (cScript_GetGlobalReturnBool() == false) return false;
+		cScript_RunGlobalFunc(pAgent2.GetName(), "", "_Global_GetCollisionCourseActive");
+		if (cScript_GetGlobalReturnBool() == false) return false;
+
+		cVector3f vDir1 = pAgent1.GetCharBody().GetForward();
+		cVector3f vDir2 = pAgent2.GetCharBody().GetForward();
+		
+		cVector3f vDir3 = vPos2 - vPos1;
+		
+		cVector3f vCross12 = cMath_Vector3Cross(vDir1, vDir2);
+		cVector3f vCross32 = cMath_Vector3Cross(vDir3, vDir2);
+		float fAngleDir12 = cMath_Vector3Angle(vDir1, vDir2);
+				
+		cVector3f vTestPos;
+		if (vCross12.Length() < 0.1f && vCross32.Length() < 0.1f && fAngleDir12 >= 0.1f)
+		{
+			vTestPos = (vPos1 + vPos2) / 2.0f;
+		}
+		else if (vCross12.Length() < 0.1f || vCross32.Length() < 0.1f)
+		{
+			return false;
+		}
+		else
+		{
+			float fS = cMath_Vector3Dot(vCross32, vCross12) / (vCross12.Length() * vCross12.Length());
+			vTestPos = vPos1 + vDir1 * fS;
+		}
+		
+		if (cMath_Vector3DistSqr(vPos1, vTestPos) >= 5.0f * 5.0f || cMath_Vector3DistSqr(vPos2, vTestPos) >= 5.0f * 5.0f) return false;
+		if (cMath_Vector3Dot(vDir1, vTestPos - vPos1) < 0.0f || cMath_Vector3Dot(vDir2, vTestPos - vPos2) < 0.0f) return false;
+		
+		avIntersection = vTestPos;
+		return true;
+	}
+	
+	//------------------------------------------------------------
+	
+	int lEnvEvent_EventIndex = 0;
+	int lEnvEvent_AgentIndex = 0;
+	
+	void UpdateEnvironmentEvents(float afTimeStep)
+	{
+		for (int i = 0; i < mvEnvironmentEventTypeCooldowns.size(); ++i)
+		{
+			if (mvEnvironmentEventTypeCooldowns[i] > 0.0f)
+			{
+				mvEnvironmentEventTypeCooldowns[i] -= afTimeStep;
+			}
+		}
+		
+		for (int i = 0; i < mvEnvironmentEvents.size(); ++i)
+		{
+			cAgentEnvironmentEventInfo@ pEventInfo = mvEnvironmentEvents[i];
+			if (pEventInfo.mfCooldown > 0)
+			{	
+				pEventInfo.mfCooldown -= afTimeStep;
+			}
+		}
+		
+		if (mfGlobalEnvironmentEventCooldown > 0.0f)
+		{
+			mfGlobalEnvironmentEventCooldown -= afTimeStep;
+			return;
+		}
+		
+		if (mvAgents.size() < 1 || mvEnvironmentEvents.size() < 1) return;
+		
+		cLuxAgent@ pAgent = cLux_ID_Agent(mvAgents[lEnvEvent_AgentIndex].m_idAgent);
+		cAgentEnvironmentEventInfo@ pEventInfo = mvEnvironmentEvents[lEnvEvent_EventIndex];
+		iLuxEntity@ pEntity = cLux_ID_Entity(pEventInfo.m_idEntity);	
+		if (AgentEligibleForEnvironmentEvent(pAgent, pEntity) && mvEnvironmentEventTypeCooldowns[int(pEventInfo.mType)] < 0 && pEventInfo.mfCooldown < 0)
+		{
+			mfGlobalEnvironmentEventCooldown = mfTimeBetweenEnvironmentEvents + cMath_RandRectf(-mfTimeBetweenEnvironmentEventsVariance, mfTimeBetweenEnvironmentEventsVariance);
+			pEventInfo.mfCooldown = mfEnvironmentEventCooldownTime;
+			
+			mvEnvironmentEventTypeCooldowns[int(pEventInfo.mType)] = mfEnvironmentEventTypeCooldownTime;
+		
+			ExecuteEnvironmentEvent(pAgent, pEntity, pEventInfo);
+		}
+		
+		++lEnvEvent_AgentIndex;
+		if (lEnvEvent_AgentIndex >= mvAgents.size())
+		{
+			lEnvEvent_AgentIndex = 0;
+			++lEnvEvent_EventIndex;
+			lEnvEvent_EventIndex %= mvEnvironmentEvents.size();
+		}
+	}
+	
+	bool AgentEligibleForEnvironmentEvent(cLuxAgent@ apAgent, iLuxEntity@ apEntity, bool abProximityCheck = true)
+	{
+		if (abProximityCheck)
+		{
+			if (cMath_Vector3DistSqr(apAgent.GetPosition(), apEntity.GetPosition()) > mfEnvironmentEventMaxDistance * mfEnvironmentEventMaxDistance) return false;
+		}
+		
+		cScript_RunGlobalFunc(apAgent.GetName(), "", "_Global_CanParticipateInEvent");
+		if (cScript_GetGlobalReturnBool() == false) return false;
+		return true;
+	}
+	
+	void ExecuteEnvironmentEvent(cLuxAgent@ apAgent, iLuxEntity@ apEntity, cAgentEnvironmentEventInfo@ apEventInfo)
+	{
+		cScript_SetGlobalArgID(0, apEntity.GetID());
+		cScript_SetGlobalArgInt(1, apEventInfo.mType);
+		cScript_RunGlobalFunc(apAgent.GetName(), "", "_Global_BlackboardEnvironmentEvent");
+		
+		cLux_AddDebugMessage("[Blackboard] Environment event for " + apAgent.GetName());
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfBreadcrumb_DurationRatio = 6.0f;
+	float mfBreadcrumb_DecayTimeRatio = 1.5f;
+	
+	void UpdateBreadcrumbs(float afTimeStep)
+	{
+		if (cLux_GetCurrentMap() is null) return;
+		
+		Breadcrumb_UpdatePeriodicDrops(afTimeStep);
+		Breadcrumb_UpdateInteractionDrops(afTimeStep);
+		Breadcrumb_UpdateLandDrops(afTimeStep);
+							
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			pBread.mfTimer += afTimeStep;
+			pBread.mfRadius = pBread.mfMaxRadius * (1.0f - cMath_Clamp((pBread.mfTimer - pBread.mfDuration) / (pBread.mfDecayTime - pBread.mfDuration), 0.0f, 1.0f));
+			
+			bool bInSafeArea = pBread.m_idFearArea != tID_Invalid && FearHandler_GetFearAreaState() == 1 && FearHandler_GetActiveFearArea() == pBread.m_idFearArea;
+			if (pBread.mfTimer >= pBread.mfDuration + pBread.mfDecayTime || bInSafeArea)
+			{
+				mvBreadcrumbs.removeAt(i);
+				--i;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfBreadcrump_PeriodicDropTimer = 0.0f;
+	
+	void Breadcrumb_UpdatePeriodicDrops(float afTimeStep)
+	{
+		mfBreadcrump_PeriodicDropTimer += afTimeStep;
+		if (mfBreadcrump_PeriodicDropTimer < 2.5f) return;
+		mfBreadcrump_PeriodicDropTimer = 0.0f;
+		
+		if (Player_IsInSmellHideArea()) return;
+		if (FearHandler_GetFearAreaState() == 1) return;
+		
+		cBreadcrumb newBread;
+		newBread.mlId = mlBreadcrumbCounter;
+		newBread.mvPosition = cLux_GetCurrentMap().GetPlayerEntity().GetPosition();
+		newBread.mfMaxRadius = newBread.mfRadius = 2.0f;
+		newBread.mfDuration = 2.0f;
+		newBread.mfDecayTime = 15.0f + newBread.mfMaxRadius * mfBreadcrumb_DecayTimeRatio;
+		newBread.m_idFearArea = FearHandler_GetActiveFearArea();
+		newBread.mbPickedUp = false;
+		
+		AddBreadCrumb(newBread);
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfBreadcrumb_InteractionDropTimer = 2.0f;
+	
+	void Breadcrumb_UpdateInteractionDrops(float afTimeStep)
+	{
+		mfBreadcrumb_InteractionDropTimer += afTimeStep;
+		if (mfBreadcrumb_InteractionDropTimer < 2.0f) return;
+		mfBreadcrumb_InteractionDropTimer = 0.0f;
+		
+		if (Player_IsInteracting() == false) return;
+		if (FearHandler_GetFearAreaState() == 1) return;
+		mfBreadcrump_PeriodicDropTimer = 0.0f;
+		
+		cBreadcrumb newBread;
+		newBread.mlId = mlBreadcrumbCounter;
+		newBread.mvPosition = cLux_GetCurrentMap().GetPlayerEntity().GetPosition();
+		newBread.mfMaxRadius = newBread.mfRadius = 4.0f;
+		newBread.mfDuration = 2.0f;
+		newBread.mfDecayTime = 15.0f + newBread.mfMaxRadius * mfBreadcrumb_DecayTimeRatio;
+		newBread.m_idFearArea = FearHandler_GetActiveFearArea();
+		newBread.mbPickedUp = false;
+		
+		AddBreadCrumb(newBread);
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfBreadcrumb_LandDropTimer = 0.0f;
+	bool mbBreadcrumb_Grounded = true;
+	
+	void Breadcrumb_UpdateLandDrops(float afTimeStep)
+	{
+		mfBreadcrumb_LandDropTimer += afTimeStep;
+		if (mfBreadcrumb_LandDropTimer < 0.2f) return;
+		mfBreadcrumb_LandDropTimer = 0.0f;
+		
+		if (FearHandler_GetFearAreaState() == 1) return;
+		if (cLux_GetPlayer().GetCharacterBody() is null) return;
+			
+		bool bGrounded = cLux_GetPlayer().GetCharacterBody().IsOnGround();
+		if (bGrounded && mbBreadcrumb_Grounded == false)
+		{
+			mfBreadcrump_PeriodicDropTimer = 0.0f;
+			
+			cBreadcrumb newBread;
+			newBread.mlId = mlBreadcrumbCounter;
+			newBread.mvPosition = cLux_GetCurrentMap().GetPlayerEntity().GetPosition();
+			newBread.mfMaxRadius = newBread.mfRadius = 4.0f;
+			newBread.mfDuration = 2.0f;
+			newBread.mfDecayTime = 15.0f + newBread.mfMaxRadius * mfBreadcrumb_DecayTimeRatio;
+			newBread.m_idFearArea = FearHandler_GetActiveFearArea();
+			newBread.mbPickedUp = false;
+			
+			AddBreadCrumb(newBread);
+		}
+		mbBreadcrumb_Grounded = bGrounded;
+	}
+	
+	//------------------------------------------------------------
+	
+	float mfGlobalMaxRadius = 8.0f;
+	
+	void AddBreadCrumb(const cBreadcrumb &in aBread)
+	{
+		bool bNew = true;
+		for (int i = 0; i < mvBreadcrumbs.size(); ++i)
+		{
+			cBreadcrumb@ pBread = mvBreadcrumbs[i];
+			float fDist = cMath_Vector3DistSqr(pBread.mvPosition, aBread.mvPosition);
+			if (fDist < 2.0f * 2.0f && cLux_CheckLineOfSight(pBread.mvPosition, aBread.mvPosition, false, false, null))
+			{
+				if (pBread.mfMaxRadius < mfGlobalMaxRadius)
+				{
+					pBread.mfMaxRadius += 1.0f;
+					pBread.mfMaxRadius = cMath_Clamp(pBread.mfMaxRadius, 0.0f, mfGlobalMaxRadius);
+//					pBread.mfDuration += 0.5f;
+					pBread.mfDecayTime = 15.0f + pBread.mfMaxRadius * mfBreadcrumb_DecayTimeRatio;
+				}
+				pBread.mfRadius = pBread.mfMaxRadius;
+				pBread.mfTimer = 0.0f;
+				bNew = false;
+				break;
+			}
+		}
+		
+		if (bNew)
+		{
+			++mlBreadcrumbCounter;
+			mvBreadcrumbs.push_back(aBread);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	int GetBreadCrumbCounter()
+	{
+		return mlBreadcrumbCounter;
+	}
+	
+	//------------------------------------------------------------
+	
+	int mlLiquidAreaCheck_AgentId = 0;
+
+	void UpdateIsInLiquidArea(float afTimeStep)
+	{
+		if (mvAgents.size() == 0) return;
+		
+		mlLiquidAreaCheck_AgentId++;
+		if (mlLiquidAreaCheck_AgentId >= mvAgents.size())
+			mlLiquidAreaCheck_AgentId = 0;
+			
+		cAgentInfo@ pAgentInfo = mvAgents[mlLiquidAreaCheck_AgentId];
+		cLuxAgent@ pAgent = cLux_ID_Agent(pAgentInfo.m_idAgent);
+		cLuxLiquidArea@ pArea = null;		
+		bool bColl = false;
+		
+		for (int i = 0; i < mvLiquidAreas.size(); i++)
+		{
+			@pArea = cLux_ID_LiquidArea(mvLiquidAreas[i]);			
+			if (pArea.CheckCharacterCollision(pAgent.GetCharBody(), cLux_GetCurrentMap()))
+			{
+				bColl = true;
+				break;
+			}
+		}
+		
+		if (bColl && pAgentInfo.mbInsideLiquidArea == false)
+		{
+			pAgentInfo.mbInsideLiquidArea = true;
+			cScript_RunGlobalFunc(pAgent.GetName(), "cScrAgentGhoul", "_Global_EnterLiquidArea");			
+		}
+		else if (bColl == false && pAgentInfo.mbInsideLiquidArea)
+		{
+			pAgentInfo.mbInsideLiquidArea = false;
+			cScript_RunGlobalFunc(pAgent.GetName(), "cScrAgentGhoul", "_Global_ExitLiquidArea");
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool mbOverlookedAchievementUnlocked = false;
+	float mfOverlookedAchievementTimer = 0;
+	float mfOverlookAchievementHideTime = 2;
+	bool mbOverlookAchievementDetectionActive = true;
+	void UpdateOverlookedAchievement(float afTimeStep)
+	{
+		if (mbOverlookAchievementDetectionActive == false) return;
+		if (mbOverlookedAchievementUnlocked) return;
+		if (Achievement_GetUnlocked(eAchievement_Overlooked))
+		{
+			mbOverlookedAchievementUnlocked = true;
+			return;
+		}
+		
+		mfOverlookedAchievementTimer -= afTimeStep;
+		if (mfOverlookedAchievementTimer > 0) return;
+		mfOverlookedAchievementTimer = cMath_RandRectf(0.2, 0.5);
+		
+		for (int i = 0; i < mvAgents.size(); ++i)
+		{
+			cAgentInfo@ pAgentInfo = mvAgents[i];
+			cLuxAgent@ pAgent = cLux_ID_Agent(pAgentInfo.m_idAgent);
+			float fDist = Player_GetDistanceToEntity(pAgent.GetName());
+						
+			if (fDist <= 5)
+			{
+				if (Player_GetHiding()) pAgentInfo.mfHideModeTimer += mfOverlookedAchievementTimer;
+				else pAgentInfo.mfHideModeTimer = 0;
+			}
+			else if (fDist > 7)
+			{
+				if (pAgentInfo.mfHideModeTimer >= mfOverlookAchievementHideTime)
+				{
+					cLux_AddDebugMessage("[Blackboard] Overlooked achievement unlocked");
+					Achievement_Unlock(eAchievement_Overlooked);
+				}
+			}	
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateStruggle(float afTimeStep)
+	{
+		if (mfStruggleCooldown > 0)
+		{
+			mfStruggleCooldown = cMath_Max(0.0f, mfStruggleCooldown - afTimeStep);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateInvestigateMusic(float afTimeStep)
+	{
+		if (mfInvestigateMusicFadeInTimer > 0) mfInvestigateMusicFadeInTimer -= afTimeStep;
+		if (mfInvestigateMusicFadeOutTimer > 0) mfInvestigateMusicFadeOutTimer -= afTimeStep;
+		if (mfInvestigateMusicFadeInTimer <= 0 && mfInvestigateMusicFadeOutTimer <= 0)
+		{
+			if (mbInvestigateMusicActive == false && mlInvestigatingAgentCount > 0)
+			{
+				mbInvestigateMusicActive = true;
+				Music_PlayExt("A2_Proto_GhoulSearch", true, 0.6, 1, 3.0f, 0, eMusicPrio_AgentAlert, true);
+			}
+			else if (mbInvestigateMusicActive && mlInvestigatingAgentCount <= 0)
+			{
+				mbInvestigateMusicActive = false;
+				Music_Stop(3.0, eMusicPrio_AgentAlert);
+			}
+		}
+	}
+
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool IsGhoulNetworkdIdValid(int alId)
+	{
+		if (alId < 0) return false;
+		if (alId >= mvGhoulHoleNetworks.size()) return false;
+		return true;
+	}
+	
+	//------------------------------------------------------------
+	
+	cPlayerPathNode@ GetClosestPlayerPathNode(cGhoulHoleNetwork &in aNetwork, const cVector3f&in avPos, int &out alIndex, float &out afDistance)
+	{
+		cPlayerPathNode@ pClosest = null;
+		int lClosestIndex = -1;
+		float fClosestDist = -1.0f;
+		for (int i = 0; i < aNetwork.mvPlayerPathNodes.size(); ++i)
+		{
+			cPlayerPathNode@ pNode = aNetwork.mvPlayerPathNodes[i];
+			float fDist = cMath_Vector3DistSqr(cLux_ID_Entity(pNode.m_idNode).GetPosition(), avPos);
+			if (fClosestDist < 0.0f || fDist < fClosestDist)
+			{
+				@pClosest = pNode;
+				lClosestIndex = i;
+				fClosestDist = fDist;
+			}
+		}
+		alIndex = lClosestIndex;
+		afDistance = fClosestDist;
+		return pClosest;
+	}
+	
+	//------------------------------------------------------------
+
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	bool mbDrawDebug = false;
+	
+	//------------------------------------------------------------
+	
+	void ShowDebug(bool abX)
+	{
+		mbDrawDebug = abX;
+	}
+	
+	void OnGui(float afTimeStep)
+	{
+		if (!mbDrawDebug) return;
+		
+		cVector3f vPos;
+		vPos.x = 0;
+		vPos.y = 0;
+		vPos.z = 0;
+		vPos.z = 0;
+		
+		ImGui_SetTransCategory("");
+		
+		ImGui_GroupBegin(cVector3f(-cLux_GetHudVirtualOffset().x + ImGui_GetSize().x - 200.0f,15,1));
+			
+		cImGuiLabelData labelData;
+		labelData.mColorBase = cColor(1.0f,1.0f,1.0f);
+		labelData.mFont.mvSize = 12;
+		
+		float fY = 0.0f;
+		float fYStep = 12.0f;
+		
+		ImGui_DoLabelExt("Agents (" + mvAgents.size() + ")", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("--------------------------------", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+//		for (int i = 0; i < mvAgents.size(); ++i)
+//		{
+//			tString sHoleName = "";
+//			for (int j = 0; j < mvGhoulHoles.size(); ++j)
+//			{
+//				if (mvGhoulHoles[j].m_idAgent == mvAgents[i].m_idAgent)
+//				{
+//					sHoleName = cLux_GetCurrentMap().GetEntityByID(mvGhoulHoles[j].m_idHole).GetName();
+//				}
+//			}
+//			ImGui_DoLabelExt(cLux_ID_Agent(mvAgents[i].m_idAgent).GetName() + "  " + sHoleName, labelData, cVector3f(0, fY, 1.0f));
+//			fY += fYStep;
+//		}
+		
+//		fY += fYStep;
+//		fY += fYStep;
+//		
+//		ImGui_DoLabelExt("Holes (" + mvGhoulHoles.size() + ") Used (" + mlUsedHoleCount + ")", labelData, cVector3f(0, fY, 1.0f));
+//		fY += fYStep;
+		
+//		ImGui_DoLabelExt("--------------------------------", labelData, cVector3f(0, fY, 1.0f));
+//		fY += fYStep;
+//		
+//		for (int i = 0; i < mvGhoulHoles.size(); ++i)
+//		{
+//			tString sAgentName = "";
+//			if (mvGhoulHoles[i].m_idAgent != tID_Invalid)
+//			{
+//				sAgentName = cLux_GetCurrentMap().GetEntityByID(mvGhoulHoles[i].m_idAgent).GetName();
+//			}
+//			ImGui_DoLabelExt(cLux_GetCurrentMap().GetEntityByID(mvGhoulHoles[i].m_idHole).GetName() + "  " + sAgentName, labelData, cVector3f(0, fY, 1.0f));
+//			fY += fYStep;
+//		}
+//		
+//		fY += fYStep;
+		
+		ImGui_DoLabelExt("Proximity Events", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("--------------------------------", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("Cooldown: " + mfNextProximityEventCooldown, labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("Ready: " + (mfNextProximityEventCooldown <= 0.0f), labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("Environment Events", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("--------------------------------", labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("Cooldown: " + mfGlobalEnvironmentEventCooldown, labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_DoLabelExt("Ready: " + (mfGlobalEnvironmentEventCooldown <= 0.0f), labelData, cVector3f(0, fY, 1.0f));
+		fY += fYStep;
+		
+		ImGui_GroupEnd();
+		
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnDraw(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPostRender(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	//////////////
+	// Smell breadcrumbs
+	array<cBreadcrumb> mvBreadcrumbs;
+	int mlBreadcrumbCounter = 0;
+	
+	//////////////
+	// Agents
+	array<cAgentInfo> mvAgents;
+	array<tID> mvInvestigateSoundSlots;
+	int mlHuntingAgentCount;
+	int mlInvestigatingAgentCount = 0;
+	bool mbInvestigateMusicActive = false;
+	float mfInvestigateMusicFadeInTimer = 0;
+	float mfInvestigateMusicFadeOutTimer = 0;
+	
+	//////////////
+	// Ghoul Holes
+	[nosave] array<cGhoulHoleNetwork> mvGhoulHoleNetworks;
+	int mlUsedHoleCount;
+	
+	//////////////
+	// Proximity events
+	bool mbProximityEventsActive = false;
+	float mfTimeBetweenProximityEvents = 25.0f;
+	float mfTimeBetweenProximityEventsVariance = 5.0f;
+	float mfProximityEventMaxDistance = 10.0f;
+	float mfNextProximityEventCooldown = 0;
+	
+	bool mbCheckCollisionCourse = true;
+	array<tID> mvCollisionWaitAgents;
+	
+	//////////////
+	// Environment events
+	array<cAgentEnvironmentEventInfo> mvEnvironmentEvents;
+	array<float> mvEnvironmentEventTypeCooldowns;
+	float mfTimeBetweenEnvironmentEvents = 35.0f;
+	float mfTimeBetweenEnvironmentEventsVariance = 10.0f;
+	float mfEnvironmentEventMaxDistance = 10.0f;
+	float mfGlobalEnvironmentEventCooldown = 0;
+	float mfEnvironmentEventCooldownTime = 60.0f;
+	float mfEnvironmentEventTypeCooldownTime = 30.0f;
+	
+	int mlAlertCount = 0;
+	
+	//////////////
+	// Liquid areas
+	array<tID> mvLiquidAreas;
+	
+	//////////////
+	// Wraith
+	array<cWraithPartnership> mvWraithPartnerships;
+	array<tID> mvWraithsDetectingPlayer;
+	array<cWraithBillboard> mvWraith_SpotlightBillboards;
+	int mlWraith_SpotlightBillboardFree = 0;
+	tID m_idWraithStruggleOwner = tID_Invalid;
+	float mfStruggleCooldown = 0;
+}

@@ -15,12 +15,12 @@
 #include "helpers/helper_areas.hps"
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
 
-//--------------------------------------------------
- 
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
+#include "helpers/custom/helper_props_custom.hps"
+#include "helpers/custom/helpers/helper_modules_custom.hps"
+#include "helpers/custom/helpers/helper_player_custom.hps"
+
 //--------------------------------------------------
  
 class cScrMap : iScrMap
@@ -253,7 +253,10 @@ class cScrMap : iScrMap
 	 
 		//-------------------------------------------------------
 	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
+		void Tablet_OnGui(const tString&in asEntityName, float afTimeStep)
+		{
+			DWNote_RenderGUI(asEntityName, afTimeStep);
+		}
 	 
 		//-------------------------------------------------------
 		
