@@ -65,16 +65,6 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
-		
-		Debug_Log("LALALALALALA: " + cScript_GetGlobalVarInt("NumOfPizzBalls"));
-		
-		for (int i = 1; i <= cScript_GetGlobalVarInt("NumOfPizzBalls"); i++)
-		{
-			Entity_CreateAtEntity("pizza_ball_" + i, "pizza_ball.ent", "PizzaBallSpawner", false);
-	
-			Entity_AddCollideCallback("pizza_ball_" + i, "Trigger_1", "Goal");
-			Entity_AddCollideCallback("pizza_ball_" + i, "Trigger_5", "LoadNewMap");
-		}
 						
 		/////////////////////////
 		// Debug
@@ -166,8 +156,6 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Debug_Log("LALALALALALA: " + cScript_GetGlobalVarInt("NumOfPizzBalls"));
-			Debug_Log(Map_GetEntity("pizza_ball_1").GetPosition().y);
 		}
 	}
 
@@ -235,12 +223,19 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		bool LoadNewMap(const tString &in asParent, const tString &in asChild, int alState)
+		bool ThrowBack(const tString &in asParent, const tString &in asChild, int alState)
 		{
-			cScript_SetGlobalVarInt("NumOfPizzBalls", cScript_GetGlobalVarInt("NumOfPizzBalls") + 1);
-			Map_ChangeMap("03_02_pizza_ball.hpm", "Start_Begin", "", "");
+			Entity_SetActive("pizza_ball", false);
+			Map_AddTimer("ThrowBack", 1.0f, "Timer_ThrowBack");
 			
 			return true;
+		}
+		
+		void Timer_ThrowBack(const tString&in asTimer)
+		{
+			Entity_SetActive("pizza_ball", true);
+			Entity_PlaceAtEntity("pizza_ball", "PizzaSpawn", cVector3f_Zero, true);
+			Entity_AddImpulse("pizza_ball", cVector3f_Forward * 6, true, true);
 		}
 	 
 		//-------------------------------------------------------

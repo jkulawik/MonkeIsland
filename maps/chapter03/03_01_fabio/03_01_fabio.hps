@@ -90,9 +90,7 @@ class cScrMap : iScrMap
 	////////////////////////////
 	// Run when entering map
 	void OnEnter()
-	{	
-		cScript_SetGlobalVarInt("NumOfPizzBalls", 1);
-		
+	{			
 		Player_SetAmbientLight_Outdoors(false);
 		
 		PlayerBody_SetActive(true);
