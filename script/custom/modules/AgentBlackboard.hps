@@ -2026,7 +2026,20 @@ class cScrAgentBlackboardModule : iScrUserModule, iScrUserModule_Interface, iScr
 			if (mbInvestigateMusicActive == false && mlInvestigatingAgentCount > 0)
 			{
 				mbInvestigateMusicActive = true;
-				Music_PlayExt("A2_Proto_GhoulSearch", true, 0.6, 1, 3.0f, 0, eMusicPrio_AgentAlert, true);
+				
+				bool bSkipMusic = false;
+				for(int i = 0; i < mvAgents.length(); i++)
+				{
+					cAgentInfo@ pAgentInfo = mvAgents[i];
+					bSkipMusic = cLux_ID_Agent(pAgentInfo.m_idAgent).GetEventTag() == "NoMusic";
+					
+					Debug_Log("TAG NAME: " + cLux_ID_Agent(pAgentInfo.m_idAgent).GetEventTag());
+				}
+				
+				if(!bSkipMusic)
+				{
+					Music_PlayExt("A2_Proto_GhoulSearch", true, 0.6, 1, 3.0f, 0, eMusicPrio_AgentAlert, true);
+				}
 			}
 			else if (mbInvestigateMusicActive && mlInvestigatingAgentCount <= 0)
 			{

@@ -533,12 +533,12 @@ class cScrMap : iScrMap
 			Entity_SetActive("monke", true);
 			
 			Monke_SetAllowPlayerThrow("monke", false);
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_1");
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_2");
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_3");
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_4");
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_5");
-			Monke_CommandPatrol_AddNode("monke", "PathNodePatrol_6");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_1");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_2");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_3");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_4");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_5");
+			Monke_CommandPatrol_AddNode("monke", "PathNode_6");
 			Monke_CommandPatrol_Execute("monke", true, 1);
 			
 			return false;

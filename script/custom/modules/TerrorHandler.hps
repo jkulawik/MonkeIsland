@@ -1,0 +1,506 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+#include "base/Player_Types.hps"
+#include "base/InputHandler_Types.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_map.hps"
+#include "helper/helper_audio.hps"
+#include "helper/helper_player.hps"
+#include "custom/modules/ModuleInterfaces_Custom.hps"
+
+//----------------------------------------------------------------------------------------
+
+const tString msDefaultHuntMusic = "A2_NPC_Ghoul_Chase.ogg";
+const tString msTerrorSound = "player/UI/terror_meter/UI_terror_meter";
+const tString msTerrorStinger = "player/UI/terror_meter/UI_terror_full";
+
+//----------------------------------------------------------------------------------------
+
+const float gfMaxIncreaseSpeed = 20.0f;
+const float gfDistanceMax = 10.0f;
+const float gfDistanceMin = 3.0f;
+
+/////////////////////
+// How important each of the factors for determining the terror meter increase speed are
+// Should all add up to 1.0
+const float gfInFrontImportance = 0.08f;
+const float gfDistanceImportance = 0.58f;
+const float gfCrouchImportance = 0.22f;
+const float gfSpeedImportance = 0.12f;
+
+//----------------------------------------------------------------------------------------
+
+class cEnemyMeter
+{
+	tID m_idEnemy;
+	float mfAmount;
+	float mfMaxAmount;
+	float mfFadeOutTimer;
+	bool mbHunting;
+	bool mbRising;
+}
+
+//----------------------------------------------------------------------------------------
+
+class cScrTerrorHandler : iScrUserModule, iScrUserModule_Interface, iScrTerrorHandler_Interface
+{
+	//------------------------------------------------------------
+	
+	////////////////////////////////////////
+	// INIT
+	////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		
+	}
+		
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		Music_StopAll(0);
+	}
+
+	//------------------------------------------------------------
+
+	void OnMapLeave(cLuxMap @apMap)
+	{
+		Music_StopAll(0);
+		Sound_StopGui(msTerrorSound, 0.0f, false);
+		
+		mvHuntingEnemies.resize(0);
+		mvEnemyMeters.resize(0);
+		mfTerrorMeter = 0;
+		
+		mbHuntinMusicActive = false;
+		mfHuntingMusicFadeInTimer = 0;
+		mfHuntingMusicFadeOutTimer = 0;
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+		UpdateEnemyMeters(afTimeStep);
+		UpdateSound();
+	}
+	
+	//------------------------------------------------------------
+	
+	void VariableUpdate(float afDeltaTime)
+	{
+		UpdateHuntingMusic(afDeltaTime);
+	}
+	
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERFACE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	void AddHuntingEnemy(tID aEnemy, bool abPlayMusic=false, tString asMusic="", float afVolume=0.65f, float afFadeInTime=1.75f, float afFadeOut=3.0f)
+	{
+		for (int i = 0; i < mvHuntingEnemies.length(); ++i)
+		{
+			if(mvHuntingEnemies[i] == aEnemy) return;
+		}
+		
+//		if (asMusic == "") asMusic = msDefaultHuntMusic;			
+		/////////////////////
+		// Start hunt
+//		if (mvHuntingEnemies.length() == 0)
+//		{
+//			Sound_PlayGui(msTerrorStinger, 1.0f);
+//		}
+		mvHuntingEnemies.push_back(aEnemy);
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveHuntingEnemy(tID aEnemy)
+	{
+		for (int i = 0; i < mvHuntingEnemies.length(); ++i)
+		{
+			if(mvHuntingEnemies[i] == aEnemy)
+			{
+//				Music_RemoveDynamicTrack(aEnemy);
+				
+				mvHuntingEnemies.removeAt(i);
+				/////////////////////
+				// Stop hunt
+//				if (mvHuntingEnemies.length() == 0)
+//				{	
+//					ResetEnemyMeters();
+//				}
+				return;
+			}
+		}
+	}
+
+	//------------------------------------------------------------
+	
+	void AddTerrorEnemy(tID aEnemy, float afTimeBeforeHunt = 6.0f)
+	{
+		for (int i = 0; i < mvEnemyMeters.length(); ++i)
+		{
+			/////////////////////
+			// Update the enemy's data
+			if (mvEnemyMeters[i].m_idEnemy == aEnemy)
+			{
+				cEnemyMeter@ pMeter = mvEnemyMeters[i];
+				pMeter.mfAmount = (pMeter.mfAmount / pMeter.mfMaxAmount) * afTimeBeforeHunt; 
+				pMeter.mfMaxAmount = afTimeBeforeHunt;
+				pMeter.mbRising = true;
+				return;
+			}
+		}
+		
+		/////////////////////
+		// Add new enemy
+		cEnemyMeter meter;
+		meter.m_idEnemy = aEnemy;
+		meter.mfAmount = 0.0f;
+		meter.mfMaxAmount = afTimeBeforeHunt;
+		meter.mfFadeOutTimer = 0.0f;
+		meter.mbHunting = false;
+		meter.mbRising = true;
+		
+		mvEnemyMeters.push_back(meter);
+	}
+	
+	//------------------------------------------------------------
+	
+	void RemoveTerrorEnemy(tID aEnemy)
+	{
+		for (int i = 0; i < mvEnemyMeters.length(); ++i)
+		{
+			if (mvEnemyMeters[i].m_idEnemy == aEnemy)
+			{
+				mvEnemyMeters[i].mbRising = false;
+				return;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	float GetAmount()
+	{
+		return mfTerrorMeter;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// TERROR METER
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+		
+	void UpdateEnemyMeters(float afTimeStep)
+	{
+		if (mvHuntingEnemies.length() > 0) return;
+		
+		cEnemyMeter@ meter;
+		cLuxAgent@ agent;
+		float fSpeed = 0.0f;
+		float fInFrontFactor = 0.0f;
+		float fCrouchFactor = 0.0f;
+		float fDistFactor = 0.0f;
+		float fSpeedFactor = 0.0f;
+		mfTerrorMeter = 0.0f;
+		
+		for (int i = 0; i < mvEnemyMeters.length(); ++i)
+		{
+			@meter = mvEnemyMeters[i];
+			@agent = cLux_ID_Agent(meter.m_idEnemy);
+			
+			/////////////////////
+			// Increase the enemy meter
+			if (meter.mbRising)
+			{
+				meter.mfFadeOutTimer = 0.0f;
+				
+				/////////////////////
+				// Dynamically inrease speed depending on crouch, distance and speed. Each of the factors is on a scale from 0 to 1
+				fInFrontFactor = Entity_IsInPlayerFOV(agent.GetName()) ? 1.0f : 0.0f;
+				fCrouchFactor = Player_GetCrouching() ? 0.0f : 1.0f;
+				fDistFactor = 1.0f - cMath_Clamp((agent.GetDistanceToPlayer() - gfDistanceMin) / (gfDistanceMax - gfDistanceMin), 0.0f, 1.0f);
+				fDistFactor = cMath_Pow(fDistFactor, 2.0f);
+				fSpeedFactor = cLux_GetPlayer().GetAverageMoveSpeed() <= 3.0f ? 0.0f : 1.0f;
+				
+				/////////////////////
+				// Add the factors together depending on importance so that they form a number between 0 and 1
+				float fIncreaseSpeedFactor = (fInFrontFactor * gfInFrontImportance +  fCrouchFactor * gfCrouchImportance + fDistFactor * gfDistanceImportance + fSpeedFactor * gfSpeedImportance);
+				
+				
+				/////////////////////
+				// Multiply the calculated increase speed factor by the maximum, ensure that 1.0 is the minimal value
+				fSpeed = 1.0f + fIncreaseSpeedFactor * (gfMaxIncreaseSpeed - 1.0f);
+			}
+			
+			/////////////////////
+			// Wait before starting to decrease the enemy meter
+			else if (meter.mfFadeOutTimer <= 1.5f)
+			{
+				meter.mfFadeOutTimer += afTimeStep;
+			}
+			
+			/////////////////////
+			// Decrease the enemy meter
+			else
+			{
+				fSpeed = (1.0f / 4.0f) * (-meter.mfMaxAmount);
+			}
+			
+			meter.mfAmount += afTimeStep * fSpeed;
+			
+			/////////////////////
+			// Remove the meter if it's empty
+			if (meter.mfAmount <= 0.0f)
+			{
+				mvEnemyMeters.removeAt(i);
+				--i;
+				continue;
+			}
+			
+			/////////////////////
+			// Global terror meter is the highest of all the enemy meters
+			meter.mfAmount = cMath_Clamp(meter.mfAmount, 0.0f, meter.mfMaxAmount);
+			mfTerrorMeter = cMath_Max(mfTerrorMeter, meter.mfAmount / meter.mfMaxAmount);
+//			cLux_AddDebugMessage("[TerrorMeter] Terror for " + agent.GetName() + ": " + meter.mfAmount + " Speed: " + fSpeed + " CrouchFactor: " + fCrouchFactor + "  DistFactor: " + fDistFactor + " SpeedFactor: " + fSpeedFactor + " InFrontFactor: " + fInFrontFactor);
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateSound()
+	{
+		if (Sound_GuiIsPlaying(msTerrorSound) == false)
+		{
+			Sound_PlayGui(msTerrorSound, 1.0f);
+			Sound_FadeGuiVolume(msTerrorSound, 0.0f, 0.0f);
+		}
+		
+		float fVolumeDest = mvHuntingEnemies.length() == 0 ? mfTerrorMeter : 0.0f;
+		float fVolumeFade = mvHuntingEnemies.length() == 0 ? 0.1f : 1.5f;
+		Sound_FadeGuiVolume(msTerrorSound, fVolumeDest, fVolumeFade);
+	}
+	
+	//------------------------------------------------------------
+	
+	void UpdateHuntingMusic(float afTimeStep)
+	{
+		if (mfHuntingMusicFadeInTimer > 0) mfHuntingMusicFadeInTimer -= afTimeStep;
+		if (mfHuntingMusicFadeOutTimer > 0) mfHuntingMusicFadeOutTimer -= afTimeStep;
+		if (mfHuntingMusicFadeInTimer <= 0 && mfHuntingMusicFadeOutTimer <= 0)
+		{
+			if (mbHuntinMusicActive == false && mvHuntingEnemies.size() > 0)
+			{
+				mbHuntinMusicActive = true;
+				mfHuntingMusicFadeInTimer = 3;
+				Sound_PlayGui(msTerrorStinger, 1.0f);
+				
+				bool bSkipMusic = false;
+				for(int i = 0; i < mvEnemyMeters.length(); i++)
+				{
+					cEnemyMeter @meter = mvEnemyMeters[i];
+					cLuxAgent @agent = cLux_ID_Agent(meter.m_idEnemy);
+					
+					bSkipMusic = agent.GetEventTag() == "NoMusic";
+				}
+				
+				if(!bSkipMusic)
+				{
+					Music_PlayExt(msDefaultHuntMusic, true, 0.4, 1, 2.0f, 0, eMusicPrio_AgentHunt, true);
+				}
+			}
+			else if (mbHuntinMusicActive && mvHuntingEnemies.size() == 0)
+			{
+				mbHuntinMusicActive = false;
+				mfHuntingMusicFadeOutTimer = 4.1;
+				ResetEnemyMeters();
+				Music_Stop(4.0f, eMusicPrio_AgentHunt);
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// HELPERS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void ResetEnemyMeters()
+	{
+		for (int i = 0; i < mvEnemyMeters.length(); ++i)
+		{
+			mvEnemyMeters[i].mfAmount = 0.0f;
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	bool GetPlayerIsBeingHunted()
+	{
+		return mvHuntingEnemies.length()>0;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+	}
+	
+	//------------------------------------------------------------
+
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppGotInputFocus()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppLostInputFocus()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnDraw(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPostRender(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	array<cEnemyMeter> mvEnemyMeters;
+	array<tID> mvHuntingEnemies;
+	float mfTerrorMeter;
+	
+	bool mbHuntinMusicActive = false;
+	float mfHuntingMusicFadeInTimer = 0;
+	float mfHuntingMusicFadeOutTimer = 0;
+	
+	//------------------------------------------------------------
+	
+}
