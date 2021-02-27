@@ -3081,7 +3081,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			
 			if(bValue != bNewValue)
 			{
-				mpConfig.SetBool("Gameplay", "ShowHints", bNewValue);
+				mpConfig.SetBool("Gameplay", "ShowHints", true);
 			}
 			
 			msSelectedGameplayButton = OptionMenu_UpdateFocusCustom(vMenuItems,vMenuItems[mlCurrentItemId], msSelectedGameplayButton);
@@ -3181,13 +3181,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 
 			if(bButton || bGamepad)
 			{
-				/////////////
-				// Enable subtitles if other than english is selected
-				tString sLang = mpConfig.GetString("Main", "StartLanguage", cLux_GetDefaultGameLanguage());
-				if((sLang == "english" || sLang == "english.lang") == false)
-				{
-					mpConfig.SetBool("Sound", "ShowSubtitles", true);
-				}
+				mpConfig.SetBool("Sound", "ShowSubtitles", true);
 
 				ApplySettings();
 				
