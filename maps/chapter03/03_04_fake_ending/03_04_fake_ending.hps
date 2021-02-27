@@ -19,11 +19,6 @@
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
-//--------------------------------------------------
- 
 class cScrMap : iScrMap
 {
 	//--------------------------------------------
@@ -46,17 +41,6 @@ class cScrMap : iScrMap
 		
 	void PreloadData()
 	{
-		/////////////////
-		// Preload gui
-		//ImGui_PreloadImage("some_image");
-
-		///////////////
-		// Preload particles
-		//ParticleSystem_Preload("some_particle.ps");
-
-		//////////////
-		// Preload screen effects
-		//Material_Preload("some_material.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -93,6 +77,8 @@ class cScrMap : iScrMap
 	// Run when entering map
 	void OnEnter()
 	{	
+		Player_SetActive(false);
+		
 		PlayerBody_SetActive(false);
 		Player_SetMapDeepShadow(0.05f);
 		Player_SetNightVisionEnabled(false);
@@ -240,47 +226,4 @@ class cScrMap : iScrMap
 	}
  
 	//-------------------------------------------------------
- 
-	//} END MAIN FUNCTIONS
- 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// ==============
-	// SCENE X *NAME OF SCENE*
-	// ==============
-	//{//////////////////////////////////////////////////////////////////////////////////////
- 
-		/////////////////////////////////////////
-		// General
-		//{//////////////////////////////////////
-		 
-		//-------------------------------------------------------
-	 
-		/*Put any variables that are used by many events in Scene X here.*/
-	 
-		//-------------------------------------------------------
-	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
-	 
-		//-------------------------------------------------------
-		
-		//} END General	
-	 
-		/////////////////////////////////////////
-		// Event *Name Of Event*
-		//{//////////////////////////////////////
-
-		//-------------------------------------------------------
-
-		/*Put any variables that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		/*Put any functions that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		//} END Event *Name Of Event*
-	 
-	//} END SCENE X
- 
 }

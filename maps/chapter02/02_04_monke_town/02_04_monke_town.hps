@@ -23,11 +23,6 @@
 
 //--------------------------------------------------
  
-/*Place any global values here. These must be const variables as they will not be saved*/
-/*This is also the place for enums and classes, but these should be avoided whenever possible*/
- 
-//--------------------------------------------------
- 
 class cScrMap : iScrMap
 {
 	//--------------------------------------------
@@ -289,7 +284,7 @@ class cScrMap : iScrMap
 		
 		void Timer_GtfoToMenu(const tString&in asTimer)
 		{
-			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
+			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("Thanks for playing"), tWString("Don't skip the credits :)"));
 			cEngine_Exit();
 		}
 	 

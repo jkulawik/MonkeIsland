@@ -16,6 +16,7 @@
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
 #include "helpers/helper_imgui_options.hps"
+#include "helpers/helper_rotation.hps"
 
 //--------------------------------------------------
  
@@ -184,6 +185,10 @@ class cScrMap : iScrMap
 		{
 			mfTextAlphaTarget = 0.0f;
 		}
+		if(alAction == eAction_Test3)
+		{
+			Map_AddTimer("BananaAttack", 0.0f, "Timer_BananaAttack");
+		}
 	}
 
 	//-------------------------------------------------------
@@ -218,6 +223,8 @@ class cScrMap : iScrMap
 	float mfTextAlphaTarget = 1.0f;
 	float mfTextAlpha = 1.0f;
 	float mfAlphaFadeSpeed = 1.0f;
+	
+	bool mbDoHappy = false;
 	
 	//-------------------------------------------------------
 	
@@ -267,6 +274,8 @@ class cScrMap : iScrMap
 			msSelectedMainMenuButton = OptionMenu_UpdateFocus("Fight Back", msSelectedMainMenuButton);
 		}
 		
+		ImGui_SetModColorMul(cColor(1.0f, 1.0f));
+		
 		if (mbShowBattleText)
 		{
 			ImGui_SetModColorMul(cColor(1.0f, mfTextAlpha));
@@ -293,6 +302,13 @@ class cScrMap : iScrMap
 			
 			ImGui_GroupEnd();
 		}
+			
+		if (!mbDoHappy) return;
+		
+		ImGui_SetModColorMul(cColor(1.0f, 1.0f));
+			
+		cImGuiGfx happy("happy.dds", eImGuiGfx_Texture);
+		ImGui_DoImage(happy, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
 	}
 	
 	//-------------------------------------------------------
@@ -475,6 +491,14 @@ class cScrMap : iScrMap
 		mfTextAlphaTarget = 0.0f;
 		
 		Entity_SetActive("Trigger_2", true);
+		
+		Map_AddTimer("BananaAttack", 0.7f, "Timer_BananaAttack");
+		Map_AddTimer("Message", 1.5f, "Timer_FightMessage");
+	}
+	
+	void Timer_FightMessage(const tString&in asTimer)
+	{
+		Message_Set("03_03_finale", "FightMessage");
 	}
 	
 	int mlLetterIndex = 0;
@@ -566,7 +590,9 @@ class cScrMap : iScrMap
 			Monke_CommandPatrol_AddNode("monke", "PathNode_4");
 			Monke_CommandPatrol_AddNode("monke", "PathNode_5");
 			Monke_CommandPatrol_AddNode("monke", "PathNode_6");
-			Monke_CommandPatrol_Execute("monke", true, 1);
+			Monke_CommandPatrol_Execute("monke", true, 2, false, eMonkeSpeed_FastRun);
+			
+			Agent_RevealPlayerPosition("monke");
 			
 			return false;
 		}
@@ -583,6 +609,8 @@ class cScrMap : iScrMap
 		
 		bool KillMunshi(const tString &in asParent, const tString &in asChild, int alState)
 		{
+			Map_RemoveTimer("Timer_BananaAttack");
+			
 			Entity_SetActive("monke", false);
 			Entity_SetActive("munshi", false);
 			
@@ -613,12 +641,125 @@ class cScrMap : iScrMap
 
 		void Timer_End(const tString&in asTimer)
 		{
+			Sketchbook_Close();
+			Sketchbook_SetInventoryEnabled(false);
+			
 			Effect_Fade_Out(10.0f);
+			
+			Sound_FadeGlobalVolume(0.0f, 10.0f, eSoundEntryType_AllExceptGui);
+			
+			Map_RemoveTimer("Timer_DoDarkWorldLightning");
+			Map_AddTimer("EndSpeech", 12.0f, "Timer_EndSpeech");
+		}
+		
+		void Timer_EndSpeech(const tString&in asTimer)
+		{
+			mbShowBattleText = false;
+			Player_SetActive(false);
+			
+			Music_Play("speech", 0.8f, false, eMusicPrio_BigEvent);
+			Voice_Play("Ending_speech", -1, "OnEndingSpeech");
+		}
+		
+		void OnEndingSpeech(const tString&in asScene, const tString&in asSubject)
+		{
+			Music_StopAll(1.0f);
+			
+			Sound_FadeGlobalVolume(0.f, 0.f, eSoundEntryType_All);
+			
+			Credits_Start("Credits_TrueEnd.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "good_ending", 0.00f, 0.5f, 0.5f);
+		}
+		
+		void OnEndOfCredits()
+		{
+			if (Credits_GetIsSkipActive())
+			{
+				mbDoHappy = true;
+				Music_Play("happy", 0.11f, true, eMusicPrio_BigEvent);
+				
+				Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+			}
+			else
+			{
+				Map_ChangeMap("main_menu.hpm","Start_Begin","","",false);
+			}
+		}
+		
+		void Timer_GtfoToMenu(const tString&in asTimer)
+		{
+			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
+			cEngine_Exit();
 		}
 
 		//-------------------------------------------------------
 
 		//} END Event *Name Of Event*
+		
+		tString msCombatArea = "BananShooting_1";
+		
+		bool SelectCombatArea(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Debug_Log(Entity_GetVarString(asParent, ""));
+			
+			if(alState == 1)
+			{
+				msCombatArea = Entity_GetVarString(asParent, "");
+			}
+			
+			return true;
+		}
+			
+		void Timer_BananaAttack(const tString&in asTimer)
+		{
+			Prop_SetActiveAndFade("banana_weapon", true, 0.5f);
+			Entity_PlaceAtEntity("banana_weapon", msCombatArea, cVector3f_Zero, true);
+			Prop_SetStaticPhysics("banana_weapon", true);
+			
+			ParticleSystem_CreateAtEntity("spark", "elevator_sparks.ps", msCombatArea, false);
+			Sound_CreateAtEntity("Zip", "level_entity_shared/portal/portal_close", msCombatArea, 0, false, 0.4f);
+			
+			Light_FadeBrightnessTo("Light_" + msCombatArea, 50.f, 0.1f, eEasing_SineIn);
+			
+			Map_AddTimer("AttackImpulse", 0.5f, "Timer_AttackImpulse");
+			Map_AddTimer("DecreaseLight", 0.1f, "Timer_DecreaseLight");
+		}
+		
+		void Timer_DecreaseLight(const tString&in asTimer)
+		{
+			Light_FadeBrightnessTo("Light_" + msCombatArea, 0.f, 1.f, eEasing_SineOut);
+		}
+		
+		void Timer_AttackImpulse(const tString&in asTimer)
+		{
+			Entity_FaceToEntity("banana_weapon", "Player", true);
+			Prop_SetStaticPhysics("banana_weapon", false);
+	
+			Entity_AddImpulse("banana_weapon", cVector3f_Back * 35 * cVector3f(1, 5, 1), true, true);
+			Map_AddTimer("BananaAttack", cMath_RandRectf(10.0f, 20.0f), "Timer_BananaAttack");
+		}
+		
+		bool TakeDamage(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Player_GiveDamage(0.1f, 0.0f, eDamageType_Default, "banana_weapon");
+			
+			Entity_PlaceAtEntity("banana_weapon", msCombatArea, cVector3f_Zero, true);
+			
+			Map_AddTimer("disable", 0.02f, "DisableBanana");
+			
+			if(Player_GetHealth() <= 0.0f)
+			{
+				Player_GiveDamage(1.0f, 0.0f, eDamageType_Fall, "banana_weapon");
+			}
+			
+			return true;
+		}
+		
+		void DisableBanana(const tString&in asTimer)
+		{
+			Entity_SetActive("banana_weapon", false);
+		}
+		
+		//-------------------------------------------------------
 	 
 	//} END SCENE X
  
