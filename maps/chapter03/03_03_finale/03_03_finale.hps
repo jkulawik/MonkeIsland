@@ -23,13 +23,8 @@
 
 //--------------------------------------------------
  
-const cVector2f kScreenCenter = cVector2f(512, 384); // Virtual size: 1024x768
-
 const cVector2f kMainMenuButtonPos = cVector2f(250, 400);
-const cVector2f kTitlePos = cVector2f(80, 110);
-const cVector2f kTitleSize = cVector2f(460, 200);
 
-const cColor kMainMenuButtonBgColor = cColor(69.0 / 255.0, 139.0 / 255.0, 139.0 / 255.0, 1);
 const cColor kDisabledColor = cColor(100.0 / 255.0, 1);
 
 const tString[] gvBattleName = {" C ", " O ", " L ", " O ", " N ", " E ", " L ", "  ", " M ", " U ", " N ", " S ", " H ", " I "};
