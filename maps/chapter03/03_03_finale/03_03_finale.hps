@@ -716,7 +716,7 @@ class cScrMap : iScrMap
 			Prop_SetStaticPhysics("banana_weapon", true);
 			
 			ParticleSystem_CreateAtEntity("spark", "elevator_sparks.ps", msCombatArea, false);
-			Sound_CreateAtEntity("Zip", "level_entity_shared/portal/portal_close", msCombatArea, 0, false, 0.4f);
+			Sound_CreateAtEntity("Zip", "level_entity_shared/portal/portal_close", msCombatArea, 0, false, 0.6f);
 			
 			Light_FadeBrightnessTo("Light_" + msCombatArea, 50.f, 0.1f, eEasing_SineIn);
 			
