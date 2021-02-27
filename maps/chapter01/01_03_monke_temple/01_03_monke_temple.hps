@@ -455,10 +455,9 @@ class cScrMap : iScrMap
 		
 		bool Autosave(const tString &in asParent, const tString &in asChild, int alState)
 		{
-			Game_AutoSave();
-			
-			//LastTimeOnGame_SetText("01-03-monke-temple-temple");
 			cScript_SetGlobalVarBool("Temple_Discovered", true);
+			
+			Game_AutoSave();
 			
 			return false;
 		}
