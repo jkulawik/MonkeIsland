@@ -54,6 +54,8 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
+		LastTimeOnGame_SetText("03-02-pizzaball-court");
+		
 		FearHandler_SetActive(true);
 		
 		FearHandler_SetPermaFailEnabled(false);
@@ -281,6 +283,8 @@ class cScrMap : iScrMap
 		{
 			Player_StopLookAt(1.0f);
 			Player_SetActive(true);
+			
+			LastTimeOnGame_SetText("03-02-pizzaball-bitcoin");
 		}
 
 		//-------------------------------------------------------

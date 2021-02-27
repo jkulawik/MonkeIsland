@@ -194,6 +194,7 @@ class cScrMap : iScrMap
 	{
 		Voice_Play("Pepsi");
 		cScript_SetGlobalVarBool("Crystal_Pepsi", true);
+		LastTimeOnGame_SetText("02-04-monke-town-crystal-pepsi");
 		
 		return false;
 	}

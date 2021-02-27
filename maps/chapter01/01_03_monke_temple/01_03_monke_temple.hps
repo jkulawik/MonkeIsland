@@ -480,6 +480,7 @@ class cScrMap : iScrMap
 			
 			Map_AddTimer("StopAmbientMusic", 0.1f, "AmbientMusicHandler");
 			cScript_SetGlobalVarBool("Temple_Discovered", true);
+			LastTimeOnGame_SetText("01-03-monke-temple-temple");
 			Seq_TombLightUp("");
 			
 			return false;
