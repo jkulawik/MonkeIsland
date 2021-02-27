@@ -58,7 +58,7 @@ class cScrSneezeHandler : iScrUserModule, iScrUserModule_Interface
 				mbLostFocus = false;
 			}
 			
-			if (mlLostFocusCount == 5)
+			if (mlLostFocusCount == 6)
 			{
 				mbFuckThePlayerUp = true;
 				Rip();

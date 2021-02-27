@@ -179,7 +179,8 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			Seq_DarkWorldLightning("");
+			mbShowBattleText = true;
+			Map_AddTimer("AddLetters", 0.0f, "Timer_AddLetters");
 		}
 		if(alAction == eAction_Test2)
 		{
@@ -289,6 +290,7 @@ class cScrMap : iScrMap
 			ImGui_GroupBegin(vPos, ImGui_GetSize());
 			
 				cImGuiLabelData label = ImGui_GetDefaultLabel();
+				label.mColorBase = cColor_White;
 				label.mFont.SetFile(FontHandler_GetFont(eFontType_MainMenu, 72));
 				label.mFont.mvSize = cVector2f(36, 36);
 				label.mFont.mColor = cColor_White;

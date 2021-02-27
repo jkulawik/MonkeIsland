@@ -459,7 +459,7 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndWaitUntil(13.0f))
 			{
-				Music_PlayExt("intro.ogg", false, 0.65f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
+				Music_PlayExt("intro.ogg", false, 0.75f, 1.0f, 2.0f, 1.0f, eMusicPrio_SceneAmb, false);
 				
 				mfAlphaFadeSpeed = 1.0f;
 				mfQouteAlphaTarget = 1.0f;
