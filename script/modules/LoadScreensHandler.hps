@@ -1,0 +1,607 @@
+#include "interfaces/UserModule_Interface.hps"
+#include "modules/ModuleInterfaces.hps"
+#include "helpers/helper_menu.hps"
+
+class cScrLoadScreensHandler : iScrUserModule, iScrUserModule_Interface, iScrLoadScreensHandler_Interface
+{
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INIT
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void Init()
+	{
+		LoadDefinitions("loadscreens.cfg");
+	}
+		
+	//------------------------------------------------------------
+	
+	void LoadUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void SaveUserConfig()
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void LoadDefinitions(const tString& in asXMLFile)
+	{
+		@mLoadScreensDoc = cResources_LoadXmlDocument(asXMLFile);
+		if (mLoadScreensDoc is null)
+		{
+			Error("[LoadScreens] Couldn't load config file!");
+			return;
+		}
+		
+		@mLevels = mLoadScreensDoc.GetFirstElement("Levels");
+		@mScreens = mLoadScreensDoc.GetFirstElement("Screens");
+		
+		cXmlElement@ firstSection = mScreens.GetFirstElement("Section");
+		tString sectionID = firstSection.GetAttributeString("ID","");
+		
+		cXmlElement@ firstScreen = firstSection.GetFirstElement("Screen");
+		tString screenID = firstScreen.GetAttributeString("ID","");
+		
+		SetScreen(sectionID, screenID);
+	}
+	
+	//------------------------------------------------------------
+	
+	cXmlElement@ FindCurrentScreen()
+	{
+		cXmlElement@ section = FindSection(mCurrentSectionID);
+		if (section==null)
+		{
+			Error("[LoadScreens] Couldn't find section:"+mCurrentSectionID);
+			return null;
+		}
+		
+		cXmlElement@ screen = FindScreen(section, mCurrentScreenID);
+		return screen;
+	}
+	
+	//------------------------------------------------------------
+	
+	cXmlElement@ FindSection(tString sectionID)
+	{
+		cXmlNodeListIterator @it = mScreens.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement@ sectionElem = it.Next().ToElement();
+			if (sectionElem.GetAttributeString("ID","")==sectionID)
+			{
+				return sectionElem;
+			}
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	cXmlElement@ FindScreen(cXmlElement@ section, tString screenID)
+	{
+		cXmlNodeListIterator @it = section.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement@ screenElem = it.Next().ToElement();
+			if (screenElem.GetAttributeString("ID","")==screenID)
+			{
+				return screenElem;
+			}
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	cXmlElement@ FindLevel(tString levelID)
+	{
+		cXmlNodeListIterator @it = mLevels.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement@ levelElem = it.Next().ToElement();
+			if (levelElem.GetAttributeString("ID","")==levelID)
+			{
+				return levelElem;
+			}
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// INTERFACE
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	tString GetSketchFile()
+	{
+		cXmlElement@ screen = FindCurrentScreen();
+		if (screen is null)
+			return "";
+		return screen.GetAttributeString("Sketch","");
+	}
+	
+	//------------------------------------------------------------
+	
+	tString GetVoiceFile()
+	{
+		if (mbScreenAlreadyShown)	// No sound if you've seen this screen before.
+			return "";
+			
+		cXmlElement@ screen = FindCurrentScreen();
+		if (screen is null)
+			return "";
+
+
+		return screen.GetAttributeString("Voice","");
+	}
+	
+	//------------------------------------------------------------
+	
+	tString GetTextList()
+	{
+		cXmlElement@ screen = FindCurrentScreen();
+		if (screen is null)
+			return "";
+		return screen.GetAttributeString("Text","");
+	}
+	
+	//------------------------------------------------------------
+	
+	tString GetLoadingIcon()
+	{
+		cXmlElement@ screen = FindCurrentScreen();
+		if (screen is null)
+			return "stage0";
+		return screen.GetAttributeString("Icon","stage0");
+	}
+	
+	//------------------------------------------------------------
+	
+	tString GetFadeColor()
+	{
+		cXmlElement@ screen = FindCurrentScreen();
+		if (screen is null)
+			return "0 0 0 1";
+		
+		if (mbUseAltFadeColor)
+		{
+			mbUseAltFadeColor = false;
+			return screen.GetAttributeString("AltFadeColor", "0 0 0 1");
+		}
+		
+		return screen.GetAttributeString("FadeColor", "0 0 0 1");
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetLoadingScreen(tString levelID)
+	{
+		// Search levels, set up section / screen
+		cXmlElement@ levelElem = FindLevel(levelID);
+		if (levelElem==null)
+		{
+			Error("[LoadScreens] Can't find entry for level: "+levelID);
+			return;
+		}
+		
+		tString newSection = levelElem.GetAttributeString("Section","");
+		tString minScreen = levelElem.GetAttributeString("MinScreen","");
+		
+		// Change section
+		if (newSection!=mCurrentSectionID)
+		{
+			SetScreen(newSection, minScreen);
+			return;
+		}
+		
+		// Existing section
+		cXmlElement@ section = FindSection(mCurrentSectionID);
+		cXmlNodeListIterator @it = section.GetChildIterator();
+		while(it.HasNext())
+		{
+			cXmlElement@ screenElem = it.Next().ToElement();
+			if (screenElem.GetAttributeString("ID","")==minScreen)
+			{
+				// Hit minimum first, so stay where we are.
+				break;
+			}
+			else if (screenElem.GetAttributeString("ID","")==mCurrentScreenID)
+			{
+				// Hit current scene before we hit the minimum, so update to the minimum
+				mCurrentScreenID = minScreen;
+				break;
+			}
+		}
+		SetScreen(mCurrentSectionID, mCurrentScreenID);
+	}
+	
+	//------------------------------------------------------------
+	
+	void ProgressStory()
+	{
+		cLux_AddDebugMessage("[LOADSCREEN] Progressing story.");
+		
+		cXmlElement@ section = FindSection(mCurrentSectionID);
+		cXmlNodeListIterator @it = section.GetChildIterator();
+		
+		cLux_AddDebugMessage("[LOADSCREEN] Current:"+mCurrentSectionID+"."+mCurrentScreenID);
+		bool foundPrev=false;
+		while(it.HasNext())
+		{
+			cXmlElement@ screenElem = it.Next().ToElement();
+			if (foundPrev)
+			{
+				mCurrentScreenID = screenElem.GetAttributeString("ID","");
+				cLux_AddDebugMessage("[LOADSCREEN] Progressed to:"+mCurrentSectionID+"."+mCurrentScreenID);
+				return;
+			}
+			if (screenElem.GetAttributeString("ID","")==mCurrentScreenID)
+			{
+				foundPrev = true;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetScreen(const tString& in asSectionID, const tString& in asScreenID)
+	{
+			cLux_AddDebugMessage("[LOADSCREEN] Set to:"+asSectionID+"."+asScreenID);
+			mCurrentSectionID = asSectionID;
+			mCurrentScreenID = asScreenID;
+			mbScreenAlreadyShown = ScreenShown(asScreenID);	
+			SetScreenShown(asScreenID);
+	}
+	
+	//------------------------------------------------------------
+	
+	bool ScreenShown(const tString& in asID)
+	{
+		for (uint i=0;i<mvScreensShown.size();++i)
+		{
+			if (mvScreensShown[i]==asID)
+				return true;
+		}
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetScreenShown(const tString& in asID)
+	{
+		if (ScreenShown(asID))
+			return;
+		mvScreensShown.push_back(asID);
+	}
+	
+	//------------------------------------------------------------
+	
+	array<tString> GetAllScreensShown()
+	{
+		return mvScreensShown;
+	}
+	
+	//------------------------------------------------------------
+	
+	void SetUseAltFadeColor(bool abX)
+	{
+		mbUseAltFadeColor = abX;
+	}
+	
+	//------------------------------------------------------------
+	
+	//Apparently all of the last on text stuff is handled here, so have to overwrite the entries directly
+	
+	tString msLastTimeOnText="";
+	tString msLastTimeOnSketch="";
+	
+	array<tString> gvPreviouslyOnSketches = {
+		"01-01-intro",						"loadscreen_1",
+		"01-02-beach",						"loadscreen_2",
+		"01-03-monke-temple-caves",			"loadscreen_3a",
+		"01-03-monke-temple-temple",		"loadscreen_3b",
+		"01-04-dream",		                "loadscreen_4",
+		"02-01-tomb-escape",		        "loadscreen_5",
+		"02-02-tomb-exit",				    "loadscreen_6",
+		"02-03-fabachino-jungle",			"loadscreen_7",
+		"02-04-monke-town-crystal-pepsi",	"loadscreen_8a",
+		"02-04-monke-town-monke",			"loadscreen_8b",
+		"03-01-fabio",			            "loadscreen_9",
+		"03-02-pizzaball-court",			"loadscreen_10a",
+		"03-02-pizzaball-bitcoin",			"loadscreen_10b",
+		"03-03-finale",						"loadscreen_11"
+	};
+	
+	void SetLastTimeOn(const tString& in asMapName)
+	{
+		// Default
+		tString lastTimeOnText = asMapName;
+		
+		// Exceptions
+		if (asMapName=="01-03-monke-temple")
+		{
+			lastTimeOnText="01-03-monke-temple-caves";
+			if (cScript_GetGlobalVarBool("Temple_Discovered"))
+				lastTimeOnText="01-03-monke-temple-temple";
+		}
+		else if (asMapName=="02-04-monke-town")
+		{
+			lastTimeOnText="02-04-monke-town-crystal-pepsi";
+			if (cScript_GetGlobalVarBool("Crystal_Pepsi"))
+				lastTimeOnText="02-04-monke-town-monke";
+		}			
+		else if (asMapName=="03-02-pizzaball")
+		{
+			lastTimeOnText="03-02-pizzaball-court";
+			if (cScript_GetGlobalVarBool("Pizzaball_Dunk"))
+				lastTimeOnText="03-02-pizzaball-bitcoin";
+		}
+		
+		// Images
+		tString lastTimeOnSketch = "";
+		for (int i=0;i<gvPreviouslyOnSketches.size();i+=2)
+		{
+			if (gvPreviouslyOnSketches[i]==lastTimeOnText)
+			{
+				lastTimeOnSketch=gvPreviouslyOnSketches[i+1];
+				break;
+			}
+		}
+
+		msLastTimeOnText = lastTimeOnText;
+		msLastTimeOnSketch = lastTimeOnSketch;
+		
+		MainMenu_Sketchbook_SetSketch(msLastTimeOnSketch);
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_FigureOutLoadingScreen()
+	{
+		tString sMapName = cScript_GetGlobalArgString(0);
+		SetLoadingScreen(sMapName);
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_GetSketchFile()
+	{
+		tString sSketchFile = GetSketchFile();
+		cScript_SetGlobalReturnString(sSketchFile);
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_GetVoiceFile()
+	{
+		tString sVoiceFile = GetVoiceFile();
+		cScript_SetGlobalReturnString(sVoiceFile);
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_GetScreenAlreadyShown()
+	{
+		cScript_SetGlobalReturnString(mbScreenAlreadyShown?"true":"false");
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_GetTextList()
+	{
+		cScript_SetGlobalReturnString(GetTextList());
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_GetLoadingIcon()
+	{
+		cScript_SetGlobalReturnString(GetLoadingIcon());
+	}
+
+	//------------------------------------------------------------
+	
+	void Global_GetFadeColor()
+	{
+		tString sFadeColor = GetFadeColor();
+		cScript_SetGlobalReturnString(sFadeColor);
+	}
+	
+	//------------------------------------------------------------
+	
+	void Global_FigureOutLastTimeOnData()
+	{
+		tString sMapName = cScript_GetGlobalArgString(0);
+		SetLastTimeOn(sMapName);
+		cScript_SetGlobalReturnString(msLastTimeOnText);
+	}
+	
+	//------------------------------------------------------------
+	void Global_GetLastTimeOnSketch()
+	{
+		cScript_SetGlobalReturnString(msLastTimeOnSketch);
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// MAP LOADING
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnMapEnter(cLuxMap @apMap)
+	{
+		
+	}
+
+	//------------------------------------------------------------
+
+	void OnMapLeave(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+	
+	void PreloadData(cLuxMap @apMap)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+
+	void CreateWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void DestroyWorldEntities(cLuxMap @apMap)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GENERAL
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnEnterContainer(const tString&in asOldContainer)
+	{
+
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnLeaveContainer(const tString&in asNewContainer)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void Update(float afTimeStep)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void VariableUpdate(float afTimeStep)
+	{
+
+	}
+
+	//------------------------------------------------------------
+	
+	void PostUpdate(float afTimeStep)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void Reset()
+	{
+		mbUseAltFadeColor = false;
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// ACTIONS
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnAction(int alAction, bool abPressed)
+	{
+	}
+	
+	//------------------------------------------------------------
+
+	void OnAnalogInput(int alAnalogId, const cVector3f &in avAmount)
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnExitPressed()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppGotInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	void AppLostInputFocus()
+	{
+	
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// GUI
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+	
+	void OnGui(float afTimeStep)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	void OnDraw(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	void OnPostRender(float afFrameTime)
+	{
+	}
+	
+	//------------------------------------------------------------
+	
+	/////////////////////////////////////////
+	// PROPERTIES
+	/////////////////////////////////////////
+	
+	//------------------------------------------------------------
+
+	[nosave] iXmlDocument@ mLoadScreensDoc;
+	[nosave] cXmlElement@ mLevels;
+	[nosave] cXmlElement@ mScreens;
+	[nosave] cXmlElement@ mCurrentScreen;
+	
+	tString mCurrentSectionID="";
+	tString mCurrentScreenID="";
+	bool mbScreenAlreadyShown = false;
+	bool mbUseAltFadeColor = false;
+	array<tString> mvScreensShown;
+	
+	//------------------------------------------------------------
+}

@@ -3001,7 +3001,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 			}
 		}*/
 		
-		array<tString> vMenuItems = {"Language", "ShowHints", "ScreenDisortion"/*, "ColorSeparation"*/, "CrosshairSimple"/*, "Options_Accessibility"*/, "Back"};
+		array<tString> vMenuItems = {"Language", "ShowHints", "ScreenDisortion"/*, "ColorSeparation"*/, "CrosshairSimple"/*, "Options_Accessibility"*/, "ToggleCrosshair", "Back"};
 
 		for (int i=0; i<=vMenuItems.length()-1; i++)
 		{
@@ -3012,7 +3012,7 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		OptionMenu_AlignExtraButtonWidth();		
 		
 		cVector2f vGameplayMenuPos = kOptionsGameplayBgPos;
-		cVector2f vGameplayMenuSize = Platform_IsConsole() ? kOptionsGameplayPS4BgSize : kOptionsGameplayBgSize;
+		cVector2f vGameplayMenuSize = (Platform_IsConsole() ? kOptionsGameplayPS4BgSize : kOptionsGameplayBgSize) + cVector2f(0, 45);
 		vGameplayMenuSize += cVector2f(gfOptionsMenu_ExtraWidth+gfOptionsMenu_ExtraWidth_MultiSelect,0);
 		
 		cVector2f vOptionsMenuSize = kOptionsBgSize+cVector2f(gfOptionsMenu_ExtraWidth,0);
@@ -3155,6 +3155,24 @@ class cScrMenuHandler : iScrUserModule, iScrUserModule_Interface, iScrMenuHandle
 		}
 		mlCurrentItemId++;	
 		*/
+		//////////////////
+		// Toggle Crosshair
+		if (OptionMenu_CheckOutOfLimits(mlCurrentItemId) == false)
+		{
+			//////////////
+			// Draw button and update config
+			bool bValue = mpConfig.GetBool("Game", "ToggleCrosshair", true);
+			bool bNewValue = OptionMenu_ButtonOptionsToggle(vMenuItems[mlCurrentItemId-mlFirstItemId], kOptionsGameplayButtonPos, mlCurrentItemId, msSelectedGameplayButton, bValue, mlActionHorizontal, vRightAnchor, vInfoBoxPos, mfTransitionAlpha);
+			
+			if(bValue != bNewValue)
+			{
+				mpConfig.SetBool("Game", "ToggleCrosshair", bNewValue);
+				ApplySettings();
+			}
+
+			msSelectedGameplayButton = OptionMenu_UpdateFocusCustom(vMenuItems,vMenuItems[mlCurrentItemId], msSelectedGameplayButton);
+		}
+		mlCurrentItemId++;
 		/////////////////
 		// Back
 		{

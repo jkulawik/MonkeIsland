@@ -642,7 +642,11 @@ class cScrPlayerCustom : cScrPlayer
 			
 			///////////////
 			// Special behavior
-			if (mbUseNoHintsCursor && meCrossHairState != eCrossHairState_Default)
+			if (!mbEnableCrosshair && meCrossHairState == eCrossHairState_Default)
+			{
+				sCross = mvCrossHairGfx[eCrossHairState_None];
+			}
+			else if (mbUseNoHintsCursor && meCrossHairState != eCrossHairState_Default)
 			{
 				sCross = mvCrossHairGfx[eCrossHairState_NoHints];
 			}
