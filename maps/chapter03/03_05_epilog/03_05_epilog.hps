@@ -37,8 +37,6 @@ class cScrMap : iScrMap
 	{
 		// Put display name entry in english.lang / Levels
 		GetBase().SetDisplayNameEntry("03-05-epilogue");
-		
-		// Set up color grading etc.
 	}
 	
 	//-------------------------------------------------------
@@ -243,49 +241,5 @@ class cScrMap : iScrMap
 		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to Fredrik Games for making such an a the amazing game:)"));
 		cEngine_Exit();
 	}
- 
-	//-------------------------------------------------------
- 
-	//} END MAIN FUNCTIONS
- 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// ==============
-	// SCENE X *NAME OF SCENE*
-	// ==============
-	//{//////////////////////////////////////////////////////////////////////////////////////
- 
-		/////////////////////////////////////////
-		// General
-		//{//////////////////////////////////////
-		 
-		//-------------------------------------------------------
-	 
-		/*Put any variables that are used by many events in Scene X here.*/
-	 
-		//-------------------------------------------------------
-	 
-		/*Put any functions that are used in more than one event in Scene X here.*/
-	 
-		//-------------------------------------------------------
-		
-		//} END General	
-	 
-		/////////////////////////////////////////
-		// Event *Name Of Event*
-		//{//////////////////////////////////////
-
-		//-------------------------------------------------------
-
-		/*Put any variables that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		/*Put any functions that are only used in Scene X, Event X here.*/
-
-		//-------------------------------------------------------
-
-		//} END Event *Name Of Event*
-	 
-	//} END SCENE X
  
 }
