@@ -650,7 +650,7 @@ class cScrMap : iScrMap
 			mbShowBattleText = false;
 			Player_SetActive(false);
 			
-			Music_Play("speech", 0.8f, false, eMusicPrio_BigEvent);
+			Music_Play("speech", 0.7f, false, eMusicPrio_BigEvent);
 			Voice_Play("Ending_speech", -1, "OnEndingSpeech");
 		}
 		
