@@ -178,8 +178,7 @@ class cScrMap : iScrMap
 		
 		if(alAction == eAction_Test1)
 		{
-			mbShowBattleText = !mbShowBattleText;
-			Map_AddTimer("AddLetters", 0.0f, "Timer_AddLetters");
+			Seq_DarkWorldLightning("");
 		}
 		if(alAction == eAction_Test2)
 		{
@@ -500,10 +499,11 @@ class cScrMap : iScrMap
 		Sequence_Begin("Seq_DarkWorldLightning", mSeqDataDarkWorldLightning);
 		if (Sequence_DoStepAndWait(0.1f))
 		{
-			Sound_CreateAtEntity("Sound_Lightning", "01_02_caves/events/darkworld_thunder", "player");
+			Sound_CreateAtEntity("Sound_Lightning", "01_02_caves/events/darkworld_thunder", "player", 0, false, 0.5f);
 		}
 		else if (Sequence_DoStepAndWait(0.06f))
 		{
+			Music_PlayOverlay("rumpa_quick", 1.0f);
 			Map_Preset_Fade("Preset_LightningFull", 0.1f);
 			Light_FadeBrightnessTo("Light_Point_20", 150.f, 0.1f, eEasing_SineIn);
 		}
