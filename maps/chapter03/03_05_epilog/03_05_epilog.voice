@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<VoiceData>
+ <Characters>
+  <Character ID="0" Name="Player" DisplayName="David" Actor="TiMan" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1" ReverbVolume="1" SpeakerSpread="60" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+ </Characters>
+ <Effects />
+ <Scenes>
+  <Scene ID="0" Name="Main" FocusPrio="2" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="0.8" />
+ </Scenes>
+ <Sections>
+  <Section Name="Main" Desc="Mission Briefing" />
+ </Sections>
+ <Subjects>
+  <Subject Name="ImHome" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="Shippable" AudioStatus="Final" PlayOnce="True">
+    <Sound Text="Honey, I'm home!" EndPadding="-1" FileName="main_imhome_001_player_001" Timestamp="2021-02-27 07:50" />
+   </Line>
+  </Subject>
+  <Subject Name="What" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Main">
+   <Line CharacterId="0" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="What the hell...!" FileName="main_what_001_player_001" Timestamp="2021-02-27 07:50" />
+   </Line>
+  </Subject>
+ </Subjects>
+</VoiceData>

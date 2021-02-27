@@ -224,9 +224,7 @@ class cScrMap : iScrMap
 	float mfTextAlphaTarget = 1.0f;
 	float mfTextAlpha = 1.0f;
 	float mfAlphaFadeSpeed = 1.0f;
-	
-	bool mbDoHappy = false;
-	
+		
 	//-------------------------------------------------------
 	
 	void OnGui(float afTimeStep)
@@ -303,14 +301,7 @@ class cScrMap : iScrMap
 				ImGui_DoLabelExt(msBattleLetters, label, vTextPos, cVector2f_MinusOne, 2.0f);
 			
 			ImGui_GroupEnd();
-		}
-			
-		if (!mbDoHappy) return;
-		
-		ImGui_SetModColorMul(cColor(1.0f, 1.0f));
-			
-		cImGuiGfx happy("happy.dds", eImGuiGfx_Texture);
-		ImGui_DoImage(happy, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
+		}	
 	}
 	
 	//-------------------------------------------------------
@@ -667,32 +658,9 @@ class cScrMap : iScrMap
 		{
 			Music_StopAll(1.0f);
 			
-			Sound_FadeGlobalVolume(0.f, 0.f, eSoundEntryType_All);
-			
-			Credits_Start("Credits_TrueEnd.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "good_ending", 0.00f, 0.5f, 0.5f);
+			Map_ChangeMap("03_05_epilog.hpm", "Start_Begin", "", "");
 		}
 		
-		void OnEndOfCredits()
-		{
-			if (Credits_GetIsSkipActive())
-			{
-				mbDoHappy = true;
-				Music_Play("happy", 0.11f, true, eMusicPrio_BigEvent);
-				
-				Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
-			}
-			else
-			{
-				Map_ChangeMap("main_menu.hpm","Start_Begin","","",false);
-			}
-		}
-		
-		void Timer_GtfoToMenu(const tString&in asTimer)
-		{
-			cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to frictional games for making such an a the amazing game:)"));
-			cEngine_Exit();
-		}
-
 		//-------------------------------------------------------
 
 		//} END Event *Name Of Event*

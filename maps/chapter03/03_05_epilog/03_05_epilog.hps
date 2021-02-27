@@ -1,0 +1,291 @@
+#include "interfaces/Map_Interface.hps"
+#include "base/Inputhandler_Types.hps"
+
+#include "helpers/helper_map.hps"
+#include "helpers/helper_menu.hps"
+#include "helpers/helper_agent.hps"
+#include "helpers/helper_props.hps"
+#include "helpers/helper_effects.hps"
+#include "helpers/helper_audio.hps"
+#include "helpers/helper_imgui.hps"
+#include "helpers/helper_sequences.hps"
+#include "helpers/helper_game.hps"
+#include "helpers/helper_modules.hps"
+#include "helpers/helper_ai.hps"
+#include "helpers/helper_areas.hps"
+#include "helpers/helper_player.hps"
+#include "helpers/helper_message.hps"
+#include "helpers/helper_rotation.hps"
+
+//--------------------------------------------------
+ 
+class cScrMap : iScrMap
+{
+	//--------------------------------------------
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN CALLBACKS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+	////////////////////////////
+	// Set up map environment
+	void Setup()
+	{
+		// Put display name entry in english.lang / Levels
+		GetBase().SetDisplayNameEntry("03-05-epilogue");
+		
+		// Set up color grading etc.
+	}
+	
+	//-------------------------------------------------------
+		
+	void PreloadData()
+	{
+	}
+	
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run first time starting map
+	void OnStart()
+	{
+		FearHandler_SetActive(false);
+		
+		FearHandler_SetPermaFailEnabled(false);
+		FearHandler_SetWhispersActive(true);
+		FearHandler_SetAllowDarknessReminderHint(false);
+		FearHandler_SetAllowLanternOveruseHint(false);
+		FearHandler_SetAllowMonsterHint(false);
+		FearHandler_SetAllowWarningHint(false);
+		FearHandler_SetAllowLanternRefillHint(false);
+		FearHandler_SetAllowLanternReminderHint(false);
+		FearHandler_SetCanGasp(false);
+		
+		Map_AddTimer("home", 1.0f, "Timer_Home");
+		
+		/////////////////////////
+		// Debug
+		if(cLux_ScriptDebugOn())
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when entering map
+	void OnEnter()
+	{	
+		Player_SetAmbientLight_Indoors(true);
+		
+		PlayerBody_SetActive(true);
+		Player_SetMapDeepShadow(0.05f);
+		Player_SetNightVisionEnabled(false);
+		Player_SetNightVisionBrightness(1.0f);
+		Player_SetNightVisionRadius(5.5f);
+		Player_SetFallDistances(1.0f, 4.0f, 6.0f);
+		Player_SetVertigoActive(false);
+		Player_SetAllowCheckBaby(false);
+		
+		Player_SetJumpDisabled(false);
+		Player_SetCrouchDisabled(false);
+		Player_SetLeanDisabled(false);
+				
+		Pregnancy_SetBarksActive(false);
+		
+		Sketchbook_SetInventoryEnabled(false);
+		
+		cLux_ClearAllMapSaveData();		
+		Game_AutoSave();
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// Run when leaving map
+	void OnLeave()
+	{
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// The player has died.
+	void OnPlayerKilled(int alRecentDeaths, const tString&in asSource)
+	{
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player HP reaches 0
+	bool OnDeath(const tString &in asSource)
+	{
+		cLux_AddTodoMessage("DEAD : SOURCE = " + asSource);
+		
+		if (asSource == "SomeReason")
+		{
+			Effect_Fade_Out(1.0f);
+			return true; // return true to completely override base behaviour
+		}
+		
+		// return false for default behaviour
+		return false;
+	}
+	
+	//-------------------------------------------------------
+	
+	////////////////////////////////////
+	// Called when player should respawn (after death)
+	bool OnRespawn(const tString &in asSource)
+	{		
+		// return false for default behaviour (fadeout and death area)
+		return false;
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// To get when player makes input (mostly used for debug)
+	void OnAction(int alAction, bool abPressed) 
+	{
+		if(abPressed==false) return;
+		
+		if(alAction == eAction_Test1)
+		{
+		}
+	}
+
+	//-------------------------------------------------------
+
+	////////////////////////////
+	// This only used for pure debug purposes when info needs to printed.
+	float DrawDebugOutput(cGuiSet @apSet,iFontData @apFont,float afY)
+	{
+		//afY = cLux_DrawDebugText("My Debug value:"+..., afY);
+		return afY;
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN CALLBACKS
+ 
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// MAIN FUNCTIONS
+	// ==============
+	//{///////////////////////////////////////////////////////////////////////////////////////
+ 
+	//-------------------------------------------------------
+ 
+ 	bool mbDoHappy = false;
+ 
+	void OnGui(float afTimeStep)
+	{
+		if (!mbDoHappy) return;
+		
+		ImGui_SetModColorMul(cColor(1.0f, 1.0f));
+			
+		cImGuiGfx happy("happy.dds", eImGuiGfx_Texture);
+		ImGui_DoImage(happy, ImGui_NrmPos(cVector3f(0, 0, 200.0f)), ImGui_NrmSize(cVector2f(1,1)));
+	}
+ 
+	//-------------------------------------------------------
+	
+	void Timer_Home(const tString&in asTimer)
+	{
+		Voice_Play("ImHome");
+	}
+ 
+	bool End(const tString &in asParent, const tString &in asChild, int alState)
+	{
+		Voice_Play("What");
+		
+		Player_StartLookAt("block_box_1", 5, 5, 5, true);
+		Player_SetMoveSpeedMul(0.1f);
+		Music_Play("DUNDUN", 0.7f, false, eMusicPrio_BigEvent);
+		
+		Map_AddTimer("Bye", 3.5f, "Timer_Bye");
+		
+		return false;
+	}
+	
+	void Timer_Bye(const tString&in asTimer)
+	{
+		Effect_Fade_Out(0.0f);
+		Sound_FadeGlobalVolume(0.f, 0.f, eSoundEntryType_All);
+			
+		Credits_Start("Credits_TrueEnd.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "good_ending", 0.00f, 0.5f, 0.5f);
+	}
+	
+	void OnEndOfCredits()
+	{
+		if (Credits_GetIsSkipActive())
+		{
+			mbDoHappy = true;
+			Music_Play("happy", 0.11f, true, eMusicPrio_BigEvent);
+				
+			Map_AddTimer("GtfoToMenu", 2.0, "Timer_GtfoToMenu");
+		}
+		else
+		{
+			Map_ChangeMap("main_menu.hpm","Start_Begin","","",false);
+		}
+	}
+	
+	void Timer_GtfoToMenu(const tString&in asTimer)
+	{
+		cSystem_Wrapper_CreateMessageBox(eMsgBoxType_Warning, tWString("don't skip the credits"), tWString("special thanks to Fredrik Games for making such an a the amazing game:)"));
+		cEngine_Exit();
+	}
+ 
+	//-------------------------------------------------------
+ 
+	//} END MAIN FUNCTIONS
+ 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ==============
+	// SCENE X *NAME OF SCENE*
+	// ==============
+	//{//////////////////////////////////////////////////////////////////////////////////////
+ 
+		/////////////////////////////////////////
+		// General
+		//{//////////////////////////////////////
+		 
+		//-------------------------------------------------------
+	 
+		/*Put any variables that are used by many events in Scene X here.*/
+	 
+		//-------------------------------------------------------
+	 
+		/*Put any functions that are used in more than one event in Scene X here.*/
+	 
+		//-------------------------------------------------------
+		
+		//} END General	
+	 
+		/////////////////////////////////////////
+		// Event *Name Of Event*
+		//{//////////////////////////////////////
+
+		//-------------------------------------------------------
+
+		/*Put any variables that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		/*Put any functions that are only used in Scene X, Event X here.*/
+
+		//-------------------------------------------------------
+
+		//} END Event *Name Of Event*
+	 
+	//} END SCENE X
+ 
+}
