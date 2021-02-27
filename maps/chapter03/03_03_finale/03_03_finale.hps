@@ -181,7 +181,7 @@ class cScrMap : iScrMap
 		}
 		if(alAction == eAction_Test2)
 		{
-			Decal_SetDynamicVisible("blood_splatter_round.mat", true);
+			Voice_Play("Munshi_Monologue", -1, "OnVoiceSubjectDonePlaying");
 		}
 		if(alAction == eAction_Test3)
 		{
