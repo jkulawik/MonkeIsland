@@ -307,20 +307,20 @@ class cScrLoadScreensHandler : iScrUserModule, iScrUserModule_Interface, iScrLoa
 	tString msLastTimeOnSketch="";
 	
 	array<tString> gvPreviouslyOnSketches = {
-		"01-01-intro",						"loadscreen_1",
-		"01-02-beach",						"loadscreen_2",
-		"01-03-monke-temple-caves",			"loadscreen_3a",
-		"01-03-monke-temple-temple",		"loadscreen_3b",
-		"01-04-dream",		                "loadscreen_4",
-		"02-01-tomb-escape",		        "loadscreen_5",
-		"02-02-tomb-exit",				    "loadscreen_6",
-		"02-03-fabachino-jungle",			"loadscreen_7",
-		"02-04-monke-town-crystal-pepsi",	"loadscreen_8a",
-		"02-04-monke-town-monke",			"loadscreen_8b",
-		"03-01-fabio",			            "loadscreen_9",
-		"03-02-pizzaball-court",			"loadscreen_10a",
-		"03-02-pizzaball-bitcoin",			"loadscreen_10b",
-		"03-03-finale",						"loadscreen_11"
+		"01-01-intro",						"monkescreen_1",
+		"01-02-beach",						"monkescreen_2",
+		"01-03-monke-temple-caves",			"monkescreen_3a",
+		"01-03-monke-temple-temple",		"monkescreen_3b",
+		"01-04-dream",		                "monkescreen_4",
+		"02-01-tomb-escape",		        "monkescreen_5",
+		"02-02-tomb-exit",				    "monkescreen_6",
+		"02-03-fabachino-jungle",			"monkescreen_7",
+		"02-04-monke-town-crystal-pepsi",	"monkescreen_8a",
+		"02-04-monke-town-monke",			"monkescreen_8b",
+		"03-01-fabio",			            "monkescreen_9",
+		"03-02-pizzaball-court",			"monkescreen_10a",
+		"03-02-pizzaball-bitcoin",			"monkescreen_10b",
+		"03-03-finale",						"monkescreen_11"
 	};
 	
 	void SetLastTimeOn(const tString& in asMapName)

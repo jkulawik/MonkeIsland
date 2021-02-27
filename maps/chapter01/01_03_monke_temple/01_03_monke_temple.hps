@@ -455,8 +455,6 @@ class cScrMap : iScrMap
 		
 		bool Autosave(const tString &in asParent, const tString &in asChild, int alState)
 		{
-			cScript_SetGlobalVarBool("Temple_Discovered", true);
-			
 			Game_AutoSave();
 			
 			return false;
@@ -481,6 +479,7 @@ class cScrMap : iScrMap
 			mbAmbientMusicAllowed = false;
 			
 			Map_AddTimer("StopAmbientMusic", 0.1f, "AmbientMusicHandler");
+			cScript_SetGlobalVarBool("Temple_Discovered", true);
 			Seq_TombLightUp("");
 			
 			return false;
