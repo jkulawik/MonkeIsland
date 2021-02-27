@@ -55,6 +55,8 @@ class cScrMap : iScrMap
 		
 		Map_Preset_SetupDirLight("Preset_LightningFull", true, cColor(1,1.5,2,1), 5, cVector3f(0.334, -0.882, 0.332), cColor(0.092,0.069,0.069,1), cColor(0.092,0.069,0.069,1));
 		Map_Preset_SetupBloom("Preset_LightningFull", 4.f, 0.02f, 1.5f, cColor(1.f, 2.f, 2.f, 1.f));
+		
+		Decal_SetVisibleInArea(false, "BloodArea", "blood_splatter_round.mat");
 	}
 	
 	//-------------------------------------------------------
@@ -179,7 +181,7 @@ class cScrMap : iScrMap
 		}
 		if(alAction == eAction_Test2)
 		{
-			mfTextAlphaTarget = 0.0f;
+			Decal_SetDynamicVisible("blood_splatter_round.mat", true);
 		}
 		if(alAction == eAction_Test3)
 		{
@@ -598,6 +600,8 @@ class cScrMap : iScrMap
 		bool KillMunshi(const tString &in asParent, const tString &in asChild, int alState)
 		{
 			Map_RemoveTimer("Timer_BananaAttack");
+			
+			Decal_SetVisibleInArea(true, "BloodArea", "blood_splatter_round.mat");
 			
 			Entity_SetActive("monke", false);
 			Entity_SetActive("munshi", false);
