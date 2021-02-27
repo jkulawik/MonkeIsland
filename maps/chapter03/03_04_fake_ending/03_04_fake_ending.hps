@@ -194,11 +194,11 @@ class cScrMap : iScrMap
 			Player_FadeFOVMulTo(0.2f, 0.01f);
 			Light_SetBrightness("Light_Spot_1", 5.0f);
 		}
-		if(Sequence_DoStepAndWait(6.0f))
+		if(Sequence_DoStepAndWait(4.0f))
 		{
 			Music_Play("bad_end", 1.0f, false, eMusicPrio_BigEvent);
 		}
-		if(Sequence_DoStepAndWait(8.0f))
+		if(Sequence_DoStepAndWait(10.0f))
 		{
 			Entity_SetActive("monke", true);
 			Entity_AddImpulse("monke", cVector3f_Forward * 5, true, false);	
