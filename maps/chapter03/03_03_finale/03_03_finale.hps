@@ -424,7 +424,7 @@ class cScrMap : iScrMap
 		{
 			if (!mbFight)
 			{
-				Map_ChangeMap("03_04_fake_ending.hpm", "Start_Begin", "", "");
+				Map_ChangeMap("03_04_fake_ending.hpm", "Start_Begin", "", "", false);
 			}
 		}
 		
@@ -657,7 +657,7 @@ class cScrMap : iScrMap
 		{
 			Music_StopAll(1.0f);
 			
-			Map_ChangeMap("03_05_epilog.hpm", "Start_Begin", "", "");
+			Map_ChangeMap("03_05_epilog.hpm", "Start_Begin", "", "", false);
 		}
 		
 		//-------------------------------------------------------
