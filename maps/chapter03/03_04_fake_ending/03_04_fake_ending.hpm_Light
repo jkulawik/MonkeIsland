@@ -1,0 +1,15 @@
+<HPLMapTrack_Light ID="40F9821CE5E82954BEDD421A68357FB2330D44B" MajorVersion="1" MinorVersion="1">
+    <IrradianceSets>
+        <Set Name="Default" Priority="0" LightBoost="1" MaxDistance="2000" BounceNum="3" Quality="Normal" UseFog="false" UseDepthOfField="true" UseSkybox="true" Preview="true" />
+    </IrradianceSets>
+    <Section Name="10911851120317680304">
+        <Objects>
+            <SpotLight ID="268435465" Name="Light_Spot_1" CreStamp="1614383508" ModStamp="1614384724" WorldPos="0.00254044 7.77673 -0.583274" Rotation="-1.32548 -0.00960177 -2.7941e-09" Scale="1 1 1" CastShadows="true" ShadowResolution="High" ShadowsAffectStatic="true" ShadowsAffectDynamic="true" Radius="15" Gobo="" GoboType="Diffuse" GoboAnimMode="None" GoboAnimFrameTime="1" GoboAnimStartTime="0" DiffuseColor="0.990234 0.889452 0.765884 1" FlickerActive="false" FlickerOnMinLength="0" FlickerOnMaxLength="0" FlickerOnPS="" FlickerOnSound="" FlickerOffMinLength="0" FlickerOffMaxLength="0" FlickerOffPS="" FlickerOffSound="" FlickerOffColor="0 0 0 1" FlickerOffRadius="0" FlickerFade="false" FlickerOnFadeMinLength="0" FlickerOnFadeMaxLength="0" FlickerOffFadeMinLength="0" FlickerOffFadeMaxLength="0" CastDiffuseLight="true" CastSpecularLight="true" Brightness="0" Static="false" CulledByDistance="true" CulledByFog="true" FalloffPow="0.3" FOV="1.0472" Aspect="1" NearClipPlane="0.1" SpotFalloffPow="0.5" ShadowFadeRange="-1" ShadowCasterDistance="-1" ShadowUpdatePriority="10" ConnectedLightMaskID="4294967295" UID="16 25 268435465" />
+            <BoxLight ID="268435466" Name="Light_Box_1" CreStamp="1614384037" ModStamp="1614384092" WorldPos="0.25 2.25 -0.75" Rotation="0 0 0" Scale="1 1 1" CastShadows="false" ShadowResolution="High" ShadowsAffectStatic="true" ShadowsAffectDynamic="true" Radius="1" Gobo="" GoboType="Diffuse" GoboAnimMode="None" GoboAnimFrameTime="1" GoboAnimStartTime="0" DiffuseColor="1 1 1 1" FlickerActive="false" FlickerOnMinLength="0" FlickerOnMaxLength="0" FlickerOnPS="" FlickerOnSound="" FlickerOffMinLength="0" FlickerOffMaxLength="0" FlickerOffPS="" FlickerOffSound="" FlickerOffColor="0 0 0 1" FlickerOffRadius="0" FlickerFade="false" FlickerOnFadeMinLength="0" FlickerOnFadeMaxLength="0" FlickerOffFadeMinLength="0" FlickerOffFadeMaxLength="0" CastDiffuseLight="true" CastSpecularLight="true" Brightness="1" Static="false" CulledByDistance="true" CulledByFog="true" BlendFunc="2" Size="11.25 11.25 11.25" GroundColor="1 1 1 0" SkyColor="1 1 1 0" Weight="1" Bevel="0" FalloffPow="0.4" UseSphericalHarmonics="true" ProbeOffset="0 0 0" ConnectedLightMaskID="4294967295" UID="16 23 268435466">
+                <Irradiance>
+                    <Set SetName="Default">0.029919 0.020211 0.012699 -0.034819 -0.024965 -0.016431 -0.017867 -0.010731 -0.005929 -0.001904 -0.001097 -0.000591 -0.000252 -0.000186 -0.000159 -0.002827 -0.002346 -0.001827 -0.002756 -0.002268 -0.001683 0.001551 0.000895 0.000493 -0.013461 -0.009976 -0.006771</Set>
+                </Irradiance>
+            </BoxLight>
+        </Objects>
+    </Section>
+</HPLMapTrack_Light>

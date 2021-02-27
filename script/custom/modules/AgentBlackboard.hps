@@ -2032,8 +2032,6 @@ class cScrAgentBlackboardModule : iScrUserModule, iScrUserModule_Interface, iScr
 				{
 					cAgentInfo@ pAgentInfo = mvAgents[i];
 					bSkipMusic = cLux_ID_Agent(pAgentInfo.m_idAgent).GetEventTag() == "NoMusic";
-					
-					Debug_Log("TAG NAME: " + cLux_ID_Agent(pAgentInfo.m_idAgent).GetEventTag());
 				}
 				
 				if(!bSkipMusic)

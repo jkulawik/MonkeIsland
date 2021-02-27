@@ -65,6 +65,7 @@ class cScrMap : iScrMap
 		
 	void PreloadData()
 	{
+		ParticleSystem_Preload("grenade_explosion.ps");
 	}
 	
 	//-------------------------------------------------------
@@ -84,6 +85,8 @@ class cScrMap : iScrMap
 		FearHandler_SetAllowLanternRefillHint(false);
 		FearHandler_SetAllowLanternReminderHint(false);
 		FearHandler_SetCanGasp(false);
+		
+		Map_AddTimer("CreatePs", 3.0f, "Timer_CreatePs");
 		
 		/////////////////////////
 		// Debug
@@ -240,6 +243,8 @@ class cScrMap : iScrMap
 				ImGui_SetModUseInput(false);
 				
 				mlClickedSuccumb = 1;
+				
+				mbFight = false;
 				SequenceStates_Resume("Seq_Finale");	
  
 			}
@@ -380,7 +385,8 @@ class cScrMap : iScrMap
 			}
 			else
 			{
-				
+				Music_StopAll(1.0f);
+				Voice_Play("Munshi_Beautiful", -1, "BadEnd");
 			}
 		}
 		else if(Sequence_DoStepAndWait(1.0f))
@@ -394,8 +400,12 @@ class cScrMap : iScrMap
 				Player_SetActive(false);
 				CameraAnimation_Begin("BossCamera", "", false);
 			}
+			else
+			{
+				Effect_Fade_Out(3.0f);
+			}
 		}
-		else if(Sequence_DoStepAndWait(1.0f))
+		else if(Sequence_DoStepAndWait(2.0f))
 		{
 			if (mbFight)
 			{				
@@ -403,6 +413,13 @@ class cScrMap : iScrMap
 				Music_PlayExt("final_boss", true, 1.0f, 1.0f, 0.0f, 0.0f, eMusicPrio_BgAmb, true);
 				
 				Map_AddTimer("AddLetters", 0.0f, "Timer_AddLetters");
+			}
+		}
+		else if(Sequence_DoStepAndContinue())
+		{
+			if (!mbFight)
+			{
+				Map_ChangeMap("03_04_fake_ending.hpm", "Start_Begin", "", "");
 			}
 		}
 		
@@ -418,6 +435,11 @@ class cScrMap : iScrMap
 		PauseMenu_Enabled(false);
 		
 		SequenceStates_Pause("Seq_Finale");
+	}
+	
+	void BadEnd(const tString&in asScene, const tString&in asSubject)
+	{
+		SequenceStates_Resume("Seq_Finale");
 	}
 	
 	void StartFight(const tString&in asScene, const tString&in asSubject)
@@ -521,7 +543,12 @@ class cScrMap : iScrMap
 		 
 		//-------------------------------------------------------
 	 
-		/*Put any variables that are used by many events in Scene X here.*/
+		void Timer_CreatePs(const tString&in asTimer)
+		{
+			Map_AddTimer("CreatePs", 3.0f, "Timer_CreatePs");
+			
+			ParticleSystem_CreateAtEntity("Woosh", "dwl_rift_effect_1.ps", "PsTarget", true);
+		}
 	 
 		//-------------------------------------------------------
 	 
@@ -553,12 +580,41 @@ class cScrMap : iScrMap
 		//{//////////////////////////////////////
 
 		//-------------------------------------------------------
-
-		/*Put any variables that are only used in Scene X, Event X here.*/
+		
+		bool KillMunshi(const tString &in asParent, const tString &in asChild, int alState)
+		{
+			Entity_SetActive("monke", false);
+			Entity_SetActive("munshi", false);
+			
+			ParticleSystem_CreateAtEntity("PS_Explode","grenade_explosion.ps","grenade_place",true);
+			Entity_SetActive("grenade",false);
+						
+			if (cLux_GetPlayer().GetCharacterBody().IsOnGround())
+			{
+				Player_ChangeStateToNormal();
+				Player_SetCrouching(false,true,true);
+				PlayerBody_PlayCutsceneAnimation("protects_herself_from_the_explosion",false,0.3f);
+			}
+			
+			Effect_ImageTrail_Start(1.5,0.8f,10,5);
+			Sound_CreateAtEntity("Sound_GrenadeExplode", "02_03_arsenal/grenade/grenade_explode", "grenade_place", 0.0f, false, 0.5f);
+			Sound_CreateAtEntity("Sound_GrenadeExplodeDebris", "02_03_arsenal/grenade/grenade_debris", "grenade_place", 0.0f, false, 0.5f);
+			
+			Music_Stop(0.0f, eMusicPrio_BgAmb);
+				
+			Music_Play("29_event_end", 1.0f, false, eMusicPrio_BigEvent);
+			
+			Map_AddTimer("Timer_End", 6.0f, "Timer_End");
+			
+			return false;
+		}
 
 		//-------------------------------------------------------
 
-		/*Put any functions that are only used in Scene X, Event X here.*/
+		void Timer_End(const tString&in asTimer)
+		{
+			Effect_Fade_Out(10.0f);
+		}
 
 		//-------------------------------------------------------
 

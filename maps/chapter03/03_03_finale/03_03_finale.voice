@@ -5,7 +5,7 @@
  </Characters>
  <Effects />
  <Scenes>
-  <Scene ID="0" Name="monologue" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="1" />
+  <Scene ID="0" Name="Main" FocusPrio="0" ForceMaxVolume="False" DefaultCriteria="" Volume="1" ReverbVolume="1" />
  </Scenes>
  <Sections>
   <Section Name="Monologue" Desc="The epic finale" />
@@ -38,12 +38,12 @@
     <Sound Text="Cum, let us become monke together." FileName="monologue_munshi_monologue_008_colonel_001" Timestamp="2021-02-25 09:21" />
    </Line>
   </Subject>
-  <Subject Name="Munshi_Beautiful" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Beautiful">
-   <Line CharacterId="0" Prio="0" TextStatus="Shippable" PlayOnce="True">
-    <Sound Text="Do you see? A whole other form... monke form. Isn't it beautiful? " FileName="monologue_munshi_beautiful_001_colonel_001" Timestamp="2021-02-26 10:11" />
+  <Subject Name="Munshi_Beautiful" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Monologue">
+   <Line CharacterId="0" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="Do you see? A whole other form... monke form. Isn't it beautiful? " FileName="main_munshi_beautiful_001_colonel_001" Timestamp="2021-02-27 02:36" />
    </Line>
   </Subject>
-  <Subject Name="Munshi_Fight" UseSingleRandomLine="False" ShowSubtitlesIfMissing="False" SceneId="0" EffectId="-1" Section="Beautiful">
+  <Subject Name="Munshi_Fight" UseSingleRandomLine="False" SceneId="0" EffectId="-1" Section="Beautiful">
    <Line CharacterId="0" Prio="0" TextStatus="Placeholder" PlayOnce="True">
     <Sound Text="So it seems we won't be working together. No regrets, David." FileName="monologue_munshi_beautiful1_001_colonel_001" Timestamp="2021-02-26 10:36" />
    </Line>
