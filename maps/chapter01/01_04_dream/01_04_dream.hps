@@ -39,7 +39,6 @@ class cScrMap : iScrMap
 	// Set up map environment
 	void Setup()
 	{
-		cLux_CleanupData();
 		cLux_ClearAllMapSaveData();
 		
 		GetBase().SetDisplayNameEntry("01-04-dream");
@@ -219,9 +218,6 @@ class cScrMap : iScrMap
 		Prop_RotateToSpeed("banana_throw_2", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		Prop_RotateToSpeed("banana_throw_4", 1.0f,  1.0f, cVector3f(0, 250, 0), true, "");
 		
-/*		Prop_RotateToSpeed("banana_1", 1.0f, 1.0f, true, "");
-		Prop_RotateToSpeed("banana_2", -1.0f, -1.0f, true, "");
-		Prop_RotateToSpeed("banana_3", 1.0f, 1.0f, true, "");*/
 		Prop_RotateToSpeed("banana_4", 1.3f, 1.3f, true, "");
 		Prop_RotateToSpeed("banana_5", -1.3f, -1.3f, true, "");
 		
@@ -340,7 +336,7 @@ class cScrMap : iScrMap
 	//-------------------------------------------------------
 	
 	bool FinalPlatforming(const tString &in asParent, const tString &in asChild, int alState)
-	{
+	{	
 		Entity_SetVarString("DeathTeleport_3", "", "Platforming_4");
 		
 		for(int i = 1; i <= 7; i++)
@@ -392,6 +388,7 @@ class cScrMap : iScrMap
 			
 			if(Sequence_DoStepAndWait(2.508f))
 			{
+				Map_Preload("02_01_tomb_escape.hpm", eWorldStreamPriority_Low);
 				PlayerBody_PlayCutsceneAnimation("interactive_wakeup_test", false, 1.0f, "",0);
 			}
 			else if(Sequence_DoStepAndWait(5.0f))

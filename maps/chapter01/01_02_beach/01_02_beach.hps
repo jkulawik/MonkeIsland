@@ -559,6 +559,8 @@ class cScrMap : iScrMap
 			Sound_CreateAtEntity("Boom", "player/foley/damage/player_fall_death", "Player");
 			Player_Teleport("AfterFall");
 			Effect_Fade_Out(0);
+			
+			Map_Preload("01_03_monke_temple.hpm");
 		}
 		else if(Sequence_DoStepAndWait(1.0f))
 		{
