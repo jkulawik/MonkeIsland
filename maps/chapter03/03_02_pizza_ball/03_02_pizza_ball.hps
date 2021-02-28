@@ -199,8 +199,8 @@ class cScrMap : iScrMap
 	{
 		if (mbPlayPizza)
 		{
-			Music_Play("PIZZABALL2", 1.0f, false, eMusicPrio_BigEvent);
-			Music_PlayOverlay("YES", 0.5f);
+			Music_Play("PIZZABALL2", 0.8f, false, eMusicPrio_BigEvent);
+			Music_PlayOverlay("YES", 0.8f);
 			SwingDoor_SetLocked("door", false, true);
 			cScript_SetGlobalVarBool("Pizzaball_Dunk", true);
 				
