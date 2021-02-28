@@ -17,6 +17,7 @@
 #include "helpers/helper_message.hps"
 #include "helpers/helper_imgui_options.hps"
 #include "helpers/helper_rotation.hps"
+#include "helpers/helper_fake_achievements.hps"
 
 //--------------------------------------------------
  
@@ -628,6 +629,8 @@ class cScrMap : iScrMap
 			Music_Play("29_event_end", 1.0f, false, eMusicPrio_BigEvent);
 			
 			Map_AddTimer("Timer_End", 6.0f, "Timer_End");
+			
+			FakeAchievement_Unlock("win");
 			
 			return false;
 		}

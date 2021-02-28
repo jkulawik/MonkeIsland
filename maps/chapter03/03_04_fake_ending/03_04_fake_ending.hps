@@ -16,6 +16,7 @@
 #include "helpers/helper_player.hps"
 #include "helpers/helper_message.hps"
 #include "helpers/helper_rotation.hps"
+#include "helpers/helper_fake_achievements.hps"
 
 //--------------------------------------------------
  
@@ -50,6 +51,8 @@ class cScrMap : iScrMap
 	// Run first time starting map
 	void OnStart()
 	{
+		FakeAchievement_Unlock("fredrik");
+		
 		Effect_Fade_In(1.0f);
 		FearHandler_SetActive(false);
 		
