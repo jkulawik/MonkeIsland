@@ -311,6 +311,8 @@ class cScrMap : iScrMap
 			Player_AddBodyForce(cVector3f(0, 2000000, 0), false);
 			Player_Jump();
 			
+			Entity_SetActive("grenade_place",false);
+			
 			Map_AddTimer("Timer_DudReaction",2.6f, "OnTimer_DudReaction");
 			
 			Sound_Stop("Sound_GrenadeFuse", 0.2f);
