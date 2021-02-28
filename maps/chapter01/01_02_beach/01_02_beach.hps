@@ -345,6 +345,9 @@ class cScrMap : iScrMap
 			}
 			else if(Sequence_DoStepAndContinue())
 			{
+				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_Gui);
+				Sound_FadeGlobalVolume(1.0f, 0.0f, eSoundEntryType_GuiWorld);
+				
 				Player_FadeMoveSpeedMulTo(1.0f, 25.f);
 				Player_FadeLookSpeedMulTo(1.0f, 4.f);
 			}
