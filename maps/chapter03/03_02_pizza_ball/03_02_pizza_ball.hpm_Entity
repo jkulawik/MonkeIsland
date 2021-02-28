@@ -1,6 +1,6 @@
 <HPLMapTrack_Entity ID="D32ED4AEAD269864B2413DAF1F1F18A7B74501A4" MajorVersion="1" MinorVersion="1">
     <Section Name="10911851120317680304">
-        <FileIndex_Entities NumOfFiles="66">
+        <FileIndex_Entities NumOfFiles="67">
             <File Id="0" Path="entities/arabic_fort/door/arabic_fort_door_level.ent" />
             <File Id="1" Path="entities/arabic_fort/door/arabic_fort_door_exit/arabic_fort_door_exit_breakable.ent" />
             <File Id="2" Path="entities/arabic_fort/door/gate_fort/arabic_gate_fort_doors_breakable.ent" />
@@ -67,6 +67,7 @@
             <File Id="63" Path="mods/MonkeIsland/entities/gameplay/banana_health/banana_health.ent" />
             <File Id="64" Path="mods/MonkeIsland/entities/urban/basketball_hoop/basketball_hoop.ent" />
             <File Id="65" Path="entities/archaeology/personal/herbert_pith/herbert_pith.ent" />
+            <File Id="66" Path="mods/MonkeIsland/entities/special/hat_monke/hat_monke.ent" />
         </FileIndex_Entities>
         <Objects>
             <Entity ID="268435465" Name="arabic_fort_door_level_1" CreStamp="1613763727" ModStamp="1613766557" WorldPos="22.25 0 0" Rotation="0 -1.5708 0" Scale="1 1 1" FileIndex="0" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 45 268435465">
@@ -3024,11 +3025,11 @@
                     <Var ObjectId="268435512" Name="Threat_DeactivationCallback" Value="" />
                 </UserVariables>
             </Entity>
-            <Entity ID="268435754" Name="herbert_pith_1" CreStamp="1614523551" ModStamp="1614523551" WorldPos="-8 1.75 -0.75" Rotation="0 1.0472 0" Scale="1 1 1" FileIndex="65" Active="true" Important="false" Static="false" CulledByDistance="true" CulledByFog="true" UID="16 12712 268435754">
+            <Entity ID="268435754" Name="hat" CreStamp="1605200996" ModStamp="1614523837" WorldPos="-7.52772 2.10285 -1.26463" Rotation="0 0.397626 0" Scale="1 1 1" FileIndex="66" Active="true" Important="false" Static="true" CulledByDistance="false" CulledByFog="false" UID="16 160 268435754">
                 <UserVariables>
                     <Var ObjectId="268435754" Name="Note" Value="" />
                     <Var ObjectId="268435754" Name="EventInstanceTag" Value="" />
-                    <Var ObjectId="268435754" Name="CollideGroup" Value="" />
+                    <Var ObjectId="268435754" Name="CollideGroup" Value="-agent" />
                     <Var ObjectId="268435754" Name="UserVar" Value="" />
                     <Var ObjectId="268435754" Name="DisableBreakable" Value="false" />
                     <Var ObjectId="268435754" Name="FullGameSave" Value="false" />
@@ -3063,10 +3064,10 @@
                     <Var ObjectId="268435754" Name="ConnectedEntity" Value="" />
                     <Var ObjectId="268435754" Name="ConnectedEntityInvertState" Value="false" />
                     <Var ObjectId="268435754" Name="ConnectedEntityStatesUsed" Value="0" />
-                    <Var ObjectId="268435754" Name="ParentAttachEntity" Value="" />
+                    <Var ObjectId="268435754" Name="ParentAttachEntity" Value="monke" />
                     <Var ObjectId="268435754" Name="ParentAttachUseRotation" Value="true" />
                     <Var ObjectId="268435754" Name="ParentAttachBody" Value="" />
-                    <Var ObjectId="268435754" Name="ParentAttachSocket" Value="" />
+                    <Var ObjectId="268435754" Name="ParentAttachSocket" Value="head_top" />
                     <Var ObjectId="268435754" Name="ParentAttachSnap" Value="false" />
                     <Var ObjectId="268435754" Name="ParentAttachLocked" Value="false" />
                     <Var ObjectId="268435754" Name="ConnectedLight" Value="" />
@@ -3079,7 +3080,8 @@
                     <Var ObjectId="268435754" Name="ExtraConnectionLightUseOnColor" Value="true" />
                     <Var ObjectId="268435754" Name="ExtraConnectionLightUseSpec" Value="false" />
                     <Var ObjectId="268435754" Name="ExtraConnectionLightType" Value="Mul" />
-                    <Var ObjectId="268435754" Name="InteractDisablesStaticPhysics" Value="false" />
+                    <Var ObjectId="268435754" Name="CanInteractWithoutCallback" Value="false" />
+                    <Var ObjectId="268435754" Name="CustomInteractIcon" Value="PushButton" />
                     <Var ObjectId="268435754" Name="ScaryObject_Enabled" Value="false" />
                     <Var ObjectId="268435754" Name="ScaryObject_BaseFearRateMultiplier" Value="1.0" />
                     <Var ObjectId="268435754" Name="ScaryObject_ActivationCallback" Value="" />
