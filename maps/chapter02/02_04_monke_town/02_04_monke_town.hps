@@ -258,6 +258,8 @@ class cScrMap : iScrMap
 			
 			Map_AddTimer("DO", 0.1f, "hiDoggy");
 			
+			Map_Preload("03_01_fabio.hpm");
+			
 			Credits_Start("Credits_Monke.cfg","OnEndOfCredits", "", cVector3f(-0.15,-0.1,1.75f), "Monke_Ending", 0.00f, 1.0f, 0.5f);
 			
 			return false;
