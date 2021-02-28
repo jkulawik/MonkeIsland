@@ -603,6 +603,9 @@ class cScrMap : iScrMap
 			
 			Decal_SetVisibleInArea(true, "BloodArea", "blood_splatter_round.mat");
 			
+			Entity_SetActive("ragdoll", true);
+			Entity_PlaceAtEntity("ragdoll", "monke");
+			
 			Entity_SetActive("monke", false);
 			Entity_SetActive("munshi", false);
 			
