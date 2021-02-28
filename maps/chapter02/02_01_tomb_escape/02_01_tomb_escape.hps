@@ -495,6 +495,7 @@ class cScrMap : iScrMap
 			Map_GetEntity(msCurrentLamp).GetMeshEntity().SetIlluminationColor(pNewColor);
 		}
 		
+		bool mbRagdollEnabled = false;
 		void MonkeButton_OnConnectionChangeState(const tString &in asEntity, int alState)
 		{
 			tString sLightName = Entity_GetVarString(asEntity, "");
@@ -504,7 +505,22 @@ class cScrMap : iScrMap
 			
 			Light_FadeTo(sLightName, mpDestColor, 2, 0.25f);
 			
+			// Enable ragdoll once if all buttons are off
+			if (!mbRagdollEnabled) {
+				if(!Button_IsSwitchedOn("SeeNoButton") 
+				&& !Button_IsSwitchedOn("HearNoButton") 
+				&& !Button_IsSwitchedOn("SpeakNoButton")) {
+					mbRagdollEnabled = true;
+					Map_AddTimer("monkespawn", 1.3f, "Timer_SpawnRagdoll");
+				}
+			}
+			
 			Entity_SetActive("BlockBox_Door_*", !(!Button_IsSwitchedOn("SeeNoButton") && Button_IsSwitchedOn("HearNoButton")));
+		}
+		
+		void Timer_SpawnRagdoll(const tString &in asTimer)
+		{
+			Entity_SetActive("monke_ragdoll_1", true);
 		}
 		
 		//-------------------------------------------------------
