@@ -3,6 +3,7 @@
  <Characters>
   <Character ID="5" Name="Player" DisplayName="Tasi" Actor="Alix" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="True" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="1" ReverbVolume="1.22" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
   <Character ID="10" Name="Observer" DisplayName="Unknown" Actor="Rachel" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="False" AffectedByReverb="False" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="GUI" Volume="1" ReverbVolume="0.7" SpeakerSpread="40" EntitySource="" MinDist="0" MaxDist="0" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
+  <Character ID="11" Name="Tasi" DisplayName="Tasi Trianon" Actor="" AutoGenVoice="False" AutoGenVoiceFile="" AutoGenVoiceSoundFreq="1" WorldSpace="True" AffectedByReverb="False" TextToSpeechVoice="Default" DefaultCriteria="" EntryType="World" Volume="0.7" ReverbVolume="1.22" SpeakerSpread="40" EntitySource="LittelOne" MinDist="3" MaxDist="11" MinFreq="22000" MaxFreq="22000" MaxListeningDist="-1" FrequencyFilter="None" />
  </Characters>
  <Effects />
  <Scenes>
@@ -22,6 +23,13 @@
   <Subject Name="MonkeComment" UseSingleRandomLine="False" SceneId="2" EffectId="-1" Section="General Comments">
    <Line CharacterId="5" Prio="0" TextStatus="Placeholder" PlayOnce="True">
     <Sound Text="There are monkys... I must be on the good track." FileName="comment_monkecomment_001_player_001" Timestamp="2021-01-15 09:54" />
+   </Line>
+  </Subject>
+  <Subject Name="Salim" UseSingleRandomLine="False" SceneId="2" EffectId="-1" Section="General Comments">
+   <Line CharacterId="11" Prio="0" TextStatus="Placeholder" PlayOnce="True">
+    <Sound Text="Ohh Salim, little one could hear us." ExtraEffectFile="salims_hand.ogg" EndPadding="-2" FileName="comment_salim_001_tasi_001" Timestamp="2021-03-01 02:55" />
+    <Sound Text="Salim stop! Little one could hear us... *sobbing*. " ExtraEffectFile="salims_hand.ogg" EndPadding="-1" FileName="comment_salim_001_tasi_002" Timestamp="2021-03-01 02:55" />
+    <Sound Text="Ah... never mind, keep going." ExtraEffectFile="salims_hand.ogg" FileName="comment_salim_001_tasi_003" Timestamp="2021-03-01 02:55" />
    </Line>
   </Subject>
  </Subjects>

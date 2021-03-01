@@ -491,6 +491,7 @@ class cScrMap : iScrMap
 			Game_AutoSave();
 			
 			Voice_Play("MonkeComment");
+			Voice_PlayWhenPossible("Salim", "", 30.0f, 2.0f);
 			
 			return false;
 		}
